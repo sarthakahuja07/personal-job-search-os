@@ -1,0 +1,45 @@
+name: Deploy
+
+on:
+  push:
+    branches: [main]
+    paths: ["app/**", ".github/workflows/deploy.yml"]
+  workflow_dispatch:
+
+concurrency:
+  group: deploy
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: app
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: app/package-lock.json
+      - run: npm ci
+
+      # Tests gate the deploy. The app is the only thing standing between a broken change and
+      # the tool Sarthak checks every morning.
+      - name: Typecheck and test
+        run: |
+          npx tsc --noEmit
+          npm run test
+
+      - name: Deploy to Cloudflare Workers
+        run: npm run deploy
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+
+      # Migrations are deliberately NOT run here. A bad migration against the only copy of the
+      # data is not worth the convenience; apply them by hand with
+      #   npx wrangler d1 migrations apply job-search-os --remote
+      - name: Remind about migrations
+        run: echo "::notice::If the schema changed, apply migrations manually before relying on this deploy."

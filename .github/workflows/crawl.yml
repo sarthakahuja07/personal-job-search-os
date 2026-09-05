@@ -1,0 +1,91 @@
+name: Crawl and notify
+
+# Every 6 hours. Discovery latency matters -- the point of this project is to reach a posting
+# before it is flooded -- but 4 runs a day is well inside the free Actions budget and is polite
+# to the job boards being crawled.
+on:
+  schedule:
+    - cron: "0 */6 * * *"
+  workflow_dispatch:
+    inputs:
+      company:
+        description: "Crawl a single company by name (blank = all)"
+        required: false
+      dry_run:
+        description: "Crawl but do not write or send"
+        type: boolean
+        default: false
+
+# Never let two crawls overlap. Ingest is idempotent, but concurrent runs would double the
+# request rate against every job board for no benefit.
+concurrency:
+  group: crawl
+  cancel-in-progress: false
+
+jobs:
+  crawl:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      APP_BASE_URL: ${{ vars.APP_BASE_URL }}
+      INGEST_TOKEN: ${{ secrets.INGEST_TOKEN }}
+      CF_ACCESS_CLIENT_ID: ${{ secrets.CF_ACCESS_CLIENT_ID }}
+      CF_ACCESS_CLIENT_SECRET: ${{ secrets.CF_ACCESS_CLIENT_SECRET }}
+      SMTP_USER: ${{ secrets.SMTP_USER }}
+      SMTP_APP_PASSWORD: ${{ secrets.SMTP_APP_PASSWORD }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install crawler dependencies
+        run: pip install -r crawler/requirements.txt
+
+      - name: Verify configuration before crawling
+        run: |
+          test -n "$APP_BASE_URL" || { echo "::error::APP_BASE_URL variable is not set"; exit 1; }
+          test -n "$INGEST_TOKEN" || { echo "::error::INGEST_TOKEN secret is not set"; exit 1; }
+
+      - name: Crawl
+        id: crawl
+        run: |
+          python -m crawler.main \
+            ${{ inputs.company && format('--company "{0}"', inputs.company) || '' }} \
+            ${{ inputs.dry_run && '--dry-run' || '' }} \
+            2>&1 | tee crawl.log
+          echo "exit=${PIPESTATUS[0]}" >> "$GITHUB_OUTPUT"
+
+      # A green step means the process exited zero, which is not the same as the crawl having
+      # worked. This project has already been bitten three times by tools reporting success while
+      # doing nothing, so the outcome is asserted explicitly rather than inferred.
+      - name: Assert the crawl actually did something
+        if: ${{ !inputs.dry_run }}
+        run: |
+          if ! grep -q "crawl.done" crawl.log; then
+            echo "::error::crawler never reached crawl.done"; exit 1
+          fi
+          companies=$(grep -o "companies=[0-9]*" crawl.log | tail -1 | cut -d= -f2)
+          failures=$(grep -o "failures=[0-9]*" crawl.log | tail -1 | cut -d= -f2)
+          echo "companies=$companies failures=$failures"
+          if [ "${companies:-0}" -eq 0 ]; then
+            echo "::error::crawled zero companies"; exit 1
+          fi
+          if [ "${failures:-0}" -gt 0 ]; then
+            echo "::warning::$failures of $companies companies failed"
+          fi
+
+      - name: Send notification digest
+        if: ${{ !inputs.dry_run }}
+        run: python -m crawler.notify
+
+      - name: Upload crawl log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: crawl-log-${{ github.run_id }}
+          path: crawl.log
+          retention-days: 14

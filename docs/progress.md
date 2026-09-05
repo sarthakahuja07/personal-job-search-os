@@ -18,9 +18,9 @@ deduplicates and scores them, and the job board displays them. Nothing is deploy
 | M1 Companies / contacts / settings | partial — data seeded, no CRUD UI |
 | M2 Ingest pipeline | done |
 | M3 Crawler core + 5 adapters | done — conformance suite still missing |
-| M4 Scheduling, health, drift | partial — health + drift done, no GitHub Actions |
-| M5 Job board | partial — board, dashboard, company health; no job detail page |
-| M6 Notifications | not started — outbox rows written, nothing sends them |
+| M4 Scheduling, health, drift | done — crawl.yml (6-hourly), ci.yml, deploy.yml |
+| M5 Job board | partial — board, dashboard, company health, settings, notifications; no job detail page |
+| M6 Notifications | done — SMTP digest drainer + history page; needs an app password to actually send |
 | M7 Templates | not started |
 | M8 Applications Kanban | not started |
 | M9 Dashboard | partial — first version done |
@@ -30,11 +30,10 @@ deduplicates and scores them, and the job board displays them. Nothing is deploy
 
 ## Next up, in order
 
-1. **M6 Notifications** — outbox drainer over Gmail SMTP + history page. Rows already exist and are
-   correctly deduplicated; nothing sends them, so no email arrives yet.
-2. **M4 GitHub Actions** — `crawl.yml` (3-hourly), `contracts.yml` (daily canary), `ci.yml`.
-3. **Deploy** — needs `wrangler login`, D1 creation, Cloudflare Access. Blocked on Sarthak.
-4. **M3 conformance suite** — the parametrized every-adapter suite plus recorded cassettes.
+1. **Deploy** — `wrangler login`, create D1, set secrets, enable Cloudflare Access. Blocked on
+   Sarthak; everything else is ready and running locally.
+2. **M3 conformance suite** — the parametrized every-adapter suite plus recorded cassettes.
+3. **`contracts.yml`** — the daily live-schema canary. Not yet written.
 5. **M7 Templates** — referral messages with `{{variables}}`.
 6. **M8 Applications Kanban** — the five stages.
 7. **M5 Job detail page** — description, contacts inline, quick actions.
@@ -122,7 +121,11 @@ Deliberately conservative (`crawler/http/client.py`):
   closed.
 - Failed, skipped and degraded runs never mutate job presence state.
 - Bootstrap and ingest both reject unauthenticated requests with 401.
-- 105 TypeScript tests, 6 Python tests, `tsc --noEmit` clean.
+- 112 TypeScript tests, 6 Python tests, `tsc --noEmit` clean, `ruff check crawler` clean.
+- A full crawl of 14 companies completes in about two minutes with zero failures: 104 jobs
+  ingested, 16 relevant, 16 notifications queued.
+- The notification digest renders real matches with their explanations and resolves the recipient
+  from settings.
 
 ---
 
@@ -131,7 +134,6 @@ Deliberately conservative (`crawler/http/client.py`):
 - **No conformance suite.** Planned in M3 and not built. Adapters have targeted regression tests
   (Workday) but the parametrized every-adapter suite and recorded cassettes do not exist. This is
   the largest outstanding piece of crawler-correctness work.
-- **No notification delivery.** Outbox rows accumulate with nothing draining them.
 - **No cassettes.** Crawler tests use hand-built fakes, so adding a company still needs a live run.
 - **No `doctor` CLI.** Adding a company means editing the seed script.
 - **No conditional requests.** `etag` / `last_content_hash` are stored and sent to ingest, but
