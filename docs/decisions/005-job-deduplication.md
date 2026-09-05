@@ -19,12 +19,23 @@ Primary key for identity: `UNIQUE (company_id, external_job_id)`.
 `external_job_id` is the source's own stable requisition identifier — Greenhouse `id`, Lever `id`,
 Workday `jobReqId`. Adapters must extract it from the payload, never synthesise it.
 
-Fallback when a source exposes no stable id: `UNIQUE (company_id, normalized_job_url)`, where
-normalization lowercases the host, strips the query string and fragment, and removes a trailing
-slash. An adapter using the fallback must declare it explicitly in its config so the weaker
-guarantee is visible.
+Fallback when a source exposes no stable id: the adapter derives `external_job_id` from the
+normalized job URL. There is deliberately **no second unique constraint** on the URL — one
+identity column, populated differently per source, so the constraint above covers both cases.
 
 Deriving identity from the job *title* is forbidden — titles are edited in place upstream.
+
+### URL normalization
+
+Lowercase the scheme and host, drop a trailing slash, and remove **only known tracking
+parameters** (`utm_*`, `gh_src`, `fbclid`, …). Remaining parameters are sorted so ordering cannot
+change the identity between crawls.
+
+Stripping the whole query string is wrong, and was a real bug: Greenhouse-hosted boards put the
+job id *in the query*. Databricks postings are `.../open-positions/job?gh_jid=7979886003`, so
+blanket stripping collapsed all 870 of their jobs onto a single URL. With a unique index on that
+column it rejected 869 of 870 inserts; without one it would have silently deduplicated an entire
+company down to one job — far worse, because nothing would have failed.
 
 ## Enforcement
 

@@ -100,7 +100,7 @@ CREATE TABLE `jobs` (
 );
 --> statement-breakpoint
 CREATE UNIQUE INDEX `jobs_company_external_unique` ON `jobs` (`company_id`,`external_job_id`);--> statement-breakpoint
-CREATE UNIQUE INDEX `jobs_company_url_unique` ON `jobs` (`company_id`,`normalized_job_url`);--> statement-breakpoint
+CREATE INDEX `jobs_company_url_idx` ON `jobs` (`company_id`,`normalized_job_url`);--> statement-breakpoint
 CREATE INDEX `jobs_relevant_idx` ON `jobs` (`is_relevant`);--> statement-breakpoint
 CREATE INDEX `jobs_discovered_idx` ON `jobs` (`discovered_at`);--> statement-breakpoint
 CREATE INDEX `jobs_company_idx` ON `jobs` (`company_id`);--> statement-breakpoint

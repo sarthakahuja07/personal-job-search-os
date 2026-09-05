@@ -1,7 +1,7 @@
 {
   "version": "6",
   "dialect": "sqlite",
-  "id": "5f4aa965-506d-4912-80b7-07ca285593c0",
+  "id": "b0a21df3-0253-4db4-bea6-57c4cd24fd87",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
     "applications": {
@@ -703,13 +703,13 @@
           ],
           "isUnique": true
         },
-        "jobs_company_url_unique": {
-          "name": "jobs_company_url_unique",
+        "jobs_company_url_idx": {
+          "name": "jobs_company_url_idx",
           "columns": [
             "company_id",
             "normalized_job_url"
           ],
-          "isUnique": true
+          "isUnique": false
         },
         "jobs_relevant_idx": {
           "name": "jobs_relevant_idx",

@@ -1,79 +1,142 @@
-# Progress
+# Progress and open work
 
-Updated after each meaningful milestone (PRD §73).
+The durable state of this project. Updated whenever something meaningful lands, so no context is
+lost between sessions (PRD §73). Picking this up cold: read `CLAUDE.md` first, then this file.
 
-## Phase 0 — Job discovery and application workflow
+**Last updated:** 2026-09-05
 
-### M0 — Foundation  *(mostly complete — blocked on Cloudflare/GitHub credentials)*
+---
 
-**Done**
+## Where things stand
 
-- [x] Repository skeleton (`app/`, `crawler/`, `docs/`, `.github/`, `scripts/`)
-- [x] `.gitignore`, `README.md`, `CLAUDE.md`
-- [x] ADRs 001–009
-- [x] Docs: architecture, development, infrastructure, database, api, crawlers, engineering-principles
-- [x] Python 3.12.10 + venv + crawler dependencies (httpx, bs4, pydantic, pytest, vcrpy, respx)
-- [x] GitHub CLI 2.100.0
-- [x] Node 24.19.0 LTS (Node 20 was end-of-life; `create-cloudflare` requires ≥22)
-- [x] Next.js 16.3.4 + React 19.2.8 + Tailwind 4 + TypeScript
-- [x] `@opennextjs/cloudflare` 1.20.6 adapter wired (ADR 009 — **not** vinext)
-- [x] Drizzle ORM 0.45.2 + drizzle-kit 0.31.10, schema for all 8 tables
-- [x] First migration generated and applied to **local** D1 (27 statements)
-- [x] `NormalizedJob` pydantic contract with boundary validation
-- [x] `npm run build` passes; `tsc --noEmit` clean
+Phase 0 **works end to end locally**: the crawler discovers real jobs from 14 companies, ingest
+deduplicates and scores them, and the job board displays them. Nothing is deployed yet.
 
-**Verified, not assumed**
+| Milestone | State |
+|---|---|
+| M0 Foundation | done |
+| M1 Companies / contacts / settings | partial — data seeded, no CRUD UI |
+| M2 Ingest pipeline | done |
+| M3 Crawler core + 5 adapters | done — conformance suite still missing |
+| M4 Scheduling, health, drift | partial — health + drift done, no GitHub Actions |
+| M5 Job board | partial — board, dashboard, company health; no job detail page |
+| M6 Notifications | not started — outbox rows written, nothing sends them |
+| M7 Templates | not started |
+| M8 Applications Kanban | not started |
+| M9 Dashboard | partial — first version done |
+| M10 Deferred adapters | deliberately deferred |
 
-- [x] `UNIQUE (company_id, external_job_id)` rejects a duplicate job at the database level
-      (`SQLITE_CONSTRAINT_UNIQUE`) — the guarantee behind ADR 005
-- [x] `NormalizedJob` rejects a relative date (`"Posted Today"`), HTML in titles, relative URLs,
-      and list-index-shaped ids
+---
 
-**Blocked on Sarthak**
+## Next up, in order
 
-- [ ] `wrangler login` → `wrangler d1 create job-search-os` → real `database_id` in `wrangler.jsonc`
-      (currently `REPLACE_AFTER_WRANGLER_D1_CREATE`)
-- [ ] Apply migrations to remote D1
-- [ ] Deploy, then enable Cloudflare Access on the `workers.dev` URL
-- [ ] `gh auth login` → create repository → push
+1. **M6 Notifications** — outbox drainer over Gmail SMTP + history page. Rows already exist and are
+   correctly deduplicated; nothing sends them, so no email arrives yet.
+2. **M4 GitHub Actions** — `crawl.yml` (3-hourly), `contracts.yml` (daily canary), `ci.yml`.
+3. **Deploy** — needs `wrangler login`, D1 creation, Cloudflare Access. Blocked on Sarthak.
+4. **M3 conformance suite** — the parametrized every-adapter suite plus recorded cassettes.
+5. **M7 Templates** — referral messages with `{{variables}}`.
+6. **M8 Applications Kanban** — the five stages.
+7. **M5 Job detail page** — description, contacts inline, quick actions.
+8. **M1 CRUD UI** — manage companies and contacts in-app rather than via the seed script.
+9. **M10 Deferred adapters** — one at a time, only once the product is complete.
 
-**Done when:** the deployed URL is live and challenges a logged-out browser for login.
+---
 
-### M1 — Companies, contacts, settings — *partially done*
+## Blocked on Sarthak
 
-- [x] 29 target companies + 34 referral contacts seeded into local D1
-- [x] Companies classified by live probing: 10 tier-1 (ATS feed), 1 tier-2 (Workday), 18 unresolved
-- [x] **Relevance rule engine** built and validated against 1,334 real postings
-      (`app/src/server/domain/matching.ts`, 72 tests) — see `docs/matching.md`
-- [ ] CRUD UI for companies / contacts / settings
-- [ ] Careers URLs for the 18 unresolved companies
+| Item | Why it matters |
+|---|---|
+| `npx wrangler login` | Create D1 and deploy. Nothing is live without it. |
+| `gh auth login` + repo name | Required for Actions scheduling. Proposed: `personal-job-search-os`. |
+| Gmail app password + notify address | Notifications cannot send. Needs 2FA on the account. |
+| Canonical resume link | Used by message templates. |
+| **VinFast careers URL** | The URL supplied is a San Francisco *dealership* on ApplicantOne, not the engineering org. |
+| **Moveworks / Qualcomm Workday URL** | Both tenants confirmed (`moveworks.wd12`, `qualcomm.wd12`); only the site slug is missing. Either flips to config-only instantly. |
+| **Drishika's phone or LinkedIn** | The only Atlassian contact, with no details recorded. |
 
-### M2 — Ingest pipeline (dedup, matching, idempotency) — not started
-### M3 — Crawler core (adapter contract, conformance suite, doctor CLI, Greenhouse + Lever) — not started
-### M4 — Workday adapter, schedule, health + drift detection — not started
-### M5 — Job board + job detail — not started
-### M6 — Notifications (outbox drainer, history) — not started
-### M7 — Message templates — not started
-### M8 — Applications Kanban — not started
-### M9 — Dashboard — not started
-### M10 — Bespoke big-tech adapters — not started
+---
 
-## Phase 1 — Interview preparation
+## Company coverage — 14 of 29 crawled automatically
 
-Not started. Structure to be finalised once Sarthak provides his existing Notion content.
+Full detail in [`crawlers.md`](crawlers.md).
 
-## Open items needing Sarthak
+**Crawled (14)** — Greenhouse: Databricks, Roku, Uber Freight, Postman · SmartRecruiters:
+ServiceNow, Swiggy · Ashby: Sarvam AI, Confluent · Lever: Zeta Suite · Workday: NVIDIA, Adobe,
+Salesforce, Target, Visa.
 
-- [ ] `wrangler login` — required to create D1 and deploy
-- [ ] `gh auth login` + confirm repository name (proposed: `personal-job-search-os`)
-- [ ] **Target company list** — the highest-value input; drives adapter sequencing
-- [ ] Gmail app password + notification address (requires 2FA on the account)
-- [ ] Canonical resume link
+**Manual, with a dashboard link (15)** — deferred by decision, not failure:
 
-## Notes worth keeping
+- *Adapter deferred until the product is complete*: Intuit (endpoint verified and working — closest
+  to ready), Akamai (Oracle stack identified, API path unresolved), Amazon, Microsoft.
+- *Refusing automated access*: Qualcomm (Eightfold 403), Atlassian (401), Google. Manual by policy;
+  no evasion (ADR 008).
+- *JavaScript-rendered, no reachable feed*: DigitalOcean, CHEQ, DE Shaw, Keychain AI, Moveworks.
+  Reachable later via a headless browser or an HTML/JSON-LD fallback adapter.
+- *Needs a corrected URL*: VinFast.
 
-Three separate tools reported **exit code 0 while failing** during M0: `create-cloudflare` on a Node
-version check, `create-cloudflare` again on an unsupported framework, and an `npm install` whose
-ERESOLVE failure was masked by a shell pipe. This is the same failure class the crawler design
-targets — a green signal that means nothing. It is why `crawl.yml` must assert *outcomes* (jobs
-ingested, notifications sent) rather than step completion.
+**Deactivated (2)** — Dell and Samsung India, at Sarthak's request.
+
+---
+
+## Bugs found and fixed, and what each would have cost
+
+Recorded because every one was invisible until specifically hunted, and the class will recur.
+
+| Bug | Symptom | Why it mattered |
+|---|---|---|
+| **Workday `total` only on page 1** | Later pages report `total: 0` while still returning results | Crawl stopped at 40 of NVIDIA's 2000 jobs **and reported success**. Pure silent truncation. |
+| **URL normalization stripped the query** | All 870 Databricks jobs normalized to one URL | Greenhouse puts the job id in `?gh_jid=`. Would have collapsed a whole company to one job. |
+| **Second unique index on the URL** | `UNIQUE constraint failed` on 869 of 870 inserts | The URL is a *fallback* identity, never an independent constraint. ADR 005 corrected. |
+| **Anchored title pattern** | `^software engineer$` matched almost nothing | Silently rejected 194 of 1334 live postings — every title with a suffix. |
+| **"Remote" matched foreign remote** | `Italy, Remote`, `US, FL, Remote` | Would have surfaced dozens of unreachable roles as matches. |
+| **`\bstaff\b` over-matched** | Killed "Member of Technical Staff 2" | That is the SDE-2 title at several companies. |
+| **Sequential Workday pagination** | Target exceeded its 180 s budget and returned 0 | Correctly flagged `degraded` rather than silently empty — the guard working as intended. |
+
+Each is pinned by a regression test using the real input that exposed it.
+
+---
+
+## Politeness and adaptivity
+
+Deliberately conservative (`crawler/http/client.py`):
+
+- **Adaptive per-host pacing** — starts at 350 ms, decays toward 80 ms only after five consecutive
+  clean responses, multiplies by 2.5 on any 429/5xx. A fixed delay is either rude to small sites or
+  needlessly slow against large ones.
+- **`Retry-After` always obeyed**, up to two minutes. A 429 widens the delay immediately.
+- **Per-host concurrency capped at 3**, with the delay applied *inside* the semaphore so it limits
+  the actual request rate rather than merely delaying the caller.
+- **Per-company budgets** — 1500 requests / 600 s — so one pathological board cannot consume a run.
+- **Honest User-Agent** naming the tool and stating that it respects `robots.txt` and `Retry-After`.
+- **Detail fetches only for title-gate survivors** — NVIDIA: 2000 postings, ~40 candidates, ~18
+  detail requests. The single largest politeness win in the system.
+
+---
+
+## Verified by running it, not assumed
+
+- Re-running a crawl creates **zero** new jobs and **zero** notifications.
+- `UNIQUE (company_id, external_job_id)` rejects a duplicate at the database level.
+- A company that returned jobs and now returns none is marked `suspicious`, and its jobs are **not**
+  closed.
+- Failed, skipped and degraded runs never mutate job presence state.
+- Bootstrap and ingest both reject unauthenticated requests with 401.
+- 105 TypeScript tests, 6 Python tests, `tsc --noEmit` clean.
+
+---
+
+## Known gaps
+
+- **No conformance suite.** Planned in M3 and not built. Adapters have targeted regression tests
+  (Workday) but the parametrized every-adapter suite and recorded cassettes do not exist. This is
+  the largest outstanding piece of crawler-correctness work.
+- **No notification delivery.** Outbox rows accumulate with nothing draining them.
+- **No cassettes.** Crawler tests use hand-built fakes, so adding a company still needs a live run.
+- **No `doctor` CLI.** Adding a company means editing the seed script.
+- **No conditional requests.** `etag` / `last_content_hash` are stored and sent to ingest, but
+  adapters do not yet send `If-None-Match`, so nothing short-circuits on a 304.
+- **Descriptions truncated** to 8000 chars of plain text — deliberate: D1 caps a statement at 100 KB
+  and raw Databricks HTML exceeds 20 KB per job.
+- **Contact data is not in git.** It lives only in the local D1 and the scratchpad seed script, so a
+  fresh clone has companies but no contacts until re-seeded.

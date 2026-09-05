@@ -23,7 +23,7 @@ from __future__ import annotations
 import re
 from datetime import date, datetime
 from typing import Any
-from urllib.parse import urlsplit, urlunsplit
+from urllib.parse import parse_qsl, urlencode, urlsplit, urlunsplit
 
 from pydantic import BaseModel, ConfigDict, Field, field_validator
 
@@ -37,16 +37,34 @@ _RELATIVE_DATE_PATTERN = re.compile(
 _HTML_TAG_PATTERN = re.compile(r"<[^>]+>")
 
 
+# Parameters that vary between crawls and never carry identity.
+_TRACKING_PARAMS = {
+    "utm_source", "utm_medium", "utm_campaign", "utm_term", "utm_content",
+    "gh_src", "src", "source", "ref", "referrer", "fbclid", "gclid", "msclkid",
+    "mc_cid", "mc_eid", "trk", "trackingid", "_ga", "sessionid", "session_id",
+}
+
+
 def normalize_job_url(url: str) -> str:
     """Fallback identity for sources with no stable id.
 
-    Lowercases scheme and host, strips query and fragment, and removes a trailing slash. Query
-    strings on job URLs are usually tracking or session parameters that vary between crawls, so
-    keeping them would break deduplication in exactly the way ADR 005 warns about.
+    Strips only KNOWN TRACKING parameters, never the whole query string. Greenhouse-hosted
+    boards put the job id in the query -- Databricks postings look like
+    `.../open-positions/job?gh_jid=7979886003` -- so blanket query stripping collapsed all 870
+    of their jobs onto a single URL. Remaining parameters are sorted, so parameter ordering
+    cannot change the identity between crawls.
+
+    Mirrors normalizeJobUrl in app/src/server/domain/url.ts. Both sides must agree.
     """
     parts = urlsplit(url.strip())
     path = parts.path.rstrip("/") or "/"
-    return urlunsplit((parts.scheme.lower(), parts.netloc.lower(), path, "", ""))
+    kept = [
+        (k, v)
+        for k, v in parse_qsl(parts.query, keep_blank_values=True)
+        if k.lower() not in _TRACKING_PARAMS
+    ]
+    query = urlencode(sorted(kept))
+    return urlunsplit((parts.scheme.lower(), parts.netloc.lower(), path, query, ""))
 
 
 class NormalizedJob(BaseModel):

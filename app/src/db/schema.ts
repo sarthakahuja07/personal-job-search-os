@@ -220,10 +220,14 @@ export const jobs = sqliteTable(
     updatedAt: updatedAt(),
   },
   (t) => [
-    // The constraint that makes re-ingestion a no-op.
+    // The one identity constraint, and what makes re-ingestion a no-op.
     uniqueIndex("jobs_company_external_unique").on(t.companyId, t.externalJobId),
-    // Fallback identity for sources with no stable id.
-    uniqueIndex("jobs_company_url_unique").on(t.companyId, t.normalizedJobUrl),
+    // NOT unique, deliberately. The normalized URL is a *fallback* identity: adapters for
+    // sources with no stable requisition id derive external_job_id from it, so the constraint
+    // above still covers them. Enforcing URL uniqueness independently is wrong -- Greenhouse
+    // boards legitimately share one path across every posting, distinguished only by a query
+    // parameter, so it rejected 869 of Databricks' 870 jobs. Kept as a plain index for lookups.
+    index("jobs_company_url_idx").on(t.companyId, t.normalizedJobUrl),
     index("jobs_relevant_idx").on(t.isRelevant),
     index("jobs_discovered_idx").on(t.discoveredAt),
     index("jobs_company_idx").on(t.companyId),
