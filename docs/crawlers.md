@@ -83,24 +83,50 @@ Two name collisions were resolved by checking posting locations rather than assu
 different company, Zeta Global. **Samsung India** is not Greenhouse `samsungsemiconductor`, which is
 the US semiconductor entity; Samsung India runs its own portal and is unresolved below.
 
-**Tier 2 — Workday CXS, config only (1)**
+**Tier 2 — Workday CXS, config only (4)**
 
 | Company | Tenant | Shard | Site | Jobs seen |
 |---|---|---|---|---|
 | NVIDIA | `nvidia` | `wd5` | `NVIDIAExternalCareerSite` | 2000 |
+| Target | `target` | `wd5` | `targetcareers` | 2000 |
+| Salesforce | `salesforce` | `wd12` | `External_Career_Site` | 1455 |
+| Adobe | `adobe` | `wd5` | `external_experienced` | 724 |
 
-**Unresolved (19)** — Adobe, Akamai, Amazon, Atlassian, CHEQ, DE Shaw, Dell, DigitalOcean, Google,
-Intuit, Keychain AI, Microsoft, Moveworks, Qualcomm, Salesforce, Samsung India, Target, VinFast, Visa.
+**Unresolved (16)** — Akamai, Amazon, Atlassian, CHEQ, DE Shaw, Dell, DigitalOcean, Google,
+Intuit, Keychain AI, Microsoft, Moveworks, Qualcomm, Samsung India, VinFast, Visa.
 
-Each needs the careers URL Sarthak actually lands on, after which `doctor` resolves it. Automated
-discovery was attempted and **does not work**: `{tenant}.wd{N}.myworkdayjobs.com` returns HTTP 406
-for a real tenant, a wrong shard, and a nonexistent tenant alike, so the root gives no signal; and
-careers subdomains (`careers.nvidia.com`, `careers.adobe.com`) resolve to JavaScript marketing sites
-that never redirect to Workday. The shard number is genuinely unguessable — NVIDIA is `wd5`,
-Salesforce `wd12`, Adobe `wd5` — which is why the human-supplied URL is a design input rather than a
-shortcut.
+Three of these have a **confirmed Workday tenant but an unguessable site slug**: `moveworks.wd12`,
+`qualcomm.wd12`, `visa.wd5`. They need only the careers URL, from which the slug is a regex away.
+
+Samsung India is a distinct case: `sec.wd3/Samsung_Careers` exists and works, but only 2 of its
+first 300 postings are in India — it is the global entity. Samsung R&D India uses a separate portal.
 
 Amazon, Microsoft and Google are expected to stay bespoke (tier 3) or manual (tier 6) regardless.
+
+### Discovering a Workday tenant
+
+The obvious approach does not work: `https://{tenant}.wd{N}.myworkdayjobs.com/` returns **HTTP 406
+for everything** — a real tenant, a wrong shard, and a nonexistent tenant alike — and careers
+subdomains (`careers.nvidia.com`, `careers.adobe.com`) are JavaScript marketing sites that never
+redirect to Workday.
+
+The CXS endpoint *does* discriminate. Posting to a deliberately bogus site slug:
+
+```
+POST /wday/cxs/{tenant}/__probe__/jobs
+  -> 404   tenant + shard EXIST, only the site slug is wrong
+  -> 422   tenant + shard do not exist
+```
+
+Verified against `nvidia.wd5` (404) versus `nvidia.wd1` (422) and a nonexistent tenant (422). This
+resolves tenant and shard across all eight shards with one cheap request each, which is how Adobe,
+Target and Salesforce were found.
+
+The **site slug remains the hard part** — `NVIDIAExternalCareerSite`, `External_Career_Site`,
+`targetcareers` and `external_experienced` share no convention, and a 30-candidate guess list failed
+for Moveworks, Qualcomm and Visa. So the human-supplied careers URL stays a design input for the
+last mile, even though tenant discovery can be automated. `doctor` should implement the 404/422
+probe and then ask for the URL only when the slug cannot be guessed.
 
 ---
 
