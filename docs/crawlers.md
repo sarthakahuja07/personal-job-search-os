@@ -64,20 +64,24 @@ the failure this whole design targets.
 Classified by probing the live public feeds on 2026-09-05, not from memory. Job counts are from
 that probe and will drift.
 
-**Tier 1 — public ATS feed, config only (10)**
+**Tier 1 — public ATS feed, config only (9)**
 
 | Company | ATS | Slug | Jobs seen |
 |---|---|---|---|
 | Databricks | Greenhouse | `databricks` | 871 |
 | Roku | Greenhouse | `roku` | 252 |
-| Zeta | Greenhouse | `zetaglobal` | 140 |
 | Uber Freight | Greenhouse | `uberfreight` | 81 |
-| Samsung Semiconductor | Greenhouse | `samsungsemiconductor` | 66 |
 | Postman | Greenhouse | `postman` | 63 |
 | ServiceNow | SmartRecruiters | `servicenow` | 612 |
 | Swiggy | SmartRecruiters | `swiggy` | 67 |
 | Sarvam AI | Ashby | `sarvam` | 63 |
 | Confluent | Ashby | `confluent` | 22 |
+| Zeta Suite | Lever | `zeta` | 19 |
+
+Two name collisions were resolved by checking posting locations rather than assuming:
+**Zeta Suite** (zeta.tech, the Indian fintech) is Lever `zeta` — Greenhouse `zetaglobal` is a
+different company, Zeta Global. **Samsung India** is not Greenhouse `samsungsemiconductor`, which is
+the US semiconductor entity; Samsung India runs its own portal and is unresolved below.
 
 **Tier 2 — Workday CXS, config only (1)**
 
@@ -85,8 +89,8 @@ that probe and will drift.
 |---|---|---|---|---|
 | NVIDIA | `nvidia` | `wd5` | `NVIDIAExternalCareerSite` | 2000 |
 
-**Unresolved (18)** — Adobe, Akamai, Amazon, Atlassian, CHEQ, DE Shaw, Dell, DigitalOcean, Google,
-Intuit, Keychain AI, Microsoft, Moveworks, Qualcomm, Salesforce, Target, VinFast, Visa.
+**Unresolved (19)** — Adobe, Akamai, Amazon, Atlassian, CHEQ, DE Shaw, Dell, DigitalOcean, Google,
+Intuit, Keychain AI, Microsoft, Moveworks, Qualcomm, Salesforce, Samsung India, Target, VinFast, Visa.
 
 Each needs the careers URL Sarthak actually lands on, after which `doctor` resolves it. Automated
 discovery was attempted and **does not work**: `{tenant}.wd{N}.myworkdayjobs.com` returns HTTP 406
