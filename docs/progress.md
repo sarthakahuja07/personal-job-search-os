@@ -3,7 +3,7 @@
 The durable state of this project. Updated whenever something meaningful lands, so no context is
 lost between sessions (PRD §73). Picking this up cold: read `CLAUDE.md` first, then this file.
 
-**Last updated:** 2026-09-05
+**Last updated:** 2026-09-06
 
 ---
 
@@ -35,6 +35,17 @@ are loaded and reachable only from behind Access.
 | M9 Dashboard | partial — first version done |
 | M10 Deferred adapters | deliberately deferred |
 
+### Phase 1 — Interview preparation
+
+| Milestone | State |
+|---|---|
+| Schema (`prep_items`) | done — one table, `kind` discriminator, JSON `content` per discipline |
+| DSA | done — 20 seeded questions, filters, detail with notes and solution |
+| System Design | done — 10 seeded problems with requirements / architecture / trade-offs |
+| Behavioral | done — 8 seeded themes with situation / action / outcome |
+| Progress tracking | done — four states, `revisit` deliberately not counted as done |
+| Notion import | not started — schema shaped to absorb it (PRD §39) |
+
 ---
 
 ## Next up, in order
@@ -42,11 +53,12 @@ are loaded and reachable only from behind Access.
 1. **M3 conformance suite** — the parametrized every-adapter suite plus recorded cassettes. The
    largest remaining correctness gap: only Workday has regression tests.
 2. **`contracts.yml`** — the daily live-schema canary. Not yet written.
+3. **M8 Applications Kanban** — the five stages. Schema already exists.
 4. **M7 Templates** — referral messages with `{{variables}}`.
-5. **M8 Applications Kanban** — the five stages.
+5. **Notion import** — bring Sarthak's existing prep content into `prep_items`.
 6. **M5 Job detail page** — description, contacts inline, quick actions.
 7. **M1 CRUD UI** — manage companies and contacts in-app rather than via the seed script.
-8. **M10 Deferred adapters** — one at a time, only once the product is complete.
+8. **M10 Deferred adapters** — one at a time.
 
 ---
 
@@ -124,7 +136,7 @@ Deliberately conservative (`crawler/http/client.py`):
   closed.
 - Failed, skipped and degraded runs never mutate job presence state.
 - Bootstrap and ingest both reject unauthenticated requests with 401.
-- 112 TypeScript tests, 6 Python tests, `tsc --noEmit` clean, `ruff check crawler` clean.
+- 142 TypeScript tests, 6 Python tests, `tsc --noEmit` clean, `ruff check crawler` clean.
 - A full crawl of 14 companies completes in about two minutes with zero failures: 104 jobs
   ingested, 16 relevant, 16 notifications queued.
 - The notification digest renders real matches with their explanations and was delivered to the

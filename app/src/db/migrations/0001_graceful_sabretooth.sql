@@ -1,0 +1,39 @@
+CREATE TABLE `prep_items` (
+	`id` text PRIMARY KEY NOT NULL,
+	`kind` text NOT NULL,
+	`slug` text NOT NULL,
+	`title` text NOT NULL,
+	`prompt` text,
+	`difficulty` text,
+	`frequency` integer DEFAULT 0 NOT NULL,
+	`topics` text DEFAULT '[]' NOT NULL,
+	`companies` text DEFAULT '[]' NOT NULL,
+	`status` text DEFAULT 'not_started' NOT NULL,
+	`notes` text,
+	`solution` text,
+	`content` text DEFAULT '{}' NOT NULL,
+	`source_url` text,
+	`last_practiced_at` integer,
+	`created_at` integer DEFAULT (unixepoch() * 1000) NOT NULL,
+	`updated_at` integer DEFAULT (unixepoch() * 1000) NOT NULL
+);
+--> statement-breakpoint
+CREATE UNIQUE INDEX `prep_kind_slug_unique` ON `prep_items` (`kind`,`slug`);--> statement-breakpoint
+CREATE INDEX `prep_kind_idx` ON `prep_items` (`kind`);--> statement-breakpoint
+CREATE INDEX `prep_status_idx` ON `prep_items` (`status`);--> statement-breakpoint
+CREATE INDEX `prep_frequency_idx` ON `prep_items` (`frequency`);--> statement-breakpoint
+PRAGMA foreign_keys=OFF;--> statement-breakpoint
+CREATE TABLE `__new_settings` (
+	`id` integer PRIMARY KEY DEFAULT 1 NOT NULL,
+	`resume_url` text,
+	`notify_email` text,
+	`match_rules` text DEFAULT '{"title":{"include":[{"pattern":"software\\s+(development\\s+)?engineer\\s*(-|–)?\\s*(ii|2)\\b","score":100,"label":"Software Engineer II"},{"pattern":"\\bsde\\s*(-|–)?\\s*(ii|2)\\b","score":100,"label":"SDE 2"},{"pattern":"\\bswe\\s*(-|–)?\\s*(ii|2)\\b","score":100,"label":"SWE 2"},{"pattern":"\\bengineer\\s*(-|–)?\\s*(ii|2)\\b","score":90,"label":"Engineer II"},{"pattern":"\\bdeveloper\\s*(-|–)?\\s*(ii|2)\\b","score":90,"label":"Developer II"},{"pattern":"\\bl4\\b","score":90,"label":"L4 (Google SDE-2 equivalent)"},{"pattern":"\\be4\\b","score":85,"label":"E4 (Meta SDE-2 equivalent)"},{"pattern":"\\blevel\\s*4\\b","score":85,"label":"Level 4"},{"pattern":"member\\s+of\\s+technical\\s+staff\\s*(-|–)?\\s*(ii|2)\\b","score":90,"label":"MTS 2"},{"pattern":"\\bmts\\s*(-|–)?\\s*(ii|2)\\b","score":90,"label":"MTS 2"},{"pattern":"\\bsoftware\\s+engineer\\b","score":65,"label":"Software Engineer (unlevelled)"},{"pattern":"\\bbackend\\s+(software\\s+)?(engineer|developer)\\b","score":65,"label":"Backend Engineer"},{"pattern":"\\bback[-\\s]?end\\s+(engineer|developer)\\b","score":65,"label":"Backend Engineer"},{"pattern":"\\bfull[-\\s]?stack\\s+(engineer|developer)\\b","score":60,"label":"Full Stack Engineer"},{"pattern":"\\b(platform|infrastructure|distributed\\s+systems)\\s+engineer\\b","score":60,"label":"Platform / Infra Engineer"},{"pattern":"\\bmember\\s+of\\s+technical\\s+staff\\b","score":60,"label":"Member of Technical Staff"},{"pattern":"\\bsoftware\\s+developer\\b","score":60,"label":"Software Developer"}],"exclude":["\\bsenior\\b","\\bsr\\.?\\b","(?<!technical\\s)\\bstaff\\b","\\bprincipal\\b","\\blead\\b","\\barchitect\\b","\\bdistinguished\\b","\\bfellow\\b","\\bdirector\\b","\\bmanager\\b","\\bhead\\s+of\\b","\\bvp\\b","\\bvice\\s+president\\b","\\b(iii|iv|v|vi)\\b","\\bengineer\\s*(-|–)?\\s*[3-9]\\b","\\bl[5-9]\\b","\\be[5-9]\\b","\\blevel\\s*[5-9]\\b","\\bintern\\b","\\binternship\\b","\\bapprentice\\b","\\btrainee\\b","\\bnew\\s+grad\\b","\\bgraduate\\b","\\bjunior\\b","\\bjr\\.?\\b","\\bentry[-\\s]?level\\b","\\bsde\\s*(-|–)?\\s*(i|1)\\b","\\bswe\\s*(-|–)?\\s*(i|1)\\b","\\bengineer\\s*(-|–)?\\s*(i|1)\\b","\\bl3\\b","\\bsdet\\b","\\btest\\s+engineer\\b","\\bqa\\b","\\bsupport\\s+engineer\\b","\\bengineer\\s+in\\s+test\\b","\\bquality\\s+assurance\\b","\\bsales\\b","\\brecruiter\\b","\\bmarketing\\b","\\bdesigner\\b","\\bproduct\\s+manager\\b","\\bprogram\\s+manager\\b","\\bproject\\s+manager\\b","\\btechnical\\s+writer\\b","\\bsolutions?\\s+engineer\\b","\\bcustomer\\b","\\bfield\\s+engineer\\b","\\bmechanical\\b","\\bsecurity\\b","\\bsecops\\b","\\bsiem\\b","\\binfosec\\b","\\bcyber","\\bcryptograph","\\bpentest\\b","\\bpenetration\\s+test","\\bvulnerability\\b","\\bthreat\\b","\\bfirewall\\b","\\bidentity\\s+and\\s+access\\b","\\bnetwork(ing|s)?\\b","\\brouting\\b","\\bswitching\\b","\\binfiniband\\b","\\bwireless\\b","\\btelecom","\\bmodem\\b","\\b5g\\b","\\bradio\\b","\\bhardware\\b","\\bfirmware\\b","\\basic\\b","\\bpcb\\b","\\brtl\\b","\\bdft\\b","\\bsilicon\\b","\\banalog\\b","\\bphysical\\s+design\\b","\\bsoc\\s+design\\b","\\bdesign\\s+engineer\\b","\\blayout\\b","\\bverification\\s+engineer\\b","\\bvlsi\\b","\\bsignal\\s+integrity\\b","\\bthermal\\b","\\bmechanical\\b"]},"experience":{"idealMaxYears":4,"hardRejectYears":7,"penaltyPerYear":10,"unknownPasses":true},"location":{"allow":[{"name":"Bangalore","priority":1,"score":40,"aliases":["bangalore","bengaluru","blr"]},{"name":"Gurgaon","priority":2,"score":30,"aliases":["gurgaon","gurugram","delhi ncr","ncr","new delhi","noida"]},{"name":"Remote","priority":3,"score":20,"aliases":["remote","work from home","wfh","anywhere","distributed"]},{"name":"Hyderabad","priority":4,"score":10,"aliases":["hyderabad","hyd","telangana"]}],"reject":["\\bus\\b","\\bu\\.s\\.","united states","\\busa\\b","canada","\\buk\\b","united kingdom","ireland","germany","france","italy","spain","portugal","netherlands","belgium","austria","switzerland","sweden","norway","denmark","finland","poland","czech","hungary","romania","ukraine","russia","turkey","israel","china","taiwan","japan","korea","singapore","malaysia","indonesia","thailand","vietnam","philippines","australia","new zealand","brazil","mexico","argentina","chile","colombia","peru","egypt","south africa","armenia","hong kong","\\buae\\b","dubai","saudi","\\bemea\\b","\\blatam\\b","\\bapac\\b"],"unknownPasses":true},"threshold":60}' NOT NULL,
+	`follow_up_days` integer DEFAULT 5 NOT NULL,
+	`close_after_missing_runs` integer DEFAULT 3 NOT NULL,
+	`updated_at` integer DEFAULT (unixepoch() * 1000) NOT NULL
+);
+--> statement-breakpoint
+INSERT INTO `__new_settings`("id", "resume_url", "notify_email", "match_rules", "follow_up_days", "close_after_missing_runs", "updated_at") SELECT "id", "resume_url", "notify_email", "match_rules", "follow_up_days", "close_after_missing_runs", "updated_at" FROM `settings`;--> statement-breakpoint
+DROP TABLE `settings`;--> statement-breakpoint
+ALTER TABLE `__new_settings` RENAME TO `settings`;--> statement-breakpoint
+PRAGMA foreign_keys=ON;

@@ -13,9 +13,8 @@ import { cx } from "./ui";
  * work -- one is checked several times a day, the other is sat down with -- and flattening them
  * into a single list of nine items would blur that.
  *
- * Preparation is shown before it is built, deliberately. PRD §7 allows Phase 1 sections when
- * they are intentional placeholders rather than broken pages, and showing the shape of the
- * finished product is what makes this an OS rather than a job board.
+ * Both halves are now real: Phase 0 discovers and tracks roles, Phase 1 prepares for the
+ * interviews they lead to. Applications and Templates remain intentional placeholders (PRD §7).
  */
 
 type Item = {
@@ -31,6 +30,7 @@ export type NavCounts = {
   relevantJobs?: number;
   pendingNotifications?: number;
   unhealthySources?: number;
+  dsaRemaining?: number;
 };
 
 function groups(counts: NavCounts): Group[] {
@@ -53,9 +53,10 @@ function groups(counts: NavCounts): Group[] {
     {
       title: "Preparation",
       items: [
-        { href: "/prep/dsa", label: "DSA", soon: true },
-        { href: "/prep/system-design", label: "System Design", soon: true },
-        { href: "/prep/behavioral", label: "Behavioral", soon: true },
+        { href: "/prep", label: "Overview" },
+        { href: "/prep/dsa", label: "DSA", count: counts.dsaRemaining },
+        { href: "/prep/system-design", label: "System Design" },
+        { href: "/prep/behavioral", label: "Behavioral" },
       ],
     },
     {
@@ -131,7 +132,7 @@ export function Sidebar({ counts }: { counts: NavCounts }) {
       </nav>
 
       <div className="border-t border-line px-5 py-3 text-[11px] leading-relaxed text-ink-faint">
-        Phase 0 · Job discovery
+        Discovery live · Prep in progress
       </div>
     </aside>
   );

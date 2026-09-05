@@ -13,8 +13,12 @@ Not a SaaS product. One user. Private. Free to run.
 
 ## Current phase
 
-**Phase 0 — Job discovery and application workflow.**
-Phase 1 (DSA / system design preparation) is deliberately not built yet; the schema leaves room.
+**Phase 0 (job discovery) is deployed and running.** A crawl runs every 6 hours, ingests, and
+emails a digest of genuinely new matches.
+
+**Phase 1 (interview preparation) is built** with starter content: DSA, System Design and
+Behavioral, each with progress tracking. Importing Sarthak's Notion material is still to come —
+the schema was shaped to absorb it rather than be reshaped by it.
 
 ## The one thing to understand
 
@@ -54,7 +58,8 @@ GitHub Actions ── Python crawler ───────┘  POST /api/ingest/
 |---|---|
 | `app/src/app/` | Next.js routes; also the API under `api/` |
 | `app/src/features/` | UI organised by feature (dashboard, jobs, companies, …) |
-| `app/src/server/domain/` | Pure business logic. Relevance matching lives here. |
+| `app/src/server/domain/` | Pure business logic. Relevance matching and prep routing live here. |
+| `app/src/app/prep/[kind]/` | Preparation, one dynamic route for all disciplines |
 | `app/src/server/service/` | Orchestration: ingest, jobs, applications, notifications |
 | `app/src/server/repository/` | **The only code that touches D1** |
 | `app/src/db/` | Drizzle schema + generated migrations |
@@ -80,7 +85,11 @@ GitHub Actions ── Python crawler ───────┘  POST /api/ingest/
    *successful* runs, so a broken adapter cannot wipe the board.
 7. **No anti-bot evasion.** Sites that signal they do not want automated access become Tier 6
    (manual check) with a dashboard reminder. Do not spoof fingerprints or solve challenges.
-8. **No secrets in the repo.** GitHub Secrets and Wrangler secrets only. `.dev.vars` is gitignored.
+8. **No secrets in the repo.** GitHub Secrets and Wrangler secrets only. `.dev.vars` and `.env`
+   are gitignored.
+9. **A new prep discipline is one entry in `KINDS`**, not a new set of pages. `prep_items` uses a
+   `kind` discriminator with discipline-specific fields in a JSON `content` column, so low-level
+   design or a Golang round is data, not a migration.
 
 ## Development commands
 

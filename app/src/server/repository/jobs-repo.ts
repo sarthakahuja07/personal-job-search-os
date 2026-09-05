@@ -154,18 +154,21 @@ export async function navCounts(db: Db) {
     relevant_jobs: number;
     pending_notifications: number;
     unhealthy_sources: number;
+    dsa_remaining: number;
   }>(sql`
     SELECT
       (SELECT COUNT(*) FROM jobs WHERE is_relevant = 1 AND closed_at IS NULL) AS relevant_jobs,
       (SELECT COUNT(*) FROM notifications WHERE status = 'pending') AS pending_notifications,
       (SELECT COUNT(*) FROM companies
         WHERE active = 1 AND source_type != 'manual'
-          AND health_status IN ('failing','suspicious','degraded')) AS unhealthy_sources
+          AND health_status IN ('failing','suspicious','degraded')) AS unhealthy_sources,
+      (SELECT COUNT(*) FROM prep_items WHERE kind = 'dsa' AND status != 'done') AS dsa_remaining
   `);
   const r = rows[0];
   return {
     relevantJobs: Number(r?.relevant_jobs ?? 0),
     pendingNotifications: Number(r?.pending_notifications ?? 0),
     unhealthySources: Number(r?.unhealthy_sources ?? 0),
+    dsaRemaining: Number(r?.dsa_remaining ?? 0),
   };
 }

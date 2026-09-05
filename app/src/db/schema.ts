@@ -428,3 +428,89 @@ export type NewNotification = typeof notifications.$inferInsert;
 export type Settings = typeof settings.$inferSelect;
 export type CrawlRun = typeof crawlRuns.$inferSelect;
 export type NewCrawlRun = typeof crawlRuns.$inferInsert;
+
+// ---------------------------------------------------------------------------
+// Phase 1 — interview preparation
+// ---------------------------------------------------------------------------
+
+/**
+ * One table for all three preparation disciplines rather than three tables.
+ *
+ * DSA questions, system design problems and behavioural stories share most of what matters --
+ * a title, the companies that ask it, your notes, and whether you have actually done it. What
+ * differs is the *shape of the answer*: a DSA question wants an approach and complexity, a
+ * system design wants requirements and trade-offs, a behavioural story wants situation and
+ * outcome. That difference lives in a JSON `content` column.
+ *
+ * This is what PRD §45 asks for -- room for low-level design, Golang, databases and
+ * company-specific rounds without a rewrite. Adding a discipline is a new `kind`, not a
+ * migration. And when Sarthak's Notion export arrives (PRD §39), importing it means mapping
+ * fields into `content` rather than reshaping the schema around it.
+ */
+export const PREP_KINDS = ["dsa", "system_design", "behavioral", "concept"] as const;
+export type PrepKind = (typeof PREP_KINDS)[number];
+
+export const PREP_STATUSES = ["not_started", "in_progress", "done", "revisit"] as const;
+export type PrepStatus = (typeof PREP_STATUSES)[number];
+
+export const PREP_DIFFICULTIES = ["easy", "medium", "hard"] as const;
+export type PrepDifficulty = (typeof PREP_DIFFICULTIES)[number];
+
+/** Discipline-specific fields. Every key optional: a row only fills what its kind needs. */
+export type PrepContent = {
+  /** dsa */
+  approach?: string;
+  complexity?: string;
+  pattern?: string;
+  /** system_design */
+  requirements?: string;
+  architecture?: string;
+  tradeoffs?: string;
+  /** behavioral */
+  situation?: string;
+  action?: string;
+  outcome?: string;
+  /** shared */
+  references?: { label: string; url: string }[];
+  [key: string]: unknown;
+};
+
+export const prepItems = sqliteTable(
+  "prep_items",
+  {
+    id: text("id").primaryKey().$defaultFn(uuid),
+    kind: text("kind").$type<PrepKind>().notNull(),
+    /** URL-safe identifier, stable across edits so links do not rot. */
+    slug: text("slug").notNull(),
+    title: text("title").notNull(),
+    prompt: text("prompt"),
+
+    difficulty: text("difficulty").$type<PrepDifficulty>(),
+    /** 1-5, how often this comes up in interviews. Drives the default sort. */
+    frequency: integer("frequency").notNull().default(0),
+
+    /** JSON arrays. At a few hundred rows, filtering these in the service layer is cheaper
+     *  than the join tables a relational purist would reach for -- and D1 counts queries. */
+    topics: text("topics", { mode: "json" }).$type<string[]>().notNull().default([]),
+    companies: text("companies", { mode: "json" }).$type<string[]>().notNull().default([]),
+
+    status: text("status").$type<PrepStatus>().notNull().default("not_started"),
+    notes: text("notes"),
+    solution: text("solution"),
+    content: text("content", { mode: "json" }).$type<PrepContent>().notNull().default({}),
+    sourceUrl: text("source_url"),
+
+    lastPracticedAt: integer("last_practiced_at", { mode: "timestamp_ms" }),
+    createdAt: createdAt(),
+    updatedAt: updatedAt(),
+  },
+  (t) => [
+    uniqueIndex("prep_kind_slug_unique").on(t.kind, t.slug),
+    index("prep_kind_idx").on(t.kind),
+    index("prep_status_idx").on(t.status),
+    index("prep_frequency_idx").on(t.frequency),
+  ],
+);
+
+export type PrepItem = typeof prepItems.$inferSelect;
+export type NewPrepItem = typeof prepItems.$inferInsert;
