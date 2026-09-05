@@ -14,11 +14,12 @@ Phase 0 is **deployed and running in production**: <https://job-search-os.sartha
 104 jobs from 14 companies, 16 relevant SDE-2 matches, and a digest email delivered to Sarthak's
 inbox. Re-running the crawl creates nothing and re-running the notifier sends nothing.
 
-Cloudflare Access is **enabled and verified** — every page 302-redirects to the Access login — so
-the 34 referral contacts are now loaded.
+**Fully autonomous.** The GitHub Actions workflow runs end to end every 6 hours: it reaches the
+app through an Access service token, crawls 14 companies, ingests, and sends a digest.
 
-**Outstanding: the Access service token.** Access protects `/api/*` as well, so the scheduled
-crawl cannot reach the app until `CF_ACCESS_CLIENT_ID` / `CF_ACCESS_CLIENT_SECRET` exist.
+Cloudflare Access is verified in both directions — browser pages 302 to the login, the crawler's
+service token gets 200 on `/api/*`, and a bare bearer token gets nothing. The 34 referral contacts
+are loaded and reachable only from behind Access.
 
 | Milestone | State |
 |---|---|
@@ -38,10 +39,9 @@ crawl cannot reach the app until `CF_ACCESS_CLIENT_ID` / `CF_ACCESS_CLIENT_SECRE
 
 ## Next up, in order
 
-1. **Access service token** — blocked on Sarthak. Without it the 6-hourly crawl gets a 302 from
-   Access and does nothing.
-2. **M3 conformance suite** — the parametrized every-adapter suite plus recorded cassettes.
-3. **`contracts.yml`** — the daily live-schema canary. Not yet written.
+1. **M3 conformance suite** — the parametrized every-adapter suite plus recorded cassettes. The
+   largest remaining correctness gap: only Workday has regression tests.
+2. **`contracts.yml`** — the daily live-schema canary. Not yet written.
 4. **M7 Templates** — referral messages with `{{variables}}`.
 5. **M8 Applications Kanban** — the five stages.
 6. **M5 Job detail page** — description, contacts inline, quick actions.
@@ -52,9 +52,10 @@ crawl cannot reach the app until `CF_ACCESS_CLIENT_ID` / `CF_ACCESS_CLIENT_SECRE
 
 ## Blocked on Sarthak
 
-| Item | Why it matters |
+Nothing. Deployment, credentials and access control are all complete.
+
+| Previously blocking | Resolved |
 |---|---|
-| **Access service token** | **Blocking the scheduled crawl.** Zero Trust → Access → Service Auth → create token, send both values. |
 
 ---
 
@@ -129,6 +130,9 @@ Deliberately conservative (`crawler/http/client.py`):
 - The notification digest renders real matches with their explanations and was delivered to the
   real inbox from production.
 - Re-running the notifier in production sends nothing; re-crawling creates nothing.
+- The scheduled GitHub Actions workflow completed green end to end: reached the app through Access,
+  crawled 14 companies with 0 failures, correctly created 0 new jobs and sent 0 emails on a repeat
+  run. All 14 automated sources report `healthy`.
 
 ---
 
