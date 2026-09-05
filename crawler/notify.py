@@ -69,6 +69,38 @@ def confirm(sent_ids: list[str], failed_ids: list[str], error: str | None) -> No
     r.raise_for_status()
 
 
+#: Gmail shows roughly this much of a subject on mobile; past it the company names -- the part
+#: worth scanning for -- get cut off.
+SUBJECT_BUDGET = 90
+
+
+def _subject(count: int, company_names: list[str]) -> str:
+    """`[APPLY] - Adobe, NVIDIA, Sarvam AI · 8 new SDE-2 roles`
+
+    Company names lead because that is what makes the email worth opening: "Adobe is hiring" is
+    a decision, "8 new matches" is a statistic. They are ordered by best match, so the most
+    interesting name survives truncation.
+    """
+    tail = f" · {count} new SDE-2 role{'s' if count != 1 else ''}"
+    prefix = "[APPLY] - "
+    room = SUBJECT_BUDGET - len(prefix) - len(tail)
+
+    shown: list[str] = []
+    for name in company_names:
+        candidate = ", ".join([*shown, name])
+        remaining = len(company_names) - len(shown) - 1
+        suffix = f" +{remaining} more" if remaining > 0 else ""
+        if shown and len(candidate) + len(suffix) > room:
+            break
+        shown.append(name)
+
+    listed = ", ".join(shown)
+    hidden = len(company_names) - len(shown)
+    if hidden > 0:
+        listed += f" +{hidden} more"
+    return f"{prefix}{listed}{tail}"
+
+
 def build_digest(notifications: list[dict[str, Any]]) -> tuple[str, str, str]:
     """Return (subject, plain_text, html) for the pending notifications."""
     jobs = [n["job"] for n in notifications if n.get("job")]
@@ -87,10 +119,7 @@ def build_digest(notifications: list[dict[str, Any]]) -> tuple[str, str, str]:
     )
 
     count = len(jobs)
-    subject = (
-        f"{count} new SDE-2 match{'es' if count != 1 else ''} "
-        f"across {len(companies)} compan{'ies' if len(companies) != 1 else 'y'}"
-    )
+    subject = _subject(count, [name for name, _ in companies])
 
     lines = [f"{count} new matching role{'s' if count != 1 else ''}.", ""]
     for company, items in companies:
