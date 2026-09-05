@@ -1,0 +1,15 @@
+# runtime
+httpx[http2]==0.28.1
+beautifulsoup4==4.13.4
+lxml==5.3.0
+pydantic==2.11.7
+python-dateutil==2.9.0.post0
+structlog==25.4.0
+
+# dev / test
+pytest==8.4.1
+pytest-asyncio==1.1.0
+pytest-recording==0.13.4
+vcrpy==7.0.0
+respx==0.22.0
+ruff==0.12.7

@@ -1,0 +1,5 @@
+# Local development secrets. Copy to .dev.vars and fill in.
+# .dev.vars is gitignored. NEVER commit real values.
+
+# Shared secret the crawler presents to POST /api/ingest/jobs
+INGEST_TOKEN="local-dev-token"
