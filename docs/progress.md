@@ -9,8 +9,14 @@ lost between sessions (PRD §73). Picking this up cold: read `CLAUDE.md` first, 
 
 ## Where things stand
 
-Phase 0 **works end to end locally**: the crawler discovers real jobs from 14 companies, ingest
-deduplicates and scores them, and the job board displays them. Nothing is deployed yet.
+Phase 0 is **deployed and running in production**: <https://job-search-os.sarthak-ahuja0007.workers.dev>
+
+104 jobs from 14 companies, 16 relevant SDE-2 matches, and a digest email delivered to Sarthak's
+inbox. Re-running the crawl creates nothing and re-running the notifier sends nothing.
+
+**One thing is outstanding and it is the important one: Cloudflare Access is not enabled**, so the
+app is publicly readable. Referral contacts have therefore *deliberately not* been loaded into the
+production database — it holds companies and public job listings only.
 
 | Milestone | State |
 |---|---|
@@ -20,7 +26,7 @@ deduplicates and scores them, and the job board displays them. Nothing is deploy
 | M3 Crawler core + 5 adapters | done — conformance suite still missing |
 | M4 Scheduling, health, drift | done — crawl.yml (6-hourly), ci.yml, deploy.yml |
 | M5 Job board | partial — board, dashboard, company health, settings, notifications; no job detail page |
-| M6 Notifications | done — SMTP digest drainer + history page; needs an app password to actually send |
+| M6 Notifications | done — digest delivered to the real inbox in production |
 | M7 Templates | not started |
 | M8 Applications Kanban | not started |
 | M9 Dashboard | partial — first version done |
@@ -30,8 +36,8 @@ deduplicates and scores them, and the job board displays them. Nothing is deploy
 
 ## Next up, in order
 
-1. **Deploy** — `wrangler login`, create D1, set secrets, enable Cloudflare Access. Blocked on
-   Sarthak; everything else is ready and running locally.
+1. **Cloudflare Access** — blocked on Sarthak, and blocking the contact data. Until it is on, the
+   production database stays contacts-free.
 2. **M3 conformance suite** — the parametrized every-adapter suite plus recorded cassettes.
 3. **`contracts.yml`** — the daily live-schema canary. Not yet written.
 4. **M7 Templates** — referral messages with `{{variables}}`.
@@ -46,9 +52,7 @@ deduplicates and scores them, and the job board displays them. Nothing is deploy
 
 | Item | Why it matters |
 |---|---|
-| `npx wrangler login` | Create D1 and deploy. Nothing is live without it. |
-| `gh auth login` + repo name | Required for Actions scheduling. Proposed: `personal-job-search-os`. |
-| Gmail app password + notify address | Notifications cannot send. Needs 2FA on the account. |
+| **Cloudflare Access + service token** | **Blocking.** The app is publicly readable until this is on, which is why contacts are not loaded. |
 | Canonical resume link | Used by message templates. |
 | **VinFast careers URL** | The URL supplied is a San Francisco *dealership* on ApplicantOne, not the engineering org. |
 | **Moveworks / Qualcomm Workday URL** | Both tenants confirmed (`moveworks.wd12`, `qualcomm.wd12`); only the site slug is missing. Either flips to config-only instantly. |
@@ -124,8 +128,9 @@ Deliberately conservative (`crawler/http/client.py`):
 - 112 TypeScript tests, 6 Python tests, `tsc --noEmit` clean, `ruff check crawler` clean.
 - A full crawl of 14 companies completes in about two minutes with zero failures: 104 jobs
   ingested, 16 relevant, 16 notifications queued.
-- The notification digest renders real matches with their explanations and resolves the recipient
-  from settings.
+- The notification digest renders real matches with their explanations and was delivered to the
+  real inbox from production.
+- Re-running the notifier in production sends nothing; re-crawling creates nothing.
 
 ---
 

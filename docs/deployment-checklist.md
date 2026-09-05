@@ -1,5 +1,13 @@
 # Deployment checklist
 
+> **Status as of 2026-09-05.** Steps 1, 3, 4 and 5 are **done**. The app is deployed at
+> <https://job-search-os.sarthak-ahuja0007.workers.dev> and the repository is
+> <https://github.com/sarthakahuja07/personal-job-search-os>.
+>
+> **Step 2 (Cloudflare Access) is outstanding, and it is the one that matters.** Until it is done
+> the app is publicly readable, so referral contacts have deliberately **not** been loaded into the
+> production database — it currently holds companies and public job listings only.
+
 Everything needed to take this from "runs on Sarthak's laptop" to "runs itself every six hours".
 
 Work top to bottom. Each step says who does it and why it is needed. Nothing here costs money.
@@ -8,13 +16,14 @@ Work top to bottom. Each step says who does it and why it is needed. Nothing her
 
 ## What you need to have ready
 
-| # | Thing | Where to get it | Used for |
-|---|---|---|---|
-| 1 | **Cloudflare account** | free signup at dash.cloudflare.com | Hosting the app + D1 database |
-| 2 | **GitHub account** | you have one | Repository + the 6-hourly crawl |
-| 3 | **Gmail app password** | Google Account → Security → 2-Step Verification → App passwords | Sending the digest |
-| 4 | **Notification email address** | any inbox you read | Where the digest lands |
-| 5 | **Canonical resume link** | Drive/Dropbox share link | Message templates |
+| # | Thing | Where to get it | Used for | Done |
+|---|---|---|---|---|
+| 1 | **Cloudflare account** | free signup at dash.cloudflare.com | Hosting the app + D1 database | ✅ |
+| 2 | **GitHub account** | — | Repository + the 6-hourly crawl | ✅ |
+| 3 | **Gmail app password** | Google Account → Security → 2-Step Verification → App passwords | Sending the digest | ✅ |
+| 4 | **Notification email address** | any inbox you read | Where the digest lands | ✅ |
+| 5 | **Canonical resume link** | Drive/Dropbox share link | Message templates | ⬜ still needed |
+| 6 | **Cloudflare Access + service token** | Zero Trust dashboard | Keeping the app private | ⬜ **blocking** |
 
 Only **3** has a prerequisite: the Google account must have 2-Step Verification on, or the App
 passwords option does not appear.
