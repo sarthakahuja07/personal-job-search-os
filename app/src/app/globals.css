@@ -1,26 +1,97 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+/*
+ * Design tokens.
+ *
+ * Dark, but deliberately not black. The canvas sits around #14161b -- a soft slate rather than
+ * pure #000 -- because this is a tool Sarthak reads for long stretches, and true black with
+ * bright text produces halation that gets tiring fast. Surfaces step up in small increments so
+ * depth reads as layering rather than as heavy outlines.
+ *
+ * Semantic names, not colour names: `surface` and `border-strong` survive a palette change,
+ * `slate-800` does not.
+ */
+@theme {
+  /* Canvas and surfaces, lightest step last */
+  --color-canvas: #14161b;
+  --color-surface: #1a1d24;
+  --color-surface-2: #21252e;
+  --color-surface-3: #282d38;
+
+  /* Lines */
+  --color-line: #272c36;
+  --color-line-strong: #363d4b;
+
+  /* Text, from primary to faint */
+  --color-ink: #e7eaf0;
+  --color-ink-dim: #99a1b0;
+  --color-ink-faint: #6b7383;
+
+  /* Accent: a calm periwinkle. Used for focus, links and the current nav item -- never for
+     decoration, so that when something is accented it means "act here". */
+  --color-accent: #7c9cff;
+  --color-accent-soft: #1e2740;
+  --color-accent-ink: #a9bdff;
+
+  /* Status. Muted deliberately: on a job board a dozen "NEW" badges at full saturation stop
+     meaning anything. */
+  --color-fresh: #4fd39c;
+  --color-fresh-soft: #14312a;
+  --color-warn: #e0b061;
+  --color-warn-soft: #33291a;
+  --color-danger: #f0808f;
+  --color-danger-soft: #38202a;
+
+  --font-sans: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, sans-serif;
+  --font-mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+
+  --radius-card: 0.625rem;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  color-scheme: dark;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--color-canvas);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* Numbers in tables and stat tiles should not jitter as they change. */
+.tnum {
+  font-variant-numeric: tabular-nums;
+}
+
+::selection {
+  background: var(--color-accent-soft);
+  color: var(--color-accent-ink);
+}
+
+/* Visible focus for keyboard users; suppressed for pointer clicks. */
+:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* A restrained scrollbar. The default light one is jarring against a dark canvas. */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-line-strong) transparent;
+}
+*::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+*::-webkit-scrollbar-thumb {
+  background: var(--color-line-strong);
+  border-radius: 6px;
+  border: 3px solid var(--color-canvas);
+}
+*::-webkit-scrollbar-track {
+  background: transparent;
 }

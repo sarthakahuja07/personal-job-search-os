@@ -1,6 +1,7 @@
 import Link from "next/link";
 
 import { JobCard, type JobRow } from "@/components/job-card";
+import { Button, EmptyState, PageHeader, cx, inputStyles } from "@/components/ui";
 import { getDb } from "@/db";
 import { listJobs } from "@/server/repository/jobs-repo";
 
@@ -28,12 +29,13 @@ export default async function JobsPage({
 }) {
   const params = await searchParams;
   const relevantOnly = params.all !== "1";
+  const newOnly = params.new === "1";
 
   const jobs = (await listJobs(getDb(), {
     companyId: params.company,
     query: params.q,
     relevantOnly,
-    newOnly: params.new === "1",
+    newOnly,
     sort: (params.sort as "best") ?? "best",
     limit: 100,
   })) as unknown as JobRow[];
@@ -42,76 +44,101 @@ export default async function JobsPage({
     const next = new URLSearchParams(
       Object.entries({ ...params, ...patch }).filter(([, v]) => v) as [string, string][],
     );
-    return `/jobs?${next.toString()}`;
+    const s = next.toString();
+    return s ? `/jobs?${s}` : "/jobs";
   };
+
+  const companyName = params.company ? jobs[0]?.companyName : undefined;
+  const filtered = Boolean(params.company || params.q || newOnly || !relevantOnly);
+
+  const chip = (active: boolean) =>
+    cx(
+      "rounded-md border px-2.5 py-1 text-[13px] transition",
+      active
+        ? "border-accent bg-accent-soft text-accent-ink"
+        : "border-line bg-surface-2 text-ink-dim hover:border-line-strong hover:text-ink",
+    );
 
   return (
     <div>
-      <div className="flex flex-wrap items-baseline justify-between gap-3">
-        <h1 className="text-xl font-semibold tracking-tight">Jobs</h1>
-        <p className="text-sm text-neutral-500">
-          {jobs.length} {relevantOnly ? "relevant" : "total"} open role
-          {jobs.length === 1 ? "" : "s"}
-        </p>
+      <PageHeader
+        title="Jobs"
+        subtitle={
+          <>
+            <span className="tnum text-ink">{jobs.length}</span>{" "}
+            {relevantOnly ? "matching" : "total"} open role{jobs.length === 1 ? "" : "s"}
+            {companyName && <> at {companyName}</>}
+          </>
+        }
+      />
+
+      <div className="mb-4 flex flex-wrap items-center gap-2">
+        <form method="get" className="flex flex-1 flex-wrap items-center gap-2">
+          {params.company && (
+            <input type="hidden" name="company" value={params.company} />
+          )}
+          {newOnly && <input type="hidden" name="new" value="1" />}
+          {!relevantOnly && <input type="hidden" name="all" value="1" />}
+          <input
+            name="q"
+            defaultValue={params.q ?? ""}
+            placeholder="Search title or location…"
+            className={cx(inputStyles, "max-w-xs flex-1")}
+          />
+          <select
+            name="sort"
+            defaultValue={params.sort ?? "best"}
+            className="rounded-md border border-line bg-surface-2 px-2.5 py-1.5 text-[13px] text-ink-dim outline-none focus:border-accent"
+          >
+            {SORTS.map((s) => (
+              <option key={s.key} value={s.key} className="bg-surface-2">
+                {s.label}
+              </option>
+            ))}
+          </select>
+          <Button type="submit" variant="primary">
+            Search
+          </Button>
+        </form>
       </div>
 
-      <form method="get" className="mt-4 flex flex-wrap gap-2">
-        <input
-          name="q"
-          defaultValue={params.q ?? ""}
-          placeholder="Search title or location"
-          className="w-64 rounded border border-neutral-300 bg-white px-3 py-1.5 text-sm outline-none focus:border-neutral-500"
-        />
-        <select
-          name="sort"
-          defaultValue={params.sort ?? "best"}
-          className="rounded border border-neutral-300 bg-white px-2 py-1.5 text-sm"
-        >
-          {SORTS.map((s) => (
-            <option key={s.key} value={s.key}>
-              {s.label}
-            </option>
-          ))}
-        </select>
-        <button
-          type="submit"
-          className="rounded bg-neutral-900 px-3 py-1.5 text-sm font-medium text-white hover:bg-neutral-700"
-        >
-          Apply
-        </button>
-      </form>
-
-      <div className="mt-3 flex flex-wrap gap-2 text-sm">
-        <Link
-          href={qs({ new: params.new === "1" ? undefined : "1" })}
-          className={`rounded border px-2.5 py-1 ${params.new === "1" ? "border-neutral-900 bg-neutral-900 text-white" : "border-neutral-300 bg-white text-neutral-700"}`}
-        >
+      <div className="mb-5 flex flex-wrap items-center gap-2">
+        <Link href={qs({ new: newOnly ? undefined : "1" })} className={chip(newOnly)}>
           New only
         </Link>
-        <Link
-          href={qs({ all: relevantOnly ? "1" : undefined })}
-          className={`rounded border px-2.5 py-1 ${!relevantOnly ? "border-neutral-900 bg-neutral-900 text-white" : "border-neutral-300 bg-white text-neutral-700"}`}
-        >
+        <Link href={qs({ all: relevantOnly ? "1" : undefined })} className={chip(!relevantOnly)}>
           Include non-matching
         </Link>
-        {(params.company || params.q) && (
-          <Link href="/jobs" className="rounded border border-neutral-300 bg-white px-2.5 py-1 text-neutral-700">
-            Clear filters
+        {filtered && (
+          <Link
+            href="/jobs"
+            className="px-1 text-[13px] text-ink-faint transition hover:text-ink-dim"
+          >
+            Clear
           </Link>
         )}
       </div>
 
       {jobs.length === 0 ? (
-        <div className="mt-8 rounded-lg border border-dashed border-neutral-300 bg-white p-8 text-center">
-          <p className="font-medium text-neutral-700">No matching jobs yet.</p>
-          <p className="mt-1 text-sm text-neutral-500">
-            {relevantOnly
-              ? "Try including non-matching roles, or run a crawl: python -m crawler.main"
-              : "Add target companies, or run a crawl: python -m crawler.main"}
-          </p>
-        </div>
+        <EmptyState
+          title="Nothing here yet"
+          body={
+            relevantOnly
+              ? "No roles match your rules right now. Try including non-matching roles to see everything that was crawled."
+              : "No jobs have been discovered yet. The crawler runs every six hours."
+          }
+          hint={
+            relevantOnly ? (
+              <Link href={qs({ all: "1" })} className="text-accent-ink hover:underline">
+                Show all crawled roles →
+              </Link>
+            ) : (
+              <code className="text-ink-dim">python -m crawler.main</code>
+            )
+          }
+        />
       ) : (
-        <ul className="mt-4 space-y-2">
+        <ul className="space-y-2">
           {jobs.map((job) => (
             <JobCard key={job.id} job={job} />
           ))}

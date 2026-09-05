@@ -1,13 +1,14 @@
+import { Badge, Card, EmptyState, PageHeader, cx } from "@/components/ui";
 import { getDb } from "@/db";
 import { listRecent } from "@/server/repository/notifications-repo";
 
 export const dynamic = "force-dynamic";
 
-const STATUS_STYLE: Record<string, string> = {
-  sent: "bg-emerald-100 text-emerald-800",
-  pending: "bg-amber-100 text-amber-800",
-  failed: "bg-red-100 text-red-800",
-};
+const STATUS_TONE = {
+  sent: "fresh",
+  pending: "warn",
+  failed: "danger",
+} as const;
 
 function when(date: Date | null): string {
   if (!date) return "—";
@@ -22,78 +23,88 @@ function when(date: Date | null): string {
 export default async function NotificationsPage() {
   const rows = await listRecent(getDb(), 100);
   const pending = rows.filter((r) => r.status === "pending").length;
+  const sent = rows.filter((r) => r.status === "sent").length;
 
   return (
     <div>
-      <h1 className="text-xl font-semibold tracking-tight">Notifications</h1>
-      <p className="mt-1 text-sm text-neutral-500">
-        Every notification ever queued. {pending} pending delivery.
-      </p>
-      <p className="mt-1 text-xs text-neutral-400">
-        Queued at ingest, sent by the scheduled job. The unique dedup key makes a duplicate
-        impossible at the database level, so a job can only ever be announced once.
-      </p>
+      <PageHeader
+        title="Notifications"
+        subtitle={
+          <>
+            <span className="tnum text-ink">{sent}</span> sent ·{" "}
+            <span className="tnum text-ink">{pending}</span> pending delivery
+          </>
+        }
+      />
+
+      <Card className="mb-5 px-4 py-3">
+        <p className="text-xs leading-relaxed text-ink-dim">
+          Queued when a crawl finds a new matching role, then sent as one digest by the
+          scheduled job. A unique key per job makes a duplicate impossible at the database
+          level, so a role can only ever be announced once — however many times the crawl runs.
+        </p>
+      </Card>
 
       {rows.length === 0 ? (
-        <div className="mt-6 rounded-lg border border-dashed border-neutral-300 bg-white p-8 text-center">
-          <p className="font-medium text-neutral-700">Nothing queued yet.</p>
-          <p className="mt-1 text-sm text-neutral-500">
-            Notifications appear when a crawl finds a new relevant role.
-          </p>
-        </div>
+        <EmptyState
+          title="Nothing queued yet"
+          body="Notifications appear here when a crawl discovers a new matching role."
+        />
       ) : (
-        <div className="mt-5 overflow-x-auto rounded-lg border border-neutral-200 bg-white">
+        <Card className="overflow-hidden">
           <table className="w-full text-sm">
-            <thead className="border-b border-neutral-200 text-left text-xs uppercase tracking-wide text-neutral-500">
-              <tr>
-                <th className="px-4 py-2 font-medium">Job</th>
-                <th className="px-4 py-2 font-medium">Status</th>
-                <th className="px-4 py-2 font-medium">Queued</th>
-                <th className="px-4 py-2 font-medium">Sent</th>
+            <thead>
+              <tr className="border-b border-line text-left text-[11px] uppercase tracking-wide text-ink-faint">
+                <th className="px-4 py-2.5 font-medium">Role</th>
+                <th className="px-4 py-2.5 font-medium">Status</th>
+                <th className="px-4 py-2.5 font-medium">Queued</th>
+                <th className="px-4 py-2.5 font-medium">Sent</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-neutral-100">
-              {rows.map((r) => (
-                <tr key={r.id}>
-                  <td className="px-4 py-2">
+            <tbody>
+              {rows.map((r, i) => (
+                <tr
+                  key={r.id}
+                  className={cx(
+                    "transition hover:bg-surface-2",
+                    i > 0 && "border-t border-line/60",
+                  )}
+                >
+                  <td className="px-4 py-2.5">
                     {r.jobUrl ? (
                       <a
                         href={r.jobUrl}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="font-medium hover:underline"
+                        className="font-medium text-ink transition hover:text-accent-ink"
                       >
                         {r.title}
                       </a>
                     ) : (
-                      <span className="text-neutral-500">{r.dedupKey}</span>
+                      <span className="text-ink-faint">{r.dedupKey}</span>
                     )}
-                    <div className="text-xs text-neutral-500">{r.companyName}</div>
-                    {r.error && <div className="mt-0.5 text-xs text-red-600">{r.error}</div>}
+                    <div className="text-xs text-ink-faint">{r.companyName}</div>
+                    {r.error && <div className="mt-0.5 text-xs text-danger">{r.error}</div>}
                   </td>
-                  <td className="px-4 py-2">
-                    <span
-                      className={`rounded px-1.5 py-0.5 text-[11px] font-medium ${STATUS_STYLE[r.status] ?? ""}`}
-                    >
-                      {r.status}
-                    </span>
+                  <td className="px-4 py-2.5">
+                    <Badge tone={STATUS_TONE[r.status] ?? "neutral"}>{r.status}</Badge>
                     {r.attempts > 1 && (
-                      <span className="ml-1 text-[11px] text-neutral-400">
-                        {r.attempts} tries
+                      <span className="tnum ml-1.5 text-[11px] text-ink-faint">
+                        {r.attempts}×
                       </span>
                     )}
                   </td>
-                  <td className="whitespace-nowrap px-4 py-2 text-neutral-500">
+                  <td className="tnum whitespace-nowrap px-4 py-2.5 text-ink-faint">
                     {when(r.createdAt)}
                   </td>
-                  <td className="whitespace-nowrap px-4 py-2 text-neutral-500">
+                  <td className="tnum whitespace-nowrap px-4 py-2.5 text-ink-faint">
                     {when(r.sentAt)}
                   </td>
                 </tr>
               ))}
             </tbody>
           </table>
-        </div>
+        </Card>
       )}
     </div>
   );

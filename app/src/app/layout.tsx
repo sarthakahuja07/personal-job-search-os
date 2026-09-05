@@ -1,5 +1,8 @@
 import type { Metadata } from "next";
-import Link from "next/link";
+
+import { MobileNav, Sidebar } from "@/components/sidebar";
+import { getDb } from "@/db";
+import { navCounts } from "@/server/repository/jobs-repo";
 
 import "./globals.css";
 
@@ -8,39 +11,31 @@ export const metadata: Metadata = {
   description: "Personal job search and interview preparation",
 };
 
-const NAV = [
-  { href: "/", label: "Dashboard" },
-  { href: "/jobs", label: "Jobs" },
-  { href: "/companies", label: "Companies" },
-  { href: "/notifications", label: "Notifications" },
-  { href: "/settings", label: "Settings" },
-];
-
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
+  // Nav badges are live, so a broken crawler is visible from any page rather than only from
+  // the dashboard. If the query fails the shell must still render -- navigation is how you
+  // reach the page that would tell you what went wrong.
+  let counts = { relevantJobs: 0, pendingNotifications: 0, unhealthySources: 0 };
+  try {
+    counts = await navCounts(getDb());
+  } catch {
+    // fall through with zeroes
+  }
+
   return (
     <html lang="en">
-      <body className="min-h-screen bg-neutral-50 text-neutral-900 antialiased">
-        <header className="border-b border-neutral-200 bg-white">
-          <div className="mx-auto flex max-w-6xl items-center gap-6 px-6 py-3">
-            <Link href="/" className="text-sm font-semibold tracking-tight">
-              Job Search OS
-            </Link>
-            <nav className="flex gap-1 text-sm">
-              {NAV.map((item) => (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  className="rounded px-3 py-1.5 text-neutral-600 transition hover:bg-neutral-100 hover:text-neutral-900"
-                >
-                  {item.label}
-                </Link>
-              ))}
-            </nav>
+      <body className="min-h-dvh bg-canvas text-ink">
+        <div className="flex min-h-dvh">
+          <Sidebar counts={counts} />
+          <div className="flex min-w-0 flex-1 flex-col">
+            <MobileNav counts={counts} />
+            <main className="mx-auto w-full max-w-[1100px] px-5 py-8 md:px-8">
+              {children}
+            </main>
           </div>
-        </header>
-        <main className="mx-auto max-w-6xl px-6 py-8">{children}</main>
+        </div>
       </body>
     </html>
   );

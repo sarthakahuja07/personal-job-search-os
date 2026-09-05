@@ -1,22 +1,23 @@
 import Link from "next/link";
 
+import { Badge, Card, PageHeader, SectionTitle, cx } from "@/components/ui";
 import { getDb } from "@/db";
 import { listCompanyHealth } from "@/server/repository/jobs-repo";
 
 export const dynamic = "force-dynamic";
 
-const HEALTH_STYLE: Record<string, string> = {
-  healthy: "bg-emerald-100 text-emerald-800",
-  degraded: "bg-amber-100 text-amber-800",
-  suspicious: "bg-amber-100 text-amber-900",
-  failing: "bg-red-100 text-red-800",
-  unknown: "bg-neutral-100 text-neutral-600",
-};
+const HEALTH_TONE = {
+  healthy: "fresh",
+  degraded: "warn",
+  suspicious: "warn",
+  failing: "danger",
+  unknown: "neutral",
+} as const;
 
 const TIER_LABEL: Record<number, string> = {
   1: "ATS feed",
   2: "Workday",
-  3: "Custom adapter",
+  3: "Custom",
   4: "JSON-LD",
   5: "HTML",
   6: "Manual",
@@ -34,68 +35,103 @@ function ago(date: Date | null): string {
 
 export default async function CompaniesPage() {
   const companies = await listCompanyHealth(getDb());
-  const active = companies.filter((c) => c.active);
+  const automated = companies.filter((c) => c.active && c.sourceType !== "manual");
+  const manual = companies.filter((c) => c.active && c.sourceType === "manual");
   const inactive = companies.filter((c) => !c.active);
 
   return (
     <div>
-      <h1 className="text-xl font-semibold tracking-tight">Companies</h1>
-      <p className="mt-1 text-sm text-neutral-500">
-        {active.length} active &middot; {active.filter((c) => c.sourceType !== "manual").length}{" "}
-        crawled automatically
-      </p>
+      <PageHeader
+        title="Companies"
+        subtitle={
+          <>
+            <span className="tnum text-ink">{automated.length}</span> crawled automatically ·{" "}
+            <span className="tnum text-ink">{manual.length}</span> checked by hand
+          </>
+        }
+      />
 
-      <div className="mt-5 overflow-x-auto rounded-lg border border-neutral-200 bg-white">
+      <SectionTitle>Automated sources</SectionTitle>
+      <Card className="mb-8 overflow-hidden">
         <table className="w-full text-sm">
-          <thead className="border-b border-neutral-200 text-left text-xs uppercase tracking-wide text-neutral-500">
-            <tr>
-              <th className="px-4 py-2 font-medium">Company</th>
-              <th className="px-4 py-2 font-medium">Source</th>
-              <th className="px-4 py-2 font-medium">Health</th>
-              <th className="px-4 py-2 font-medium">Last success</th>
-              <th className="px-4 py-2 font-medium">Jobs</th>
+          <thead>
+            <tr className="border-b border-line text-left text-[11px] uppercase tracking-wide text-ink-faint">
+              <th className="px-4 py-2.5 font-medium">Company</th>
+              <th className="px-4 py-2.5 font-medium">Source</th>
+              <th className="px-4 py-2.5 font-medium">Health</th>
+              <th className="px-4 py-2.5 font-medium">Last success</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-neutral-100">
-            {active.map((c) => (
-              <tr key={c.id} className="align-top">
-                <td className="px-4 py-2">
-                  <Link href={`/jobs?company=${c.id}`} className="font-medium hover:underline">
+          <tbody>
+            {automated.map((c, i) => (
+              <tr
+                key={c.id}
+                className={cx(
+                  "transition hover:bg-surface-2",
+                  i > 0 && "border-t border-line/60",
+                )}
+              >
+                <td className="px-4 py-2.5">
+                  <Link
+                    href={`/jobs?company=${c.id}`}
+                    className="font-medium text-ink transition hover:text-accent-ink"
+                  >
                     {c.name}
                   </Link>
                   {c.lastError && (
-                    <p className="mt-0.5 max-w-md text-xs text-neutral-500">{c.lastError}</p>
+                    <p className="mt-0.5 max-w-md text-xs text-ink-dim">{c.lastError}</p>
                   )}
                 </td>
-                <td className="whitespace-nowrap px-4 py-2 text-neutral-600">
+                <td className="whitespace-nowrap px-4 py-2.5 text-ink-dim">
                   {TIER_LABEL[c.sourceTier] ?? c.sourceType}
                 </td>
-                <td className="px-4 py-2">
-                  <span
-                    className={`rounded px-1.5 py-0.5 text-[11px] font-medium ${HEALTH_STYLE[c.healthStatus]}`}
-                  >
-                    {c.healthStatus}
-                  </span>
+                <td className="px-4 py-2.5">
+                  <Badge tone={HEALTH_TONE[c.healthStatus]}>{c.healthStatus}</Badge>
                 </td>
-                <td className="whitespace-nowrap px-4 py-2 text-neutral-500">
+                <td className="tnum whitespace-nowrap px-4 py-2.5 text-ink-faint">
                   {ago(c.lastSuccessAt)}
-                </td>
-                <td className="px-4 py-2">
-                  <Link
-                    href={`/jobs?company=${c.id}&all=1`}
-                    className="text-neutral-500 hover:underline"
-                  >
-                    view
-                  </Link>
                 </td>
               </tr>
             ))}
           </tbody>
         </table>
-      </div>
+      </Card>
+
+      <SectionTitle>Checked by hand</SectionTitle>
+      <Card className="mb-6 px-4 py-4">
+        <p className="mb-3 text-xs leading-relaxed text-ink-dim">
+          These render their listings in the browser, or decline automated access. Rather than
+          work around that, the link opens the board directly — a reliable manual check beats an
+          automated one that silently rots.
+        </p>
+        <ul className="flex flex-wrap gap-1.5">
+          {manual.map((c) =>
+            c.careersUrl ? (
+              <li key={c.id}>
+                <a
+                  href={c.careersUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1 rounded-md border border-line bg-surface-2 px-2.5 py-1 text-[13px] text-ink-dim transition hover:border-line-strong hover:text-ink"
+                >
+                  {c.name}
+                  <span className="text-ink-faint">↗</span>
+                </a>
+              </li>
+            ) : (
+              <li
+                key={c.id}
+                className="rounded-md border border-line px-2.5 py-1 text-[13px] text-ink-faint"
+              >
+                {c.name}
+              </li>
+            ),
+          )}
+        </ul>
+      </Card>
 
       {inactive.length > 0 && (
-        <p className="mt-3 text-xs text-neutral-400">
+        <p className="text-[11px] text-ink-faint">
           Inactive: {inactive.map((c) => c.name).join(", ")}
         </p>
       )}
