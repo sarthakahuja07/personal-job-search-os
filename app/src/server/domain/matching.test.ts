@@ -251,3 +251,34 @@ describe("matchJob", () => {
     expect(matchJob({ title: "SDE 2", location: null }, strict).isRelevant).toBe(false);
   });
 });
+
+// Sarthak's background is Go/Python backend and distributed systems. Security and networking
+// roles match the level patterns cleanly -- these are all real titles that scored as SDE-2 --
+// but they are a different discipline and he does not want them surfaced.
+describe("matchTitle — security and networking are excluded", () => {
+  it.each([
+    "Cloud Network Engineer II",
+    "Product Security Engineer II",
+    "SIEM & SecOps Engineer II",
+    "Software Engineer, Routing",
+    "Security Software Engineer, Vulnerability Operations",
+    "Infiniband Network Engineer",
+    "Software Engineer II, Threat Detection",
+    "Cryptography Engineer II",
+    "Wireless Software Engineer 2",
+  ])("rejects %s", (title) => {
+    expect(matchTitle(title).passed).toBe(false);
+  });
+
+  it.each([
+    "Software Engineer II",
+    "Backend Engineer",
+    "SDE 2",
+    "Member of Technical Staff - II",
+    "Software Engineer 2",
+    "Platform Engineer",
+    "Distributed Systems Engineer II",
+  ])("still accepts core backend title %s", (title) => {
+    expect(matchTitle(title).passed).toBe(true);
+  });
+});

@@ -118,6 +118,15 @@ export const DEFAULT_MATCH_RULES: MatchRules = {
       "\\bproduct\\s+manager\\b", "\\bprogram\\s+manager\\b", "\\bproject\\s+manager\\b",
       "\\btechnical\\s+writer\\b", "\\bsolutions?\\s+engineer\\b", "\\bcustomer\\b",
       "\\bfield\\s+engineer\\b", "\\bmechanical\\b",
+      // Security and networking. Adjacent to backend work and they match the level patterns
+      // cleanly -- "Product Security Engineer II" and "Cloud Network Engineer II" both scored
+      // as SDE-2 -- but they are a different discipline from Sarthak's Go/Python distributed
+      // systems background, so he does not want them surfaced.
+      "\\bsecurity\\b", "\\bsecops\\b", "\\bsiem\\b", "\\binfosec\\b", "\\bcyber",
+      "\\bcryptograph", "\\bpentest\\b", "\\bpenetration\\s+test", "\\bvulnerability\\b",
+      "\\bthreat\\b", "\\bfirewall\\b", "\\bidentity\\s+and\\s+access\\b",
+      "\\bnetwork(ing|s)?\\b", "\\brouting\\b", "\\bswitching\\b", "\\binfiniband\\b",
+      "\\bwireless\\b", "\\btelecom", "\\bmodem\\b", "\\b5g\\b", "\\bradio\\b",
       // Silicon and hardware roles. NVIDIA, Qualcomm, Samsung and Dell post these in volume and
       // they are not backend software work -- "ASIC Verification Engineer", "PCB Design Layout
       // Engineer", "DFT Methodology Engineer" all surfaced during live validation.

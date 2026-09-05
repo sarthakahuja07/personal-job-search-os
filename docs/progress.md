@@ -14,9 +14,11 @@ Phase 0 is **deployed and running in production**: <https://job-search-os.sartha
 104 jobs from 14 companies, 16 relevant SDE-2 matches, and a digest email delivered to Sarthak's
 inbox. Re-running the crawl creates nothing and re-running the notifier sends nothing.
 
-**One thing is outstanding and it is the important one: Cloudflare Access is not enabled**, so the
-app is publicly readable. Referral contacts have therefore *deliberately not* been loaded into the
-production database — it holds companies and public job listings only.
+Cloudflare Access is **enabled and verified** — every page 302-redirects to the Access login — so
+the 34 referral contacts are now loaded.
+
+**Outstanding: the Access service token.** Access protects `/api/*` as well, so the scheduled
+crawl cannot reach the app until `CF_ACCESS_CLIENT_ID` / `CF_ACCESS_CLIENT_SECRET` exist.
 
 | Milestone | State |
 |---|---|
@@ -36,8 +38,8 @@ production database — it holds companies and public job listings only.
 
 ## Next up, in order
 
-1. **Cloudflare Access** — blocked on Sarthak, and blocking the contact data. Until it is on, the
-   production database stays contacts-free.
+1. **Access service token** — blocked on Sarthak. Without it the 6-hourly crawl gets a 302 from
+   Access and does nothing.
 2. **M3 conformance suite** — the parametrized every-adapter suite plus recorded cassettes.
 3. **`contracts.yml`** — the daily live-schema canary. Not yet written.
 4. **M7 Templates** — referral messages with `{{variables}}`.
@@ -52,11 +54,7 @@ production database — it holds companies and public job listings only.
 
 | Item | Why it matters |
 |---|---|
-| **Cloudflare Access + service token** | **Blocking.** The app is publicly readable until this is on, which is why contacts are not loaded. |
-| Canonical resume link | Used by message templates. |
-| **VinFast careers URL** | The URL supplied is a San Francisco *dealership* on ApplicantOne, not the engineering org. |
-| **Moveworks / Qualcomm Workday URL** | Both tenants confirmed (`moveworks.wd12`, `qualcomm.wd12`); only the site slug is missing. Either flips to config-only instantly. |
-| **Drishika's phone or LinkedIn** | The only Atlassian contact, with no details recorded. |
+| **Access service token** | **Blocking the scheduled crawl.** Zero Trust → Access → Service Auth → create token, send both values. |
 
 ---
 
@@ -76,9 +74,9 @@ Salesforce, Target, Visa.
   no evasion (ADR 008).
 - *JavaScript-rendered, no reachable feed*: DigitalOcean, CHEQ, DE Shaw, Keychain AI, Moveworks.
   Reachable later via a headless browser or an HTML/JSON-LD fallback adapter.
-- *Needs a corrected URL*: VinFast.
+- VinFast, Dell and Samsung India are deactivated at Sarthak's request.
 
-**Deactivated (2)** — Dell and Samsung India, at Sarthak's request.
+**Deactivated (3)** — Dell, Samsung India and VinFast, at Sarthak's request.
 
 ---
 
