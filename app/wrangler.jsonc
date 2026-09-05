@@ -16,7 +16,7 @@
       "binding": "DB",
       "database_name": "job-search-os",
       // Populated by `npx wrangler d1 create job-search-os`. See docs/infrastructure.md.
-      "database_id": "REPLACE_AFTER_WRANGLER_D1_CREATE",
+      "database_id": "d958129c-4ed8-4440-adc0-be0e409462fa",
       "migrations_dir": "src/db/migrations"
     }
   ],
