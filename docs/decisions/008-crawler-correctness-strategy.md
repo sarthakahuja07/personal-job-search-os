@@ -11,10 +11,16 @@ The dangerous failure is not a crash. A crash is loud and gets fixed. The danger
 crawler that returns **zero jobs, successfully, forever** — which looks exactly like "no new jobs
 this week" and would quietly cost Sarthak the job search.
 
-This is not hypothetical. The Workday CXS endpoint returns **HTTP 200 with an empty array** when
-`limit > 20` — not an error, not a 400. A plausible "let's fetch 100 per page" optimisation silently
-disables that company permanently. Its `postedOn` field is likewise a localized display string
-("Posted Today"), so a naive date parse yields garbage rather than an exception.
+This is not hypothetical. Verified against the live NVIDIA Workday endpoint on 2026-09-05: the
+CXS page size is hard-capped at 20, and `limit=21` or `limit=100` returns **HTTP 400** while
+`limit=20` returns 20 of 2,000 jobs. Published write-ups describe this as HTTP 200 with an empty
+array; today it is a 400. That discrepancy is itself the point — the exact failure signature of an
+undocumented endpoint is not stable, so the guard must be against the *symptom* (a company that
+returned jobs yesterday and returns none today) rather than any particular status code. An adapter
+that catches a 400 and continues produces a silent zero just as effectively.
+
+Its `postedOn` field is likewise a localized display string — the live response returns
+`"Posted Today"` — so a naive date parse yields garbage rather than an exception.
 
 ## Decision
 

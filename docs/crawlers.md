@@ -15,13 +15,18 @@ The failure that matters is a crawler that returns **zero jobs, successfully, fo
 exactly like "no new jobs this week". Nobody investigates it. Meanwhile the roles Sarthak wanted
 are posted, flooded, and closed.
 
-This is not hypothetical. Two real examples from sources we depend on:
+This is not hypothetical. Both examples below were **verified against the live NVIDIA Workday
+endpoint on 2026-09-05**, not taken on trust:
 
-- **Workday returns HTTP 200 with an empty array when `limit > 20`.** Not a 400, not an error. A
-  reasonable-looking "fetch 100 per page instead of 20" change would silently disable that company
-  forever.
-- **Workday's `postedOn` is a localized display string** (`Posted Today`, and its translations) —
-  not a date. A naive parse produces garbage rather than raising.
+- **Workday's page size is hard-capped at 20.** `limit=20` returns 20 of 2,000 jobs; `limit=21` and
+  `limit=100` return **HTTP 400**. Published write-ups claim this returns HTTP 200 with an empty
+  array; today it is a 400. Either way the lesson holds, and the 200-empty variant may still exist
+  on other tenants or return with a Workday change. An adapter that catches the error and moves on
+  produces a silent zero just as effectively as a silent empty response, so the guard is against the
+  *symptom* (a company that returned jobs yesterday and none today), never against one status code.
+- **Workday's `postedOn` is a localized display string.** The live response returns
+  `"postedOn": "Posted Today"` — not a date. A naive parse produces garbage rather than raising.
+  The real date is only on the per-job detail endpoint.
 
 Every mechanism below exists because of that class of bug.
 
@@ -51,6 +56,47 @@ access — bot challenge, `robots.txt` disallow, hard block — are marked manua
 recurring dashboard reminder. We do not spoof fingerprints, solve challenges, or rotate identities.
 Evasion is also the *unreliable* choice: it breaks constantly and rots silently, which is exactly
 the failure this whole design targets.
+
+---
+
+## Current coverage
+
+Classified by probing the live public feeds on 2026-09-05, not from memory. Job counts are from
+that probe and will drift.
+
+**Tier 1 — public ATS feed, config only (10)**
+
+| Company | ATS | Slug | Jobs seen |
+|---|---|---|---|
+| Databricks | Greenhouse | `databricks` | 871 |
+| Roku | Greenhouse | `roku` | 252 |
+| Zeta | Greenhouse | `zetaglobal` | 140 |
+| Uber Freight | Greenhouse | `uberfreight` | 81 |
+| Samsung Semiconductor | Greenhouse | `samsungsemiconductor` | 66 |
+| Postman | Greenhouse | `postman` | 63 |
+| ServiceNow | SmartRecruiters | `servicenow` | 612 |
+| Swiggy | SmartRecruiters | `swiggy` | 67 |
+| Sarvam AI | Ashby | `sarvam` | 63 |
+| Confluent | Ashby | `confluent` | 22 |
+
+**Tier 2 — Workday CXS, config only (1)**
+
+| Company | Tenant | Shard | Site | Jobs seen |
+|---|---|---|---|---|
+| NVIDIA | `nvidia` | `wd5` | `NVIDIAExternalCareerSite` | 2000 |
+
+**Unresolved (18)** — Adobe, Akamai, Amazon, Atlassian, CHEQ, DE Shaw, Dell, DigitalOcean, Google,
+Intuit, Keychain AI, Microsoft, Moveworks, Qualcomm, Salesforce, Target, VinFast, Visa.
+
+Each needs the careers URL Sarthak actually lands on, after which `doctor` resolves it. Automated
+discovery was attempted and **does not work**: `{tenant}.wd{N}.myworkdayjobs.com` returns HTTP 406
+for a real tenant, a wrong shard, and a nonexistent tenant alike, so the root gives no signal; and
+careers subdomains (`careers.nvidia.com`, `careers.adobe.com`) resolve to JavaScript marketing sites
+that never redirect to Workday. The shard number is genuinely unguessable — NVIDIA is `wd5`,
+Salesforce `wd12`, Adobe `wd5` — which is why the human-supplied URL is a design input rather than a
+shortcut.
+
+Amazon, Microsoft and Google are expected to stay bespoke (tier 3) or manual (tier 6) regardless.
 
 ---
 
