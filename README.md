@@ -30,6 +30,7 @@ Cloudflare hosting. See [ADR 002](docs/decisions/002-typescript-on-workers.md).
 | [`docs/api.md`](docs/api.md) | Endpoints, requests, responses, errors |
 | [`docs/crawlers.md`](docs/crawlers.md) | Crawler architecture, adding a company or adapter |
 | [`docs/matching.md`](docs/matching.md) | What counts as a relevant job, and how to tune it |
+| [`docs/deployment-checklist.md`](docs/deployment-checklist.md) | Everything needed to take this live |
 | [`docs/engineering-principles.md`](docs/engineering-principles.md) | How this codebase is written |
 | [`docs/decisions/`](docs/decisions/) | Architecture Decision Records |
 

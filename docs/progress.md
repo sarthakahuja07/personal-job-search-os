@@ -34,11 +34,11 @@ deduplicates and scores them, and the job board displays them. Nothing is deploy
    Sarthak; everything else is ready and running locally.
 2. **M3 conformance suite** — the parametrized every-adapter suite plus recorded cassettes.
 3. **`contracts.yml`** — the daily live-schema canary. Not yet written.
-5. **M7 Templates** — referral messages with `{{variables}}`.
-6. **M8 Applications Kanban** — the five stages.
-7. **M5 Job detail page** — description, contacts inline, quick actions.
-8. **M1 CRUD UI** — manage companies and contacts in-app rather than via the seed script.
-9. **M10 Deferred adapters** — one at a time, only once the product is complete.
+4. **M7 Templates** — referral messages with `{{variables}}`.
+5. **M8 Applications Kanban** — the five stages.
+6. **M5 Job detail page** — description, contacts inline, quick actions.
+7. **M1 CRUD UI** — manage companies and contacts in-app rather than via the seed script.
+8. **M10 Deferred adapters** — one at a time, only once the product is complete.
 
 ---
 
