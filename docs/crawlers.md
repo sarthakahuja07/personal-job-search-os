@@ -61,8 +61,7 @@ the failure this whole design targets.
 
 ## Current coverage
 
-Classified by probing the live public feeds on 2026-09-05, not from memory. Job counts are from
-that probe and will drift.
+Classified by probing live feeds on 2026-09-05/06, not from memory. Job counts drift.
 
 **Tier 1 — public ATS feed, config only (9)**
 
@@ -78,30 +77,48 @@ that probe and will drift.
 | Confluent | Ashby | `confluent` | 22 |
 | Zeta Suite | Lever | `zeta` | 19 |
 
-Two name collisions were resolved by checking posting locations rather than assuming:
-**Zeta Suite** (zeta.tech, the Indian fintech) is Lever `zeta` — Greenhouse `zetaglobal` is a
-different company, Zeta Global. **Samsung India** is not Greenhouse `samsungsemiconductor`, which is
-the US semiconductor entity; Samsung India runs its own portal and is unresolved below.
-
-**Tier 2 — Workday CXS, config only (4)**
+**Tier 2 — Workday CXS, config only (5)**
 
 | Company | Tenant | Shard | Site | Jobs seen |
 |---|---|---|---|---|
 | NVIDIA | `nvidia` | `wd5` | `NVIDIAExternalCareerSite` | 2000 |
 | Target | `target` | `wd5` | `targetcareers` | 2000 |
 | Salesforce | `salesforce` | `wd12` | `External_Career_Site` | 1455 |
+| Visa | `visa` | `wd5` | `Visa` | 755 |
 | Adobe | `adobe` | `wd5` | `external_experienced` | 724 |
 
-**Unresolved (16)** — Akamai, Amazon, Atlassian, CHEQ, DE Shaw, Dell, DigitalOcean, Google,
-Intuit, Keychain AI, Microsoft, Moveworks, Qualcomm, Samsung India, VinFast, Visa.
+**14 companies are crawlable with no new code** — only adapters for these five platforms.
 
-Three of these have a **confirmed Workday tenant but an unguessable site slug**: `moveworks.wd12`,
-`qualcomm.wd12`, `visa.wd5`. They need only the careers URL, from which the slug is a regex away.
+**Tier 3 — bespoke, needs a custom adapter (4)**
 
-Samsung India is a distinct case: `sec.wd3/Samsung_Careers` exists and works, but only 2 of its
-first 300 postings are in India — it is the global entity. Samsung R&D India uses a separate portal.
+| Company | Stack | Status |
+|---|---|---|
+| Intuit | Radancy / TalentBrew | Endpoint verified. `/search-jobs/results` returns JSON whose `results` key is an HTML blob with `data-job-id` and stable numeric ids. |
+| Akamai | Oracle Recruiting Cloud | Stack identified (`hcmRestApi`, `siteNumber=CX_1`). The public `recruitingCEJobRequisitions` finder path 404s as constructed; needs the right finder or origin host. |
+| Amazon | bespoke `amazon.jobs` | Planned M10. |
+| Microsoft | bespoke `gcsservices` | Planned M10. |
 
-Amazon, Microsoft and Google are expected to stay bespoke (tier 3) or manual (tier 6) regardless.
+**Tier 6 — manual check (9)**
+
+Qualcomm, Atlassian, DigitalOcean, CHEQ, DE Shaw, Keychain AI, Moveworks, Google, VinFast.
+
+Two distinct reasons, and the distinction matters:
+
+- **Actively refusing automated access** — Qualcomm's Eightfold API returns HTTP 403, Atlassian's
+  careers endpoint returns 401 without a token, Google is bot-protected. These stay manual by
+  policy; we do not build evasion (ADR 008).
+- **JavaScript-rendered with no reachable feed** — DigitalOcean, CHEQ, DE Shaw, Keychain AI,
+  Moveworks. Their HTML carries no ATS marker and their sitemaps list no job postings. These could
+  be reached later with a headless browser, which PRD §13 permits only when genuinely required.
+  Deferred rather than refused.
+
+Moveworks and Qualcomm both have a **confirmed Workday tenant** (`moveworks.wd12`, `qualcomm.wd12`)
+but an unguessable site slug. Either becomes tier 2 the moment their real Workday URL is known.
+
+VinFast is flagged: the URL supplied is a San Francisco dealership on ApplicantOne, not the
+engineering org.
+
+Dell and Samsung India are deactivated at Sarthak's request.
 
 ### Discovering a Workday tenant
 
@@ -119,16 +136,14 @@ POST /wday/cxs/{tenant}/__probe__/jobs
 ```
 
 Verified against `nvidia.wd5` (404) versus `nvidia.wd1` (422) and a nonexistent tenant (422). This
-resolves tenant and shard across all eight shards with one cheap request each, which is how Adobe,
+resolves tenant and shard across all eight shards with one cheap request each, and is how Adobe,
 Target and Salesforce were found.
 
 The **site slug remains the hard part** — `NVIDIAExternalCareerSite`, `External_Career_Site`,
-`targetcareers` and `external_experienced` share no convention, and a 30-candidate guess list failed
-for Moveworks, Qualcomm and Visa. So the human-supplied careers URL stays a design input for the
-last mile, even though tenant discovery can be automated. `doctor` should implement the 404/422
-probe and then ask for the URL only when the slug cannot be guessed.
-
----
+`targetcareers`, `Visa` and `external_experienced` share no convention, and a 30-candidate guess list
+failed for Moveworks, Qualcomm and Visa (Visa was then resolved from a user-supplied URL). So the
+human-supplied careers URL stays a design input for the last mile. `doctor` should run the 404/422
+probe and ask for the URL only when the slug cannot be guessed.
 
 ## The adapter contract
 
