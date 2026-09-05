@@ -39,7 +39,15 @@ Updated after each meaningful milestone (PRD §73).
 
 **Done when:** the deployed URL is live and challenges a logged-out browser for login.
 
-### M1 — Companies, contacts, settings — not started
+### M1 — Companies, contacts, settings — *partially done*
+
+- [x] 29 target companies + 34 referral contacts seeded into local D1
+- [x] Companies classified by live probing: 10 tier-1 (ATS feed), 1 tier-2 (Workday), 18 unresolved
+- [x] **Relevance rule engine** built and validated against 1,334 real postings
+      (`app/src/server/domain/matching.ts`, 72 tests) — see `docs/matching.md`
+- [ ] CRUD UI for companies / contacts / settings
+- [ ] Careers URLs for the 18 unresolved companies
+
 ### M2 — Ingest pipeline (dedup, matching, idempotency) — not started
 ### M3 — Crawler core (adapter contract, conformance suite, doctor CLI, Greenhouse + Lever) — not started
 ### M4 — Workday adapter, schedule, health + drift detection — not started

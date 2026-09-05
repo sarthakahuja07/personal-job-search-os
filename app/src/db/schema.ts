@@ -23,6 +23,11 @@ import {
   uniqueIndex,
 } from "drizzle-orm/sqlite-core";
 
+import {
+  DEFAULT_MATCH_RULES,
+  type MatchRules,
+} from "../server/domain/matching";
+
 const uuid = () => crypto.randomUUID();
 
 /** Unix-epoch-millisecond timestamp, defaulting to now. */
@@ -199,6 +204,13 @@ export const jobs = sqliteTable(
     matchScore: integer("match_score").notNull().default(0),
     /** Human-readable explanation, so every decision is auditable in the UI. */
     matchReason: text("match_reason"),
+    /**
+     * Rank of the matched location in Sarthak's preference order
+     * (1 Bangalore, 2 Gurgaon, 3 Remote, 4 Hyderabad). Null when the posting gave no location.
+     * Stored explicitly rather than inferred from matchScore so the board can sort by
+     * location preference and recency independently.
+     */
+    locationPriority: integer("location_priority"),
 
     /** Absence tracking — see the deletion-grace rule in ADR 008. */
     missingRunCount: integer("missing_run_count").notNull().default(0),
@@ -333,18 +345,16 @@ export const settings = sqliteTable("settings", {
   resumeUrl: text("resume_url"),
   notifyEmail: text("notify_email"),
 
-  includeKeywords: text("include_keywords", { mode: "json" })
-    .$type<string[]>()
+  /**
+   * The matching rule set: title patterns, experience bounds, and location allow-list with
+   * ranking. Stored as data so Sarthak can retune what counts as a match without a code change
+   * or a crawler redeploy, and so existing jobs can be re-matched retroactively.
+   * See src/server/domain/matching.ts.
+   */
+  matchRules: text("match_rules", { mode: "json" })
+    .$type<MatchRules>()
     .notNull()
-    .default([]),
-  excludeKeywords: text("exclude_keywords", { mode: "json" })
-    .$type<string[]>()
-    .notNull()
-    .default([]),
-  preferredLocations: text("preferred_locations", { mode: "json" })
-    .$type<string[]>()
-    .notNull()
-    .default([]),
+    .default(DEFAULT_MATCH_RULES),
 
   /** Days in "requested" before a referral follow-up is surfaced (PRD §33). */
   followUpDays: integer("follow_up_days").notNull().default(5),
