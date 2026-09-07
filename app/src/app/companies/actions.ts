@@ -26,11 +26,13 @@ export async function addCompany(formData: FormData) {
   if (!name) return;
 
   const detected = careersUrl ? detectSource(careersUrl) : null;
+  const db = getDb();
+  const companyId = crypto.randomUUID();
 
-  await getDb()
+  await db
     .insert(companies)
     .values({
-      id: crypto.randomUUID(),
+      id: companyId,
       name,
       careersUrl: careersUrl || null,
       sourceType: detected?.sourceType ?? "manual",
@@ -39,6 +41,29 @@ export async function addCompany(formData: FormData) {
       active: true,
     })
     .onConflictDoNothing();
+
+  // A referral contact is the reason most of these companies are on the list at all, so it is
+  // captured in the same step rather than as a second trip through the company page. Written
+  // only when the insert above actually created the row, so re-adding an existing company
+  // cannot silently attach a duplicate contact to it.
+  const contactName = String(formData.get("contactName") ?? "").trim();
+  if (contactName) {
+    const created = await db
+      .select({ id: companies.id })
+      .from(companies)
+      .where(eq(companies.id, companyId))
+      .limit(1);
+    if (created.length) {
+      await db.insert(contacts).values({
+        id: crypto.randomUUID(),
+        companyId,
+        name: contactName,
+        phone: String(formData.get("contactPhone") ?? "").trim() || null,
+        email: String(formData.get("contactEmail") ?? "").trim() || null,
+        linkedinUrl: String(formData.get("contactLinkedin") ?? "").trim() || null,
+      });
+    }
+  }
 
   revalidateCompany();
 }
@@ -111,6 +136,7 @@ export async function addContact(formData: FormData) {
     name,
     phone: String(formData.get("phone") ?? "").trim() || null,
     email: String(formData.get("email") ?? "").trim() || null,
+    linkedinUrl: String(formData.get("linkedinUrl") ?? "").trim() || null,
     notes: String(formData.get("notes") ?? "").trim() || null,
   });
 
@@ -128,6 +154,7 @@ export async function updateContact(formData: FormData) {
       name: String(formData.get("name") ?? "").trim(),
       phone: String(formData.get("phone") ?? "").trim() || null,
       email: String(formData.get("email") ?? "").trim() || null,
+      linkedinUrl: String(formData.get("linkedinUrl") ?? "").trim() || null,
       notes: String(formData.get("notes") ?? "").trim() || null,
       updatedAt: new Date(),
     })

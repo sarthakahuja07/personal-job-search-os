@@ -153,6 +153,9 @@ export const contacts = sqliteTable(
     name: text("name").notNull(),
     email: text("email"),
     phone: text("phone"),
+    /** Referrals often start on LinkedIn rather than a phone number, so it is a first-class
+     *  field rather than something buried in notes. */
+    linkedinUrl: text("linkedin_url"),
     notes: text("notes"),
     createdAt: createdAt(),
     updatedAt: updatedAt(),

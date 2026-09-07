@@ -1,7 +1,7 @@
 import Link from "next/link";
 
-import { Badge, Button, Card, PageHeader, SectionTitle, cx, inputStyles } from "@/components/ui";
-import { addCompany } from "./actions";
+import { Badge, Card, PageHeader, SectionTitle, cx } from "@/components/ui";
+import { OnboardForm } from "./onboard-form";
 import { getDb } from "@/db";
 import { listCompanyHealth } from "@/server/repository/jobs-repo";
 
@@ -57,13 +57,11 @@ export default async function CompaniesPage() {
         <p className="mb-3 mt-0.5 text-[11px] leading-relaxed text-ink-faint">
           Paste the URL you land on when you click &ldquo;search jobs&rdquo;. Greenhouse, Lever,
           Ashby, SmartRecruiters and Workday URLs are recognised automatically; anything else is
-          saved as a manual check rather than guessed at.
+          saved as a manual check rather than guessed at. <strong>Check source</strong> fetches
+          the board first, because a mistyped token detects perfectly and then returns nothing
+          forever.
         </p>
-        <form action={addCompany} className="flex flex-wrap gap-2">
-          <input name="name" placeholder="Company name" required className={cx(inputStyles, "w-48")} />
-          <input name="careersUrl" placeholder="https://boards.greenhouse.io/…" className={cx(inputStyles, "min-w-64 flex-1")} />
-          <Button type="submit" variant="primary">Add</Button>
-        </form>
+        <OnboardForm />
       </Card>
 
       <SectionTitle>Automated sources</SectionTitle>
