@@ -15,6 +15,20 @@
       "when": 1788639985583,
       "tag": "0001_graceful_sabretooth",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1788788540431,
+      "tag": "0002_careful_robbie_robertson",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "6",
+      "when": 1788789288157,
+      "tag": "0003_careful_chameleon",
+      "breakpoints": true
     }
   ]
 }

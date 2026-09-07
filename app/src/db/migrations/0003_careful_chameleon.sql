@@ -1,0 +1,1 @@
+ALTER TABLE `jobs` ADD `fit_title_only` integer DEFAULT false NOT NULL;

@@ -72,6 +72,44 @@ Nothing. Deployment, credentials and access control are all complete.
 
 ---
 
+## Fit scoring
+
+Every job carries a **fit score (0–100)** against Sarthak's resume, computed at ingest by
+`src/server/domain/fit.ts` and stored on the row so the board can sort by it in SQL.
+
+It is a separate question from relevance. `matching.ts` is a hard gate — should this job be on
+the board at all — while fit ranks the ones that already qualify. Keeping them apart means a
+tighter fit model can never silently hide a job the gate accepted.
+
+Five weighted dimensions: skills (34), level precision (22), domain overlap (20), location (14)
+and freshness (10). Skills carry the most weight deliberately — level, location and recency are
+all readable from metadata, so if they dominated, every correctly-levelled Bangalore job would
+score alike and the ranking would say nothing about the work itself.
+
+Two design points worth keeping:
+
+- **Missing evidence is not a bad score.** Apple, Microsoft and Rippling publish no description
+  on their list endpoints (56 of 238 relevant jobs). Scoring those against a rubric that expects
+  a description would rank them last for a gap in *our* data, not a flaw in the job. Instead the
+  unassessable weight is removed from the denominator and the row is flagged `fit_title_only`,
+  which the card shows as "title only". Their observed range is 34–68 against 0–91 for
+  fully-described jobs: ranked fairly, but honestly capped short of "excellent".
+- **Every point is attributable.** The score comes with named signals ("Golang · Distributed
+  systems", +29), which the job card renders as chips. A number nobody can argue with is a
+  number nobody can correct.
+
+The profile lives in `DEFAULT_FIT_PROFILE` and is shaped to be moved into `settings` like the
+match rules, so retuning what counts as a strong match needs no redeploy.
+
+Bands: excellent 80+, strong 65+, good 50+, fair 35+, weak below. Current spread across 238
+relevant jobs: 11 excellent, 45 strong, 87 good, 79 fair, 15 weak.
+
+**Known limit.** A title-only job cannot reach the top band even when it deserves to — Rippling's
+"Software Engineer II" in Bangalore scores 61 because its skills are unknown, not weak. The fix
+is the detail fetch the crawler plan already allows for new, pre-filtered jobs; it is not built.
+
+---
+
 ## Company coverage — 28 of 30 crawled automatically
 
 Full detail, and the evidence behind every decision, in

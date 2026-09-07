@@ -14,6 +14,7 @@ import { eq, inArray } from "drizzle-orm";
 
 import type { Db } from "@/db";
 import { jobs, settings } from "@/db/schema";
+import { scoreFit, type FitBand, type FitSignal } from "../domain/fit";
 import { matchJob, DEFAULT_MATCH_RULES } from "../domain/matching";
 
 export type RematchResult = {
@@ -37,8 +38,10 @@ export async function rematchJobs(db: Db, maxUpdates = 40): Promise<RematchResul
       title: jobs.title,
       location: jobs.location,
       description: jobs.description,
+      postedAt: jobs.postedAt,
       isRelevant: jobs.isRelevant,
       matchScore: jobs.matchScore,
+      fitScore: jobs.fitScore,
     })
     .from(jobs);
 
@@ -48,6 +51,10 @@ export async function rematchJobs(db: Db, maxUpdates = 40): Promise<RematchResul
     matchScore: number;
     matchReason: string;
     locationPriority: number | null;
+    fitScore: number;
+    fitBand: FitBand;
+    fitSignals: FitSignal[];
+    fitTitleOnly: boolean;
   };
 
   const changes: Change[] = [];
@@ -59,7 +66,17 @@ export async function rematchJobs(db: Db, maxUpdates = 40): Promise<RematchResul
       { title: row.title, location: row.location, description: row.description },
       rules,
     );
-    if (m.isRelevant === row.isRelevant && m.score === row.matchScore) continue;
+    const fit = scoreFit({
+      title: row.title,
+      description: row.description,
+      locationPriority: m.locationPriority,
+      postedAt: row.postedAt,
+    });
+    const unchanged =
+      m.isRelevant === row.isRelevant &&
+      m.score === row.matchScore &&
+      fit.score === row.fitScore;
+    if (unchanged) continue;
     if (m.isRelevant && !row.isRelevant) nowRelevant++;
     if (!m.isRelevant && row.isRelevant) noLongerRelevant++;
     changes.push({
@@ -68,6 +85,10 @@ export async function rematchJobs(db: Db, maxUpdates = 40): Promise<RematchResul
       matchScore: m.score,
       matchReason: m.reason,
       locationPriority: m.locationPriority,
+      fitScore: fit.score,
+      fitBand: fit.band,
+      fitSignals: fit.signals,
+      fitTitleOnly: fit.titleOnly,
     });
   }
 
@@ -77,7 +98,9 @@ export async function rematchJobs(db: Db, maxUpdates = 40): Promise<RematchResul
   // than one each -- typical when a single exclusion rule is added.
   const byVerdict = new Map<string, Change[]>();
   for (const c of batch) {
-    const key = `${c.isRelevant}|${c.matchScore}|${c.locationPriority}|${c.matchReason}`;
+    // Fit signals are per-job, so identical verdicts no longer imply identical writes. The key
+    // keeps the grouping correct rather than fast; maxUpdates is what bounds the query count.
+    const key = `${c.isRelevant}|${c.matchScore}|${c.locationPriority}|${c.matchReason}|${c.fitScore}|${JSON.stringify(c.fitSignals)}`;
     const list = byVerdict.get(key);
     if (list) list.push(c);
     else byVerdict.set(key, [c]);
@@ -93,6 +116,10 @@ export async function rematchJobs(db: Db, maxUpdates = 40): Promise<RematchResul
         matchScore: first.matchScore,
         matchReason: first.matchReason,
         locationPriority: first.locationPriority,
+        fitScore: first.fitScore,
+        fitBand: first.fitBand,
+        fitSignals: first.fitSignals,
+        fitTitleOnly: first.fitTitleOnly,
         updatedAt: new Date(),
       })
       .where(ids.length === 1 ? eq(jobs.id, ids[0]) : inArray(jobs.id, ids.slice(0, 90)));

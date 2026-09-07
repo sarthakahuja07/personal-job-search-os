@@ -37,8 +37,8 @@ import { DEFAULT_MATCH_RULES, type MatchRules } from "../domain/matching";
 const MAX_BOUND_PARAMS = 100;
 
 /** jobs binds 18 columns per row. */
-export const JOB_COLUMNS = 18;
-export const JOB_CHUNK = Math.floor(MAX_BOUND_PARAMS / JOB_COLUMNS); // 5
+export const JOB_COLUMNS = 22;
+export const JOB_CHUNK = Math.floor(MAX_BOUND_PARAMS / JOB_COLUMNS); // 4
 
 /** notifications binds 9: id, dedup_key, type, entity_type, entity_id, channel, status, payload, attempts. */
 export const NOTIFICATION_COLUMNS = 9;
@@ -147,6 +147,10 @@ export async function upsertJobs(
       matchScore: j.matchScore,
       matchReason: j.matchReason,
       locationPriority: j.locationPriority,
+      fitScore: j.fitScore,
+      fitBand: j.fitBand,
+      fitSignals: j.fitSignals,
+      fitTitleOnly: j.fitTitleOnly,
       missingRunCount: 0,
     }));
 
@@ -170,6 +174,10 @@ export async function upsertJobs(
           matchScore: sql`excluded.match_score`,
           matchReason: sql`excluded.match_reason`,
           locationPriority: sql`excluded.location_priority`,
+          fitScore: sql`excluded.fit_score`,
+          fitBand: sql`excluded.fit_band`,
+          fitSignals: sql`excluded.fit_signals`,
+          fitTitleOnly: sql`excluded.fit_title_only`,
           // Seeing a job again clears any absence and reopens it.
           missingRunCount: sql`0`,
           closedAt: sql`NULL`,

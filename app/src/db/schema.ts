@@ -15,6 +15,8 @@
  */
 
 import { sql } from "drizzle-orm";
+
+import type { FitBand, FitSignal } from "@/server/domain/fit";
 import {
   index,
   integer,
@@ -211,6 +213,23 @@ export const jobs = sqliteTable(
      * location preference and recency independently.
      */
     locationPriority: integer("location_priority"),
+
+    /**
+     * Fit against Sarthak's resume, 0-100, computed at ingest by domain/fit.ts. Distinct from
+     * matchScore, which decides whether a job belongs on the board at all: fit ranks the ones
+     * that already qualify. Stored rather than computed on read so the board can sort by it in
+     * SQL, and so a profile change is a visible, deliberate re-score rather than a silent shift.
+     */
+    fitScore: integer("fit_score").notNull().default(0),
+    fitBand: text("fit_band").$type<FitBand>(),
+    /** The named signals behind the score, so the UI never shows a number it cannot justify. */
+    fitSignals: text("fit_signals", { mode: "json" }).$type<FitSignal[]>(),
+    /**
+     * True when the source published no description and the score rests on the title alone.
+     * Surfaced in the UI because "we could not assess this" and "this is a poor match" are
+     * different statements, and a score alone cannot tell them apart.
+     */
+    fitTitleOnly: integer("fit_title_only", { mode: "boolean" }).notNull().default(false),
 
     /** Absence tracking — see the deletion-grace rule in ADR 008. */
     missingRunCount: integer("missing_run_count").notNull().default(0),

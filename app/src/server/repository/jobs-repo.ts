@@ -45,8 +45,10 @@ export async function listJobs(db: Db, filters: JobFilters = {}) {
       : undefined,
   ].filter(Boolean);
 
-  // "best" ranks by Sarthak's location preference first, then match quality, then recency.
-  // location_priority is stored precisely so this ordering does not have to infer it.
+  // "best" ranks by fit against Sarthak's resume, which already folds in location preference,
+  // level precision, skill overlap and recency (domain/fit.ts). Before fit existed this had to
+  // hand-roll that ordering out of location_priority and match_score; now the one number carries
+  // it, and the card shows the signals behind it so the order can be argued with.
   const orderBy =
     sort === "newest"
       ? [desc(jobs.discoveredAt)]
@@ -54,12 +56,7 @@ export async function listJobs(db: Db, filters: JobFilters = {}) {
         ? [sql`${jobs.postedAt} IS NULL`, desc(jobs.postedAt)]
         : sort === "company"
           ? [asc(companies.name), desc(jobs.matchScore)]
-          : [
-              sql`${jobs.locationPriority} IS NULL`,
-              asc(jobs.locationPriority),
-              desc(jobs.matchScore),
-              desc(jobs.discoveredAt),
-            ];
+          : [desc(jobs.fitScore), desc(jobs.matchScore), desc(jobs.discoveredAt)];
 
   return db
     .select({
@@ -72,6 +69,10 @@ export async function listJobs(db: Db, filters: JobFilters = {}) {
       matchScore: jobs.matchScore,
       matchReason: jobs.matchReason,
       locationPriority: jobs.locationPriority,
+      fitScore: jobs.fitScore,
+      fitBand: jobs.fitBand,
+      fitSignals: jobs.fitSignals,
+      fitTitleOnly: jobs.fitTitleOnly,
       closedAt: jobs.closedAt,
       companyId: companies.id,
       companyName: companies.name,
@@ -208,6 +209,10 @@ export async function getJob(db: Db, id: string) {
       matchScore: jobs.matchScore,
       matchReason: jobs.matchReason,
       locationPriority: jobs.locationPriority,
+      fitScore: jobs.fitScore,
+      fitBand: jobs.fitBand,
+      fitSignals: jobs.fitSignals,
+      fitTitleOnly: jobs.fitTitleOnly,
       isRelevant: jobs.isRelevant,
       employmentType: jobs.employmentType,
       externalJobId: jobs.externalJobId,

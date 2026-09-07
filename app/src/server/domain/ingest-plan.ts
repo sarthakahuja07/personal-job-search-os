@@ -8,6 +8,7 @@
  * See docs/decisions/008-crawler-correctness-strategy.md.
  */
 
+import { scoreFit, type FitBand, type FitSignal } from "./fit";
 import { matchJob, type MatchRules } from "./matching";
 
 export type ExistingJob = {
@@ -66,6 +67,11 @@ export type PlannedJob = IncomingJob & {
   matchScore: number;
   matchReason: string;
   locationPriority: number | null;
+  /** Fit against Sarthak's resume, 0-100. See domain/fit.ts. */
+  fitScore: number;
+  fitBand: FitBand;
+  fitSignals: FitSignal[];
+  fitTitleOnly: boolean;
   /** Present when this job already exists. */
   existingId: string | null;
 };
@@ -176,8 +182,22 @@ export function planIngest(input: PlanInput): IngestPlan {
     );
     const prior = existingByExternalId.get(job.externalJobId) ?? null;
 
+    // Fit is computed for every job, relevant or not: a job that fails the gate today may pass
+    // it after a rules change, and re-scoring on read would make the board's ordering depend on
+    // when it was loaded.
+    const fit = scoreFit({
+      title: job.title,
+      description: job.description,
+      locationPriority: match.locationPriority,
+      postedAt: job.postedAt,
+    });
+
     upserts.push({
       ...job,
+      fitScore: fit.score,
+      fitBand: fit.band,
+      fitSignals: fit.signals,
+      fitTitleOnly: fit.titleOnly,
       isRelevant: match.isRelevant,
       matchScore: match.score,
       matchReason: match.reason,
