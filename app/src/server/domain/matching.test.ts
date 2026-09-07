@@ -122,6 +122,25 @@ describe("matchLocation", () => {
     expect(matchLocation(input).matched?.name).toBe(name);
   });
 
+  // Regression: DirectEmployers-syndicated boards (Akamai) write remote roles as
+  // "Virtual, IND". Without "virtual" as an alias all 16 of Akamai's India openings were
+  // dropped on location no matter what the title said -- a silent miss, not a visible one.
+  it.each([
+    "Virtual, IND, India",
+    "Virtual, IND",
+  ])("treats %s as Remote", (input) => {
+    expect(matchLocation(input).matched?.name).toBe("Remote");
+  });
+
+  // ...and the alias stays safe only because reject runs before allow. The same feed carries
+  // "Virtual, POL", which must not become a match just because it says virtual.
+  it.each([
+    "Virtual, POL, Poland",
+    "Virtual, DEU, Germany",
+  ])("still rejects %s", (input) => {
+    expect(matchLocation(input).matched).toBeNull();
+  });
+
   it("rejects locations outside the allow list", () => {
     expect(matchLocation("US, CA, Santa Clara").matched).toBeNull();
     expect(matchLocation("US, CA, Santa Clara").unknown).toBe(false);

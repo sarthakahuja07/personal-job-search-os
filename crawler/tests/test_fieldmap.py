@@ -5,7 +5,12 @@ from __future__ import annotations
 
 import pytest
 
-from crawler.normalization.fieldmap import apply_spec, map_record, resolve_path
+from crawler.normalization.fieldmap import (
+    FieldMapError,
+    apply_spec,
+    map_record,
+    resolve_path,
+)
 
 AMAZON = {
     "id_icims": "10424837",
@@ -163,3 +168,46 @@ class TestJobUrlHostValidation:
         from crawler.models.job import NormalizedJob
 
         assert NormalizedJob(external_job_id="1234", title="T", job_url=url).job_url == url
+
+
+# ---------------------------------------------------------------------------
+# Template transforms
+# ---------------------------------------------------------------------------
+
+
+def test_slug_transform_builds_a_url_segment_from_a_display_string():
+    """DirectEmployers links a job at /<city-slug>/<title-slug>/<guid>/job/, where the city
+    segment is the display location slugified. Deriving it keeps Akamai a config row."""
+    record = {
+        "location_exact": "Virtual, IND",
+        "title_slug": "network-administrator-ii",
+        "guid": "830A4E5FB4934FC2BF7B8C7BB48F99C7",
+    }
+    spec = {"template": "https://akamai.dejobs.org/{location_exact|slug}/{title_slug}/{guid}/job/"}
+    assert apply_spec(record, spec) == (
+        "https://akamai.dejobs.org/virtual-ind/network-administrator-ii/"
+        "830A4E5FB4934FC2BF7B8C7BB48F99C7/job/"
+    )
+
+
+@pytest.mark.parametrize(
+    "value,expected",
+    [
+        ("Charleston, WV", "charleston-wv"),
+        ("  São  Paulo  ", "s-o-paulo"),
+        ("Bangalore South", "bangalore-south"),
+        ("---", ""),
+    ],
+)
+def test_slug_collapses_runs_and_trims_edges(value, expected):
+    assert apply_spec({"x": value}, {"template": "{x|slug}"}) == (expected or None)
+
+
+def test_lower_and_upper_transforms():
+    assert apply_spec({"x": "IND"}, {"template": "{x|lower}"}) == "ind"
+    assert apply_spec({"x": "ind"}, {"template": "{x|upper}"}) == "IND"
+
+
+def test_an_unknown_transform_is_a_config_error_not_a_silent_passthrough():
+    with pytest.raises(FieldMapError, match="unknown template transform"):
+        apply_spec({"x": "a"}, {"template": "{x|slugify}"})

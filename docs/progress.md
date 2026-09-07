@@ -72,25 +72,35 @@ Nothing. Deployment, credentials and access control are all complete.
 
 ---
 
-## Company coverage — 14 of 29 crawled automatically
+## Company coverage — 25 of 26 crawled automatically
 
-Full detail in [`crawlers.md`](crawlers.md).
+Full detail, and the evidence behind every decision, in
+[`source-catalogue.md`](source-catalogue.md).
 
-**Crawled (14)** — Greenhouse: Databricks, Roku, Uber Freight, Postman · SmartRecruiters:
-ServiceNow, Swiggy · Ashby: Sarvam AI, Confluent · Lever: Zeta Suite · Workday: NVIDIA, Adobe,
-Salesforce, Target, Visa.
+**Crawled (25)**
 
-**Manual, with a dashboard link (15)** — deferred by decision, not failure:
+| Tier | Adapter | Companies |
+|---|---|---|
+| 1 | Greenhouse | Databricks, Roku, Uber Freight, Postman, DigitalOcean |
+| 1 | SmartRecruiters | ServiceNow, Swiggy |
+| 1 | Ashby | Sarvam AI, Confluent |
+| 1 | Lever | Zeta Suite |
+| 2 | Workday | NVIDIA, Adobe, Salesforce, Target, Visa |
+| 3 | `json_api` | Amazon, Microsoft, Qualcomm, Atlassian, Akamai, Keychain AI |
+| 4 | `hydration` | DE Shaw, CHEQ |
+| 5 | `html_list` | Intuit, Moveworks |
 
-- *Adapter deferred until the product is complete*: Intuit (endpoint verified and working — closest
-  to ready), Akamai (Oracle stack identified, API path unresolved), Amazon, Microsoft.
-- *Refusing automated access*: Qualcomm (Eightfold 403), Atlassian (401), Google. Manual by policy;
-  no evasion (ADR 008).
-- *JavaScript-rendered, no reachable feed*: DigitalOcean, CHEQ, DE Shaw, Keychain AI, Moveworks.
-  Reachable later via a headless browser or an HTML/JSON-LD fallback adapter.
-- VinFast, Dell and Samsung India are deactivated at Sarthak's request.
+**Manual (1)** — Google, which disallows its job results in `robots.txt`. Honoured, not worked
+around (ADR 008).
 
 **Deactivated (3)** — Dell, Samsung India and VinFast, at Sarthak's request.
+
+The last five were solved by re-testing inherited assumptions rather than by new machinery. Four
+of the five "cannot be crawled" verdicts were wrong: Qualcomm's `robots.txt` *explicitly allows*
+the endpoint believed forbidden, Atlassian's 401 came from a different endpoint than the public
+one, CHEQ ships its jobs in the first response despite rendering them client-side, and Akamai —
+which denies everything at its own edge — syndicates every job to DirectEmployers, which welcomes
+crawlers. In two cases the honest User-Agent got a 200 where a browser-spoofing one got a 403.
 
 ---
 
@@ -137,7 +147,8 @@ Deliberately conservative (`crawler/http/client.py`):
   closed.
 - Failed, skipped and degraded runs never mutate job presence state.
 - Bootstrap and ingest both reject unauthenticated requests with 401.
-- 142 TypeScript tests, 6 Python tests, `tsc --noEmit` clean, `ruff check crawler` clean.
+- 224 TypeScript tests and 221 Python tests pass; `tsc --noEmit` clean, `ruff check crawler` clean.
+- All 8 adapter contracts verified against live endpoints by `python -m crawler.contracts`.
 - A full crawl of 14 companies completes in about two minutes with zero failures: 104 jobs
   ingested, 16 relevant, 16 notifications queued.
 - The notification digest renders real matches with their explanations and was delivered to the
@@ -151,11 +162,9 @@ Deliberately conservative (`crawler/http/client.py`):
 
 ## Known gaps
 
-- **No conformance suite.** Planned in M3 and not built. Adapters have targeted regression tests
-  (Workday) but the parametrized every-adapter suite and recorded cassettes do not exist. This is
-  the largest outstanding piece of crawler-correctness work.
-- **No cassettes.** Crawler tests use hand-built fakes, so adding a company still needs a live run.
-- **No `doctor` CLI.** Adding a company means editing the seed script.
+- **Google is not crawled**, by choice: its `robots.txt` disallows the job results path. It shows
+  on the dashboard as a manual check.
+
 - **No conditional requests.** `etag` / `last_content_hash` are stored and sent to ingest, but
   adapters do not yet send `If-None-Match`, so nothing short-circuits on a 304.
 - **Descriptions truncated** to 8000 chars of plain text — deliberate: D1 caps a statement at 100 KB

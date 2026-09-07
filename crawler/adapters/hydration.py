@@ -18,13 +18,20 @@ and honest about being neither.
       "jobsPath": "props.pageProps.regularJobs",
       "fields": {...}
     }
+
+Where the blob sits in an attribute rather than a script, name the element instead:
+
+    {"attributeSelector": "input#jobs", "attribute": "value", "jobsPath": "."}
 """
 
 from __future__ import annotations
 
+import html as html_module
 import json
 import re
 from typing import Any
+
+from bs4 import BeautifulSoup
 
 from crawler.adapters.base import ConfigError, JobSourceAdapter, SchemaDriftError
 from crawler.http.client import CrawlBudget, HttpClient
@@ -72,7 +79,7 @@ class HydrationAdapter(JobSourceAdapter):
             budget=budget,
         )
         response.raise_for_status()
-        payload = self._extract(response.text, config.get("scriptId", "__NEXT_DATA__"))
+        payload = self._extract(response.text, config)
 
         records = resolve_path(payload, config["jobsPath"])
         if records is None:
@@ -93,8 +100,39 @@ class HydrationAdapter(JobSourceAdapter):
         return out
 
     @staticmethod
-    def _extract(html: str, script_id: str) -> Any:
-        """Pull the hydration blob out of the HTML."""
+    def _extract(html: str, config: dict[str, Any]) -> Any:
+        """Pull the hydration blob out of the HTML.
+
+        Three shapes, in order of how commonly they turn up:
+        a <script id="..."> body, a `window.__STATE__ =` assignment, and an HTML attribute
+        holding entity-encoded JSON. The last is what Zoho Recruit portals do -- CHEQ ships
+        all ten of its jobs in `<input id="jobs" value="[{&#34;Posting_Title&#34;...">`, which
+        looks browser-rendered from the outside and is in fact in the first response.
+        """
+        selector = config.get("attributeSelector")
+        if selector:
+            attribute = config.get("attribute", "value")
+            node = BeautifulSoup(html, "html.parser").select_one(selector)
+            if node is None:
+                raise SchemaDriftError(
+                    f"attributeSelector '{selector}' matched no element; the page structure "
+                    "has changed"
+                )
+            blob = node.get(attribute)
+            if not blob:
+                raise SchemaDriftError(
+                    f"element '{selector}' has no '{attribute}' attribute to read"
+                )
+            # BeautifulSoup already decodes entities in attribute values; unescaping again is
+            # harmless for JSON and covers callers that hand us a raw attribute string.
+            try:
+                return json.loads(html_module.unescape(str(blob)))
+            except json.JSONDecodeError as exc:
+                raise SchemaDriftError(
+                    f"'{selector}[{attribute}]' is not valid JSON: {exc}"
+                ) from exc
+
+        script_id = config.get("scriptId", "__NEXT_DATA__")
         tagged = re.search(
             rf'<script[^>]*id="{re.escape(script_id)}"[^>]*>(.*?)</script>', html, re.S
         )

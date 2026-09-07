@@ -146,7 +146,10 @@ export const DEFAULT_MATCH_RULES: MatchRules = {
     allow: [
       { name: "Bangalore", priority: 1, score: 40, aliases: ["bangalore", "bengaluru", "blr"] },
       { name: "Gurgaon", priority: 2, score: 30, aliases: ["gurgaon", "gurugram", "delhi ncr", "ncr", "new delhi", "noida"] },
-      { name: "Remote", priority: 3, score: 20, aliases: ["remote", "work from home", "wfh", "anywhere", "distributed"] },
+      // "virtual" is how DirectEmployers-syndicated boards write remote ("Virtual, IND").
+      // It is safe only because reject runs before allow: "Virtual, POL, Poland" is rejected
+      // on "poland" before it can match here.
+      { name: "Remote", priority: 3, score: 20, aliases: ["remote", "work from home", "wfh", "anywhere", "distributed", "virtual"] },
       { name: "Hyderabad", priority: 4, score: 10, aliases: ["hyderabad", "hyd", "telangana"] },
     ],
     reject: [

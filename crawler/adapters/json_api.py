@@ -10,7 +10,7 @@ Amazon is the first user. Others follow by adding a company row, not a Python fi
     {
       "adapter": "json_api",
       "listUrl": "https://www.amazon.jobs/en/search.json?result_limit={limit}&offset={offset}",
-      "jobsPath": "jobs",
+      "jobsPath": "jobs",          // "." when the response is itself the array
       "totalPath": "hits",
       "pageSize": 100,
       "fields": {
@@ -71,6 +71,9 @@ class JsonApiAdapter(JobSourceAdapter):
         total_path: str | None = config.get("totalPath")
         page_size = int(config.get("pageSize", DEFAULT_PAGE_SIZE))
         max_pages = int(config.get("maxPages", DEFAULT_MAX_PAGES))
+        # Page numbering is 1-based on some endpoints and 0-based on others; html_list already
+        # calls this startPage, so json_api uses the same word for the same idea.
+        start_page = int(config.get("startPage", 0))
         method = str(config.get("method", "GET")).upper()
         headers = dict(config.get("headers") or {"Accept": "application/json"})
 
@@ -91,12 +94,20 @@ class JsonApiAdapter(JobSourceAdapter):
             headers[prime.get("tokenHeader", "x-csrf-token")] = match.group(1)
             headers.setdefault("Referer", prime["url"])
 
+        # An endpoint that takes no {offset}/{page} returns its whole board in one response.
+        # Without this the loop would re-request the identical URL maxPages times and emit the
+        # same jobs over and over -- Atlassian returns 253 records, which would have become
+        # 10,120 duplicates while looking like a perfectly successful crawl.
+        paginated = "{offset}" in list_url or "{page}" in list_url
+
         out: list[RawJob] = []
         offset = 0
         total: int | None = None
 
         for _ in range(max_pages):
-            url = list_url.format(offset=offset, limit=page_size, page=offset // page_size)
+            url = list_url.format(
+                offset=offset, limit=page_size, page=start_page + offset // page_size
+            )
 
             if method == "POST":
                 body = json.loads(
@@ -129,7 +140,7 @@ class JsonApiAdapter(JobSourceAdapter):
                 out.append(RawJob(data=record, source_url=url))
 
             offset += len(records)
-            if not records:
+            if not records or not paginated:
                 break
 
             # An authoritative total beats the short-page heuristic, and must be checked first.
@@ -145,6 +156,18 @@ class JsonApiAdapter(JobSourceAdapter):
                     break
             elif len(records) < page_size:
                 break
+        else:
+            # The loop ran out of pages rather than out of jobs. With a server that caps its
+            # page size this is easy to hit by accident -- Qualcomm reports 579 jobs and serves
+            # 10 at a time, so the default 40-page ceiling would return 400 of them and call it
+            # a successful crawl. Truncation that reports success is the failure mode this
+            # project exists to prevent, so it fails loudly and names the fix.
+            if total is not None and offset < total:
+                raise SchemaDriftError(
+                    f"stopped after maxPages={max_pages} with {offset} of {total} jobs "
+                    f"collected. Raise maxPages for this source (it needs at least "
+                    f"{-(-total // max(page_size, 1))})."
+                )
 
         return out
 

@@ -10,6 +10,7 @@ from typing import Any
 
 import pytest
 
+from crawler.adapters.base import SchemaDriftError
 from crawler.adapters.json_api import JsonApiAdapter
 from crawler.http.client import CrawlBudget
 
@@ -79,10 +80,23 @@ async def test_stops_immediately_on_an_empty_board():
 
 
 @pytest.mark.asyncio
-async def test_respects_max_pages_rather_than_looping_forever():
-    """A source that never reports exhaustion must still be bounded."""
+async def test_hitting_the_page_cap_short_of_the_total_is_loud():
+    """Bounded is not enough -- it must also be honest. A page ceiling reached before the
+    board is exhausted returns a fraction of the jobs, and returning 400 of 579 while
+    reporting success is precisely the silent truncation this project guards against."""
     config = {**CONFIG, "maxPages": 5, "pageSize": 10}
     client = FakeClient(total=10_000, server_page_size=10)
+    with pytest.raises(SchemaDriftError, match="maxPages"):
+        await JsonApiAdapter().fetch_list(config, client, CrawlBudget())
+    assert client.calls == 5
+
+
+@pytest.mark.asyncio
+async def test_page_cap_without_a_known_total_stays_bounded_and_silent():
+    """With no authoritative total there is nothing to compare against, so the cap is just a
+    bound -- it must stop, not raise."""
+    config = {**CONFIG, "maxPages": 5, "pageSize": 10}
+    client = FakeClient(total=10_000, server_page_size=10, report_total=False)
     jobs = await JsonApiAdapter().fetch_list(config, client, CrawlBudget())
     assert client.calls == 5
     assert len(jobs) == 50
@@ -95,3 +109,95 @@ async def test_ids_are_unique_across_pages():
     adapter = JsonApiAdapter()
     ids = [adapter.parse(j).external_job_id for j in jobs]
     assert len(set(ids)) == len(ids)
+
+
+class SinglePageClient:
+    """An endpoint that returns its entire board in one response and ignores pagination,
+    which is what Atlassian's careers listing does."""
+
+    def __init__(self, count: int) -> None:
+        self.count = count
+        self.calls = 0
+
+    async def get_json(self, url: str, **kwargs: Any):
+        self.calls += 1
+        return [
+            {"displayJobId": f"2558{i}", "name": f"Engineer {i}"} for i in range(self.count)
+        ], None
+
+
+ROOT_ARRAY_CONFIG: dict[str, Any] = {
+    "adapter": "json_api",
+    "listUrl": "https://example.com/endpoint/careers/listings",
+    "jobsPath": ".",
+    "fields": CONFIG["fields"],
+}
+
+
+@pytest.mark.asyncio
+async def test_unpaginated_endpoint_is_fetched_exactly_once():
+    """The URL carries no {offset}/{page}, so re-requesting it can only ever return the same
+    rows. Looping to maxPages would have turned 253 Atlassian jobs into 10,120 duplicates
+    while reporting a completely successful crawl."""
+    client = SinglePageClient(count=253)
+    jobs = await JsonApiAdapter().fetch_list(ROOT_ARRAY_CONFIG, client, CrawlBudget())
+    assert client.calls == 1
+    assert len(jobs) == 253
+
+
+@pytest.mark.asyncio
+async def test_root_array_payload_is_addressable():
+    """Some endpoints return a bare top-level array rather than an object wrapping one."""
+    jobs = await JsonApiAdapter().fetch_list(
+        ROOT_ARRAY_CONFIG, SinglePageClient(count=3), CrawlBudget()
+    )
+    assert [JsonApiAdapter().parse(j).external_job_id for j in jobs] == ["25580", "25581", "25582"]
+
+
+@pytest.mark.asyncio
+async def test_paginated_urls_are_still_paginated():
+    """The single-page inference must not disable pagination for endpoints that do take an
+    offset -- that would silently truncate every tier-3 source to one page."""
+    client = FakeClient(total=226, server_page_size=10)
+    jobs = await JsonApiAdapter().fetch_list(CONFIG, client, CrawlBudget())
+    assert client.calls > 1
+    assert len(jobs) == 226
+
+
+class PagedClient:
+    """1-based page numbering, the convention DirectEmployers/jobsyn uses."""
+
+    def __init__(self, total: int, page_size: int) -> None:
+        self.total = total
+        self.page_size = page_size
+        self.pages_seen: list[int] = []
+
+    async def get_json(self, url: str, **kwargs: Any):
+        page = int(url.split("page=")[1].split("&")[0])
+        self.pages_seen.append(page)
+        start = (page - 1) * self.page_size
+        n = max(0, min(self.page_size, self.total - start))
+        return {
+            "jobs": [
+                {"displayJobId": f"3086{start + i}", "name": f"Engineer {start + i}"}
+                for i in range(n)
+            ],
+            "pagination": {"total": self.total},
+        }, None
+
+
+@pytest.mark.asyncio
+async def test_start_page_makes_numbering_one_based():
+    """Defaulting to page=0 against a 1-based endpoint silently skips or repeats a page."""
+    config = {
+        **CONFIG,
+        "listUrl": "https://example.com/api/search?page={page}",
+        "jobsPath": "jobs",
+        "totalPath": "pagination.total",
+        "pageSize": 10,
+        "startPage": 1,
+    }
+    client = PagedClient(total=16, page_size=10)
+    jobs = await JsonApiAdapter().fetch_list(config, client, CrawlBudget())
+    assert client.pages_seen == [1, 2]
+    assert len(jobs) == 16

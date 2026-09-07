@@ -10,9 +10,12 @@ configuration, and pretending otherwise produces a config language nobody can re
 
     "title"                                     dot path
     {"path": "a.b", "default": "x"}             dot path with a fallback
-    {"template": "https://x.com{job_path}"}     interpolate {dot.paths} into a string
+    {"template": "https://x.com{job_path}"}     interpolate {dot.paths} into a string,
+                                                optionally transformed: {city|slug}
     {"path": "office", "pluck": "name",         collapse a list of objects into a string
      "join": ", "}
+
+A path of "." refers to the payload itself, for endpoints that return a bare top-level array.
 """
 
 from __future__ import annotations
@@ -20,7 +23,23 @@ from __future__ import annotations
 import re
 from typing import Any
 
-_TEMPLATE_TOKEN = re.compile(r"\{([A-Za-z0-9_.]+)\}")
+_TEMPLATE_TOKEN = re.compile(r"\{([A-Za-z0-9_.]+)(?:\|([a-z]+))?\}")
+
+_SLUG_STRIP = re.compile(r"[^a-z0-9]+")
+
+
+def _slug(value: str) -> str:
+    """Lowercase, non-alphanumerics collapsed to single hyphens.
+
+    Job boards routinely build a URL out of a display string -- DirectEmployers links a job at
+    /<city-slug>/<title-slug>/<guid>/job/, where "Charleston, WV" becomes "charleston-wv". The
+    slug is derivable from data we already have, so this keeps such a source configuration
+    rather than making it the one case that needs a Python adapter.
+    """
+    return _SLUG_STRIP.sub("-", value.lower()).strip("-")
+
+
+_TRANSFORMS = {"slug": _slug, "lower": str.lower, "upper": str.upper}
 
 
 class FieldMapError(ValueError):
@@ -30,6 +49,12 @@ class FieldMapError(ValueError):
 def resolve_path(data: Any, path: str) -> Any:
     """Walk a dotted path. Returns None rather than raising -- a missing optional field is
     ordinary, and the required-field check belongs at the NormalizedJob boundary."""
+    # "." means the payload itself. Some endpoints (Atlassian's careers listing) return a bare
+    # top-level array rather than wrapping it in an object, and that needs to stay expressible
+    # as configuration rather than becoming a reason to write an adapter.
+    if path in (".", ""):
+        return data
+
     current: Any = data
     for part in path.split("."):
         if current is None:
@@ -62,7 +87,17 @@ def apply_spec(data: Any, spec: Any) -> Any:
 
         def substitute(match: re.Match[str]) -> str:
             value = resolve_path(data, match.group(1))
-            return "" if value is None else str(value)
+            if value is None:
+                return ""
+            transform = match.group(2)
+            if transform:
+                if transform not in _TRANSFORMS:
+                    raise FieldMapError(
+                        f"unknown template transform '{transform}'; "
+                        f"known: {', '.join(sorted(_TRANSFORMS))}"
+                    )
+                return _TRANSFORMS[transform](str(value))
+            return str(value)
 
         rendered = _TEMPLATE_TOKEN.sub(substitute, template)
         # A template that resolved to nothing is worse than absent: it produces a URL like
