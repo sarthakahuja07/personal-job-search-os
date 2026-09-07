@@ -126,6 +126,7 @@ export async function contactsForCompany(db: Db, companyId: string) {
       name: contacts.name,
       email: contacts.email,
       phone: contacts.phone,
+      linkedinUrl: contacts.linkedinUrl,
       notes: contacts.notes,
     })
     .from(contacts)
@@ -226,4 +227,124 @@ export async function getJob(db: Db, id: string) {
     .where(eq(jobs.id, id))
     .limit(1);
   return rows[0] ?? null;
+}
+
+// ---------------------------------------------------------------------------
+// Grouped board, recents, reminders
+// ---------------------------------------------------------------------------
+
+/**
+ * Every contact, keyed by company.
+ *
+ * One query for the whole board rather than one per company: the grouped view renders up to
+ * thirty companies, and thirty lookups would spend most of D1's 50-query budget on names.
+ */
+export async function contactsByCompany(db: Db) {
+  const rows = await db
+    .select({
+      companyId: contacts.companyId,
+      id: contacts.id,
+      name: contacts.name,
+      email: contacts.email,
+      phone: contacts.phone,
+      linkedinUrl: contacts.linkedinUrl,
+    })
+    .from(contacts)
+    .orderBy(asc(contacts.name));
+
+  const byCompany = new Map<string, typeof rows>();
+  for (const row of rows) {
+    const list = byCompany.get(row.companyId);
+    if (list) list.push(row);
+    else byCompany.set(row.companyId, [row]);
+  }
+  return byCompany;
+}
+
+/** Companies that currently have at least one job on the board, for the search picker. */
+export async function companiesWithJobs(db: Db, relevantOnly = true) {
+  return db
+    .select({
+      id: companies.id,
+      name: companies.name,
+      jobCount: count(jobs.id),
+    })
+    .from(companies)
+    .innerJoin(jobs, eq(jobs.companyId, companies.id))
+    .where(
+      and(
+        isNull(jobs.closedAt),
+        relevantOnly ? eq(jobs.isRelevant, true) : undefined,
+      ),
+    )
+    .groupBy(companies.id)
+    .orderBy(asc(companies.name));
+}
+
+/**
+ * Jobs discovered in the last `days`, best fit first.
+ *
+ * The dashboard's reason to exist: what appeared since you last looked, while a referral is
+ * still worth asking for. Ordered by fit rather than time because three days of Amazon output
+ * is longer than anyone reads top-to-bottom.
+ */
+export async function listRecentlyDiscovered(db: Db, days = 3, limit = 12) {
+  const since = new Date(Date.now() - days * 24 * 60 * 60 * 1000);
+  return db
+    .select({
+      id: jobs.id,
+      title: jobs.title,
+      location: jobs.location,
+      jobUrl: jobs.jobUrl,
+      postedAt: jobs.postedAt,
+      discoveredAt: jobs.discoveredAt,
+      matchScore: jobs.matchScore,
+      matchReason: jobs.matchReason,
+      locationPriority: jobs.locationPriority,
+      fitScore: jobs.fitScore,
+      fitBand: jobs.fitBand,
+      fitSignals: jobs.fitSignals,
+      fitTitleOnly: jobs.fitTitleOnly,
+      closedAt: jobs.closedAt,
+      companyId: companies.id,
+      companyName: companies.name,
+      applicationStatus: applications.status,
+    })
+    .from(jobs)
+    .innerJoin(companies, eq(jobs.companyId, companies.id))
+    .leftJoin(applications, eq(applications.jobId, jobs.id))
+    .where(and(isNull(jobs.closedAt), eq(jobs.isRelevant, true), gte(jobs.discoveredAt, since)))
+    .orderBy(desc(jobs.fitScore), desc(jobs.discoveredAt))
+    .limit(limit);
+}
+
+/**
+ * Everything the reminder rules need, in one query.
+ *
+ * Relevant, open jobs only: a reminder about a job the matcher rejected would be noise, and a
+ * closed job is not actionable. `hasContact` is resolved here rather than per reminder so the
+ * domain stays pure and the query count stays at one.
+ */
+export async function listReminderCandidates(db: Db, limit = 200) {
+  return db
+    .select({
+      jobId: jobs.id,
+      jobTitle: jobs.title,
+      companyId: companies.id,
+      companyName: companies.name,
+      status: applications.status,
+      requestedAt: applications.requestedAt,
+      referredAt: applications.referredAt,
+      appliedAt: applications.appliedAt,
+      savedAt: applications.createdAt,
+      discoveredAt: jobs.discoveredAt,
+      fitBand: jobs.fitBand,
+      hasContact: sql<number>`EXISTS (SELECT 1 FROM contacts WHERE contacts.company_id = ${companies.id})`,
+    })
+    .from(jobs)
+    .innerJoin(companies, eq(jobs.companyId, companies.id))
+    .leftJoin(applications, eq(applications.jobId, jobs.id))
+    .where(and(isNull(jobs.closedAt), eq(jobs.isRelevant, true)))
+    .orderBy(desc(jobs.fitScore))
+    .limit(limit);
 }

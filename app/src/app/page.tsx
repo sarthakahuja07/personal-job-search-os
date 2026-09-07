@@ -2,8 +2,21 @@ import Link from "next/link";
 
 import { JobCard, type JobRow } from "@/components/job-card";
 import { Badge, Card, EmptyState, PageHeader, SectionTitle, Stat } from "@/components/ui";
+import { ReminderList } from "@/components/reminder-list";
 import { getDb } from "@/db";
-import { jobStats, listCompanyHealth, listJobs } from "@/server/repository/jobs-repo";
+import { settings } from "@/db/schema";
+import {
+  buildReminders,
+  DEFAULT_THRESHOLDS,
+  type ReminderCandidate,
+} from "@/server/domain/reminders";
+import {
+  jobStats,
+  listCompanyHealth,
+  listJobs,
+  listRecentlyDiscovered,
+  listReminderCandidates,
+} from "@/server/repository/jobs-repo";
 
 export const dynamic = "force-dynamic";
 
@@ -25,13 +38,28 @@ function ago(date: Date | null): string {
   return `${Math.floor(hours / 24)}d ago`;
 }
 
+/** "Since you last looked" for someone who looks most days. */
+const RECENT_DAYS = 3;
+
 export default async function DashboardPage() {
   const db = getDb();
-  const [stats, top, health] = await Promise.all([
+  const [stats, top, health, recent, reminderRows, settingsRows] = await Promise.all([
     jobStats(db),
     listJobs(db, { sort: "best", limit: 6 }),
     listCompanyHealth(db),
+    listRecentlyDiscovered(db, RECENT_DAYS, 8),
+    listReminderCandidates(db),
+    db.select({ followUpDays: settings.followUpDays }).from(settings).limit(1),
   ]);
+
+  const reminders = buildReminders(
+    reminderRows.map((r) => ({ ...r, hasContact: Boolean(r.hasContact) })) as ReminderCandidate[],
+    {
+      ...DEFAULT_THRESHOLDS,
+      referralStatusDays: settingsRows[0]?.followUpDays ?? DEFAULT_THRESHOLDS.referralStatusDays,
+    },
+  );
+  const overdueCount = reminders.filter((r) => r.severity === "overdue").length;
 
   const automated = health.filter((c) => c.active && c.sourceType !== "manual");
   const needsAttention = automated.filter(
@@ -93,6 +121,55 @@ export default async function DashboardPage() {
           </ul>
         </section>
       )}
+
+      {reminders.length > 0 && (
+        <section className="mt-8">
+          <SectionTitle
+            action={
+              <Link
+                href="/reminders"
+                className="text-[13px] text-ink-dim transition hover:text-ink"
+              >
+                All {reminders.length} →
+              </Link>
+            }
+          >
+            Waiting on you{overdueCount > 0 && ` · ${overdueCount} overdue`}
+          </SectionTitle>
+          <ReminderList reminders={reminders} limit={4} />
+        </section>
+      )}
+
+      {/* What appeared since you last looked. Separate from "top matches" because the whole
+          premise of the crawler is reaching a posting while a referral is still worth asking
+          for -- a role found today is a different opportunity from the same role found a
+          fortnight ago, even at an identical fit score. */}
+      <section className="mt-8">
+        <SectionTitle
+          action={
+            <Link
+              href="/jobs?sort=newest"
+              className="text-[13px] text-ink-dim transition hover:text-ink"
+            >
+              View all →
+            </Link>
+          }
+        >
+          Found in the last {RECENT_DAYS} days{recent.length > 0 && ` · ${recent.length}`}
+        </SectionTitle>
+        {recent.length === 0 ? (
+          <EmptyState
+            title="Nothing new"
+            body={`No new matching roles in the last ${RECENT_DAYS} days. The crawler runs twice a day, at 06:30 and 18:30.`}
+          />
+        ) : (
+          <ul className="space-y-2">
+            {(recent as unknown as JobRow[]).map((job) => (
+              <JobCard key={job.id} job={job} />
+            ))}
+          </ul>
+        )}
+      </section>
 
       <section className="mt-8">
         <SectionTitle

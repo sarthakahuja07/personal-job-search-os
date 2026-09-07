@@ -7,6 +7,7 @@ import {
   renderTemplate,
   toE164,
   whatsappLink,
+  linkedinLink,
 } from "./templates";
 
 describe("extractVariables", () => {
@@ -151,4 +152,22 @@ describe("default templates", () => {
       expect(renderTemplate(t.body, values)).not.toContain("{{");
     }
   });
+});
+
+describe("linkedinLink", () => {
+  it.each([
+    ["https://www.linkedin.com/in/sarthak-ahuja", "https://www.linkedin.com/in/sarthak-ahuja"],
+    ["linkedin.com/in/manav", "https://www.linkedin.com/in/manav"],
+    ["www.linkedin.com/in/manav/", "https://www.linkedin.com/in/manav"],
+    ["manav-gupta", "https://www.linkedin.com/in/manav-gupta"],
+  ])("normalises %s", (input, expected) => {
+    expect(linkedinLink(input)).toBe(expected);
+  });
+
+  it.each([null, undefined, "", "   ", "https://twitter.com/someone", "a"])(
+    "rejects %s",
+    (input) => {
+      expect(linkedinLink(input)).toBeNull();
+    },
+  );
 });

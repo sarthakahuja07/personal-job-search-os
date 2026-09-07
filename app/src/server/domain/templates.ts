@@ -98,6 +98,27 @@ export function whatsappLink(phone: string | null | undefined, message: string):
   return `https://wa.me/${number}?text=${encodeURIComponent(message)}`;
 }
 
+/**
+ * A LinkedIn profile URL, normalised — never a prefilled message.
+ *
+ * LinkedIn has no public URL scheme that opens a conversation with body text; the
+ * `/messaging/thread/new` form is session-bound and unreliable from outside the app. Pretending
+ * otherwise would produce a button that silently drops the message you thought you were sending,
+ * so the UI opens the profile and puts the text on the clipboard instead, and says so.
+ */
+export function linkedinLink(url: string | null | undefined): string | null {
+  if (!url) return null;
+  const trimmed = url.trim();
+  if (!trimmed) return null;
+  // Accept a bare handle or a full URL; both are things you would realistically paste.
+  if (/^https?:\/\//i.test(trimmed)) {
+    return /linkedin\.com/i.test(trimmed) ? trimmed : null;
+  }
+  const handle = trimmed.replace(/^(?:www\.)?linkedin\.com\/(?:in\/)?/i, "").replace(/^\/+/, "");
+  if (!/^[A-Za-z0-9_-]{3,100}\/?$/.test(handle)) return null;
+  return `https://www.linkedin.com/in/${handle.replace(/\/$/, "")}`;
+}
+
 export function mailtoLink(
   email: string | null | undefined,
   subject: string,

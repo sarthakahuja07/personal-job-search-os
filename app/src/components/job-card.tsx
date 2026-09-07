@@ -1,6 +1,11 @@
 import Link from "next/link";
 
 import type { FitBand, FitSignal } from "@/server/domain/fit";
+import {
+  JobActions,
+  type OutreachContact,
+  type OutreachTemplate,
+} from "./job-actions";
 import { Badge, cx } from "./ui";
 
 const LOCATION_LABEL: Record<number, string> = {
@@ -11,6 +16,12 @@ const LOCATION_LABEL: Record<number, string> = {
 };
 
 const NEW_WINDOW_MS = 3 * 24 * 60 * 60 * 1000;
+
+/** Kept at module scope alongside daysAgo: reading the clock inside a component body is a
+ *  render-time side effect, and these cards are rendered per request on the server. */
+export function isRecent(date: Date, windowMs: number = NEW_WINDOW_MS): boolean {
+  return Date.now() - date.getTime() < windowMs;
+}
 
 function daysAgo(date: Date | null): string | null {
   if (!date) return null;
@@ -91,8 +102,21 @@ function bandOf(job: JobRow) {
   return job.fitBand ? BAND[job.fitBand] : BAND.fair;
 }
 
-export function JobCard({ job }: { job: JobRow }) {
-  const isNew = Date.now() - job.discoveredAt.getTime() < NEW_WINDOW_MS;
+/** Passed down from the page so the modal needs no round trip when it opens. */
+export type OutreachProps = {
+  contacts: OutreachContact[];
+  templates: OutreachTemplate[];
+  defaults: Record<string, string>;
+};
+
+export function JobCard({
+  job,
+  outreach,
+}: {
+  job: JobRow;
+  outreach?: OutreachProps;
+}) {
+  const isNew = isRecent(job.discoveredAt);
   const posted = daysAgo(job.postedAt);
   const found = daysAgo(job.discoveredAt);
   const band = bandOf(job);
@@ -188,14 +212,25 @@ export function JobCard({ job }: { job: JobRow }) {
           </div>
 
           <div className="mt-2.5 flex flex-wrap items-center gap-x-3 gap-y-1 text-[11px] text-ink-faint">
-            <a
-              href={job.jobUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-ink-faint underline-offset-2 transition hover:text-ink-dim hover:underline"
-            >
-              Original ↗
-            </a>
+            {outreach ? (
+              <JobActions
+                jobTitle={job.title}
+                jobUrl={job.jobUrl}
+                companyName={job.companyName}
+                contacts={outreach.contacts}
+                templates={outreach.templates}
+                defaults={outreach.defaults}
+              />
+            ) : (
+              <a
+                href={job.jobUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-ink-faint underline-offset-2 transition hover:text-ink-dim hover:underline"
+              >
+                Original ↗
+              </a>
+            )}
             {posted && <span>Posted {posted}</span>}
             {found && <span>Found {found}</span>}
             {/* "We could not assess this" and "this is a poor match" are different statements,
