@@ -76,13 +76,15 @@ describe("missingVariables", () => {
   });
 });
 
+// Every number below is from a reserved example range — never a real contact. A test fixture
+// lives in git history forever, and other people's phone numbers should not.
 describe("toE164", () => {
   it.each([
-    ["+919021709965", "919021709965"],
-    ["9021709965", "919021709965"],
-    ["+91 90217 09965", "919021709965"],
-    ["09021709965", "919021709965"],
-    ["+1 (702) 934-2659", "17029342659"],
+    ["+919876543210", "919876543210"],
+    ["9876543210", "919876543210"],
+    ["+91 98765 43210", "919876543210"],
+    ["09876543210", "919876543210"],
+    ["+1 (202) 555-0143", "12025550143"],
   ])("normalises %s", (input, expected) => {
     expect(toE164(input)).toBe(expected);
   });
@@ -97,15 +99,15 @@ describe("toE164", () => {
   );
 
   it("keeps an existing country code rather than prefixing India's", () => {
-    expect(toE164("+17029342659")).toBe("17029342659");
-    expect(toE164("+17029342659")).not.toContain("91170");
+    expect(toE164("+12025550143")).toBe("12025550143");
+    expect(toE164("+12025550143")?.startsWith("91")).toBe(false);
   });
 });
 
 describe("whatsappLink", () => {
   it("builds an encoded wa.me link", () => {
-    const link = whatsappLink("+919021709965", "Hi there & thanks!");
-    expect(link).toBe("https://wa.me/919021709965?text=Hi%20there%20%26%20thanks!");
+    const link = whatsappLink("+919876543210", "Hi there & thanks!");
+    expect(link).toBe("https://wa.me/919876543210?text=Hi%20there%20%26%20thanks!");
   });
 
   it("returns null when the number is unusable, so the UI can hide the action", () => {
