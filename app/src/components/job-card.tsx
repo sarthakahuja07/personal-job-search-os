@@ -70,14 +70,12 @@ export function JobCard({ job }: { job: JobRow }) {
           <div className="flex items-start justify-between gap-4">
             <div className="min-w-0">
               <div className="flex flex-wrap items-center gap-2">
-                <a
-                  href={job.jobUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
+                <Link
+                  href={`/jobs/${job.id}`}
                   className="truncate text-[15px] font-medium text-ink underline-offset-4 hover:text-accent-ink hover:underline"
                 >
                   {job.title}
-                </a>
+                </Link>
                 {isNew && <Badge tone="fresh">New</Badge>}
                 {job.applicationStatus && (
                   <Badge tone="accent">{job.applicationStatus}</Badge>
@@ -123,6 +121,14 @@ export function JobCard({ job }: { job: JobRow }) {
           </div>
 
           <div className="mt-2.5 flex flex-wrap items-center gap-x-3 gap-y-1 text-[11px] text-ink-faint">
+            <a
+              href={job.jobUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-ink-faint underline-offset-2 transition hover:text-ink-dim hover:underline"
+            >
+              Original ↗
+            </a>
             {posted && <span>Posted {posted}</span>}
             {found && <span>Found {found}</span>}
             {/* Every match explains itself, so filtering is never a black box. */}

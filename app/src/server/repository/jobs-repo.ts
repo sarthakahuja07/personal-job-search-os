@@ -155,6 +155,7 @@ export async function navCounts(db: Db) {
     pending_notifications: number;
     unhealthy_sources: number;
     dsa_remaining: number;
+    pipeline: number;
   }>(sql`
     SELECT
       (SELECT COUNT(*) FROM jobs WHERE is_relevant = 1 AND closed_at IS NULL) AS relevant_jobs,
@@ -162,7 +163,8 @@ export async function navCounts(db: Db) {
       (SELECT COUNT(*) FROM companies
         WHERE active = 1 AND source_type != 'manual'
           AND health_status IN ('failing','suspicious','degraded')) AS unhealthy_sources,
-      (SELECT COUNT(*) FROM prep_items WHERE kind = 'dsa' AND status != 'done') AS dsa_remaining
+      (SELECT COUNT(*) FROM prep_items WHERE kind = 'dsa' AND status != 'done') AS dsa_remaining,
+      (SELECT COUNT(*) FROM applications WHERE status != 'interviews') AS pipeline
   `);
   const r = rows[0];
   return {
@@ -170,5 +172,53 @@ export async function navCounts(db: Db) {
     pendingNotifications: Number(r?.pending_notifications ?? 0),
     unhealthySources: Number(r?.unhealthy_sources ?? 0),
     dsaRemaining: Number(r?.dsa_remaining ?? 0),
+    pipeline: Number(r?.pipeline ?? 0),
   };
+}
+
+/** Every contact with its company name, for the template composer's contact picker. */
+export async function listAllContacts(db: Db) {
+  return db
+    .select({
+      id: contacts.id,
+      name: contacts.name,
+      phone: contacts.phone,
+      email: contacts.email,
+      companyId: companies.id,
+      companyName: companies.name,
+    })
+    .from(contacts)
+    .innerJoin(companies, eq(contacts.companyId, companies.id))
+    .orderBy(asc(companies.name), asc(contacts.name));
+}
+
+/** A single job with its company, for the detail page. */
+export async function getJob(db: Db, id: string) {
+  const rows = await db
+    .select({
+      id: jobs.id,
+      title: jobs.title,
+      location: jobs.location,
+      department: jobs.department,
+      description: jobs.description,
+      jobUrl: jobs.jobUrl,
+      postedAt: jobs.postedAt,
+      discoveredAt: jobs.discoveredAt,
+      closedAt: jobs.closedAt,
+      matchScore: jobs.matchScore,
+      matchReason: jobs.matchReason,
+      locationPriority: jobs.locationPriority,
+      isRelevant: jobs.isRelevant,
+      employmentType: jobs.employmentType,
+      externalJobId: jobs.externalJobId,
+      source: jobs.source,
+      companyId: companies.id,
+      companyName: companies.name,
+      careersUrl: companies.careersUrl,
+    })
+    .from(jobs)
+    .innerJoin(companies, eq(jobs.companyId, companies.id))
+    .where(eq(jobs.id, id))
+    .limit(1);
+  return rows[0] ?? null;
 }

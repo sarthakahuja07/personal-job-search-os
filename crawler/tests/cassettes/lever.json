@@ -1,0 +1,783 @@
+{
+ "config": {
+  "slug": "zeta"
+ },
+ "careers_url": "https://jobs.lever.co/zeta",
+ "list": [
+  [
+   {
+    "additionalPlain": "Zeta is an equal opportunity employer.\u00a0\u00a0\nAt Zeta, we are committed to equal employment opportunities regardless of job history, disability, gender identity, religion, race, marital/parental status, or another special status. We are proud to be an equitable workplace that welcomes individuals from all walks of life if they fit the roles and responsibilities.\n\u00a0\n",
+    "additional": "<div><strong>Zeta is an equal opportunity employer.&nbsp;&nbsp;</strong></div>\n<div>At Zeta, we are committed to equal employment opportunities regardless of job history, disability, gender identity, religion, race, marital/parental status, or another special status. We are proud to be an equitable workplace that welcomes individuals from all walks of life if they fit the roles and responsibilitie\u2026[trimmed for fixture]",
+    "categories": {
+     "commitment": "Full-time",
+     "department": "Global SRE",
+     "location": "Hyderabad",
+     "team": "Engineering",
+     "allLocations": [
+      "Hyderabad"
+     ]
+    },
+    "createdAt": 1787732026874,
+    "descriptionPlain": "About Us\n\u00a0\nBuild the future of banking.\nZeta is a next-generation banking technology company providing cloud-native, fully stackable processing and core banking platforms for issuers. With a focus on scalability, compliance, and innovation, Zeta empowers financial institutions to modernize their technology infrastructure and deliver secure, seamless digital banking experiences.\u00a0\n\u00a0\nOur impact runs \u2026[trimmed for fixture]",
+    "description": "<div>\n<div><strong>About Us</strong></div>\n<div>&nbsp;</div>\n<div><strong>Build the future of banking.</strong></div>\n<div><u><a href=\"https://www.zeta.tech/in/\">Zeta</a></u> is a next-generation banking technology company providing cloud-native, fully stackable processing and core banking platforms for issuers. With a focus on scalability, compliance, and innovation, Zeta empowers financial insti\u2026[trimmed for fixture]",
+    "id": "dad16204-8051-4517-9e50-966f329045b5",
+    "lists": [
+     {
+      "text": "Responsibilities:",
+      "content": "<div>\n<div>\n<ul style=\"list-style-type: square;\">\n<li><span data-contrast=\"auto\">Build and maintain cloud infrastructure and network automation across AWS, and Cloudflare environments.&nbsp;</span></li>\n<li><span data-contrast=\"auto\">Troubleshoot production cloud, network, and CDN issues while improving operational efficiency through automation.&nbsp;</span></li>\n<li><span data-contrast=\"auto\">Cre\u2026[trimmed for fixture]"
+     },
+     {
+      "text": "Skills:",
+      "content": "<div>\n<div>\n<ul style=\"list-style-type: square;\">\n<li><span data-contrast=\"auto\">Hands-on experience with </span><span data-contrast=\"auto\">AWS</span><span data-contrast=\"auto\"> (mandatory), Linux, Kubernetes (EKS preferred), and Terraform or Cross plane.&nbsp;</span></li>\n<li><span data-contrast=\"auto\">Strong scripting skills in&nbsp;</span><span data-contrast=\"auto\">Python</span><span data-contr\u2026[trimmed for fixture]"
+     },
+     {
+      "text": "Experience and Qualifications:",
+      "content": "\n<li>Bachelor's or Master's degree in a relevant field (Computer Science, Information Technology, etc.).</li>\n<li><span data-contrast=\"auto\" style=\"list-style-type: disc;\">2\u20133 years of experience in Cloud Networking, Infrastructure Automation, or DevOps.</span></li>\n"
+     }
+    ],
+    "text": "Cloud Network Engineer II",
+    "country": "IN",
+    "workplaceType": "onsite",
+    "opening": "",
+    "openingPlain": "",
+    "descriptionBody": "<div>\n<div><strong>About Us</strong></div>\n<div>&nbsp;</div>\n<div><strong>Build the future of banking.</strong></div>\n<div><u><a href=\"https://www.zeta.tech/in/\">Zeta</a></u> is a next-generation banking technology company providing cloud-native, fully stackable processing and core banking platforms for issuers. With a focus on scalability, compliance, and innovation, Zeta empowers financial insti\u2026[trimmed for fixture]",
+    "descriptionBodyPlain": "About Us\n\u00a0\nBuild the future of banking.\nZeta is a next-generation banking technology company providing cloud-native, fully stackable processing and core banking platforms for issuers. With a focus on scalability, compliance, and innovation, Zeta empowers financial institutions to modernize their technology infrastructure and deliver secure, seamless digital banking experiences.\u00a0\n\u00a0\nOur impact runs \u2026[trimmed for fixture]",
+    "hostedUrl": "https://jobs.lever.co/zeta/dad16204-8051-4517-9e50-966f329045b5",
+    "applyUrl": "https://jobs.lever.co/zeta/dad16204-8051-4517-9e50-966f329045b5/apply"
+   },
+   {
+    "additionalPlain": "Zeta is an equal opportunity employer. We celebrate diversity and are committed to creating an inclusive environment for all employees. We encourage applicants from all backgrounds, cultures, and communities to apply and believe that a diverse workforce is key to our success.\n",
+    "additional": "<div>Zeta is an equal opportunity employer. We celebrate diversity and are committed to creating an inclusive environment for all employees. We encourage applicants from all backgrounds, cultures, and communities to apply and believe that a diverse workforce is key to our success.</div>",
+    "categories": {
+     "commitment": "Full-time",
+     "department": "Risk & Compliance",
+     "location": "Bangalore",
+     "team": "Risk & Compliance",
+     "allLocations": [
+      "Bangalore"
+     ]
+    },
+    "createdAt": 1782901087094,
+    "descriptionPlain": "About us:\nBuild the future of banking.\n\nZeta is a next-generation banking technology company providing cloud-native, fully stackable processing and core banking platforms for issuers. With a focus on scalability, compliance, and innovation, Zeta empowers financial institutions to modernize their technology infrastructure and deliver secure, seamless digital banking experiences.\u00a0\n\u00a0\nOur impact runs \u2026[trimmed for fixture]",
+    "description": "<div>\n<div style=\"text-align: justify;\"><strong>About us:<br>Build the future of banking.<br><br></strong></div>\n<div style=\"text-align: justify;\"><a rel=\"noopener noreferrer\" href=\"https://www.zeta.tech/in/\" class=\"postings-link\"><u>Zeta</u></a> is a next-generation banking technology company providing cloud-native, fully stackable processing and core banking platforms for issuers. With a focus o\u2026[trimmed for fixture]",
+    "id": "f43a76bd-ec4e-4b4b-a331-93d5d85434a5",
+    "lists": [
+     {
+      "text": "Responsibilities:",
+      "content": "<div>\n<div>\n<ul style=\"list-style-type: disc;\">\n<li data-renderer-start-pos=\"1591\" data-local-id=\"1019db0395bb\" style=\"text-align: justify;\"><strong data-renderer-mark=\"true\">Endpoint &amp; Identity Security:</strong> Assess and regulate/optimize Microsoft Entra ID (Conditional Access, Identity Protection) and Intune <span data-testid=\"definition-highlighter\">MDM</span>/MAM to manage configuration\u2026[trimmed for fixture]"
+     },
+     {
+      "text": "Skills:",
+      "content": "<div>\n<ul data-local-id=\"ffdf2dcc-ef03-4d3a-b206-6338d9ed08ee\" data-indent-level=\"1\" style=\"list-style-type: disc;\">\n<li>\n<p data-renderer-start-pos=\"3686\" data-local-id=\"11ce11e54966\" style=\"text-align: justify;\"><strong data-renderer-mark=\"true\">Microsoft Stack:</strong> Strong understanding of M365 product/security suites, Intune deployments, and hybrid identity environments.&nbsp;</p>\n</li>\n\n<\u2026[trimmed for fixture]"
+     },
+     {
+      "text": "Experience and Qualifications:",
+      "content": "<div style=\"text-align: justify;\">\n\n<li>3+ years of experience in Information Security, Risk &amp; Compliance, Endpoint Security, Network Security or Technical <span data-highlighted=\"true\" data-vc=\"highlighted-text\">GRC</span> role.&nbsp;</li>\n<li>\n<p data-renderer-start-pos=\"5594\" data-local-id=\"0614c8839e24\">Bachelor of Technology (BE/<span data-renderer-mark=\"true\">B.Tech</span>) in Computer S\u2026[trimmed for fixture]"
+     }
+    ],
+    "text": "Corporate Risk and Compliance - Associate II",
+    "country": "IN",
+    "workplaceType": "onsite",
+    "opening": "",
+    "openingPlain": "",
+    "descriptionBody": "<div>\n<div style=\"text-align: justify;\"><strong>About us:<br>Build the future of banking.<br><br></strong></div>\n<div style=\"text-align: justify;\"><a class=\"postings-link\" href=\"https://www.zeta.tech/in/\" target=\"_blank\" rel=\"noopener noreferrer\"><u>Zeta</u></a> is a next-generation banking technology company providing cloud-native, fully stackable processing and core banking platforms for issuers\u2026[trimmed for fixture]",
+    "descriptionBodyPlain": "About us:\nBuild the future of banking.\n\nZeta is a next-generation banking technology company providing cloud-native, fully stackable processing and core banking platforms for issuers. With a focus on scalability, compliance, and innovation, Zeta empowers financial institutions to modernize their technology infrastructure and deliver secure, seamless digital banking experiences.\u00a0\n\u00a0\nOur impact runs \u2026[trimmed for fixture]",
+    "hostedUrl": "https://jobs.lever.co/zeta/f43a76bd-ec4e-4b4b-a331-93d5d85434a5",
+    "applyUrl": "https://jobs.lever.co/zeta/f43a76bd-ec4e-4b4b-a331-93d5d85434a5/apply"
+   },
+   {
+    "additionalPlain": "\u00a0\nEqual Opportunity\nZeta is an equal opportunity employer. We celebrate diversity and are committed to creating an inclusive environment for all employees. We encourage applicants from all backgrounds, cultures, and communities to apply and believe that a diverse workforce is key to our success\n\u00a0\n",
+    "additional": "<p>&nbsp;</p>\n<h2 data-local-id=\"18bd348c9d5c\" data-renderer-start-pos=\"9350\" tabindex=\"-1\" id=\"Equal-Opportunity\">Equal Opportunity</h2>\n<div>Zeta is an equal opportunity employer. We celebrate diversity and are committed to creating an inclusive environment for all employees. We encourage applicants from all backgrounds, cultures, and communities to apply and believe that a diverse workforce is \u2026[trimmed for fixture]",
+    "categories": {
+     "commitment": "Full-time",
+     "department": "Corp IT",
+     "location": "Bangalore - DD",
+     "team": "Information Technology",
+     "allLocations": [
+      "Bangalore - DD"
+     ]
+    },
+    "createdAt": 1784285713107,
+    "descriptionPlain": "About Us\nBuild the future of banking.\nZeta is a next-generation banking technology company providing cloud-native, fully stackable processing and core banking platforms for issuers. With a focus on scalability, compliance, and innovation, Zeta empowers financial institutions to modernize their technology infrastructure and deliver secure, seamless digital banking experiences.\n\u00a0Our Impact and Growt\u2026[trimmed for fixture]",
+    "description": "<div>\n<h3 data-renderer-start-pos=\"13\" data-local-id=\"7a3404040916\"><strong data-renderer-mark=\"true\">About Us</strong></h3>\n<h4 data-renderer-start-pos=\"13\" data-local-id=\"7a3404040916\"><strong data-renderer-mark=\"true\">Build the future of banking.</strong></h4>\n<p data-renderer-start-pos=\"43\" data-local-id=\"da5e6a5304f1\" style=\"text-align: justify;\"><a data-renderer-mark=\"true\" data-is-router-li\u2026[trimmed for fixture]",
+    "id": "500c585f-65ba-4f6a-b515-7d73680038c3",
+    "lists": [
+     {
+      "text": "Responsibilities ",
+      "content": "<ol data-local-id=\"9194f7161b36\" data-indent-level=\"1\" start=\"1\" style=\"list-style-type: decimal;\">\n<li>\n<p data-renderer-start-pos=\"3641\" data-local-id=\"c42c6ff9613a\"><strong data-renderer-mark=\"true\">Enterprise Applications Strategy &amp; Vendor Management (Primary Focus)</strong>&nbsp;</p>\n</li>\n</ol>\n<ul data-local-id=\"186ffb56-8fb5-4ba0-b7ed-88dec3c9e0c0\" data-indent-level=\"1\" style=\"list-sty\u2026[trimmed for fixture]"
+     },
+     {
+      "text": "Skills",
+      "content": "<div>\n<p><strong data-start=\"770\" data-end=\"790\">Technical Skills</strong></p>\n<ul data-start=\"791\" data-end=\"1198\">\n<li data-section-id=\"1u2yn6t\" data-start=\"791\" data-end=\"914\">\n<p>Strong understanding of enterprise application architecture, systems integration, and digital transformation initiatives.</p>\n</li>\n<li data-section-id=\"1emkvm0\" data-start=\"915\" data-end=\"1068\">\n<p>Solid knowledge of\u2026[trimmed for fixture]"
+     },
+     {
+      "text": "Experience and Qualifications",
+      "content": "<div>\n\n<li data-section-id=\"u7se7x\" data-start=\"1469\" data-end=\"1558\">\n<p>Bachelor's degree in Computer Science, Information Technology, or a related discipline.</p>\n</li>\n<li data-section-id=\"1gk5025\" data-start=\"1559\" data-end=\"1575\">\n<p>MBA preferred.</p>\n</li>\n<li data-section-id=\"5dxhb\" data-start=\"1576\" data-end=\"1663\" data-is-last-node=\"\">\n<p>Professional certifications such as PMP, ITIL, C\u2026[trimmed for fixture]"
+     }
+    ],
+    "text": "Director \u2013 Enterprise Applications & IT Infrastructure",
+    "country": "IN",
+    "workplaceType": "onsite",
+    "opening": "",
+    "openingPlain": "",
+    "descriptionBody": "<div>\n<h3 data-local-id=\"7a3404040916\" data-renderer-start-pos=\"13\"><strong data-renderer-mark=\"true\">About Us</strong></h3>\n<h4 data-local-id=\"7a3404040916\" data-renderer-start-pos=\"13\"><strong data-renderer-mark=\"true\">Build the future of banking.</strong></h4>\n<p style=\"text-align: justify;\" data-local-id=\"da5e6a5304f1\" data-renderer-start-pos=\"43\"><a title=\"https://www.zeta.tech/in/\" href=\"htt\u2026[trimmed for fixture]",
+    "descriptionBodyPlain": "About Us\nBuild the future of banking.\nZeta is a next-generation banking technology company providing cloud-native, fully stackable processing and core banking platforms for issuers. With a focus on scalability, compliance, and innovation, Zeta empowers financial institutions to modernize their technology infrastructure and deliver secure, seamless digital banking experiences.\n\u00a0Our Impact and Growt\u2026[trimmed for fixture]",
+    "hostedUrl": "https://jobs.lever.co/zeta/500c585f-65ba-4f6a-b515-7d73680038c3",
+    "applyUrl": "https://jobs.lever.co/zeta/500c585f-65ba-4f6a-b515-7d73680038c3/apply"
+   },
+   {
+    "additionalPlain": "Equal Opportunity\u00a0\nZeta is an equal opportunity employer. We celebrate diversity and are committed to creating an inclusive environment for all employees. We encourage applicants from all backgrounds, cultures, and communities to apply and believe that a diverse workforce is key to our success.\u00a0\n",
+    "additional": "<div>\n<h2><span data-ccp-parastyle=\"heading 2\">Equal Opportunity</span><span data-ccp-props=\"{&quot;134233117&quot;:false,&quot;134233118&quot;:false,&quot;134245418&quot;:true,&quot;134245529&quot;:true,&quot;201341983&quot;:0,&quot;335551550&quot;:1,&quot;335551620&quot;:1,&quot;335559685&quot;:0,&quot;335559737&quot;:0,&quot;335559738&quot;:160,&quot;335559739&quot;:80,&quot;335559740&quot;:279\u2026[trimmed for fixture]",
+    "categories": {
+     "commitment": "Full-time",
+     "department": "Corp IT",
+     "location": "Bangalore - WF",
+     "team": "Information Technology",
+     "allLocations": [
+      "Bangalore - WF"
+     ]
+    },
+    "createdAt": 1786629825870,
+    "descriptionPlain": "About Zeta\nBuild the future of banking\n\u00a0\nZeta is a next-generation banking technology company providing cloud-native, fully stackable processing and core banking platforms for issuers. With a focus on scalability, compliance, and innovation, Zeta empowers financial institutions to modernize their technology infrastructure and deliver secure, seamless digital banking experiences.\n\u00a0\nOur impact runs \u2026[trimmed for fixture]",
+    "description": "<div>\n<h2><span data-ccp-parastyle=\"heading 2\">About Zeta</span></h2>\n<div><span data-contrast=\"none\">Build the future of banking</span></div>\n<div>&nbsp;</div>\n<div><a rel=\"noreferrer noopener\" href=\"https://www.zeta.tech/in/\"><span data-ccp-charstyle=\"Hyperlink\">Zeta</span></a><span data-contrast=\"none\"> is a next-generation banking technology company providing cloud-native, fully stackable proc\u2026[trimmed for fixture]",
+    "id": "367dd077-3ce8-4b7b-bc9f-1726f49ffbce",
+    "lists": [
+     {
+      "text": "About the Role",
+      "content": "<div>As an IT Support Executive, this individual will play a crucial role in providing technical assistance and support (hardware and software) to an organization's users.&nbsp;</div>"
+     },
+     {
+      "text": "Responsibilities",
+      "content": "<div>\n<ul data-indent-level=\"1\" style=\"list-style-type: disc;\">\n<li>Drive closure of local IT user calls within the specified SLAs.</li>\n<li>Coordinate with contractors/vendors, monitor progress of work, escalate delays and changes to the manager.</li>\n<li>Review/Prepare Daily, Monthly and Quarterly call analysis report, call trend report and</li>\n<li>Hardware failure report.</li>\n<li>Co-ordinate \u2026[trimmed for fixture]"
+     },
+     {
+      "text": "Skills",
+      "content": "<div>\n<ul data-indent-level=\"1\" style=\"list-style-type: disc;\">\n<li>You possess strong problem solving skills with ability to organize and analyze data</li>\n<li>You are confident, creative, proactive in taking initiatives and achieving them</li>\n<li>You are a goal-oriented individual with a strong attention to detail</li>\n<li>Should have basic knowledge of Mac, Linux and Network Installation, conf\u2026[trimmed for fixture]"
+     },
+     {
+      "text": "Experience and Qualifications",
+      "content": "<div>\n<ul data-indent-level=\"1\" style=\"list-style-type: disc;\">\n<li>Graduation in IT is highly preferable.</li>\n<li>Candidate should have good knowledge of IT products.</li>\n<li>You have 3+ years of relevant experience</li>\n<li>Shift Working hours involved , candidates should be comfortable working in shifts.</li>\n\n</ul></div>"
+     }
+    ],
+    "text": "Executive - IT Support",
+    "country": "IN",
+    "workplaceType": "onsite",
+    "opening": "",
+    "openingPlain": "",
+    "descriptionBody": "<div>\n<h2><span data-ccp-parastyle=\"heading 2\">About Zeta</span></h2>\n<div><span xml:lang=\"EN-GB\" data-contrast=\"none\">Build the future of banking</span></div>\n<div>&nbsp;</div>\n<div><a href=\"https://www.zeta.tech/in/\" target=\"_blank\" rel=\"noreferrer noopener\"><span data-ccp-charstyle=\"Hyperlink\">Zeta</span></a><span xml:lang=\"EN-GB\" data-contrast=\"none\"> is a next-generation banking technology co\u2026[trimmed for fixture]",
+    "descriptionBodyPlain": "About Zeta\nBuild the future of banking\n\u00a0\nZeta is a next-generation banking technology company providing cloud-native, fully stackable processing and core banking platforms for issuers. With a focus on scalability, compliance, and innovation, Zeta empowers financial institutions to modernize their technology infrastructure and deliver secure, seamless digital banking experiences.\n\u00a0\nOur impact runs \u2026[trimmed for fixture]",
+    "hostedUrl": "https://jobs.lever.co/zeta/367dd077-3ce8-4b7b-bc9f-1726f49ffbce",
+    "applyUrl": "https://jobs.lever.co/zeta/367dd077-3ce8-4b7b-bc9f-1726f49ffbce/apply"
+   },
+   {
+    "additionalPlain": "",
+    "additional": "<div>\n<h2><span data-ccp-parastyle=\"heading 2\">Equal Opportunity</span><span data-ccp-props=\"{&quot;134233117&quot;:false,&quot;134233118&quot;:false,&quot;134245418&quot;:true,&quot;134245529&quot;:true,&quot;201341983&quot;:0,&quot;335551550&quot;:1,&quot;335551620&quot;:1,&quot;335559685&quot;:0,&quot;335559737&quot;:0,&quot;335559738&quot;:160,&quot;335559739&quot;:80,&quot;335559740&quot;:279\u2026[trimmed for fixture]",
+    "categories": {
+     "commitment": "Full-time",
+     "department": "Corp IT",
+     "location": "Mumbai",
+     "team": "Information Technology",
+     "allLocations": [
+      "Mumbai"
+     ]
+    },
+    "createdAt": 1786623808202,
+    "descriptionPlain": "",
+    "description": "<div>\n<h2><span data-ccp-parastyle=\"heading 2\">About Zeta</span></h2>\n<div><span data-contrast=\"none\">Build the future of banking</span></div>\n<div>&nbsp;</div>\n<div><a rel=\"noreferrer noopener\" href=\"https://www.zeta.tech/in/\"><span data-ccp-charstyle=\"Hyperlink\">Zeta</span></a><span data-contrast=\"none\"> is a next-generation banking technology company providing cloud-native, fully stackable proc\u2026[trimmed for fixture]",
+    "id": "aa98c726-9336-4d99-be08-20050eaf309c",
+    "lists": [
+     {
+      "text": "About the Role",
+      "content": "<p>As an IT Support Executive, this individual will play a crucial role in providing technical assistance and support (hardware and software) to an organization's users.&nbsp;</p>"
+     },
+     {
+      "text": "Responsibilities",
+      "content": "<div>\n<ul data-indent-level=\"1\" style=\"list-style-type: disc;\">\n<li>Drive closure of local IT user calls within the specified SLAs.</li>\n<li>Coordinate with contractors/vendors, monitor progress of work, escalate delays and changes to the manager.</li>\n<li>Review/Prepare Daily, Monthly and Quarterly call analysis report, call trend report and</li>\n<li>Hardware failure report.</li>\n<li>Co-ordinate \u2026[trimmed for fixture]"
+     },
+     {
+      "text": "Skills",
+      "content": "<div>\n<ul data-indent-level=\"1\" style=\"list-style-type: disc;\">\n<li>You possess strong problem solving skills with ability to organize and analyze data</li>\n<li>You are confident, creative, proactive in taking initiatives and achieving them</li>\n<li>You are a goal-oriented individual with a strong attention to detail</li>\n<li>Should have basic knowledge of Mac, Linux and Network Installation, conf\u2026[trimmed for fixture]"
+     },
+     {
+      "text": "Experience and Qualifications",
+      "content": "<div>\n<ul data-indent-level=\"1\" style=\"list-style-type: disc;\">\n<li>Graduation in IT is highly preferable.</li>\n<li>Candidate should have good knowledge of IT products.</li>\n<li>You have 3+ years of relevant experience</li>\n<li>Shift Working hours involved , candidates should be comfortable working in shifts.</li>\n\n</ul></div>"
+     }
+    ],
+    "text": "Executive - IT Support",
+    "country": "IN",
+    "workplaceType": "onsite",
+    "opening": "",
+    "openingPlain": "",
+    "descriptionBody": "<div>\n<h2><span data-ccp-parastyle=\"heading 2\">About Zeta</span></h2>\n<div><span xml:lang=\"EN-GB\" data-contrast=\"none\">Build the future of banking</span></div>\n<div>&nbsp;</div>\n<div><a href=\"https://www.zeta.tech/in/\" target=\"_blank\" rel=\"noreferrer noopener\"><span data-ccp-charstyle=\"Hyperlink\">Zeta</span></a><span xml:lang=\"EN-GB\" data-contrast=\"none\"> is a next-generation banking technology co\u2026[trimmed for fixture]",
+    "descriptionBodyPlain": "",
+    "hostedUrl": "https://jobs.lever.co/zeta/aa98c726-9336-4d99-be08-20050eaf309c",
+    "applyUrl": "https://jobs.lever.co/zeta/aa98c726-9336-4d99-be08-20050eaf309c/apply"
+   },
+   {
+    "additionalPlain": "Zeta is an equal opportunity employer.\u00a0\u00a0\nAt Zeta, we are committed to equal employment opportunities regardless of job history, disability, gender identity, religion, race, marital/parental status, or another special status. We are proud to be an equitable workplace that welcomes individuals from all walks of life if they fit the roles and responsibilities.\n",
+    "additional": "<div><strong style=\"font-size: 16px;\">Zeta is an equal opportunity employer.&nbsp;&nbsp;</strong></div>\n<div><span style=\"font-size: 16px;\">At Zeta, we are committed to equal employment opportunities regardless of job history, disability, gender identity, religion, race, marital/parental status, or another special status. We are proud to be an equitable workplace that welcomes individuals from all\u2026[trimmed for fixture]",
+    "categories": {
+     "commitment": "Full-time",
+     "department": "CTO Office",
+     "location": "Hyderabad",
+     "team": "Engineering",
+     "allLocations": [
+      "Hyderabad"
+     ]
+    },
+    "createdAt": 1756191150287,
+    "descriptionPlain": "About Zeta:\n\u00a0\nBuild the future of banking.\nZeta is a next-generation banking technology company providing cloud-native, fully stackable processing and core banking platforms for issuers. With a focus on scalability, compliance, and innovation, Zeta empowers financial institutions to modernize their technology infrastructure and deliver secure, seamless digital banking experiences.\u00a0\n\u00a0\nOur impact ru\u2026[trimmed for fixture]",
+    "description": "<div><strong style=\"font-size: 16px;\">About Zeta</strong><span style=\"font-size: 16px;\">:</span></div>\n<div>&nbsp;</div>\n<div><strong>Build the future of banking.</strong></div>\n<div><u><a rel=\"noopener noreferrer\" href=\"https://www.zeta.tech/in/\" class=\"postings-link\">Zeta</a></u> is a next-generation banking technology company providing cloud-native, fully stackable processing and core banking p\u2026[trimmed for fixture]",
+    "id": "32ea9654-98a8-445b-98ef-e6ada520d35a",
+    "lists": [
+     {
+      "text": "Responsibilities:",
+      "content": "\n<li>Leverage deep expertise in database management and optimization to ensure high performance and reliability of our data systems.</li>\n<li>Identify bottlenecks and performance issues within data pipelines, optimize query performance, data access, and overall data processing.</li>\n<li>Design, deploy, and manage complex data systems in cloud environments (e.g., AWS, Azure, GCP) using tools such a\u2026[trimmed for fixture]"
+     },
+     {
+      "text": "Skills:",
+      "content": "\n<li><strong>Leadership: </strong>Proven leadership skills with the ability to inspire and motivate a team.</li>\n<li><strong>Project Management: </strong>Proven experience in managing complex database projects.</li>\n<li><strong>Database Management Systems: </strong>Expertise in one or more relational database management systems.</li>\n<li><strong>Security and Compliance: </strong>In-depth knowledge\u2026[trimmed for fixture]"
+     },
+     {
+      "text": "Experience and Qualifications:",
+      "content": "\n<li>Bachelor\u2019s degree in Computer Science or equivalent with 8 - 11 years of hands-on experience in database management and optimization on various relational databases with PostgreSQL as primary skillset.</li>\n<li>Experience in Cloud Databases administration - Configuration, Backup/Restore, replication which are in the order of 10s of TB in size.&nbsp;</li>\n<li>Expertise in identifying and resol\u2026[trimmed for fixture]"
+     }
+    ],
+    "text": "Lead / Manager Data Reliability Engineering",
+    "country": "IN",
+    "workplaceType": "onsite",
+    "opening": "",
+    "openingPlain": "",
+    "descriptionBody": "<div><strong style=\"font-size: 16px;\">About Zeta</strong><span style=\"font-size: 16px;\">:</span></div>\n<div>&nbsp;</div>\n<div><strong>Build the future of banking.</strong></div>\n<div><u><a class=\"postings-link\" href=\"https://www.zeta.tech/in/\" target=\"_blank\" rel=\"noopener noreferrer\">Zeta</a></u> is a next-generation banking technology company providing cloud-native, fully stackable processing an\u2026[trimmed for fixture]",
+    "descriptionBodyPlain": "About Zeta:\n\u00a0\nBuild the future of banking.\nZeta is a next-generation banking technology company providing cloud-native, fully stackable processing and core banking platforms for issuers. With a focus on scalability, compliance, and innovation, Zeta empowers financial institutions to modernize their technology infrastructure and deliver secure, seamless digital banking experiences.\u00a0\n\u00a0\nOur impact ru\u2026[trimmed for fixture]",
+    "hostedUrl": "https://jobs.lever.co/zeta/32ea9654-98a8-445b-98ef-e6ada520d35a",
+    "applyUrl": "https://jobs.lever.co/zeta/32ea9654-98a8-445b-98ef-e6ada520d35a/apply"
+   },
+   {
+    "additionalPlain": "Zeta is an equal opportunity employer.\u00a0\u00a0\nAt Zeta, we are committed to equal employment opportunities regardless of job history, disability, gender identity, religion, race, marital/parental status, or another special status. We are proud to be an equitable workplace that welcomes individuals from all walks of life if they fit the roles and responsibilities.\n",
+    "additional": "<div><strong style=\"font-size: 16px;\">Zeta is an equal opportunity employer.&nbsp;&nbsp;</strong></div>\n<div><span style=\"font-size: 16px;\">At Zeta, we are committed to equal employment opportunities regardless of job history, disability, gender identity, religion, race, marital/parental status, or another special status. We are proud to be an equitable workplace that welcomes individuals from all\u2026[trimmed for fixture]",
+    "categories": {
+     "commitment": "Full-time",
+     "department": "Studio Pluxee",
+     "location": "Hyderabad",
+     "team": "Engineering",
+     "allLocations": [
+      "Hyderabad"
+     ]
+    },
+    "createdAt": 1784700731911,
+    "descriptionPlain": "About Us\n\u00a0\nBuild the future of banking.\nZeta is a next-generation banking technology company providing cloud-native, fully stackable processing and core banking platforms for issuers. With a focus on scalability, compliance, and innovation, Zeta empowers financial institutions to modernize their technology infrastructure and deliver secure, seamless digital banking experiences.\u00a0\n\u00a0\nOur impact runs \u2026[trimmed for fixture]",
+    "description": "<div><strong>About Us</strong></div>\n<div>&nbsp;</div>\n<div><strong>Build the future of banking.</strong></div>\n<div><a rel=\"noopener noreferrer\" href=\"https://www.zeta.tech/in/\" class=\"postings-link\"><u>Zeta</u></a> is a next-generation banking technology company providing cloud-native, fully stackable processing and core banking platforms for issuers. With a focus on scalability, compliance, and\u2026[trimmed for fixture]",
+    "id": "5eb7a75b-312c-4759-8813-70e67b5d4109",
+    "lists": [
+     {
+      "text": "Responsibilities",
+      "content": "\n<li>Establish a SRE site and help build an effective, inclusive SRE team.</li>\n<li>Provide technical leadership for the local team and work closely with partner team technical leads and cloud leadership.</li>\n<li>Provide guidance to other team members on managing availability and performance of mission critical services, on building automation to prevent problem recurrence, and building automated\u2026[trimmed for fixture]"
+     },
+     {
+      "text": "Skills",
+      "content": "\n<li>Experience designing, analyzing, and troubleshooting large-scale distributed systems.</li>\n<li>Experience in MySQL or Postgres SQL in database.</li>\n<li>Hands-on experience on operating with k8s and any cloud.</li>\n<li>Excellent communication skills and a sense of ownership, with a systematic problem-solving approach</li>\n"
+     },
+     {
+      "text": "Experience and Qualifications:",
+      "content": "<div>\n<div>\n\n<li>Bachelor\u2019s/Master\u2019s degree in engineering (computer science, information systems)</li>\n<li>6-10 years of experience in distributed systems, storage systems, or databases, algorithms and data structures and/or Unix/Linux systems internals (e.g., filesystems, system calls) and administration</li>\n\n</div>\n</div>"
+     }
+    ],
+    "text": "Lead Site Reliability Engineer",
+    "country": "IN",
+    "workplaceType": "onsite",
+    "opening": "",
+    "openingPlain": "",
+    "descriptionBody": "<div><strong>About Us</strong></div>\n<div>&nbsp;</div>\n<div><strong>Build the future of banking.</strong></div>\n<div><a class=\"postings-link\" href=\"https://www.zeta.tech/in/\" target=\"_blank\" rel=\"noopener noreferrer\"><u>Zeta</u></a> is a next-generation banking technology company providing cloud-native, fully stackable processing and core banking platforms for issuers. With a focus on scalability,\u2026[trimmed for fixture]",
+    "descriptionBodyPlain": "About Us\n\u00a0\nBuild the future of banking.\nZeta is a next-generation banking technology company providing cloud-native, fully stackable processing and core banking platforms for issuers. With a focus on scalability, compliance, and innovation, Zeta empowers financial institutions to modernize their technology infrastructure and deliver secure, seamless digital banking experiences.\u00a0\n\u00a0\nOur impact runs \u2026[trimmed for fixture]",
+    "hostedUrl": "https://jobs.lever.co/zeta/5eb7a75b-312c-4759-8813-70e67b5d4109",
+    "applyUrl": "https://jobs.lever.co/zeta/5eb7a75b-312c-4759-8813-70e67b5d4109/apply"
+   },
+   {
+    "additionalPlain": "Zeta is an equal opportunity employer.\u00a0\u00a0\nAt Zeta, we are committed to equal employment opportunities regardless of job history, disability, gender identity, religion, race, marital/parental status, or another special status. We are proud to be an equitable workplace that welcomes individuals from all walks of life if they fit the roles and responsibilities.\n",
+    "additional": "<div><strong style=\"font-size: 16px;\">Zeta is an equal opportunity employer.&nbsp;&nbsp;</strong></div>\n<div><span style=\"font-size: 16px;\">At Zeta, we are committed to equal employment opportunities regardless of job history, disability, gender identity, religion, race, marital/parental status, or another special status. We are proud to be an equitable workplace that welcomes individuals from all\u2026[trimmed for fixture]",
+    "categories": {
+     "commitment": "Full-time",
+     "department": "Studio - Next Orbit",
+     "location": "Hyderabad",
+     "team": "Engineering",
+     "allLocations": [
+      "Hyderabad"
+     ]
+    },
+    "createdAt": 1784699953951,
+    "descriptionPlain": "About Us\n\u00a0\nBuild the future of banking.\nZeta is a next-generation banking technology company providing cloud-native, fully stackable processing and core banking platforms for issuers. With a focus on scalability, compliance, and innovation, Zeta empowers financial institutions to modernize their technology infrastructure and deliver secure, seamless digital banking experiences.\u00a0\n\u00a0\nOur impact runs \u2026[trimmed for fixture]",
+    "description": "<div><strong>About Us</strong></div>\n<div>&nbsp;</div>\n<div><strong>Build the future of banking.</strong></div>\n<div><a rel=\"noopener noreferrer\" href=\"https://www.zeta.tech/in/\" class=\"postings-link\"><u>Zeta</u></a> is a next-generation banking technology company providing cloud-native, fully stackable processing and core banking platforms for issuers. With a focus on scalability, compliance, and\u2026[trimmed for fixture]",
+    "id": "803792f5-0e9c-45bc-82ce-c0a552ce0cf8",
+    "lists": [
+     {
+      "text": "Responsibilities",
+      "content": "\n<li>Establish a SRE site and help build an effective, inclusive SRE team.</li>\n<li>Provide technical leadership for the local team and work closely with partner team technical leads and cloud leadership.</li>\n<li>Provide guidance to other team members on managing availability and performance of mission critical services, on building automation to prevent problem recurrence, and building automated\u2026[trimmed for fixture]"
+     },
+     {
+      "text": "Skills",
+      "content": "\n<li>Experience designing, analyzing, and troubleshooting large-scale distributed systems.</li>\n<li>Experience in MySQL or Postgres SQL in database.</li>\n<li>Hands-on experience on operating with k8s and any cloud.</li>\n<li>Excellent communication skills and a sense of ownership, with a systematic problem-solving approach</li>\n"
+     },
+     {
+      "text": "Experience and Qualifications:",
+      "content": "<div>\n\n<li>Bachelor\u2019s/Master\u2019s degree in engineering (computer science, information systems)</li>\n<li>6-10 years of experience in distributed systems, storage systems, or databases, algorithms and data structures and/or Unix/Linux systems internals (e.g., filesystems, system calls) and administration</li>\n\n</div>"
+     }
+    ],
+    "text": "Lead Site Reliability Engineer",
+    "country": "IN",
+    "workplaceType": "onsite",
+    "opening": "",
+    "openingPlain": "",
+    "descriptionBody": "<div><strong>About Us</strong></div>\n<div>&nbsp;</div>\n<div><strong>Build the future of banking.</strong></div>\n<div><a class=\"postings-link\" href=\"https://www.zeta.tech/in/\" target=\"_blank\" rel=\"noopener noreferrer\"><u>Zeta</u></a> is a next-generation banking technology company providing cloud-native, fully stackable processing and core banking platforms for issuers. With a focus on scalability,\u2026[trimmed for fixture]",
+    "descriptionBodyPlain": "About Us\n\u00a0\nBuild the future of banking.\nZeta is a next-generation banking technology company providing cloud-native, fully stackable processing and core banking platforms for issuers. With a focus on scalability, compliance, and innovation, Zeta empowers financial institutions to modernize their technology infrastructure and deliver secure, seamless digital banking experiences.\u00a0\n\u00a0\nOur impact runs \u2026[trimmed for fixture]",
+    "hostedUrl": "https://jobs.lever.co/zeta/803792f5-0e9c-45bc-82ce-c0a552ce0cf8",
+    "applyUrl": "https://jobs.lever.co/zeta/803792f5-0e9c-45bc-82ce-c0a552ce0cf8/apply"
+   },
+   {
+    "additionalPlain": "Equal Opportunity\nZeta is an equal opportunity employer. We celebrate diversity and are committed to creating an inclusive environment for all employees. We encourage applicants from all backgrounds, cultures, and communities to apply and believe that a diverse workforce is key to our success.\n",
+    "additional": "<p><strong>Equal Opportunity</strong></p>\n<p>Zeta is an equal opportunity employer. We celebrate diversity and are committed to creating an inclusive environment for all employees. We encourage applicants from all backgrounds, cultures, and communities to apply and believe that a diverse workforce is key to our success.</p>",
+    "categories": {
+     "commitment": "Full-time",
+     "department": "Finance",
+     "location": "Mumbai",
+     "team": "Finance",
+     "allLocations": [
+      "Mumbai"
+     ]
+    },
+    "createdAt": 1778591712225,
+    "descriptionPlain": "About us \nBuild the future of banking.\nZeta is a next-generation banking technology company providing cloud-native, fully stackable processing and core banking platforms for issuers. With a focus on scalability, compliance, and innovation, Zeta empowers financial institutions to modernize their technology infrastructure and deliver secure, seamless digital banking experiences.\u00a0\nOur impact runs at \u2026[trimmed for fixture]",
+    "description": "<p><strong style=\"font-size: 16px;\">About us </strong></p>\n<p><strong style=\"font-size: 16px;\">Build the future of banking.</strong></p>\n<p><a rel=\"noopener noreferrer\" href=\"https://www.zeta.tech/in/\" class=\"postings-link\"><u style=\"font-size: 16px;\">Zeta</u></a><span style=\"font-size: 16px;\"> is a next-generation banking technology company providing cloud-native, fully stackable processing and c\u2026[trimmed for fixture]",
+    "id": "2d533970-99a7-444b-b410-39921d0c96f7",
+    "lists": [
+     {
+      "text": "Responsibilities",
+      "content": "<div>\n<p><strong>1. Financial Accounting &amp; Month-End Close</strong></p>\n\n<li>Own and manage the monthly, quarterly, and annual financial close process, ensuring accuracy and timeliness.</li>\n<li>Review and approve journal entries, accruals, provisions, and reconciliations.</li>\n<li>Ensure compliance with Ind AS / IFRS and Group accounting policies.</li>\n<li>Monitor balance sheet integrity and \u2026[trimmed for fixture]"
+     },
+     {
+      "text": "Skills",
+      "content": "\n<li>Strong knowledge of Ind AS / IFRS.</li>\n<li>Expertise in month-end close, AP, GL, audits, and treasury</li>\n<li>Experience in multi-entity / group structures</li>\n<li>Strong analytical, review, and problem-solving skills</li>\n<li>Ability to work in a fast-paced, evolving environment</li>\n<li>Excellent communication and stakeholder management skills</li>\n"
+     },
+     {
+      "text": "Experience and Qualifications",
+      "content": "\n<li>Chartered Accountant (CA) mandatory</li>\n<li>4-6 years of post-qualification experience in finance and accounting</li>\n<li>Experience in Big-4, technology or fintech</li>\n<li>ERP experience (Oracle preferred)</li>\n"
+     }
+    ],
+    "text": "Manager - Accounts",
+    "country": "IN",
+    "workplaceType": "onsite",
+    "opening": "",
+    "openingPlain": "",
+    "descriptionBody": "<p><strong style=\"font-size: 16px;\">About us </strong></p>\n<p><strong style=\"font-size: 16px;\">Build the future of banking.</strong></p>\n<p><a class=\"postings-link\" href=\"https://www.zeta.tech/in/\" target=\"_blank\" rel=\"noopener noreferrer\"><u style=\"font-size: 16px;\">Zeta</u></a><span style=\"font-size: 16px;\"> is a next-generation banking technology company providing cloud-native, fully stackable \u2026[trimmed for fixture]",
+    "descriptionBodyPlain": "About us \nBuild the future of banking.\nZeta is a next-generation banking technology company providing cloud-native, fully stackable processing and core banking platforms for issuers. With a focus on scalability, compliance, and innovation, Zeta empowers financial institutions to modernize their technology infrastructure and deliver secure, seamless digital banking experiences.\u00a0\nOur impact runs at \u2026[trimmed for fixture]",
+    "hostedUrl": "https://jobs.lever.co/zeta/2d533970-99a7-444b-b410-39921d0c96f7",
+    "applyUrl": "https://jobs.lever.co/zeta/2d533970-99a7-444b-b410-39921d0c96f7/apply"
+   },
+   {
+    "additionalPlain": "Zeta is an equal opportunity employer. We celebrate diversity and are committed to creating an inclusive environment for all employees. We encourage applicants from all backgrounds, cultures, and communities to apply and believe that a diverse workforce is key to our success.\n",
+    "additional": "<div>Zeta is an equal opportunity employer. We celebrate diversity and are committed to creating an inclusive environment for all employees. We encourage applicants from all backgrounds, cultures, and communities to apply and believe that a diverse workforce is key to our success.</div>",
+    "categories": {
+     "commitment": "Full-time",
+     "department": "Risk & Compliance",
+     "location": "Hyderabad",
+     "team": "Cloud & Product Security",
+     "allLocations": [
+      "Hyderabad"
+     ]
+    },
+    "createdAt": 1784632226543,
+    "descriptionPlain": "About us:\nBuild the future of banking.\n\nZeta is a next-generation banking technology company providing cloud-native, fully stackable processing and core banking platforms for issuers. With a focus on scalability, compliance, and innovation, Zeta empowers financial institutions to modernize their technology infrastructure and deliver secure, seamless digital banking experiences.\u00a0\n\u00a0\nOur impact runs \u2026[trimmed for fixture]",
+    "description": "<div>\n<div style=\"text-align: justify;\"><strong>About us:<br>Build the future of banking.<br><br></strong></div>\n<div style=\"text-align: justify;\"><a rel=\"noopener noreferrer\" href=\"https://www.zeta.tech/in/\" class=\"postings-link\"><u>Zeta</u></a> is a next-generation banking technology company providing cloud-native, fully stackable processing and core banking platforms for issuers. With a focus o\u2026[trimmed for fixture]",
+    "id": "e21ca17d-7bf2-4781-94bb-bcfc8943aae0",
+    "lists": [
+     {
+      "text": "Responsibilities:",
+      "content": "<div>\n<div>\n<div>\n<ul role=\"list\" style=\"list-style-type: disc;\">\n<li aria-setsize=\"-1\" data-leveltext=\"\uf0b7\" data-font=\"Symbol\" data-listid=\"6\" data-list-defn-props=\"{&quot;335552541&quot;:1,&quot;335559685&quot;:720,&quot;335559991&quot;:360,&quot;469769226&quot;:&quot;Symbol&quot;,&quot;469769242&quot;:[8226],&quot;469777803&quot;:&quot;left&quot;,&quot;469777804&quot;:&quot;\uf0b7&quot;,&quot;46977781\u2026[trimmed for fixture]"
+     },
+     {
+      "text": "Skills:",
+      "content": "<div>\n<div>\n<p>&nbsp;</p>\n</div>\n<div>\n<ul role=\"list\" style=\"list-style-type: disc;\">\n<li aria-setsize=\"-1\" data-leveltext=\"\uf0b7\" data-font=\"Symbol\" data-listid=\"7\" data-list-defn-props=\"{&quot;335552541&quot;:1,&quot;335559685&quot;:720,&quot;335559991&quot;:360,&quot;469769226&quot;:&quot;Symbol&quot;,&quot;469769242&quot;:[8226],&quot;469777803&quot;:&quot;left&quot;,&quot;469777804&quot;:&quot;\uf0b7\u2026[trimmed for fixture]"
+     },
+     {
+      "text": "Experience and Qualifications:",
+      "content": "<div>\n<div>\n<ul role=\"list\" style=\"list-style-type: disc;\">\n<li aria-setsize=\"-1\" data-leveltext=\"\uf0b7\" data-font=\"Symbol\" data-listid=\"8\" data-list-defn-props=\"{&quot;335552541&quot;:1,&quot;335559685&quot;:720,&quot;335559991&quot;:360,&quot;469769226&quot;:&quot;Symbol&quot;,&quot;469769242&quot;:[8226],&quot;469777803&quot;:&quot;left&quot;,&quot;469777804&quot;:&quot;\uf0b7&quot;,&quot;469777815&quot\u2026[trimmed for fixture]"
+     }
+    ],
+    "text": "Product Security Engineer II",
+    "country": "IN",
+    "workplaceType": "onsite",
+    "opening": "",
+    "openingPlain": "",
+    "descriptionBody": "<div>\n<div style=\"text-align: justify;\"><strong>About us:<br>Build the future of banking.<br><br></strong></div>\n<div style=\"text-align: justify;\"><a class=\"postings-link\" href=\"https://www.zeta.tech/in/\" target=\"_blank\" rel=\"noopener noreferrer\"><u>Zeta</u></a> is a next-generation banking technology company providing cloud-native, fully stackable processing and core banking platforms for issuers\u2026[trimmed for fixture]",
+    "descriptionBodyPlain": "About us:\nBuild the future of banking.\n\nZeta is a next-generation banking technology company providing cloud-native, fully stackable processing and core banking platforms for issuers. With a focus on scalability, compliance, and innovation, Zeta empowers financial institutions to modernize their technology infrastructure and deliver secure, seamless digital banking experiences.\u00a0\n\u00a0\nOur impact runs \u2026[trimmed for fixture]",
+    "hostedUrl": "https://jobs.lever.co/zeta/e21ca17d-7bf2-4781-94bb-bcfc8943aae0",
+    "applyUrl": "https://jobs.lever.co/zeta/e21ca17d-7bf2-4781-94bb-bcfc8943aae0/apply"
+   },
+   {
+    "additionalPlain": "Zeta is an equal opportunity employer. We celebrate diversity and are committed to creating an inclusive environment for all employees. We encourage applicants from all backgrounds, cultures, and communities to apply and believe that a diverse workforce is key to our success.\n",
+    "additional": "<div>Zeta is an equal opportunity employer. We celebrate diversity and are committed to creating an inclusive environment for all employees. We encourage applicants from all backgrounds, cultures, and communities to apply and believe that a diverse workforce is key to our success.</div>",
+    "categories": {
+     "commitment": "Full-time",
+     "department": "Global SRE",
+     "location": "Bangalore",
+     "team": "Program Management",
+     "allLocations": [
+      "Bangalore"
+     ]
+    },
+    "createdAt": 1776426493775,
+    "descriptionPlain": "About us\nBuild the future of banking.\nZeta\u00a0is a next-generation banking technology company providing cloud-native, fully stackable processing and core banking platforms for issuers. With a focus on scalability, compliance, and innovation, Zeta empowers financial institutions to modernize their technology infrastructure and deliver secure, seamless digital banking experiences.\u00a0Our impact runs at re\u2026[trimmed for fixture]",
+    "description": "<div>\n<p><strong>About us</strong></p>\n<p><strong>Build the future of banking.</strong></p>\n<p><span style=\"box-sizing: border-box; text-decoration: underline;\"><a rel=\"noopener noreferrer\" href=\"https://www.zeta.tech/in/\">Zeta</a></span>&nbsp;is a next-generation banking technology company providing cloud-native, fully stackable processing and core banking platforms for issuers. With a focus on s\u2026[trimmed for fixture]",
+    "id": "d80d21c8-6510-410e-bc1a-372f0c6bcbbd",
+    "lists": [
+     {
+      "text": "Responsibilities",
+      "content": "<div>\n<p data-local-id=\"f871c600d015\" data-renderer-start-pos=\"31\" tabindex=\"-1\" id=\"1.-Communication-&amp;-Channel-Governance\"><span style=\"color: #000000;\">1. Communication &amp; Channel Governance</span></p>\n<ul data-local-id=\"8a983b60-e3bb-4f83-99a2-dda88bc9343f\" data-indent-level=\"1\" style=\"list-style-type: disc;\">\n<li style=\"color: #000000;\">\n<p data-renderer-start-pos=\"72\" data-local-id=\"da\u2026[trimmed for fixture]"
+     },
+     {
+      "text": "Skills",
+      "content": "<div>\n<div>\n\n<li>\n<p>Strong operational and delivery management&nbsp;</p>\n</li>\n<li>\n<p>Excellent communication, stakeholder, and conflict-resolution skills&nbsp;</p>\n</li>\n<li>\n<p>Data-driven decision-making and analytical thinking&nbsp;</p>\n</li>\n<li>\n<p>Budgeting, cost analysis, and resource planning&nbsp;</p>\n</li>\n<li>\n<p>Familiarity with cloud platforms (AWS) &nbsp;</p>\n</li>\n\n</div>\n</div>"
+     },
+     {
+      "text": "Experience and Qualification",
+      "content": "<div>\n<ul data-indent-level=\"1\" style=\"list-style-type: disc;\">\n<li>\n<p>Experience Landscape: 4-8 years of experience in Project Management.</p>\n</li>\n<li>\n<p>Education/ Pedigree: B.Tech</p>\n</li>\n\n</ul></div>"
+     }
+    ],
+    "text": "Project Manager II",
+    "country": "IN",
+    "workplaceType": "onsite",
+    "opening": "",
+    "openingPlain": "",
+    "descriptionBody": "<div>\n<p><strong>About us</strong></p>\n<p><strong>Build the future of banking.</strong></p>\n<p><span style=\"box-sizing: border-box; text-decoration: underline;\"><a href=\"https://www.zeta.tech/in/\" rel=\"noopener noreferrer\">Zeta</a></span>&nbsp;is a next-generation banking technology company providing cloud-native, fully stackable processing and core banking platforms for issuers. With a focus on s\u2026[trimmed for fixture]",
+    "descriptionBodyPlain": "About us\nBuild the future of banking.\nZeta\u00a0is a next-generation banking technology company providing cloud-native, fully stackable processing and core banking platforms for issuers. With a focus on scalability, compliance, and innovation, Zeta empowers financial institutions to modernize their technology infrastructure and deliver secure, seamless digital banking experiences.\u00a0Our impact runs at re\u2026[trimmed for fixture]",
+    "hostedUrl": "https://jobs.lever.co/zeta/d80d21c8-6510-410e-bc1a-372f0c6bcbbd",
+    "applyUrl": "https://jobs.lever.co/zeta/d80d21c8-6510-410e-bc1a-372f0c6bcbbd/apply"
+   },
+   {
+    "additionalPlain": "Zeta is an equal opportunity employer. We celebrate diversity and are committed to creating an inclusive environment for all employees. We encourage applicants from all backgrounds, cultures, and communities to apply and believe that a diverse workforce is key to our success.\n",
+    "additional": "<div>Zeta is an equal opportunity employer. We celebrate diversity and are committed to creating an inclusive environment for all employees. We encourage applicants from all backgrounds, cultures, and communities to apply and believe that a diverse workforce is key to our success.</div>",
+    "categories": {
+     "commitment": "Full-time",
+     "department": "Risk & Compliance",
+     "location": "Hyderabad",
+     "team": "Cloud & Product Security",
+     "allLocations": [
+      "Hyderabad"
+     ]
+    },
+    "createdAt": 1784904213334,
+    "descriptionPlain": "About us:\nBuild the future of banking.\n\nZeta is a next-generation banking technology company providing cloud-native, fully stackable processing and core banking platforms for issuers. With a focus on scalability, compliance, and innovation, Zeta empowers financial institutions to modernize their technology infrastructure and deliver secure, seamless digital banking experiences.\u00a0\n\u00a0\nOur impact runs \u2026[trimmed for fixture]",
+    "description": "<div>\n<div style=\"text-align: justify;\"><strong>About us:<br>Build the future of banking.<br><br></strong></div>\n<div style=\"text-align: justify;\"><a rel=\"noopener noreferrer\" href=\"https://www.zeta.tech/in/\" class=\"postings-link\"><u>Zeta</u></a> is a next-generation banking technology company providing cloud-native, fully stackable processing and core banking platforms for issuers. With a focus o\u2026[trimmed for fixture]",
+    "id": "f140e9d7-8d0c-4e24-bace-8568385b6f5c",
+    "lists": [
+     {
+      "text": "Responsibilities:",
+      "content": "<div>\n<div>\n<ul role=\"list\" style=\"list-style-type: disc;\">\n<li aria-setsize=\"-1\" data-leveltext=\"\u25cf\" data-font=\"Arial\" data-listid=\"1\" data-list-defn-props=\"{&quot;335552541&quot;:1,&quot;335559685&quot;:720,&quot;335559991&quot;:360,&quot;469769242&quot;:[8226],&quot;469777803&quot;:&quot;left&quot;,&quot;469777804&quot;:&quot;\u25cf&quot;}\" data-aria-posinset=\"1\" data-aria-level=\"1\" role=\"listitem\">\n\u2026[trimmed for fixture]"
+     },
+     {
+      "text": "Skills:",
+      "content": "<div>\n<div>\n<ul role=\"list\" style=\"list-style-type: disc;\">\n<li aria-setsize=\"-1\" data-leveltext=\"\uf0b7\" data-font=\"Symbol\" data-listid=\"17\" data-list-defn-props=\"{&quot;335552541&quot;:1,&quot;335559683&quot;:0,&quot;335559684&quot;:-2,&quot;335559685&quot;:720,&quot;335559991&quot;:360,&quot;469769226&quot;:&quot;Symbol&quot;,&quot;469769242&quot;:[8226],&quot;469777803&quot;:&quot;left&quot;,&quot;\u2026[trimmed for fixture]"
+     },
+     {
+      "text": "Experience and Qualifications:",
+      "content": "<div>\n\n<li style=\"text-align: justify;\">4&nbsp;to&nbsp;6&nbsp;years of overall experience as Security Operations engineer in medium to large-size product companies.</li>\n<li style=\"text-align: justify;\">Bachelor of Technology (BE/B.Tech), M.Tech/ME in Computer Science or equivalent.</li>\n<li style=\"text-align: justify;\">Must have worked on the ELK/EFK implementation projects, and Logstash data par\u2026[trimmed for fixture]"
+     }
+    ],
+    "text": "SIEM & SecOps Engineer II",
+    "country": "IN",
+    "workplaceType": "onsite",
+    "opening": "",
+    "openingPlain": "",
+    "descriptionBody": "<div>\n<div style=\"text-align: justify;\"><strong>About us:<br>Build the future of banking.<br><br></strong></div>\n<div style=\"text-align: justify;\"><a class=\"postings-link\" href=\"https://www.zeta.tech/in/\" target=\"_blank\" rel=\"noopener noreferrer\"><u>Zeta</u></a> is a next-generation banking technology company providing cloud-native, fully stackable processing and core banking platforms for issuers\u2026[trimmed for fixture]",
+    "descriptionBodyPlain": "About us:\nBuild the future of banking.\n\nZeta is a next-generation banking technology company providing cloud-native, fully stackable processing and core banking platforms for issuers. With a focus on scalability, compliance, and innovation, Zeta empowers financial institutions to modernize their technology infrastructure and deliver secure, seamless digital banking experiences.\u00a0\n\u00a0\nOur impact runs \u2026[trimmed for fixture]",
+    "hostedUrl": "https://jobs.lever.co/zeta/f140e9d7-8d0c-4e24-bace-8568385b6f5c",
+    "applyUrl": "https://jobs.lever.co/zeta/f140e9d7-8d0c-4e24-bace-8568385b6f5c/apply"
+   },
+   {
+    "additionalPlain": "Zeta is an equal opportunity employer.\u00a0\u00a0\nAt Zeta, we are committed to equal employment opportunities regardless of job history, disability, gender identity, religion, race, marital/parental status, or another special status. We are proud to be an equitable workplace that welcomes individuals from all walks of life if they fit the roles and responsibilities.\n",
+    "additional": "<div>\n<p><strong><span style=\"font-size: 16px;\">Zeta is an equal opportunity employer.&nbsp;&nbsp;</span></strong></p>\n<p><span style=\"font-size: 16px;\">At Zeta, we are committed to equal employment opportunities regardless of job history, disability, gender identity, religion, race, marital/parental status, or another special status. We are proud to be an equitable workplace that welcomes individ\u2026[trimmed for fixture]",
+    "categories": {
+     "commitment": "Full-time",
+     "department": "Axon PC",
+     "location": "Hyderabad",
+     "team": "Engineering",
+     "allLocations": [
+      "Hyderabad"
+     ]
+    },
+    "createdAt": 1778175159170,
+    "descriptionPlain": "About us\n\u00a0\nBuild the future of banking.\n\u00a0\nZeta is a next-generation banking technology company providing cloud-native, fully stackable processing and core banking platforms for issuers. With a focus on scalability, compliance, and innovation, Zeta empowers financial institutions to modernize their technology infrastructure and deliver secure, seamless digital banking experiences.\u00a0Our impact runs a\u2026[trimmed for fixture]",
+    "description": "<div>\n<div><strong>About us</strong></div>\n<div>&nbsp;</div>\n<div><strong>Build the future of banking.</strong></div>\n<div>&nbsp;</div>\n<div><a rel=\"noopener noreferrer\" href=\"https://www.zeta.tech/in/\" class=\"postings-link\"><u>Zeta</u></a> is a next-generation banking technology company providing cloud-native, fully stackable processing and core banking platforms for issuers. With a focus on scal\u2026[trimmed for fixture]",
+    "id": "570f6cf7-5525-4357-81c4-658534458043",
+    "lists": [
+     {
+      "text": "Responsibilities",
+      "content": "<div>\n\n<li>Develop comprehensive feature test plans based on requirements.&nbsp;</li>\n<li>Define testing strategies, methodologies, and best practices.&nbsp;</li>\n<li>Collaborate with stakeholders to understand project goals and objectives.&nbsp;</li>\n<li>Create detailed and effective test cases.&nbsp;</li>\n<li>&nbsp;Automate and execute test cases, ensuring adequate test coverage.&nbsp;</li>\n<li>\u2026[trimmed for fixture]"
+     },
+     {
+      "text": "Skills",
+      "content": "<div>\n\n<li>Strong understanding of software development life cycle (SDLC)</li>\n<li>Proficiency in REST and web services APIs testing/ automation using Postman &amp; Rest Assured&nbsp;</li>\n<li>Strong analytical skills to identify, isolate, and troubleshoot issues.&nbsp;</li>\n<li>Proactive problem-solving approach.</li>\n<li>Thorough and meticulous in test planning and execution.&nbsp;</li>\n<li>Abil\u2026[trimmed for fixture]"
+     },
+     {
+      "text": "Experience and Qualification",
+      "content": "<div>\n\n<li>2-4 years of proven experience as a Test engineer with extensive experience in quality assurance and automation testing.&nbsp;</li>\n<li><a rel=\"noopener noreferrer\" href=\"http://B.Tech/M.Tech\" class=\"postings-link\">B.Tech/M.Tech</a> in computer science, information technology or a related field.&nbsp;</li>\n<li>Experience in writing automation scripts using Behavior driven development[BD\u2026[trimmed for fixture]"
+     }
+    ],
+    "text": "Software Development Engineer in Test II",
+    "country": "IN",
+    "workplaceType": "onsite",
+    "opening": "",
+    "openingPlain": "",
+    "descriptionBody": "<div>\n<div><strong>About us</strong></div>\n<div>&nbsp;</div>\n<div><strong>Build the future of banking.</strong></div>\n<div>&nbsp;</div>\n<div><a class=\"postings-link\" href=\"https://www.zeta.tech/in/\" target=\"_blank\" rel=\"noopener noreferrer\"><u>Zeta</u></a> is a next-generation banking technology company providing cloud-native, fully stackable processing and core banking platforms for issuers. With\u2026[trimmed for fixture]",
+    "descriptionBodyPlain": "About us\n\u00a0\nBuild the future of banking.\n\u00a0\nZeta is a next-generation banking technology company providing cloud-native, fully stackable processing and core banking platforms for issuers. With a focus on scalability, compliance, and innovation, Zeta empowers financial institutions to modernize their technology infrastructure and deliver secure, seamless digital banking experiences.\u00a0Our impact runs a\u2026[trimmed for fixture]",
+    "hostedUrl": "https://jobs.lever.co/zeta/570f6cf7-5525-4357-81c4-658534458043",
+    "applyUrl": "https://jobs.lever.co/zeta/570f6cf7-5525-4357-81c4-658534458043/apply"
+   },
+   {
+    "additionalPlain": "Equal Opportunity\n\u00a0\nZeta is an equal opportunity employer. We celebrate diversity and are committed to creating an inclusive environment for all employees. We encourage applicants from all backgrounds, cultures, and communities to apply and believe that a diverse workforce is key to our success\n",
+    "additional": "<div>Equal Opportunity</div>\n<div>&nbsp;</div>\n<div>Zeta is an equal opportunity employer. We celebrate diversity and are committed to creating an inclusive environment for all employees. We encourage applicants from all backgrounds, cultures, and communities to apply and believe that a diverse workforce is key to our success</div>",
+    "categories": {
+     "commitment": "Full-time",
+     "department": "Axon PC",
+     "location": "Hyderabad",
+     "team": "Engineering",
+     "allLocations": [
+      "Hyderabad"
+     ]
+    },
+    "createdAt": 1787042178889,
+    "descriptionPlain": "About Zeta\n\u00a0\nBuild the future of banking.\u00a0\nZeta\u00a0is a next-generation banking technology company providing cloud-native, fully stackable processing and core banking platforms for issuers. With a focus on scalability, compliance, and innovation, Zeta empowers financial institutions to modernize their technology infrastructure and deliver secure, seamless digital banking experiences.\u00a0\u00a0\n\u00a0\nOur impact\u00a0r\u2026[trimmed for fixture]",
+    "description": "<div>About Zeta</div>\n<div>&nbsp;</div>\n<div>\n<div><strong style=\"font-size: 16px;\">Build the future of banking.</strong><span style=\"font-size: 16px;\">&nbsp;</span></div>\n<div><a rel=\"noopener noreferrer\" href=\"https://www.zeta.tech/in/\" style=\"font-size: 16px;\" class=\"postings-link\">Zeta</a><span style=\"font-size: 16px;\">&nbsp;is a next-generation banking technology company providing cloud-nativ\u2026[trimmed for fixture]",
+    "id": "fed5c9f3-42ae-4bf8-89b7-2b7edb333af4",
+    "lists": [
+     {
+      "text": "Responsibilities:",
+      "content": "\n<li>Program Planning: Spearhead Monthly &amp; Quarterly program delivery planning, collaborating seamlessly with Cross-Cluster and customer teams.</li>\n<li>Agile Execution: Drive Agile Execution in coordination with Cross-Cluster teams &amp; customers, ensuring alignment with program objectives.</li>\n<li>Cadence Facilitation: Facilitate Daily/Weekly Cadences, including Daily Scrum</li>\n<li>Stand-\u2026[trimmed for fixture]"
+     },
+     {
+      "text": "Skills:",
+      "content": "\n<li>Program Milestones: Ability to define strategic program milestones, providing a clear roadmap for execution and achievement.</li>\n<li>Execution Oversight: Ensure effective execution of program milestones, maintaining a focus on program objectives and timelines.</li>\n<li>Multiple Project Management: Experience in managing multiple projects concurrently, demonstrating excellent multitasking and\u2026[trimmed for fixture]"
+     },
+     {
+      "text": "Experience & Qualifications:",
+      "content": "\n<li>Experience Landscape: 10-15 years of experience in Program Management.</li>\n<li>Education/ Pedigree: <a rel=\"noopener noreferrer\" href=\"http://B.Tech\" class=\"postings-link\">B.Tech</a></li>\n"
+     }
+    ],
+    "text": "Solution Train Manager",
+    "country": "IN",
+    "workplaceType": "onsite",
+    "opening": "",
+    "openingPlain": "",
+    "descriptionBody": "<div>About Zeta</div>\n<div>&nbsp;</div>\n<div>\n<div><strong style=\"font-size: 16px;\">Build the future of banking.</strong><span style=\"font-size: 16px;\">&nbsp;</span></div>\n<div><a class=\"postings-link\" style=\"font-size: 16px;\" href=\"https://www.zeta.tech/in/\" target=\"_blank\" rel=\"noopener noreferrer\">Zeta</a><span style=\"font-size: 16px;\">&nbsp;is a next-generation banking technology company provi\u2026[trimmed for fixture]",
+    "descriptionBodyPlain": "About Zeta\n\u00a0\nBuild the future of banking.\u00a0\nZeta\u00a0is a next-generation banking technology company providing cloud-native, fully stackable processing and core banking platforms for issuers. With a focus on scalability, compliance, and innovation, Zeta empowers financial institutions to modernize their technology infrastructure and deliver secure, seamless digital banking experiences.\u00a0\u00a0\n\u00a0\nOur impact\u00a0r\u2026[trimmed for fixture]",
+    "hostedUrl": "https://jobs.lever.co/zeta/fed5c9f3-42ae-4bf8-89b7-2b7edb333af4",
+    "applyUrl": "https://jobs.lever.co/zeta/fed5c9f3-42ae-4bf8-89b7-2b7edb333af4/apply"
+   },
+   {
+    "additionalPlain": "Equal Opportunity\nZeta is an equal opportunity employer. We celebrate diversity and are committed to creating an inclusive environment for all employees. We encourage applicants from all backgrounds, cultures, and communities to apply and believe that a diverse workforce is key to our success\n",
+    "additional": "<div>\n<div><strong>Equal Opportunity</strong></div>\n<div>Zeta is an equal opportunity employer. We celebrate diversity and are committed to creating an inclusive environment for all employees. We encourage applicants from all backgrounds, cultures, and communities to apply and believe that a diverse workforce is key to our success</div>\n</div>",
+    "categories": {
+     "commitment": "Full-time",
+     "department": "People Corp",
+     "location": "Bangalore - DD",
+     "team": "People Success",
+     "allLocations": [
+      "Bangalore - DD"
+     ]
+    },
+    "createdAt": 1785934396742,
+    "descriptionPlain": "About us \nBuild the future of banking.\nZeta is a next-generation banking technology company providing cloud-native, fully stackable processing and core banking platforms for issuers. With a focus on scalability, compliance, and innovation, Zeta empowers financial institutions to modernize their technology infrastructure and deliver secure, seamless digital banking experiences.\u00a0\n\u00a0\nOur impact runs a\u2026[trimmed for fixture]",
+    "description": "<div>\n<div><strong style=\"font-size: 16px;\">About us </strong></div>\n<div><strong style=\"font-size: 16px;\">Build the future of banking.</strong></div>\n<div><a rel=\"noopener noreferrer\" href=\"https://www.zeta.tech/in/\" class=\"postings-link\"><u style=\"font-size: 16px;\">Zeta</u></a><span style=\"font-size: 16px;\"> is a next-generation banking technology company providing cloud-native, fully stackable \u2026[trimmed for fixture]",
+    "id": "ecd7a54f-218c-47a0-8379-aeb272c35bcb",
+    "lists": [
+     {
+      "text": "Responsibilities",
+      "content": "<div>\n\n<li>As an People Partner, you will be responsible to:</li>\n<li>Ensure a seamless execution of all HR programs and processes within the BU</li>\n<li>Have a pulse of the business unit and constantly think about how to improve the effectiveness of the business unit - by looking at teams, structure, and processes&nbsp;</li>\n<li>Coach leaders at various levels and guide them on HR related guideli\u2026[trimmed for fixture]"
+     },
+     {
+      "text": "Skills",
+      "content": "<div>\n\n<li>Adeptness and ability to cope with a fast-paced work environment by being hands-on</li>\n<li>Passionate about innovative HR solutions and process improvement</li>\n<li>Excellent communication and articulation skills</li>\n<li>Strong stakeholder management skills.</li>\n<li><strong>&nbsp;</strong>Understand how an <strong>Engineering Organization</strong> functions, possess knowledge of engi\u2026[trimmed for fixture]"
+     },
+     {
+      "text": "Education and Qualifications",
+      "content": "<div>\n\n<li>Bachelor\u2019s degree in any field.</li>\n<li>An MBA/PGDM degree is preferable</li>\n<li>5-6 years of HR business partnering or generalist experience supporting leaders at stable engineering organizations</li>\n<li>Previous experience in talent management, performance management and organizational design</li>\n\n</div>"
+     }
+    ],
+    "text": "Specialist - People Partner",
+    "country": "IN",
+    "workplaceType": "onsite",
+    "opening": "",
+    "openingPlain": "",
+    "descriptionBody": "<div>\n<div><strong style=\"font-size: 16px;\">About us </strong></div>\n<div><strong style=\"font-size: 16px;\">Build the future of banking.</strong></div>\n<div><a class=\"postings-link\" href=\"https://www.zeta.tech/in/\" target=\"_blank\" rel=\"noopener noreferrer\"><u style=\"font-size: 16px;\">Zeta</u></a><span style=\"font-size: 16px;\"> is a next-generation banking technology company providing cloud-native, \u2026[trimmed for fixture]",
+    "descriptionBodyPlain": "About us \nBuild the future of banking.\nZeta is a next-generation banking technology company providing cloud-native, fully stackable processing and core banking platforms for issuers. With a focus on scalability, compliance, and innovation, Zeta empowers financial institutions to modernize their technology infrastructure and deliver secure, seamless digital banking experiences.\u00a0\n\u00a0\nOur impact runs a\u2026[trimmed for fixture]",
+    "hostedUrl": "https://jobs.lever.co/zeta/ecd7a54f-218c-47a0-8379-aeb272c35bcb",
+    "applyUrl": "https://jobs.lever.co/zeta/ecd7a54f-218c-47a0-8379-aeb272c35bcb/apply"
+   },
+   {
+    "additionalPlain": "Equal Opportunity\nZeta is an equal opportunity employer. We celebrate diversity and are committed to creating an inclusive environment for all employees. We encourage applicants from all backgrounds, cultures, and communities to apply and believe that a diverse workforce is key to our success.\n",
+    "additional": "<div>\n<div><strong style=\"font-size: 16px;\">Equal Opportunity</strong></div>\n<div><span style=\"font-size: 16px;\">Zeta is an equal opportunity employer. We celebrate diversity and are committed to creating an inclusive environment for all employees. We encourage applicants from all backgrounds, cultures, and communities to apply and believe that a diverse workforce is key to our success.</span></di\u2026[trimmed for fixture]",
+    "categories": {
+     "commitment": "Full-time",
+     "department": "People Corp",
+     "location": "Mumbai",
+     "team": "People Success",
+     "allLocations": [
+      "Mumbai"
+     ]
+    },
+    "createdAt": 1783665553384,
+    "descriptionPlain": "About us \nBuild the future of banking.\nZeta is a next-generation banking technology company providing cloud-native, fully stackable processing and core banking platforms for issuers. With a focus on scalability, compliance, and innovation, Zeta empowers financial institutions to modernize their technology infrastructure and deliver secure, seamless digital banking experiences.\u00a0\n\u00a0\nOur impact runs a\u2026[trimmed for fixture]",
+    "description": "<div><strong style=\"font-size: 16px;\">About us </strong></div>\n<div><strong style=\"font-size: 16px;\">Build the future of banking.</strong></div>\n<div><a rel=\"noopener noreferrer\" href=\"https://www.zeta.tech/in/\" class=\"postings-link\"><u style=\"font-size: 16px;\">Zeta</u></a><span style=\"font-size: 16px;\"> is a next-generation banking technology company providing cloud-native, fully stackable proces\u2026[trimmed for fixture]",
+    "id": "2f14b7a2-da7f-42e6-a9d5-72438e23f419",
+    "lists": [
+     {
+      "text": "Responsibilities",
+      "content": "<div>\n<div>\n<div>\n<p aria-level=\"4\" role=\"heading\"><strong><span data-ccp-parastyle=\"heading 4\">1. HR Technology Transformation</span><span data-ccp-props=\"{&quot;134245418&quot;:true,&quot;134245529&quot;:true,&quot;201341983&quot;:0,&quot;335559738&quot;:279,&quot;335559739&quot;:279,&quot;335559740&quot;:300}\">&nbsp;</span></strong></p>\n</div>\n<div>\n\n<li><span data-contrast=\"auto\">Support the H\u2026[trimmed for fixture]"
+     },
+     {
+      "text": "Desired Skills & Experience",
+      "content": "<div>\n<div>\n<div>\n<ul role=\"list\" style=\"list-style-type: disc;\">\n<li aria-setsize=\"-1\" data-leveltext=\"\uf0b7\" data-font=\"Symbol\" data-listid=\"2\" data-list-defn-props=\"{&quot;335552541&quot;:1,&quot;335559685&quot;:720,&quot;335559991&quot;:360,&quot;469769226&quot;:&quot;Symbol&quot;,&quot;469769242&quot;:[8226],&quot;469777803&quot;:&quot;left&quot;,&quot;469777804&quot;:&quot;\uf0b7&quot;,&quot;46977781\u2026[trimmed for fixture]"
+     },
+     {
+      "text": "Qualifications",
+      "content": "<div>\n<div>\n<ul role=\"list\" style=\"list-style-type: disc;\">\n<li aria-setsize=\"-1\" data-leveltext=\"\uf0b7\" data-font=\"Symbol\" data-listid=\"1\" data-list-defn-props=\"{&quot;335552541&quot;:1,&quot;335559685&quot;:720,&quot;335559991&quot;:360,&quot;469769226&quot;:&quot;Symbol&quot;,&quot;469769242&quot;:[8226],&quot;469777803&quot;:&quot;left&quot;,&quot;469777804&quot;:&quot;\uf0b7&quot;,&quot;469777815&quot\u2026[trimmed for fixture]"
+     }
+    ],
+    "text": "Specialist / Manager \u2013 People Tech & Transformation",
+    "country": "IN",
+    "workplaceType": "onsite",
+    "opening": "",
+    "openingPlain": "",
+    "descriptionBody": "<div><strong style=\"font-size: 16px;\">About us </strong></div>\n<div><strong style=\"font-size: 16px;\">Build the future of banking.</strong></div>\n<div><a class=\"postings-link\" href=\"https://www.zeta.tech/in/\" target=\"_blank\" rel=\"noopener noreferrer\"><u style=\"font-size: 16px;\">Zeta</u></a><span style=\"font-size: 16px;\"> is a next-generation banking technology company providing cloud-native, fully \u2026[trimmed for fixture]",
+    "descriptionBodyPlain": "About us \nBuild the future of banking.\nZeta is a next-generation banking technology company providing cloud-native, fully stackable processing and core banking platforms for issuers. With a focus on scalability, compliance, and innovation, Zeta empowers financial institutions to modernize their technology infrastructure and deliver secure, seamless digital banking experiences.\u00a0\n\u00a0\nOur impact runs a\u2026[trimmed for fixture]",
+    "hostedUrl": "https://jobs.lever.co/zeta/2f14b7a2-da7f-42e6-a9d5-72438e23f419",
+    "applyUrl": "https://jobs.lever.co/zeta/2f14b7a2-da7f-42e6-a9d5-72438e23f419/apply"
+   },
+   {
+    "additionalPlain": "Equal Oppurtunity\nZeta is an equal opportunity employer. We celebrate diversity and are committed to creating an inclusive environment for all employees. We encourage applicants from all backgrounds, cultures, and communities to apply and believe that a diverse workforce is key to our success\n",
+    "additional": "<p data-renderer-start-pos=\"20\"><strong>Equal Oppurtunity</strong><br>Zeta is an equal opportunity employer. We celebrate diversity and are committed to creating an inclusive environment for all employees. We encourage applicants from all backgrounds, cultures, and communities to apply and believe that a diverse workforce is key to our success</p>",
+    "categories": {
+     "commitment": "Full-time",
+     "department": "People Corp",
+     "location": "Bangalore - DD",
+     "team": "People Success",
+     "allLocations": [
+      "Bangalore - DD"
+     ]
+    },
+    "createdAt": 1785933657966,
+    "descriptionPlain": "About us\n\nBuild the future of banking.\nZeta is a next-generation banking technology company providing cloud-native, fully stackable processing and core banking platforms for issuers. With a focus on scalability, compliance, and innovation, Zeta empowers financial institutions to modernize their technology infrastructure and deliver secure, seamless digital banking experiences.\u00a0\n\u00a0\nOur impact runs a\u2026[trimmed for fixture]",
+    "description": "<div><strong style=\"font-size: 16px;\">About us<br><br></strong></div>\n<div><strong style=\"font-size: 16px;\">Build the future of banking.</strong></div>\n<div><a rel=\"noopener noreferrer\" href=\"https://www.zeta.tech/in/\" class=\"postings-link\"><u style=\"font-size: 16px;\">Zeta</u></a><span style=\"font-size: 16px;\"> is a next-generation banking technology company providing cloud-native, fully stackable\u2026[trimmed for fixture]",
+    "id": "b099e4fe-87cf-44ad-89b6-21edfe60958b",
+    "lists": [
+     {
+      "text": "Responsibilities",
+      "content": "<div>\n<ul data-local-id=\"f055920a-b50a-427a-bfe9-1cb1a6cc96fe\" data-indent-level=\"1\" style=\"list-style-type: disc;\">\n<li>\n<p data-renderer-start-pos=\"512\" data-local-id=\"f4affa7da94e\">Own the end-to-end communication strategy for all Rewards programs \u2014 including compensation cycles, benefits launches and initiatives, policy updates, and wellness initiatives</p>\n</li>\n<li>\n<p data-renderer-start-po\u2026[trimmed for fixture]"
+     },
+     {
+      "text": "Skills",
+      "content": "<div>\n<ul data-local-id=\"802552025539\" data-indent-level=\"1\" style=\"list-style-type: disc;\">\n<li>\n<p data-renderer-start-pos=\"2304\" data-local-id=\"0243a1e0f632\">Strong written and verbal communication skills \u2014 ability to simplify complex topics and tailor messaging for different audiences (employees, managers, executives)</p>\n</li>\n<li>\n<p data-renderer-start-pos=\"2470\" data-local-id=\"82a1f62721a9\u2026[trimmed for fixture]"
+     },
+     {
+      "text": "Experience and Qualifications",
+      "content": "\n<li data-renderer-start-pos=\"3349\" data-local-id=\"d4c80999369d\">Graduate/ Post Graduate or MBA in HR</li>\n<li>\n<p data-renderer-start-pos=\"3349\" data-local-id=\"d4c80999369d\">2\u20133 years of relevant experience in Rewards, Compensation &amp; Benefits, or Total Rewards is preferred.</p>\n</li>\n<li>\n<p data-renderer-start-pos=\"3349\" data-local-id=\"d4c80999369d\">Hands-on exposure to HRIS, compensation be\u2026[trimmed for fixture]"
+     }
+    ],
+    "text": "Specialist Total Rewards",
+    "country": "IN",
+    "workplaceType": "onsite",
+    "opening": "",
+    "openingPlain": "",
+    "descriptionBody": "<div><strong style=\"font-size: 16px;\">About us<br><br></strong></div>\n<div><strong style=\"font-size: 16px;\">Build the future of banking.</strong></div>\n<div><a class=\"postings-link\" href=\"https://www.zeta.tech/in/\" target=\"_blank\" rel=\"noopener noreferrer\"><u style=\"font-size: 16px;\">Zeta</u></a><span style=\"font-size: 16px;\"> is a next-generation banking technology company providing cloud-native,\u2026[trimmed for fixture]",
+    "descriptionBodyPlain": "About us\n\nBuild the future of banking.\nZeta is a next-generation banking technology company providing cloud-native, fully stackable processing and core banking platforms for issuers. With a focus on scalability, compliance, and innovation, Zeta empowers financial institutions to modernize their technology infrastructure and deliver secure, seamless digital banking experiences.\u00a0\n\u00a0\nOur impact runs a\u2026[trimmed for fixture]",
+    "hostedUrl": "https://jobs.lever.co/zeta/b099e4fe-87cf-44ad-89b6-21edfe60958b",
+    "applyUrl": "https://jobs.lever.co/zeta/b099e4fe-87cf-44ad-89b6-21edfe60958b/apply"
+   },
+   {
+    "additionalPlain": "Equal Opportunity\n\u00a0\nZeta is an equal opportunity employer. We celebrate diversity and are committed to creating an inclusive environment for all employees. We encourage applicants from all backgrounds, cultures, and communities to apply and believe that a diverse workforce is key to our success.\u00a0\n",
+    "additional": "<div>\n<div><strong><span data-ccp-parastyle=\"heading 2\">Equal Opportunity</span></strong></div>\n<div>&nbsp;</div>\n<div><span data-contrast=\"none\">Zeta is an equal opportunity employer. We celebrate diversity and are committed to creating an inclusive environment for all employees. We encourage applicants from all backgrounds, cultures, and communities to apply and believe that a diverse workforce \u2026[trimmed for fixture]",
+    "categories": {
+     "commitment": "Full-time",
+     "department": "Genesis",
+     "location": "Bangalore - DD",
+     "team": "Design",
+     "allLocations": [
+      "Bangalore - DD"
+     ]
+    },
+    "createdAt": 1783513712582,
+    "descriptionPlain": "About Zeta\n\u00a0\nBuild the future of banking.\n\u00a0\nZeta\u00a0is a next-generation banking technology company providing cloud-native, fully stackable processing and core banking platforms for issuers. With a focus on scalability, compliance, and innovation, Zeta empowers financial institutions to modernize their technology infrastructure and deliver secure, seamless digital banking experiences.\u00a0\u00a0\nOur impact ru\u2026[trimmed for fixture]",
+    "description": "<div>\n<div><strong><span data-ccp-parastyle=\"heading 2\">About Zeta</span></strong></div>\n<div>&nbsp;</div>\n<div><span data-contrast=\"none\">Build the future of banking.</span></div>\n<div>&nbsp;</div>\n<div><a rel=\"noreferrer noopener\" href=\"https://www.zeta.tech/in/\"><span data-ccp-charstyle=\"Hyperlink\">Zeta</span></a><span data-contrast=\"none\">&nbsp;is a next-generation banking technology company p\u2026[trimmed for fixture]",
+    "id": "542861ab-f44c-4b51-b6c4-496db7821f1b",
+    "lists": [
+     {
+      "text": "About the Role",
+      "content": "<p><span data-contrast=\"none\">We\u2019re&nbsp;looking for a Senior Designer with strong experience across&nbsp;</span><span data-contrast=\"none\">branding, campaigns, and digital experiences</span><span data-contrast=\"none\">. You will independently own projects from brief to final delivery, partner closely with stakeholders, and help craft high-quality visual and digital experiences across multiple touc\u2026[trimmed for fixture]"
+     },
+     {
+      "text": "Key Responsibilities",
+      "content": "<div>\n<div>\n<ul role=\"list\" style=\"list-style-type: disc;\">\n<li aria-setsize=\"-1\" data-leveltext=\"\uf0b7\" data-font=\"Symbol\" data-listid=\"1\" data-list-defn-props=\"{&quot;335552541&quot;:1,&quot;335559685&quot;:720,&quot;335559991&quot;:360,&quot;469769226&quot;:&quot;Symbol&quot;,&quot;469769242&quot;:[8226],&quot;469777803&quot;:&quot;left&quot;,&quot;469777804&quot;:&quot;\uf0b7&quot;,&quot;469777815&quot\u2026[trimmed for fixture]"
+     },
+     {
+      "text": "Skills",
+      "content": "<div>\n<div>\n<ul role=\"list\" style=\"list-style-type: disc;\">\n<li aria-setsize=\"-1\" data-leveltext=\"\uf0b7\" data-font=\"Symbol\" data-listid=\"2\" data-list-defn-props=\"{&quot;335552541&quot;:1,&quot;335559685&quot;:720,&quot;335559991&quot;:360,&quot;469769226&quot;:&quot;Symbol&quot;,&quot;469769242&quot;:[8226],&quot;469777803&quot;:&quot;left&quot;,&quot;469777804&quot;:&quot;\uf0b7&quot;,&quot;469777815&quot\u2026[trimmed for fixture]"
+     },
+     {
+      "text": "Experience and Qualifications",
+      "content": "<div>\n<div>\n<ul role=\"list\" style=\"list-style-type: disc;\">\n<li aria-setsize=\"-1\" data-leveltext=\"\uf0b7\" data-font=\"Symbol\" data-listid=\"3\" data-list-defn-props=\"{&quot;335552541&quot;:1,&quot;335559685&quot;:720,&quot;335559991&quot;:360,&quot;469769226&quot;:&quot;Symbol&quot;,&quot;469769242&quot;:[8226],&quot;469777803&quot;:&quot;left&quot;,&quot;469777804&quot;:&quot;\uf0b7&quot;,&quot;469777815&quot\u2026[trimmed for fixture]"
+     }
+    ],
+    "text": "Sr. Associate / Lead Designer",
+    "country": "IN",
+    "workplaceType": "onsite",
+    "opening": "",
+    "openingPlain": "",
+    "descriptionBody": "<div>\n<div><strong><span data-ccp-parastyle=\"heading 2\">About Zeta</span></strong></div>\n<div>&nbsp;</div>\n<div><span xml:lang=\"EN-GB\" data-contrast=\"none\">Build the future of banking.</span></div>\n<div>&nbsp;</div>\n<div><a href=\"https://www.zeta.tech/in/\" target=\"_blank\" rel=\"noreferrer noopener\"><span data-ccp-charstyle=\"Hyperlink\">Zeta</span></a><span xml:lang=\"EN-GB\" data-contrast=\"none\">&nbsp\u2026[trimmed for fixture]",
+    "descriptionBodyPlain": "About Zeta\n\u00a0\nBuild the future of banking.\n\u00a0\nZeta\u00a0is a next-generation banking technology company providing cloud-native, fully stackable processing and core banking platforms for issuers. With a focus on scalability, compliance, and innovation, Zeta empowers financial institutions to modernize their technology infrastructure and deliver secure, seamless digital banking experiences.\u00a0\u00a0\nOur impact ru\u2026[trimmed for fixture]",
+    "hostedUrl": "https://jobs.lever.co/zeta/542861ab-f44c-4b51-b6c4-496db7821f1b",
+    "applyUrl": "https://jobs.lever.co/zeta/542861ab-f44c-4b51-b6c4-496db7821f1b/apply"
+   },
+   {
+    "additionalPlain": "Equal Opportunity\nZeta is an equal opportunity employer. We celebrate diversity and are committed to creating an inclusive environment for all employees. We encourage applicants from all backgrounds, cultures, and communities to apply and believe that a diverse workforce is key to our success\n",
+    "additional": "<div><strong>Equal Opportunity</strong></div>\n<div>Zeta is an equal opportunity employer. We celebrate diversity and are committed to creating an inclusive environment for all employees. We encourage applicants from all backgrounds, cultures, and communities to apply and believe that a diverse workforce is key to our success</div>",
+    "categories": {
+     "commitment": "Full-time",
+     "department": "Matrix US",
+     "location": "USA",
+     "team": "Sales",
+     "allLocations": [
+      "USA"
+     ]
+    },
+    "createdAt": 1780057012689,
+    "descriptionPlain": "About Zeta:\nZeta is a globally recognized next-gen banking technology company. Our modern platforms enable financial institutions and fintechs to launch extensible and compliant banking\u00a0asset\u00a0and liability products spanning cards, loans, and deposits. Our cloud-native and fully API-enabled stack supports processing, issuing, lending, core banking, fraud, loyalty, digital banking, and agentic AI so\u2026[trimmed for fixture]",
+    "description": "<div>\n<div>\n<p><strong><span data-contrast=\"auto\"><span data-ccp-parastyle=\"First Paragraph\" data-ccp-parastyle-defn=\"{&quot;ObjectId&quot;:&quot;276295ed-5df2-5456-988c-5fdbab071054|1&quot;,&quot;ClassId&quot;:1073872969,&quot;Properties&quot;:[201342446,&quot;1&quot;,201342447,&quot;5&quot;,201342448,&quot;1&quot;,201342449,&quot;1&quot;,469777841,&quot;Aptos&quot;,469777842,&quot;&quot;,4697778\u2026[trimmed for fixture]",
+    "id": "7c0e0301-f6e0-4092-980d-7e7ec3b566f1",
+    "lists": [
+     {
+      "text": "Responsibilities",
+      "content": "<div>\n<div>\n<p><span data-ccp-parastyle=\"First Paragraph\" data-ccp-parastyle-defn=\"{&quot;ObjectId&quot;:&quot;276295ed-5df2-5456-988c-5fdbab071054|1&quot;,&quot;ClassId&quot;:1073872969,&quot;Properties&quot;:[201342446,&quot;1&quot;,201342447,&quot;5&quot;,201342448,&quot;1&quot;,201342449,&quot;1&quot;,469777841,&quot;Aptos&quot;,469777842,&quot;&quot;,469777843,&quot;Aptos&quot;,469777844,&quo\u2026[trimmed for fixture]"
+     },
+     {
+      "text": "Key Performance Metrics ",
+      "content": "<div>\n<div>\n<p><span data-contrast=\"none\">Success in the&nbsp;initial&nbsp;18 months will be measured by:</span><span data-ccp-props=\"{&quot;134233117&quot;:false,&quot;134233118&quot;:false,&quot;201341983&quot;:0,&quot;335551550&quot;:1,&quot;335551620&quot;:1,&quot;335559685&quot;:360,&quot;335559737&quot;:0,&quot;335559738&quot;:0,&quot;335559739&quot;:160,&quot;335559740&quot;:279,&quot;33555\u2026[trimmed for fixture]"
+     },
+     {
+      "text": "Experience and Qualifications",
+      "content": "<div>\n<div>\n<ul role=\"list\" style=\"list-style-type: disc;\">\n<li aria-setsize=\"-1\" data-leveltext=\"\uf0b7\" data-font=\"Symbol\" data-listid=\"1002\" data-list-defn-props=\"{&quot;335552541&quot;:1,&quot;335559685&quot;:720,&quot;335559991&quot;:360,&quot;469769226&quot;:&quot;Symbol&quot;,&quot;469769242&quot;:[8226],&quot;469777803&quot;:&quot;left&quot;,&quot;469777804&quot;:&quot;\uf0b7&quot;,&quot;469777815&q\u2026[trimmed for fixture]"
+     }
+    ],
+    "text": "Vice President - Sales & Business Development",
+    "country": "US",
+    "workplaceType": "remote",
+    "opening": "",
+    "openingPlain": "",
+    "descriptionBody": "<div>\n<div>\n<p><strong><span xml:lang=\"EN-US\" data-contrast=\"auto\"><span data-ccp-parastyle-defn=\"{&quot;ObjectId&quot;:&quot;276295ed-5df2-5456-988c-5fdbab071054|1&quot;,&quot;ClassId&quot;:1073872969,&quot;Properties&quot;:[201342446,&quot;1&quot;,201342447,&quot;5&quot;,201342448,&quot;1&quot;,201342449,&quot;1&quot;,469777841,&quot;Aptos&quot;,469777842,&quot;&quot;,469777843,&quot;Aptos&quot;\u2026[trimmed for fixture]",
+    "descriptionBodyPlain": "About Zeta:\nZeta is a globally recognized next-gen banking technology company. Our modern platforms enable financial institutions and fintechs to launch extensible and compliant banking\u00a0asset\u00a0and liability products spanning cards, loans, and deposits. Our cloud-native and fully API-enabled stack supports processing, issuing, lending, core banking, fraud, loyalty, digital banking, and agentic AI so\u2026[trimmed for fixture]",
+    "hostedUrl": "https://jobs.lever.co/zeta/7c0e0301-f6e0-4092-980d-7e7ec3b566f1",
+    "applyUrl": "https://jobs.lever.co/zeta/7c0e0301-f6e0-4092-980d-7e7ec3b566f1/apply"
+   }
+  ]
+ ],
+ "details": {}
+}

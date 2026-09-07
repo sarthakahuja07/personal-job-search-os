@@ -17,7 +17,7 @@ export default async function RootLayout({
   // Nav badges are live, so a broken crawler is visible from any page rather than only from
   // the dashboard. If the query fails the shell must still render -- navigation is how you
   // reach the page that would tell you what went wrong.
-  let counts = { relevantJobs: 0, pendingNotifications: 0, unhealthySources: 0, dsaRemaining: 0 };
+  let counts = { relevantJobs: 0, pendingNotifications: 0, unhealthySources: 0, dsaRemaining: 0, pipeline: 0 };
   try {
     counts = await navCounts(getDb());
   } catch {

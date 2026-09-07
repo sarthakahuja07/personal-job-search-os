@@ -1,6 +1,7 @@
 import Link from "next/link";
 
-import { Badge, Card, PageHeader, SectionTitle, cx } from "@/components/ui";
+import { Badge, Button, Card, PageHeader, SectionTitle, cx, inputStyles } from "@/components/ui";
+import { addCompany } from "./actions";
 import { getDb } from "@/db";
 import { listCompanyHealth } from "@/server/repository/jobs-repo";
 
@@ -51,6 +52,20 @@ export default async function CompaniesPage() {
         }
       />
 
+      <Card className="mb-6 px-5 py-4">
+        <p className="text-[13px] font-medium text-ink">Add a company</p>
+        <p className="mb-3 mt-0.5 text-[11px] leading-relaxed text-ink-faint">
+          Paste the URL you land on when you click &ldquo;search jobs&rdquo;. Greenhouse, Lever,
+          Ashby, SmartRecruiters and Workday URLs are recognised automatically; anything else is
+          saved as a manual check rather than guessed at.
+        </p>
+        <form action={addCompany} className="flex flex-wrap gap-2">
+          <input name="name" placeholder="Company name" required className={cx(inputStyles, "w-48")} />
+          <input name="careersUrl" placeholder="https://boards.greenhouse.io/…" className={cx(inputStyles, "min-w-64 flex-1")} />
+          <Button type="submit" variant="primary">Add</Button>
+        </form>
+      </Card>
+
       <SectionTitle>Automated sources</SectionTitle>
       <Card className="mb-8 overflow-hidden">
         <table className="w-full text-sm">
@@ -73,7 +88,7 @@ export default async function CompaniesPage() {
               >
                 <td className="px-4 py-2.5">
                   <Link
-                    href={`/jobs?company=${c.id}`}
+                    href={`/companies/${c.id}`}
                     className="font-medium text-ink transition hover:text-accent-ink"
                   >
                     {c.name}
@@ -107,7 +122,13 @@ export default async function CompaniesPage() {
         <ul className="flex flex-wrap gap-1.5">
           {manual.map((c) =>
             c.careersUrl ? (
-              <li key={c.id}>
+              <li key={c.id} className="flex items-center gap-1">
+                <Link
+                  href={`/companies/${c.id}`}
+                  className="rounded-md border border-line bg-surface-2 px-2 py-1 text-[12px] text-ink-faint transition hover:text-ink"
+                >
+                  edit
+                </Link>
                 <a
                   href={c.careersUrl}
                   target="_blank"

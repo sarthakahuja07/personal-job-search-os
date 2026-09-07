@@ -1,26 +1,125 @@
-import { Planned } from "@/components/planned";
+import Link from "next/link";
 
-export default function ApplicationsPage() {
+import { Badge, Card, EmptyState, PageHeader, SectionTitle } from "@/components/ui";
+import { getDb } from "@/db";
+import { settings } from "@/db/schema";
+import { followUpsDue } from "@/server/domain/applications";
+import { whatsappLink } from "@/server/domain/templates";
+import { listBoard, requestedWithContacts } from "@/server/repository/applications-repo";
+import { Board } from "./board";
+
+export const dynamic = "force-dynamic";
+
+export default async function ApplicationsPage() {
+  const db = getDb();
+  const [cards, requested, settingsRows] = await Promise.all([
+    listBoard(db),
+    requestedWithContacts(db),
+    db.select({ followUpDays: settings.followUpDays }).from(settings).limit(1),
+  ]);
+
+  const thresholdDays = settingsRows[0]?.followUpDays ?? 5;
+  const due = followUpsDue(
+    requested.map((r) => ({
+      id: r.id,
+      status: r.status,
+      requestedAt: r.requestedAt,
+      jobTitle: r.jobTitle,
+      companyName: r.companyName,
+    })),
+    thresholdDays,
+  );
+  const contactsById = new Map(requested.map((r) => [r.id, r.contacts]));
+
   return (
-    <Planned
-      title="Applications"
-      tagline="Track a role from saved through to interviews."
-      purpose="A Kanban board with exactly five stages — Saved, Requested, Referred, Applied, Interviews. Deliberately no Recruiter Screen, Onsite or Offer columns: extra stages make a board look thorough and feel like admin, and the point is to know what needs a nudge today."
-      contents={[
-        {
-          heading: "Five columns, drag between them",
-          detail: "Moving a card records the timestamp for that stage, which is what makes follow-up reminders possible.",
-        },
-        {
-          heading: "Referral follow-ups",
-          detail: "A role sitting in Requested past your threshold surfaces on the dashboard with the contact to chase — the reason requested_at is already stored.",
-        },
-        {
-          heading: "One card per job",
-          detail: "The database already enforces this: a job can have at most one application, so the board can never disagree with itself.",
-        },
-      ]}
-      blockedBy="The schema and the follow-up threshold setting are already in place; this is the next feature after the crawler's conformance suite."
-    />
+    <div>
+      <PageHeader
+        title="Applications"
+        subtitle={
+          cards.length > 0 ? (
+            <>
+              <span className="tnum text-ink">{cards.length}</span> role
+              {cards.length === 1 ? "" : "s"} in the pipeline. Drag a card, or use its menu.
+            </>
+          ) : (
+            "Track a role from saved through to interviews."
+          )
+        }
+      />
+
+      {due.length > 0 && (
+        <section className="mb-6">
+          <SectionTitle>
+            Follow up · waiting {thresholdDays}+ days
+          </SectionTitle>
+          <ul className="space-y-1.5">
+            {due.map((f) => {
+              const contacts = contactsById.get(f.id) ?? [];
+              const message =
+                `Hi, just following up on the ${f.jobTitle} role at ${f.companyName} ` +
+                `I mentioned — no rush at all, and thanks again for the help!`;
+              return (
+                <Card as="li" key={f.id} className="px-4 py-3">
+                  <div className="flex flex-wrap items-start justify-between gap-3">
+                    <div className="min-w-0">
+                      <p className="text-sm text-ink">
+                        <span className="font-medium">{f.companyName}</span>
+                        <span className="text-ink-dim"> — {f.jobTitle}</span>
+                      </p>
+                      <p className="mt-0.5 text-xs text-ink-faint">
+                        Referral requested{" "}
+                        <span className="tnum text-warn">{f.daysWaiting} days</span> ago
+                        {contacts.length > 0 && (
+                          <> · ask {contacts.map((c) => c.name).join(" or ")}</>
+                        )}
+                      </p>
+                    </div>
+                    <div className="flex shrink-0 flex-wrap gap-1.5">
+                      {contacts.slice(0, 3).map((c) => {
+                        const wa = whatsappLink(c.phone, message);
+                        return wa ? (
+                          <a
+                            key={c.name}
+                            href={wa}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="rounded-md border border-line bg-surface-2 px-2.5 py-1 text-[12px] text-ink-dim transition hover:border-line-strong hover:text-ink"
+                          >
+                            Nudge {c.name}
+                          </a>
+                        ) : null;
+                      })}
+                    </div>
+                  </div>
+                </Card>
+              );
+            })}
+          </ul>
+        </section>
+      )}
+
+      {cards.length === 0 ? (
+        <EmptyState
+          title="No applications yet"
+          body="Save a role from the job board and it appears here. The board has exactly five stages — enough to know what needs a nudge, few enough that it never becomes admin."
+          hint={
+            <Link href="/jobs" className="text-accent-ink hover:underline">
+              Browse matching roles →
+            </Link>
+          }
+        />
+      ) : (
+        <Board cards={cards} />
+      )}
+
+      {cards.length > 0 && (
+        <p className="mt-6 text-[11px] leading-relaxed text-ink-faint">
+          Stage timestamps are recorded the first time a card reaches a stage and are never
+          cleared, so moving a card back to correct a mis-drag does not erase when you actually
+          asked for the referral. <Badge>Requested</Badge> is the only stage that raises a
+          follow-up — once a referral is in, the ball is not in your court.
+        </p>
+      )}
+    </div>
   );
 }

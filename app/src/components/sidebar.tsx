@@ -13,15 +13,14 @@ import { cx } from "./ui";
  * work -- one is checked several times a day, the other is sat down with -- and flattening them
  * into a single list of nine items would blur that.
  *
- * Both halves are now real: Phase 0 discovers and tracks roles, Phase 1 prepares for the
- * interviews they lead to. Applications and Templates remain intentional placeholders (PRD §7).
+ * Both halves are real and complete: Phase 0 discovers and tracks roles through a five-stage
+ * pipeline, Phase 1 prepares for the interviews they lead to.
  */
 
 type Item = {
   href: string;
   label: string;
   count?: number;
-  soon?: boolean;
 };
 
 type Group = { title: string; items: Item[] };
@@ -31,6 +30,7 @@ export type NavCounts = {
   pendingNotifications?: number;
   unhealthySources?: number;
   dsaRemaining?: number;
+  pipeline?: number;
 };
 
 function groups(counts: NavCounts): Group[] {
@@ -41,8 +41,8 @@ function groups(counts: NavCounts): Group[] {
         { href: "/", label: "Dashboard" },
         { href: "/jobs", label: "Jobs", count: counts.relevantJobs },
         { href: "/companies", label: "Companies", count: counts.unhealthySources },
-        { href: "/applications", label: "Applications", soon: true },
-        { href: "/templates", label: "Templates", soon: true },
+        { href: "/applications", label: "Applications", count: counts.pipeline },
+        { href: "/templates", label: "Templates" },
         {
           href: "/notifications",
           label: "Notifications",
@@ -115,9 +115,7 @@ export function Sidebar({ counts }: { counts: NavCounts }) {
                         />
                         {item.label}
                       </span>
-                      {item.soon ? (
-                        <span className="text-[10px] text-ink-faint">soon</span>
-                      ) : item.count ? (
+                      {item.count ? (
                         <span className="tnum rounded bg-surface-3 px-1.5 text-[11px] text-ink-dim">
                           {item.count}
                         </span>
@@ -132,7 +130,7 @@ export function Sidebar({ counts }: { counts: NavCounts }) {
       </nav>
 
       <div className="border-t border-line px-5 py-3 text-[11px] leading-relaxed text-ink-faint">
-        Discovery live · Prep in progress
+        Discovery · Pipeline · Prep
       </div>
     </aside>
   );
@@ -141,7 +139,7 @@ export function Sidebar({ counts }: { counts: NavCounts }) {
 /** Horizontal nav for narrow screens, where a 228px rail would eat the content. */
 export function MobileNav({ counts }: { counts: NavCounts }) {
   const pathname = usePathname();
-  const items = groups(counts).flatMap((g) => g.items.filter((i) => !i.soon));
+  const items = groups(counts).flatMap((g) => g.items);
 
   return (
     <div className="border-b border-line bg-surface md:hidden">

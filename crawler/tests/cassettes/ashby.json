@@ -1,0 +1,688 @@
+{
+ "config": {
+  "slug": "confluent"
+ },
+ "careers_url": "https://jobs.ashbyhq.com/confluent",
+ "list": [
+  {
+   "jobs": [
+    {
+     "id": "47920ccd-db54-4ed4-a865-70857e865fff",
+     "title": "Distributed Systems Software Engineer - WarpStream ",
+     "department": "Engineering",
+     "team": "Engineering",
+     "employmentType": "FullTime",
+     "location": "Remote, United States",
+     "secondaryLocations": [
+      {
+       "location": "Remote, Texas",
+       "address": {
+        "postalAddress": {
+         "addressRegion": "Texas",
+         "addressCountry": "United States"
+        }
+       }
+      },
+      {
+       "location": "Remote, North Carolina",
+       "address": {
+        "postalAddress": {
+         "addressRegion": "North Carolina",
+         "addressCountry": "United States"
+        }
+       }
+      },
+      {
+       "location": "Remote, Massachusetts",
+       "address": {
+        "postalAddress": {
+         "addressRegion": "Massachusetts",
+         "addressCountry": "United States"
+        }
+       }
+      },
+      {
+       "location": "Remote, New York",
+       "address": {
+        "postalAddress": {
+         "addressRegion": "New York",
+         "addressCountry": "United States"
+        }
+       }
+      }
+     ],
+     "publishedAt": "2026-07-21T17:30:38.012+00:00",
+     "isListed": true,
+     "isRemote": true,
+     "workplaceType": "Remote",
+     "address": {
+      "postalAddress": {
+       "addressCountry": "United States"
+      }
+     },
+     "jobUrl": "https://jobs.ashbyhq.com/confluent/47920ccd-db54-4ed4-a865-70857e865fff",
+     "applyUrl": "https://jobs.ashbyhq.com/confluent/47920ccd-db54-4ed4-a865-70857e865fff/application",
+     "descriptionHtml": "<p style=\"min-height:1.5em\">We\u2019re not just building better tech. We\u2019re rewriting how data moves and what the world can do with it. With Confluent, data doesn\u2019t sit still. Our platform puts information in motion, streaming in near real-time so companies can react faster, build smarter, and deliver experiences as dynamic as the world around them.</p><p style=\"min-height:1.5em\">It takes a certain kin\u2026[trimmed for fixture]",
+     "descriptionPlain": "We\u2019re not just building better tech. We\u2019re rewriting how data moves and what the world can do with it. With Confluent, data doesn\u2019t sit still. Our platform puts information in motion, streaming in near real-time so companies can react faster, build smarter, and deliver experiences as dynamic as the world around them.\n\nIt takes a certain kind of person to join this team. Those who ask hard question\u2026[trimmed for fixture]"
+    },
+    {
+     "id": "0b2a4106-7f01-4205-813d-81e4fa1abdb4",
+     "title": "Staff Software Engineer I - SRE",
+     "department": "Engineering",
+     "team": "Engineering",
+     "employmentType": "FullTime",
+     "location": "IN Remote India",
+     "secondaryLocations": [],
+     "publishedAt": "2026-02-16T07:38:53.841+00:00",
+     "isListed": true,
+     "isRemote": null,
+     "workplaceType": null,
+     "address": {
+      "postalAddress": {
+       "addressRegion": "Karn\u0101taka",
+       "addressCountry": "India",
+       "addressLocality": "Bengaluru"
+      }
+     },
+     "jobUrl": "https://jobs.ashbyhq.com/confluent/0b2a4106-7f01-4205-813d-81e4fa1abdb4",
+     "applyUrl": "https://jobs.ashbyhq.com/confluent/0b2a4106-7f01-4205-813d-81e4fa1abdb4/application",
+     "descriptionHtml": "<p style=\"min-height:1.5em\">We\u2019re not just building better tech. We\u2019re rewriting how data moves and what the world can do with it. With Confluent, data doesn\u2019t sit still. Our platform puts information in motion, streaming in near real-time so companies can react faster, build smarter, and deliver experiences as dynamic as the world around them.</p><p style=\"min-height:1.5em\">It takes a certain kin\u2026[trimmed for fixture]",
+     "descriptionPlain": "We\u2019re not just building better tech. We\u2019re rewriting how data moves and what the world can do with it. With Confluent, data doesn\u2019t sit still. Our platform puts information in motion, streaming in near real-time so companies can react faster, build smarter, and deliver experiences as dynamic as the world around them.\n\nIt takes a certain kind of person to join this team. Those who ask hard question\u2026[trimmed for fixture]"
+    },
+    {
+     "id": "905efbaa-d814-4b16-a377-d417c7d3d772",
+     "title": "Senior Software Engineer",
+     "department": "Engineering",
+     "team": "Engineering",
+     "employmentType": "FullTime",
+     "location": "*Job Posting Only: USA1",
+     "secondaryLocations": [],
+     "publishedAt": "2026-06-23T22:52:30.971+00:00",
+     "isListed": true,
+     "isRemote": true,
+     "workplaceType": "Remote",
+     "address": null,
+     "jobUrl": "https://jobs.ashbyhq.com/confluent/905efbaa-d814-4b16-a377-d417c7d3d772",
+     "applyUrl": "https://jobs.ashbyhq.com/confluent/905efbaa-d814-4b16-a377-d417c7d3d772/application",
+     "descriptionHtml": "<p style=\"min-height:1.5em\">We\u2019re not just building better tech. We\u2019re rewriting how data moves and what the world can do with it. With Confluent, data doesn\u2019t sit still. Our platform puts information in motion, streaming in near real-time so companies can react faster, build smarter, and deliver experiences as dynamic as the world around them.</p><p style=\"min-height:1.5em\">It takes a certain kin\u2026[trimmed for fixture]",
+     "descriptionPlain": "We\u2019re not just building better tech. We\u2019re rewriting how data moves and what the world can do with it. With Confluent, data doesn\u2019t sit still. Our platform puts information in motion, streaming in near real-time so companies can react faster, build smarter, and deliver experiences as dynamic as the world around them.\n\nIt takes a certain kind of person to join this team. Those who ask hard question\u2026[trimmed for fixture]"
+    },
+    {
+     "id": "f60bba87-9470-4238-bf6f-dce1b4da8006",
+     "title": "Senior Product Manager, Cluster Linking",
+     "department": "Product",
+     "team": "Product",
+     "employmentType": "FullTime",
+     "location": "Remote, Ontario, Canada",
+     "secondaryLocations": [
+      {
+       "location": "Remote, British Columbia, Canada",
+       "address": {
+        "postalAddress": {
+         "addressRegion": "British Columbia",
+         "addressCountry": "Canada"
+        }
+       }
+      }
+     ],
+     "publishedAt": "2026-02-17T13:58:08.160+00:00",
+     "isListed": true,
+     "isRemote": true,
+     "workplaceType": "Remote",
+     "address": {
+      "postalAddress": {
+       "addressRegion": "Ontario",
+       "addressCountry": "Canada"
+      }
+     },
+     "jobUrl": "https://jobs.ashbyhq.com/confluent/f60bba87-9470-4238-bf6f-dce1b4da8006",
+     "applyUrl": "https://jobs.ashbyhq.com/confluent/f60bba87-9470-4238-bf6f-dce1b4da8006/application",
+     "descriptionHtml": "<p style=\"min-height:1.5em\">We\u2019re not just building better tech. We\u2019re rewriting how data moves and what the world can do with it. With Confluent, data doesn\u2019t sit still. Our platform puts information in motion, streaming in near real-time so companies can react faster, build smarter, and deliver experiences as dynamic as the world around them.</p><p style=\"min-height:1.5em\">It takes a certain kin\u2026[trimmed for fixture]",
+     "descriptionPlain": "We\u2019re not just building better tech. We\u2019re rewriting how data moves and what the world can do with it. With Confluent, data doesn\u2019t sit still. Our platform puts information in motion, streaming in near real-time so companies can react faster, build smarter, and deliver experiences as dynamic as the world around them.\n\nIt takes a certain kind of person to join this team. Those who ask hard question\u2026[trimmed for fixture]"
+    },
+    {
+     "id": "21082b9f-440a-4ba6-a469-c70d339d1aa9",
+     "title": "Senior Product Manager, Kafka Connect",
+     "department": "Product",
+     "team": "Product",
+     "employmentType": "FullTime",
+     "location": "Remote, United States",
+     "secondaryLocations": [
+      {
+       "location": "Remote, California",
+       "address": {
+        "postalAddress": {
+         "addressRegion": "California",
+         "addressCountry": "United States"
+        }
+       }
+      },
+      {
+       "location": "Remote, New York",
+       "address": {
+        "postalAddress": {
+         "addressRegion": "New York",
+         "addressCountry": "United States"
+        }
+       }
+      }
+     ],
+     "publishedAt": "2026-02-24T19:26:32.172+00:00",
+     "isListed": true,
+     "isRemote": true,
+     "workplaceType": "Remote",
+     "address": {
+      "postalAddress": {
+       "addressCountry": "United States"
+      }
+     },
+     "jobUrl": "https://jobs.ashbyhq.com/confluent/21082b9f-440a-4ba6-a469-c70d339d1aa9",
+     "applyUrl": "https://jobs.ashbyhq.com/confluent/21082b9f-440a-4ba6-a469-c70d339d1aa9/application",
+     "descriptionHtml": "<p style=\"min-height:1.5em\">We\u2019re not just building better tech. We\u2019re rewriting how data moves and what the world can do with it. With Confluent, data doesn\u2019t sit still. Our platform puts information in motion, streaming in near real-time so companies can react faster, build smarter, and deliver experiences as dynamic as the world around them.</p><p style=\"min-height:1.5em\">It takes a certain kin\u2026[trimmed for fixture]",
+     "descriptionPlain": "We\u2019re not just building better tech. We\u2019re rewriting how data moves and what the world can do with it. With Confluent, data doesn\u2019t sit still. Our platform puts information in motion, streaming in near real-time so companies can react faster, build smarter, and deliver experiences as dynamic as the world around them.\n\nIt takes a certain kind of person to join this team. Those who ask hard question\u2026[trimmed for fixture]"
+    },
+    {
+     "id": "1946b144-eaa5-482f-b235-63cc06104ecc",
+     "title": "Senior Product Manager, Cloud Networking ",
+     "department": "Product",
+     "team": "Product",
+     "employmentType": "FullTime",
+     "location": "Remote, United States",
+     "secondaryLocations": [
+      {
+       "location": "Remote, California",
+       "address": {
+        "postalAddress": {
+         "addressRegion": "California",
+         "addressCountry": "United States"
+        }
+       }
+      },
+      {
+       "location": "Remote, New York",
+       "address": {
+        "postalAddress": {
+         "addressRegion": "New York",
+         "addressCountry": "United States"
+        }
+       }
+      }
+     ],
+     "publishedAt": "2026-02-27T19:35:31.656+00:00",
+     "isListed": true,
+     "isRemote": true,
+     "workplaceType": "Remote",
+     "address": {
+      "postalAddress": {
+       "addressCountry": "United States"
+      }
+     },
+     "jobUrl": "https://jobs.ashbyhq.com/confluent/1946b144-eaa5-482f-b235-63cc06104ecc",
+     "applyUrl": "https://jobs.ashbyhq.com/confluent/1946b144-eaa5-482f-b235-63cc06104ecc/application",
+     "descriptionHtml": "<p style=\"min-height:1.5em\">We\u2019re not just building better tech. We\u2019re rewriting how data moves and what the world can do with it. With Confluent, data doesn\u2019t sit still. Our platform puts information in motion, streaming in near real-time so companies can react faster, build smarter, and deliver experiences as dynamic as the world around them.</p><p style=\"min-height:1.5em\">It takes a certain kin\u2026[trimmed for fixture]",
+     "descriptionPlain": "We\u2019re not just building better tech. We\u2019re rewriting how data moves and what the world can do with it. With Confluent, data doesn\u2019t sit still. Our platform puts information in motion, streaming in near real-time so companies can react faster, build smarter, and deliver experiences as dynamic as the world around them.\n\nIt takes a certain kind of person to join this team. Those who ask hard question\u2026[trimmed for fixture]"
+    },
+    {
+     "id": "0b65c19f-c804-4f79-b1e3-c3ea035c3d76",
+     "title": "Senior Software Engineer II",
+     "department": "Engineering",
+     "team": "Engineering",
+     "employmentType": "FullTime",
+     "location": "Boston, Massachusetts",
+     "secondaryLocations": [
+      {
+       "location": "Chicago, Illinois",
+       "address": {
+        "postalAddress": {
+         "addressRegion": "Illinois",
+         "addressCountry": "United States",
+         "addressLocality": "Chicago"
+        }
+       }
+      },
+      {
+       "location": "Remote, North Carolina",
+       "address": {
+        "postalAddress": {
+         "addressRegion": "North Carolina",
+         "addressCountry": "United States"
+        }
+       }
+      },
+      {
+       "location": "Dallas, Texas",
+       "address": {
+        "postalAddress": {
+         "addressRegion": "Texas",
+         "addressCountry": "United States",
+         "addressLocality": "Dallas"
+        }
+       }
+      },
+      {
+       "location": "Portland, Oregon",
+       "address": {
+        "postalAddress": {
+         "addressRegion": "Oregon",
+         "addressCountry": "United States",
+         "addressLocality": "Portland"
+        }
+       }
+      }
+     ],
+     "publishedAt": "2026-05-07T16:55:07.687+00:00",
+     "isListed": true,
+     "isRemote": true,
+     "workplaceType": "Remote",
+     "address": {
+      "postalAddress": {
+       "addressRegion": "Massachusetts",
+       "addressCountry": "United States",
+       "addressLocality": "Boston"
+      }
+     },
+     "jobUrl": "https://jobs.ashbyhq.com/confluent/0b65c19f-c804-4f79-b1e3-c3ea035c3d76",
+     "applyUrl": "https://jobs.ashbyhq.com/confluent/0b65c19f-c804-4f79-b1e3-c3ea035c3d76/application",
+     "descriptionHtml": "<p style=\"min-height:1.5em\">We\u2019re not just building better tech. We\u2019re rewriting how data moves and what the world can do with it. With Confluent, data doesn\u2019t sit still. Our platform puts information in motion, streaming in near real-time so companies can react faster, build smarter, and deliver experiences as dynamic as the world around them.</p><p style=\"min-height:1.5em\">It takes a certain kin\u2026[trimmed for fixture]",
+     "descriptionPlain": "We\u2019re not just building better tech. We\u2019re rewriting how data moves and what the world can do with it. With Confluent, data doesn\u2019t sit still. Our platform puts information in motion, streaming in near real-time so companies can react faster, build smarter, and deliver experiences as dynamic as the world around them.\n\nIt takes a certain kind of person to join this team. Those who ask hard question\u2026[trimmed for fixture]"
+    },
+    {
+     "id": "85107937-8f12-4336-abb8-e88f344c6bcc",
+     "title": "Principal Engineer, Engineering AI Productivity",
+     "department": "Engineering",
+     "team": "Engineering",
+     "employmentType": "FullTime",
+     "location": "Remote, United States",
+     "secondaryLocations": [],
+     "publishedAt": "2026-05-13T23:08:32.501+00:00",
+     "isListed": true,
+     "isRemote": true,
+     "workplaceType": "Remote",
+     "address": {
+      "postalAddress": {
+       "addressCountry": "United States"
+      }
+     },
+     "jobUrl": "https://jobs.ashbyhq.com/confluent/85107937-8f12-4336-abb8-e88f344c6bcc",
+     "applyUrl": "https://jobs.ashbyhq.com/confluent/85107937-8f12-4336-abb8-e88f344c6bcc/application",
+     "descriptionHtml": "<p style=\"min-height:1.5em\">We\u2019re not just building better tech. We\u2019re rewriting how data moves and what the world can do with it. With Confluent, data doesn\u2019t sit still. Our platform puts information in motion, streaming in near real-time so companies can react faster, build smarter, and deliver experiences as dynamic as the world around them.</p><p style=\"min-height:1.5em\">It takes a certain kin\u2026[trimmed for fixture]",
+     "descriptionPlain": "We\u2019re not just building better tech. We\u2019re rewriting how data moves and what the world can do with it. With Confluent, data doesn\u2019t sit still. Our platform puts information in motion, streaming in near real-time so companies can react faster, build smarter, and deliver experiences as dynamic as the world around them.\n\nIt takes a certain kind of person to join this team. Those who ask hard question\u2026[trimmed for fixture]"
+    },
+    {
+     "id": "ded86e3c-8dbe-498b-861c-1fe5dfcd1ce3",
+     "title": "Head of Product Led Growth Marketing ",
+     "department": "Product",
+     "team": "Product",
+     "employmentType": "FullTime",
+     "location": "Remote, United States",
+     "secondaryLocations": [],
+     "publishedAt": "2026-04-07T16:44:46.628+00:00",
+     "isListed": true,
+     "isRemote": true,
+     "workplaceType": "Remote",
+     "address": {
+      "postalAddress": {
+       "addressCountry": "United States"
+      }
+     },
+     "jobUrl": "https://jobs.ashbyhq.com/confluent/ded86e3c-8dbe-498b-861c-1fe5dfcd1ce3",
+     "applyUrl": "https://jobs.ashbyhq.com/confluent/ded86e3c-8dbe-498b-861c-1fe5dfcd1ce3/application",
+     "descriptionHtml": "<p style=\"min-height:1.5em\">We\u2019re not just building better tech. We\u2019re rewriting how data moves and what the world can do with it. With Confluent, data doesn\u2019t sit still. Our platform puts information in motion, streaming in near real-time so companies can react faster, build smarter, and deliver experiences as dynamic as the world around them.</p><p style=\"min-height:1.5em\">It takes a certain kin\u2026[trimmed for fixture]",
+     "descriptionPlain": "We\u2019re not just building better tech. We\u2019re rewriting how data moves and what the world can do with it. With Confluent, data doesn\u2019t sit still. Our platform puts information in motion, streaming in near real-time so companies can react faster, build smarter, and deliver experiences as dynamic as the world around them.\n\nIt takes a certain kind of person to join this team. Those who ask hard question\u2026[trimmed for fixture]"
+    },
+    {
+     "id": "dc52dfa1-1649-442c-9344-609b8f01ed4b",
+     "title": "Senior Product Manager, Cloud Networking",
+     "department": "Product",
+     "team": "Product",
+     "employmentType": "FullTime",
+     "location": "Remote, United States",
+     "secondaryLocations": [
+      {
+       "location": "Remote, California",
+       "address": {
+        "postalAddress": {
+         "addressRegion": "California",
+         "addressCountry": "United States"
+        }
+       }
+      }
+     ],
+     "publishedAt": "2026-04-17T19:59:47.905+00:00",
+     "isListed": true,
+     "isRemote": true,
+     "workplaceType": "Remote",
+     "address": {
+      "postalAddress": {
+       "addressCountry": "United States"
+      }
+     },
+     "jobUrl": "https://jobs.ashbyhq.com/confluent/dc52dfa1-1649-442c-9344-609b8f01ed4b",
+     "applyUrl": "https://jobs.ashbyhq.com/confluent/dc52dfa1-1649-442c-9344-609b8f01ed4b/application",
+     "descriptionHtml": "<p style=\"min-height:1.5em\">We\u2019re not just building better tech. We\u2019re rewriting how data moves and what the world can do with it. With Confluent, data doesn\u2019t sit still. Our platform puts information in motion, streaming in near real-time so companies can react faster, build smarter, and deliver experiences as dynamic as the world around them.</p><p style=\"min-height:1.5em\">It takes a certain kin\u2026[trimmed for fixture]",
+     "descriptionPlain": "We\u2019re not just building better tech. We\u2019re rewriting how data moves and what the world can do with it. With Confluent, data doesn\u2019t sit still. Our platform puts information in motion, streaming in near real-time so companies can react faster, build smarter, and deliver experiences as dynamic as the world around them.\n\nIt takes a certain kind of person to join this team. Those who ask hard question\u2026[trimmed for fixture]"
+    },
+    {
+     "id": "81b94a4e-53d3-40d5-9c04-af57bd01961c",
+     "title": "Staff Product Manager, Real Time Data Analytics Platform ",
+     "department": "Product",
+     "team": "Product",
+     "employmentType": "FullTime",
+     "location": "Remote, United States",
+     "secondaryLocations": [
+      {
+       "location": "Remote, Washington",
+       "address": {
+        "postalAddress": {
+         "addressRegion": "Washington",
+         "addressCountry": "United States"
+        }
+       }
+      }
+     ],
+     "publishedAt": "2026-04-30T14:00:07.304+00:00",
+     "isListed": true,
+     "isRemote": true,
+     "workplaceType": "Remote",
+     "address": {
+      "postalAddress": {
+       "addressCountry": "United States"
+      }
+     },
+     "jobUrl": "https://jobs.ashbyhq.com/confluent/81b94a4e-53d3-40d5-9c04-af57bd01961c",
+     "applyUrl": "https://jobs.ashbyhq.com/confluent/81b94a4e-53d3-40d5-9c04-af57bd01961c/application",
+     "descriptionHtml": "<p style=\"min-height:1.5em\">We\u2019re not just building better tech. We\u2019re rewriting how data moves and what the world can do with it. With Confluent, data doesn\u2019t sit still. Our platform puts information in motion, streaming in near real-time so companies can react faster, build smarter, and deliver experiences as dynamic as the world around them.</p><p style=\"min-height:1.5em\">It takes a certain kin\u2026[trimmed for fixture]",
+     "descriptionPlain": "We\u2019re not just building better tech. We\u2019re rewriting how data moves and what the world can do with it. With Confluent, data doesn\u2019t sit still. Our platform puts information in motion, streaming in near real-time so companies can react faster, build smarter, and deliver experiences as dynamic as the world around them.\n\nIt takes a certain kind of person to join this team. Those who ask hard question\u2026[trimmed for fixture]"
+    },
+    {
+     "id": "a24f234c-08a3-4184-a357-763ce5e69454",
+     "title": "Senior Software Engineer II, Kora Compute",
+     "department": "Engineering",
+     "team": "Engineering",
+     "employmentType": "FullTime",
+     "location": "CA Remote Ontario",
+     "secondaryLocations": [],
+     "publishedAt": "2026-05-11T17:08:17.600+00:00",
+     "isListed": true,
+     "isRemote": null,
+     "workplaceType": null,
+     "address": {
+      "postalAddress": {
+       "addressRegion": "Ontario",
+       "addressCountry": "Canada",
+       "addressLocality": "Toronto"
+      }
+     },
+     "jobUrl": "https://jobs.ashbyhq.com/confluent/a24f234c-08a3-4184-a357-763ce5e69454",
+     "applyUrl": "https://jobs.ashbyhq.com/confluent/a24f234c-08a3-4184-a357-763ce5e69454/application",
+     "descriptionHtml": "<p style=\"min-height:1.5em\">We\u2019re not just building better tech. We\u2019re rewriting how data moves and what the world can do with it. With Confluent, data doesn\u2019t sit still. Our platform puts information in motion, streaming in near real-time so companies can react faster, build smarter, and deliver experiences as dynamic as the world around them.</p><p style=\"min-height:1.5em\">It takes a certain kin\u2026[trimmed for fixture]",
+     "descriptionPlain": "We\u2019re not just building better tech. We\u2019re rewriting how data moves and what the world can do with it. With Confluent, data doesn\u2019t sit still. Our platform puts information in motion, streaming in near real-time so companies can react faster, build smarter, and deliver experiences as dynamic as the world around them.\n\nIt takes a certain kind of person to join this team. Those who ask hard question\u2026[trimmed for fixture]"
+    },
+    {
+     "id": "e70deb8a-3308-49dd-b9c7-b537333c5645",
+     "title": "Staff Product Manager, Cloud Networking ",
+     "department": "Product",
+     "team": "Product",
+     "employmentType": "FullTime",
+     "location": "Remote, United States",
+     "secondaryLocations": [],
+     "publishedAt": "2026-05-15T22:39:19.617+00:00",
+     "isListed": true,
+     "isRemote": true,
+     "workplaceType": "Remote",
+     "address": {
+      "postalAddress": {
+       "addressCountry": "United States"
+      }
+     },
+     "jobUrl": "https://jobs.ashbyhq.com/confluent/e70deb8a-3308-49dd-b9c7-b537333c5645",
+     "applyUrl": "https://jobs.ashbyhq.com/confluent/e70deb8a-3308-49dd-b9c7-b537333c5645/application",
+     "descriptionHtml": "<p style=\"min-height:1.5em\">We\u2019re not just building better tech. We\u2019re rewriting how data moves and what the world can do with it. With Confluent, data doesn\u2019t sit still. Our platform puts information in motion, streaming in near real-time so companies can react faster, build smarter, and deliver experiences as dynamic as the world around them.</p><p style=\"min-height:1.5em\">It takes a certain kin\u2026[trimmed for fixture]",
+     "descriptionPlain": "We\u2019re not just building better tech. We\u2019re rewriting how data moves and what the world can do with it. With Confluent, data doesn\u2019t sit still. Our platform puts information in motion, streaming in near real-time so companies can react faster, build smarter, and deliver experiences as dynamic as the world around them.\n\nIt takes a certain kind of person to join this team. Those who ask hard question\u2026[trimmed for fixture]"
+    },
+    {
+     "id": "4218f1c2-3679-4aff-a458-20ef09817fc4",
+     "title": "Senior Software Engineer - Infrastructure",
+     "department": "Engineering",
+     "team": "Engineering",
+     "employmentType": "FullTime",
+     "location": "CA Remote Ontario",
+     "secondaryLocations": [
+      {
+       "location": "Remote, British Columbia, Canada",
+       "address": {
+        "postalAddress": {
+         "addressRegion": "British Columbia",
+         "addressCountry": "Canada"
+        }
+       }
+      }
+     ],
+     "publishedAt": "2026-06-03T19:44:12.337+00:00",
+     "isListed": true,
+     "isRemote": true,
+     "workplaceType": "Remote",
+     "address": {
+      "postalAddress": {
+       "addressRegion": "Ontario",
+       "addressCountry": "Canada",
+       "addressLocality": "Toronto"
+      }
+     },
+     "jobUrl": "https://jobs.ashbyhq.com/confluent/4218f1c2-3679-4aff-a458-20ef09817fc4",
+     "applyUrl": "https://jobs.ashbyhq.com/confluent/4218f1c2-3679-4aff-a458-20ef09817fc4/application",
+     "descriptionHtml": "<p style=\"min-height:1.5em\">We\u2019re not just building better tech. We\u2019re rewriting how data moves and what the world can do with it. With Confluent, data doesn\u2019t sit still. Our platform puts information in motion, streaming in near real-time so companies can react faster, build smarter, and deliver experiences as dynamic as the world around them.</p><p style=\"min-height:1.5em\">It takes a certain kin\u2026[trimmed for fixture]",
+     "descriptionPlain": "We\u2019re not just building better tech. We\u2019re rewriting how data moves and what the world can do with it. With Confluent, data doesn\u2019t sit still. Our platform puts information in motion, streaming in near real-time so companies can react faster, build smarter, and deliver experiences as dynamic as the world around them.\n\nIt takes a certain kind of person to join this team. Those who ask hard question\u2026[trimmed for fixture]"
+    },
+    {
+     "id": "69b37f70-0978-472e-86a9-2d19ba70820f",
+     "title": "Senior Product Manager, Developer Experience",
+     "department": "Product",
+     "team": "Product",
+     "employmentType": "FullTime",
+     "location": "Remote, United States",
+     "secondaryLocations": [],
+     "publishedAt": "2026-05-28T14:50:17.618+00:00",
+     "isListed": true,
+     "isRemote": true,
+     "workplaceType": "Remote",
+     "address": {
+      "postalAddress": {
+       "addressCountry": "United States"
+      }
+     },
+     "jobUrl": "https://jobs.ashbyhq.com/confluent/69b37f70-0978-472e-86a9-2d19ba70820f",
+     "applyUrl": "https://jobs.ashbyhq.com/confluent/69b37f70-0978-472e-86a9-2d19ba70820f/application",
+     "descriptionHtml": "<p style=\"min-height:1.5em\">We\u2019re not just building better tech. We\u2019re rewriting how data moves and what the world can do with it. With Confluent, data doesn\u2019t sit still. Our platform puts information in motion, streaming in near real-time so companies can react faster, build smarter, and deliver experiences as dynamic as the world around them.</p><p style=\"min-height:1.5em\">It takes a certain kin\u2026[trimmed for fixture]",
+     "descriptionPlain": "We\u2019re not just building better tech. We\u2019re rewriting how data moves and what the world can do with it. With Confluent, data doesn\u2019t sit still. Our platform puts information in motion, streaming in near real-time so companies can react faster, build smarter, and deliver experiences as dynamic as the world around them.\n\nIt takes a certain kind of person to join this team. Those who ask hard question\u2026[trimmed for fixture]"
+    },
+    {
+     "id": "f7356433-e9cd-437b-9048-587b11333bb1",
+     "title": "Principal, Product Manager",
+     "department": "Product",
+     "team": "Product",
+     "employmentType": "FullTime",
+     "location": "Remote, United States",
+     "secondaryLocations": [],
+     "publishedAt": "2026-07-01T00:26:22.869+00:00",
+     "isListed": true,
+     "isRemote": true,
+     "workplaceType": "Remote",
+     "address": {
+      "postalAddress": {
+       "addressCountry": "United States"
+      }
+     },
+     "jobUrl": "https://jobs.ashbyhq.com/confluent/f7356433-e9cd-437b-9048-587b11333bb1",
+     "applyUrl": "https://jobs.ashbyhq.com/confluent/f7356433-e9cd-437b-9048-587b11333bb1/application",
+     "descriptionHtml": "<p style=\"min-height:1.5em\">We\u2019re not just building better tech. We\u2019re rewriting how data moves and what the world can do with it. With Confluent, data doesn\u2019t sit still. Our platform puts information in motion, streaming in near real-time so companies can react faster, build smarter, and deliver experiences as dynamic as the world around them.</p><p style=\"min-height:1.5em\">It takes a certain kin\u2026[trimmed for fixture]",
+     "descriptionPlain": "We\u2019re not just building better tech. We\u2019re rewriting how data moves and what the world can do with it. With Confluent, data doesn\u2019t sit still. Our platform puts information in motion, streaming in near real-time so companies can react faster, build smarter, and deliver experiences as dynamic as the world around them.\n\nIt takes a certain kind of person to join this team. Those who ask hard question\u2026[trimmed for fixture]"
+    },
+    {
+     "id": "bef7f6a5-2481-4eb6-a760-86e3746600bb",
+     "title": "Staff Software Engineer I",
+     "department": "Engineering",
+     "team": "Engineering",
+     "employmentType": "FullTime",
+     "location": "*Job Posting Only: USA1",
+     "secondaryLocations": [],
+     "publishedAt": "2026-06-23T22:49:02.533+00:00",
+     "isListed": true,
+     "isRemote": true,
+     "workplaceType": "Remote",
+     "address": null,
+     "jobUrl": "https://jobs.ashbyhq.com/confluent/bef7f6a5-2481-4eb6-a760-86e3746600bb",
+     "applyUrl": "https://jobs.ashbyhq.com/confluent/bef7f6a5-2481-4eb6-a760-86e3746600bb/application",
+     "descriptionHtml": "<p style=\"min-height:1.5em\">We\u2019re not just building better tech. We\u2019re rewriting how data moves and what the world can do with it. With Confluent, data doesn\u2019t sit still. Our platform puts information in motion, streaming in near real-time so companies can react faster, build smarter, and deliver experiences as dynamic as the world around them.</p><p style=\"min-height:1.5em\">It takes a certain kin\u2026[trimmed for fixture]",
+     "descriptionPlain": "We\u2019re not just building better tech. We\u2019re rewriting how data moves and what the world can do with it. With Confluent, data doesn\u2019t sit still. Our platform puts information in motion, streaming in near real-time so companies can react faster, build smarter, and deliver experiences as dynamic as the world around them.\n\nIt takes a certain kind of person to join this team. Those who ask hard question\u2026[trimmed for fixture]"
+    },
+    {
+     "id": "39143513-ad4c-41fb-86ed-b939a66e53d2",
+     "title": "Staff Security Risk & Compliance Program Manager - Access Management",
+     "department": "Engineering",
+     "team": "Engineering",
+     "employmentType": "FullTime",
+     "location": "Remote, United States",
+     "secondaryLocations": [
+      {
+       "location": "Remote, Texas",
+       "address": {
+        "postalAddress": {
+         "addressRegion": "Texas",
+         "addressCountry": "United States"
+        }
+       }
+      }
+     ],
+     "publishedAt": "2026-07-10T16:30:22.723+00:00",
+     "isListed": true,
+     "isRemote": true,
+     "workplaceType": "Remote",
+     "address": {
+      "postalAddress": {
+       "addressCountry": "United States"
+      }
+     },
+     "jobUrl": "https://jobs.ashbyhq.com/confluent/39143513-ad4c-41fb-86ed-b939a66e53d2",
+     "applyUrl": "https://jobs.ashbyhq.com/confluent/39143513-ad4c-41fb-86ed-b939a66e53d2/application",
+     "descriptionHtml": "<p style=\"min-height:1.5em\">We\u2019re not just building better tech. We\u2019re rewriting how data moves and what the world can do with it. With Confluent, data doesn\u2019t sit still. Our platform puts information in motion, streaming in near real-time so companies can react faster, build smarter, and deliver experiences as dynamic as the world around them.</p><p style=\"min-height:1.5em\">It takes a certain kin\u2026[trimmed for fixture]",
+     "descriptionPlain": "We\u2019re not just building better tech. We\u2019re rewriting how data moves and what the world can do with it. With Confluent, data doesn\u2019t sit still. Our platform puts information in motion, streaming in near real-time so companies can react faster, build smarter, and deliver experiences as dynamic as the world around them.\n\nIt takes a certain kind of person to join this team. Those who ask hard question\u2026[trimmed for fixture]"
+    },
+    {
+     "id": "ce64fe49-184c-44b1-9abf-dc5ce0dc9381",
+     "title": "Senior Software Engineer - Streaming AI (Remote - Ontario / British Columbia) ",
+     "department": "Engineering",
+     "team": "Engineering",
+     "employmentType": "FullTime",
+     "location": "Remote, Ontario, Canada",
+     "secondaryLocations": [
+      {
+       "location": "Remote, British Columbia, Canada",
+       "address": {
+        "postalAddress": {
+         "addressRegion": "British Columbia",
+         "addressCountry": "Canada"
+        }
+       }
+      }
+     ],
+     "publishedAt": "2026-07-14T18:09:25.023+00:00",
+     "isListed": true,
+     "isRemote": true,
+     "workplaceType": "Remote",
+     "address": {
+      "postalAddress": {
+       "addressRegion": "Ontario",
+       "addressCountry": "Canada"
+      }
+     },
+     "jobUrl": "https://jobs.ashbyhq.com/confluent/ce64fe49-184c-44b1-9abf-dc5ce0dc9381",
+     "applyUrl": "https://jobs.ashbyhq.com/confluent/ce64fe49-184c-44b1-9abf-dc5ce0dc9381/application",
+     "descriptionHtml": "<p style=\"min-height:1.5em\">We\u2019re not just building better tech. We\u2019re rewriting how data moves and what the world can do with it. With Confluent, data doesn\u2019t sit still. Our platform puts information in motion, streaming in near real-time so companies can react faster, build smarter, and deliver experiences as dynamic as the world around them.</p><p style=\"min-height:1.5em\">It takes a certain kin\u2026[trimmed for fixture]",
+     "descriptionPlain": "We\u2019re not just building better tech. We\u2019re rewriting how data moves and what the world can do with it. With Confluent, data doesn\u2019t sit still. Our platform puts information in motion, streaming in near real-time so companies can react faster, build smarter, and deliver experiences as dynamic as the world around them.\n\nIt takes a certain kind of person to join this team. Those who ask hard question\u2026[trimmed for fixture]"
+    },
+    {
+     "id": "80a47c3e-a160-4277-a452-1eef9c689167",
+     "title": "Staff Software Engineer",
+     "department": "Engineering",
+     "team": "Engineering",
+     "employmentType": "FullTime",
+     "location": "Mountain View, California",
+     "secondaryLocations": [
+      {
+       "location": "New York, New York",
+       "address": {
+        "postalAddress": {
+         "addressRegion": "New York",
+         "addressCountry": "United States",
+         "addressLocality": "New York"
+        }
+       }
+      }
+     ],
+     "publishedAt": "2026-07-22T19:35:24.671+00:00",
+     "isListed": true,
+     "isRemote": true,
+     "workplaceType": "Remote",
+     "address": {
+      "postalAddress": {
+       "addressRegion": "California",
+       "addressCountry": "United States",
+       "addressLocality": "Mountain View"
+      }
+     },
+     "jobUrl": "https://jobs.ashbyhq.com/confluent/80a47c3e-a160-4277-a452-1eef9c689167",
+     "applyUrl": "https://jobs.ashbyhq.com/confluent/80a47c3e-a160-4277-a452-1eef9c689167/application",
+     "descriptionHtml": "<p style=\"min-height:1.5em\">We\u2019re not just building better tech. We\u2019re rewriting how data moves and what the world can do with it. With Confluent, data doesn\u2019t sit still. Our platform puts information in motion, streaming in near real-time so companies can react faster, build smarter, and deliver experiences as dynamic as the world around them.</p><p style=\"min-height:1.5em\">It takes a certain kin\u2026[trimmed for fixture]",
+     "descriptionPlain": "We\u2019re not just building better tech. We\u2019re rewriting how data moves and what the world can do with it. With Confluent, data doesn\u2019t sit still. Our platform puts information in motion, streaming in near real-time so companies can react faster, build smarter, and deliver experiences as dynamic as the world around them.\n\nIt takes a certain kind of person to join this team. Those who ask hard question\u2026[trimmed for fixture]"
+    },
+    {
+     "id": "46f3f467-8728-47b4-8fad-06e18ffbe552",
+     "title": "Senior Manager, Detection & Response (Security Engineering)",
+     "department": "Engineering",
+     "team": "Engineering",
+     "employmentType": "FullTime",
+     "location": "Remote, United States",
+     "secondaryLocations": [],
+     "publishedAt": "2026-08-03T17:36:37.972+00:00",
+     "isListed": true,
+     "isRemote": true,
+     "workplaceType": "Remote",
+     "address": {
+      "postalAddress": {
+       "addressCountry": "United States"
+      }
+     },
+     "jobUrl": "https://jobs.ashbyhq.com/confluent/46f3f467-8728-47b4-8fad-06e18ffbe552",
+     "applyUrl": "https://jobs.ashbyhq.com/confluent/46f3f467-8728-47b4-8fad-06e18ffbe552/application",
+     "descriptionHtml": "<p style=\"min-height:1.5em\">We\u2019re not just building better tech. We\u2019re rewriting how data moves and what the world can do with it. With Confluent, data doesn\u2019t sit still. Our platform puts information in motion, streaming in near real-time so companies can react faster, build smarter, and deliver experiences as dynamic as the world around them.</p><p style=\"min-height:1.5em\">It takes a certain kin\u2026[trimmed for fixture]",
+     "descriptionPlain": "We\u2019re not just building better tech. We\u2019re rewriting how data moves and what the world can do with it. With Confluent, data doesn\u2019t sit still. Our platform puts information in motion, streaming in near real-time so companies can react faster, build smarter, and deliver experiences as dynamic as the world around them.\n\nIt takes a certain kind of person to join this team. Those who ask hard question\u2026[trimmed for fixture]"
+    },
+    {
+     "id": "70c593c1-96db-4f99-8e72-39d454ffec6c",
+     "title": "Principal Engineer I, Governance ",
+     "department": "Engineering",
+     "team": "Engineering",
+     "employmentType": "FullTime",
+     "location": "Remote, United States",
+     "secondaryLocations": [],
+     "publishedAt": "2026-02-18T18:15:35.131+00:00",
+     "isListed": true,
+     "isRemote": true,
+     "workplaceType": "Remote",
+     "address": {
+      "postalAddress": {
+       "addressCountry": "United States"
+      }
+     },
+     "jobUrl": "https://jobs.ashbyhq.com/confluent/70c593c1-96db-4f99-8e72-39d454ffec6c",
+     "applyUrl": "https://jobs.ashbyhq.com/confluent/70c593c1-96db-4f99-8e72-39d454ffec6c/application",
+     "descriptionHtml": "<p style=\"min-height:1.5em\">We\u2019re not just building better tech. We\u2019re rewriting how data moves and what the world can do with it. With Confluent, data doesn\u2019t sit still. Our platform puts information in motion, streaming in near real-time so companies can react faster, build smarter, and deliver experiences as dynamic as the world around them.</p><p style=\"min-height:1.5em\">It takes a certain kin\u2026[trimmed for fixture]",
+     "descriptionPlain": "We\u2019re not just building better tech. We\u2019re rewriting how data moves and what the world can do with it. With Confluent, data doesn\u2019t sit still. Our platform puts information in motion, streaming in near real-time so companies can react faster, build smarter, and deliver experiences as dynamic as the world around them.\n\nIt takes a certain kind of person to join this team. Those who ask hard question\u2026[trimmed for fixture]"
+    }
+   ],
+   "apiVersion": "1"
+  }
+ ],
+ "details": {}
+}

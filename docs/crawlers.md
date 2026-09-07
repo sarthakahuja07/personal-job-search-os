@@ -220,26 +220,55 @@ Only when no existing tier can serve the company.
 
 ## The conformance suite
 
-One parametrized module in `crawler/tests/conformance/` runs against every registered adapter.
-Registration alone subjects an adapter to all of it:
+`crawler/tests/conformance/` runs one parametrized module against **every registered adapter**,
+replaying cassettes recorded from the live endpoints by `scripts/record_cassettes.py`. Adding an
+adapter to `registry.py` subjects it to all of it automatically — that is the whole mechanism
+behind "tested for every new company".
 
-- Yields at least one job from its golden cassette.
-- Every job has non-empty `external_job_id` and `title`, and an absolute https `job_url`.
-- **`external_job_id` is byte-stable across two runs of the same cassette.** The single most
-  important assertion in the suite: an unstable id means every run looks new and Sarthak gets
-  emailed daily about jobs he has already seen, until he stops trusting notifications entirely.
-- `posted_at` is a real date or `None` — never a relative string.
-- Pagination terminates and yields exactly `total`, tested against a multi-page cassette.
-- No HTML leaks into titles; unicode and emoji survive round-trip.
-- `parse()` is pure — asserted by running it with the network patched out.
-- Two consecutive fetches over the same cassette produce byte-identical output.
+An adapter registered without a cassette **fails** rather than skipping. A silently untested
+adapter is the exact thing this suite exists to prevent.
 
-Adapter-specific regression tests pin known traps, for example: never request a Workday page size
-above 20.
+The assertions that matter most are the ones whose violation is invisible in production:
 
-Tests replay recorded cassettes and **never touch the live network**.
+| Invariant | Why it is not obvious |
+|---|---|
+| `external_job_id` is byte-stable across identical runs | An unstable id makes every crawl look new, so the same job is emailed daily until the alerts are ignored entirely |
+| ids are unique within a crawl | A collision silently overwrites one job with another at ingest |
+| ids are not small integers | A bare ordinal is a list index, which makes identity depend on result ordering |
+| `posted_at` is a real date or `None` | Workday returns `"Posted Today"` in that position; a naive parse yields garbage rather than an error |
+| every recorded page is consumed | Stopping early reports success with a fraction of the jobs |
+| `parse()` issues no requests | Purity is what the determinism guarantees rest on |
+| output is byte-identical across runs | Catches hidden clock or ordering dependence |
+| descriptions are bounded | Unbounded HTML blew D1's 100 KB statement limit in production |
 
----
+Plus the ordinary hygiene: absolute https URLs, no HTML in titles, trimmed whitespace, a location
+that is not accidentally a date, and `validate_config` rejecting an empty config.
+
+Adapter-specific regressions live alongside in `crawler/tests/`, pinning the traps that are not
+general — for instance that Workday is never asked for a page size above 20.
+
+**Cassettes are recorded, not hand-written.** A hand-written fixture tests the adapter against
+the shape you imagined, and the shape you imagined is exactly the one that never breaks.
+
+Refresh them with:
+
+```bash
+python scripts/record_cassettes.py
+```
+
+## The live contract canary
+
+Cassettes replay yesterday's truth forever. They cannot notice that an undocumented endpoint
+changed shape overnight, and most of these endpoints are undocumented.
+
+`crawler/contracts.py` does the other half: it hits the **real** endpoints and checks that the
+fields each adapter depends on are still present and still parseable. It runs daily via
+`contracts.yml`, on its own schedule, and fails loudly and independently of the crawl — a
+contract break should be a red build, not a quiet dip in the number of jobs found.
+
+```bash
+python -m crawler.contracts
+```
 
 ## Runtime health
 

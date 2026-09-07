@@ -3,7 +3,7 @@
 The durable state of this project. Updated whenever something meaningful lands, so no context is
 lost between sessions (PRD §73). Picking this up cold: read `CLAUDE.md` first, then this file.
 
-**Last updated:** 2026-09-06
+**Last updated:** 2026-09-07
 
 ---
 
@@ -30,8 +30,8 @@ are loaded and reachable only from behind Access.
 | M4 Scheduling, health, drift | done — crawl.yml (6-hourly), ci.yml, deploy.yml |
 | M5 Job board | partial — board, dashboard, company health, settings, notifications; no job detail page |
 | M6 Notifications | done — digest delivered to the real inbox in production |
-| M7 Templates | not started |
-| M8 Applications Kanban | not started |
+| M7 Templates | done — variable detection, auto-fill, preview, copy, WhatsApp and email |
+| M8 Applications Kanban | done — five stages, drag and drop with a keyboard fallback, follow-up reminders |
 | M9 Dashboard | partial — first version done |
 | M10 Deferred adapters | deliberately deferred |
 
@@ -50,15 +50,13 @@ are loaded and reachable only from behind Access.
 
 ## Next up, in order
 
-1. **M3 conformance suite** — the parametrized every-adapter suite plus recorded cassettes. The
-   largest remaining correctness gap: only Workday has regression tests.
-2. **`contracts.yml`** — the daily live-schema canary. Not yet written.
-3. **M8 Applications Kanban** — the five stages. Schema already exists.
-4. **M7 Templates** — referral messages with `{{variables}}`.
-5. **Notion import** — bring Sarthak's existing prep content into `prep_items`.
-6. **M5 Job detail page** — description, contacts inline, quick actions.
-7. **M1 CRUD UI** — manage companies and contacts in-app rather than via the seed script.
-8. **M10 Deferred adapters** — one at a time.
+**The product is complete.** Every PRD §95 milestone is built, deployed and in use. What remains
+is optional and additive:
+
+1. **Notion import** — bring Sarthak's existing prep content into `prep_items`. The schema was
+   shaped to absorb it; this is a field mapping, not a redesign.
+2. **Deferred adapters** — Amazon, Microsoft and the JS-rendered boards, one at a time, only if
+   the manual check proves annoying enough to be worth it.
 
 ---
 

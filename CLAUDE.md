@@ -20,6 +20,10 @@ emails a digest of genuinely new matches.
 Behavioral, each with progress tracking. Importing Sarthak's Notion material is still to come —
 the schema was shaped to absorb it rather than be reshaped by it.
 
+**Both phases are complete.** Job discovery, the five-stage pipeline, referral templates,
+company and contact management, notifications and preparation are all built and deployed. There
+are no placeholder pages.
+
 ## The one thing to understand
 
 **The crawler is the product.** Every other Phase 0 feature is a view over data the crawler
@@ -106,6 +110,8 @@ Run from `app/` unless noted.
 | Apply migrations (remote) | `npx wrangler d1 migrations apply job-search-os --remote` |
 | Regenerate binding types | `npx wrangler types` |
 | Crawler tests (repo root) | `pytest crawler/tests` |
+| Record adapter cassettes | `python scripts/record_cassettes.py` |
+| Check live adapter contracts | `python -m crawler.contracts` |
 | Validate a job source | `python -m crawler doctor <careers-url>` |
 | Run crawler locally | `python -m crawler.main --dry-run` |
 

@@ -1,0 +1,60 @@
+name: Adapter contracts
+
+# The conformance suite replays recorded cassettes, so it proves the adapters still handle
+# yesterday's responses. It cannot notice that an undocumented upstream API changed shape
+# overnight. This does the other half against the live endpoints.
+#
+# Deliberately separate from crawl.yml: a broken contract must be a red build in its own right,
+# not a quiet dip in the number of jobs found. It also must never block a crawl -- a source
+# whose shape changed may still be returning perfectly good data for the others.
+
+on:
+  schedule:
+    # Once a day, offset from the crawl schedule so the two never contend.
+    - cron: "40 5 * * *"
+  workflow_dispatch:
+
+concurrency:
+  group: contracts
+  cancel-in-progress: false
+
+jobs:
+  contracts:
+    name: Check live adapter contracts
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install crawler dependencies
+        run: pip install -r crawler/requirements.txt
+
+      - name: Run the conformance suite first
+        # If the adapters no longer satisfy their own recorded fixtures, a live check would only
+        # add noise -- fix the adapter before asking whether the endpoint moved.
+        run: python -m pytest crawler/tests -q
+
+      - name: Check live contracts
+        id: contracts
+        run: python -m crawler.contracts 2>&1 | tee contracts.log
+
+      - name: Upload contract log
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: contract-log
+          path: contracts.log
+          retention-days: 14
+
+      - name: Explain a failure
+        if: failure()
+        run: |
+          echo "::error::An adapter contract broke. The endpoint's shape changed, or it stopped"
+          echo "::error::returning jobs. Re-record fixtures with scripts/record_cassettes.py,"
+          echo "::error::then fix the adapter against the new shape."

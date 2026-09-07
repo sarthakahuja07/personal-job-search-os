@@ -1,0 +1,3053 @@
+{
+ "config": {
+  "boardToken": "postman"
+ },
+ "careers_url": "https://boards.greenhouse.io/postman",
+ "list": [
+  {
+   "jobs": [
+    {
+     "absolute_url": "https://job-boards.greenhouse.io/postman/jobs/7979886003",
+     "data_compliance": [
+      {
+       "type": "gdpr",
+       "requires_consent": false,
+       "requires_processing_consent": false,
+       "requires_retention_consent": false,
+       "retention_period": null,
+       "demographic_data_consent_applies": false
+      }
+     ],
+     "internal_job_id": 5879429003,
+     "location": {
+      "name": "New York, New York, United States"
+     },
+     "metadata": null,
+     "id": 7979886003,
+     "updated_at": "2026-08-31T12:17:49-04:00",
+     "requisition_id": "2156",
+     "title": "Account Development Representative",
+     "company_name": "Postman",
+     "first_published": "2026-08-31T12:14:49-04:00",
+     "language": "en",
+     "application_deadline": null,
+     "content": "&lt;div class=&quot;content-intro&quot;&gt;&lt;h2&gt;&lt;strong&gt;Who Are We?&lt;/strong&gt;&lt;/h2&gt;\n&lt;p&gt;Postman is the world\u2019s leading API platform, used by more than 45 million+ developers and 500,000 organizations, including 98% of the Fortune 500. Postman is helping developers and professionals across the globe build the API-first world by simplifying each step of the API lifecycle an\u2026[trimmed for fixture]",
+     "departments": [
+      {
+       "id": 4045833003,
+       "name": "Sales",
+       "child_ids": [],
+       "parent_id": 4047977003
+      }
+     ],
+     "offices": [
+      {
+       "id": 4038752003,
+       "name": "New York, New York",
+       "location": "New York, New York, United States",
+       "child_ids": [],
+       "parent_id": 4033416003
+      }
+     ],
+     "ai_disclaimer": null,
+     "include_ai_disclaimer": null,
+     "ai_opt_out_request_url": null
+    },
+    {
+     "absolute_url": "https://job-boards.greenhouse.io/postman/jobs/7762097003",
+     "data_compliance": [
+      {
+       "type": "gdpr",
+       "requires_consent": false,
+       "requires_processing_consent": false,
+       "requires_retention_consent": false,
+       "retention_period": null,
+       "demographic_data_consent_applies": false
+      }
+     ],
+     "internal_job_id": 5776491003,
+     "location": {
+      "name": "Dubai, Dubai, United Arab Emirates"
+     },
+     "metadata": null,
+     "id": 7762097003,
+     "updated_at": "2026-08-17T18:15:55-04:00",
+     "requisition_id": "2055",
+     "title": "Account Development Representative",
+     "company_name": "Postman",
+     "first_published": "2026-07-15T10:28:32-04:00",
+     "language": "en",
+     "application_deadline": null,
+     "content": "&lt;div class=&quot;content-intro&quot;&gt;&lt;h2&gt;&lt;strong&gt;Who Are We?&lt;/strong&gt;&lt;/h2&gt;\n&lt;p&gt;Postman is the world\u2019s leading API platform, used by more than 45 million+ developers and 500,000 organizations, including 98% of the Fortune 500. Postman is helping developers and professionals across the globe build the API-first world by simplifying each step of the API lifecycle an\u2026[trimmed for fixture]",
+     "departments": [
+      {
+       "id": 4045833003,
+       "name": "Sales",
+       "child_ids": [],
+       "parent_id": 4047977003
+      }
+     ],
+     "offices": [
+      {
+       "id": 4101882003,
+       "name": "Remote, Dubai",
+       "location": "Dubai, Dubai, United Arab Emirates",
+       "child_ids": [],
+       "parent_id": 4101881003
+      }
+     ],
+     "ai_disclaimer": null,
+     "include_ai_disclaimer": null,
+     "ai_opt_out_request_url": null
+    },
+    {
+     "absolute_url": "https://job-boards.greenhouse.io/postman/jobs/7824502003",
+     "data_compliance": [
+      {
+       "type": "gdpr",
+       "requires_consent": false,
+       "requires_processing_consent": false,
+       "requires_retention_consent": false,
+       "retention_period": null,
+       "demographic_data_consent_applies": false
+      }
+     ],
+     "internal_job_id": 5804268003,
+     "location": {
+      "name": "New York, New York, United States"
+     },
+     "metadata": null,
+     "id": 7824502003,
+     "updated_at": "2026-09-01T16:12:29-04:00",
+     "requisition_id": "2137",
+     "title": "Account Executive",
+     "company_name": "Postman",
+     "first_published": "2026-08-05T16:39:14-04:00",
+     "language": "en",
+     "application_deadline": null,
+     "content": "&lt;div class=&quot;content-intro&quot;&gt;&lt;h2&gt;&lt;strong&gt;Who Are We?&lt;/strong&gt;&lt;/h2&gt;\n&lt;p&gt;Postman is the world\u2019s leading API platform, used by more than 45 million+ developers and 500,000 organizations, including 98% of the Fortune 500. Postman is helping developers and professionals across the globe build the API-first world by simplifying each step of the API lifecycle an\u2026[trimmed for fixture]",
+     "departments": [
+      {
+       "id": 4045833003,
+       "name": "Sales",
+       "child_ids": [],
+       "parent_id": 4047977003
+      }
+     ],
+     "offices": [
+      {
+       "id": 4038752003,
+       "name": "New York, New York",
+       "location": "New York, New York, United States",
+       "child_ids": [],
+       "parent_id": 4033416003
+      }
+     ],
+     "ai_disclaimer": null,
+     "include_ai_disclaimer": null,
+     "ai_opt_out_request_url": null
+    },
+    {
+     "absolute_url": "https://job-boards.greenhouse.io/postman/jobs/7823417003",
+     "data_compliance": [
+      {
+       "type": "gdpr",
+       "requires_consent": false,
+       "requires_processing_consent": false,
+       "requires_retention_consent": false,
+       "retention_period": null,
+       "demographic_data_consent_applies": false
+      }
+     ],
+     "internal_job_id": 5803801003,
+     "location": {
+      "name": "Berkeley, California, United States; San Francisco, California, United States"
+     },
+     "metadata": null,
+     "id": 7823417003,
+     "updated_at": "2026-08-17T18:15:55-04:00",
+     "requisition_id": "2134",
+     "title": "AI Engineer, Internship - Summer 2026 - Applications Open Now",
+     "company_name": "Postman",
+     "first_published": "2026-08-01T10:52:20-04:00",
+     "language": "en",
+     "application_deadline": null,
+     "content": "&lt;div class=&quot;content-intro&quot;&gt;&lt;h2&gt;&lt;strong&gt;Who Are We?&lt;/strong&gt;&lt;/h2&gt;\n&lt;p&gt;Postman is the world\u2019s leading API platform, used by more than 45 million+ developers and 500,000 organizations, including 98% of the Fortune 500. Postman is helping developers and professionals across the globe build the API-first world by simplifying each step of the API lifecycle an\u2026[trimmed for fixture]",
+     "departments": [
+      {
+       "id": 4125444003,
+       "name": "AI",
+       "child_ids": [],
+       "parent_id": 4139544003
+      }
+     ],
+     "offices": [
+      {
+       "id": 4038748003,
+       "name": "Berkeley, California ",
+       "location": "Berkeley, California, United States",
+       "child_ids": [],
+       "parent_id": 4033416003
+      }
+     ],
+     "ai_disclaimer": null,
+     "include_ai_disclaimer": null,
+     "ai_opt_out_request_url": null
+    },
+    {
+     "absolute_url": "https://job-boards.greenhouse.io/postman/jobs/7452539003",
+     "data_compliance": [
+      {
+       "type": "gdpr",
+       "requires_consent": false,
+       "requires_processing_consent": false,
+       "requires_retention_consent": false,
+       "retention_period": null,
+       "demographic_data_consent_applies": false
+      }
+     ],
+     "internal_job_id": 5634101003,
+     "location": {
+      "name": "San Francisco, California, United States"
+     },
+     "metadata": null,
+     "id": 7452539003,
+     "updated_at": "2026-08-17T18:15:55-04:00",
+     "requisition_id": "1716",
+     "title": "Applied AI Scientist, Small Language Model and AI Training",
+     "company_name": "Postman",
+     "first_published": "2025-10-08T13:02:29-04:00",
+     "language": "en",
+     "application_deadline": null,
+     "content": "&lt;div class=&quot;content-intro&quot;&gt;&lt;h2&gt;&lt;strong&gt;Who Are We?&lt;/strong&gt;&lt;/h2&gt;\n&lt;p&gt;Postman is the world\u2019s leading API platform, used by more than 45 million+ developers and 500,000 organizations, including 98% of the Fortune 500. Postman is helping developers and professionals across the globe build the API-first world by simplifying each step of the API lifecycle an\u2026[trimmed for fixture]",
+     "departments": [
+      {
+       "id": 4125444003,
+       "name": "AI",
+       "child_ids": [],
+       "parent_id": 4139544003
+      }
+     ],
+     "offices": [
+      {
+       "id": 4015622003,
+       "name": "San Francisco, California",
+       "location": "San Francisco, California, United States",
+       "child_ids": [],
+       "parent_id": 4033416003
+      }
+     ],
+     "ai_disclaimer": null,
+     "include_ai_disclaimer": null,
+     "ai_opt_out_request_url": null
+    },
+    {
+     "absolute_url": "https://job-boards.greenhouse.io/postman/jobs/7792722003",
+     "data_compliance": [
+      {
+       "type": "gdpr",
+       "requires_consent": false,
+       "requires_processing_consent": false,
+       "requires_retention_consent": false,
+       "retention_period": null,
+       "demographic_data_consent_applies": false
+      }
+     ],
+     "education": "education_required",
+     "internal_job_id": 5789431003,
+     "location": {
+      "name": "San Francisco, California, United States"
+     },
+     "metadata": null,
+     "id": 7792722003,
+     "updated_at": "2026-08-17T18:15:55-04:00",
+     "requisition_id": "2104",
+     "title": "Assistant Controller",
+     "company_name": "Postman",
+     "first_published": "2026-07-06T10:50:35-04:00",
+     "language": "en",
+     "application_deadline": null,
+     "content": "&lt;div class=&quot;content-intro&quot;&gt;&lt;h2&gt;&lt;strong&gt;Who Are We?&lt;/strong&gt;&lt;/h2&gt;\n&lt;p&gt;Postman is the world\u2019s leading API platform, used by more than 45 million+ developers and 500,000 organizations, including 98% of the Fortune 500. Postman is helping developers and professionals across the globe build the API-first world by simplifying each step of the API lifecycle an\u2026[trimmed for fixture]",
+     "departments": [
+      {
+       "id": 4027950003,
+       "name": "Finance",
+       "child_ids": [],
+       "parent_id": 4047974003
+      }
+     ],
+     "offices": [
+      {
+       "id": 4015622003,
+       "name": "San Francisco, California",
+       "location": "San Francisco, California, United States",
+       "child_ids": [],
+       "parent_id": 4033416003
+      }
+     ],
+     "ai_disclaimer": null,
+     "include_ai_disclaimer": null,
+     "ai_opt_out_request_url": null
+    },
+    {
+     "absolute_url": "https://job-boards.greenhouse.io/postman/jobs/7485114003",
+     "data_compliance": [
+      {
+       "type": "gdpr",
+       "requires_consent": false,
+       "requires_processing_consent": false,
+       "requires_retention_consent": false,
+       "retention_period": null,
+       "demographic_data_consent_applies": false
+      }
+     ],
+     "internal_job_id": 5661041003,
+     "location": {
+      "name": "New York, New York, United States"
+     },
+     "metadata": null,
+     "id": 7485114003,
+     "updated_at": "2026-08-17T18:15:55-04:00",
+     "requisition_id": "1739",
+     "title": "Backend and System Engineer, Flows",
+     "company_name": "Postman",
+     "first_published": "2025-10-02T15:36:14-04:00",
+     "language": "en",
+     "application_deadline": null,
+     "content": "&lt;div class=&quot;content-intro&quot;&gt;&lt;h2&gt;&lt;strong&gt;Who Are We?&lt;/strong&gt;&lt;/h2&gt;\n&lt;p&gt;Postman is the world\u2019s leading API platform, used by more than 45 million+ developers and 500,000 organizations, including 98% of the Fortune 500. Postman is helping developers and professionals across the globe build the API-first world by simplifying each step of the API lifecycle an\u2026[trimmed for fixture]",
+     "departments": [
+      {
+       "id": 4062500003,
+       "name": "Flows",
+       "child_ids": [],
+       "parent_id": 4062499003
+      }
+     ],
+     "offices": [
+      {
+       "id": 4038752003,
+       "name": "New York, New York",
+       "location": "New York, New York, United States",
+       "child_ids": [],
+       "parent_id": 4033416003
+      }
+     ],
+     "ai_disclaimer": null,
+     "include_ai_disclaimer": null,
+     "ai_opt_out_request_url": null
+    },
+    {
+     "absolute_url": "https://job-boards.greenhouse.io/postman/jobs/7770445003",
+     "data_compliance": [
+      {
+       "type": "gdpr",
+       "requires_consent": false,
+       "requires_processing_consent": false,
+       "requires_retention_consent": false,
+       "retention_period": null,
+       "demographic_data_consent_applies": false
+      }
+     ],
+     "internal_job_id": 5779938003,
+     "location": {
+      "name": "Seoul, Seoul, South Korea"
+     },
+     "metadata": null,
+     "id": 7770445003,
+     "updated_at": "2026-08-17T18:15:55-04:00",
+     "requisition_id": "2076",
+     "title": "Channel Sales Manager, Korea",
+     "company_name": "Postman",
+     "first_published": "2026-07-16T22:18:33-04:00",
+     "language": "en",
+     "application_deadline": null,
+     "content": "&lt;div class=&quot;content-intro&quot;&gt;&lt;h2&gt;&lt;strong&gt;Who Are We?&lt;/strong&gt;&lt;/h2&gt;\n&lt;p&gt;Postman is the world\u2019s leading API platform, used by more than 45 million+ developers and 500,000 organizations, including 98% of the Fortune 500. Postman is helping developers and professionals across the globe build the API-first world by simplifying each step of the API lifecycle an\u2026[trimmed for fixture]",
+     "departments": [
+      {
+       "id": 4045833003,
+       "name": "Sales",
+       "child_ids": [],
+       "parent_id": 4047977003
+      }
+     ],
+     "offices": [
+      {
+       "id": 4101892003,
+       "name": "Remote, South Korea",
+       "location": "Remote, Korea",
+       "child_ids": [],
+       "parent_id": 4101889003
+      }
+     ],
+     "ai_disclaimer": null,
+     "include_ai_disclaimer": null,
+     "ai_opt_out_request_url": null
+    },
+    {
+     "absolute_url": "https://job-boards.greenhouse.io/postman/jobs/7789144003",
+     "data_compliance": [
+      {
+       "type": "gdpr",
+       "requires_consent": false,
+       "requires_processing_consent": false,
+       "requires_retention_consent": false,
+       "retention_period": null,
+       "demographic_data_consent_applies": false
+      }
+     ],
+     "internal_job_id": 5787998003,
+     "location": {
+      "name": "San Francisco, California, United States"
+     },
+     "metadata": null,
+     "id": 7789144003,
+     "updated_at": "2026-08-17T18:15:55-04:00",
+     "requisition_id": "2093",
+     "title": "Corporate Solutions Engineer",
+     "company_name": "Postman",
+     "first_published": "2026-06-29T17:23:51-04:00",
+     "language": "en",
+     "application_deadline": null,
+     "content": "&lt;div class=&quot;content-intro&quot;&gt;&lt;h2&gt;&lt;strong&gt;Who Are We?&lt;/strong&gt;&lt;/h2&gt;\n&lt;p&gt;Postman is the world\u2019s leading API platform, used by more than 45 million+ developers and 500,000 organizations, including 98% of the Fortune 500. Postman is helping developers and professionals across the globe build the API-first world by simplifying each step of the API lifecycle an\u2026[trimmed for fixture]",
+     "departments": [
+      {
+       "id": 4045833003,
+       "name": "Sales",
+       "child_ids": [],
+       "parent_id": 4047977003
+      }
+     ],
+     "offices": [
+      {
+       "id": 4015622003,
+       "name": "San Francisco, California",
+       "location": "San Francisco, California, United States",
+       "child_ids": [],
+       "parent_id": 4033416003
+      }
+     ],
+     "ai_disclaimer": null,
+     "include_ai_disclaimer": null,
+     "ai_opt_out_request_url": null
+    },
+    {
+     "absolute_url": "https://job-boards.greenhouse.io/postman/jobs/7529471003",
+     "data_compliance": [
+      {
+       "type": "gdpr",
+       "requires_consent": false,
+       "requires_processing_consent": false,
+       "requires_retention_consent": false,
+       "retention_period": null,
+       "demographic_data_consent_applies": false
+      }
+     ],
+     "internal_job_id": 5679115003,
+     "location": {
+      "name": "Remote, Denmark"
+     },
+     "metadata": null,
+     "id": 7529471003,
+     "updated_at": "2026-08-17T18:15:55-04:00",
+     "requisition_id": "1824",
+     "title": "Corporate Solutions Engineer, Nordics",
+     "company_name": "Postman",
+     "first_published": "2025-12-02T06:35:03-05:00",
+     "language": "en",
+     "application_deadline": null,
+     "content": "&lt;div class=&quot;content-intro&quot;&gt;&lt;h2&gt;&lt;strong&gt;Who Are We?&lt;/strong&gt;&lt;/h2&gt;\n&lt;p&gt;Postman is the world\u2019s leading API platform, used by more than 45 million+ developers and 500,000 organizations, including 98% of the Fortune 500. Postman is helping developers and professionals across the globe build the API-first world by simplifying each step of the API lifecycle an\u2026[trimmed for fixture]",
+     "departments": [
+      {
+       "id": 4045833003,
+       "name": "Sales",
+       "child_ids": [],
+       "parent_id": 4047977003
+      }
+     ],
+     "offices": [
+      {
+       "id": 4033412003,
+       "name": "Remote, Denmark",
+       "location": null,
+       "child_ids": [],
+       "parent_id": 4033402003
+      }
+     ],
+     "ai_disclaimer": null,
+     "include_ai_disclaimer": null,
+     "ai_opt_out_request_url": null
+    },
+    {
+     "absolute_url": "https://job-boards.greenhouse.io/postman/jobs/7528374003",
+     "data_compliance": [
+      {
+       "type": "gdpr",
+       "requires_consent": false,
+       "requires_processing_consent": false,
+       "requires_retention_consent": false,
+       "retention_period": null,
+       "demographic_data_consent_applies": false
+      }
+     ],
+     "internal_job_id": 5678584003,
+     "location": {
+      "name": "London, UK"
+     },
+     "metadata": null,
+     "id": 7528374003,
+     "updated_at": "2026-08-17T18:15:55-04:00",
+     "requisition_id": "1814",
+     "title": "Corporate Solutions Engineer, UK",
+     "company_name": "Postman",
+     "first_published": "2025-11-20T02:03:36-05:00",
+     "language": "en",
+     "application_deadline": null,
+     "content": "&lt;div class=&quot;content-intro&quot;&gt;&lt;h2&gt;&lt;strong&gt;Who Are We?&lt;/strong&gt;&lt;/h2&gt;\n&lt;p&gt;Postman is the world\u2019s leading API platform, used by more than 45 million+ developers and 500,000 organizations, including 98% of the Fortune 500. Postman is helping developers and professionals across the globe build the API-first world by simplifying each step of the API lifecycle an\u2026[trimmed for fixture]",
+     "departments": [
+      {
+       "id": 4045833003,
+       "name": "Sales",
+       "child_ids": [],
+       "parent_id": 4047977003
+      }
+     ],
+     "offices": [
+      {
+       "id": 4023624003,
+       "name": "London, UK",
+       "location": "London, UK",
+       "child_ids": [],
+       "parent_id": 4033396003
+      }
+     ],
+     "ai_disclaimer": null,
+     "include_ai_disclaimer": null,
+     "ai_opt_out_request_url": null
+    },
+    {
+     "absolute_url": "https://job-boards.greenhouse.io/postman/jobs/7761626003",
+     "data_compliance": [
+      {
+       "type": "gdpr",
+       "requires_consent": false,
+       "requires_processing_consent": false,
+       "requires_retention_consent": false,
+       "retention_period": null,
+       "demographic_data_consent_applies": false
+      }
+     ],
+     "internal_job_id": 5776260003,
+     "location": {
+      "name": "Montreal, Quebec, Canada; Toronto, Ontario, Canada"
+     },
+     "metadata": null,
+     "id": 7761626003,
+     "updated_at": "2026-08-17T18:15:55-04:00",
+     "requisition_id": "2053",
+     "title": "Customer Success Engineer",
+     "company_name": "Postman",
+     "first_published": "2026-06-04T16:13:11-04:00",
+     "language": "en",
+     "application_deadline": null,
+     "content": "&lt;div class=&quot;content-intro&quot;&gt;&lt;h2&gt;&lt;strong&gt;Who Are We?&lt;/strong&gt;&lt;/h2&gt;\n&lt;p&gt;Postman is the world\u2019s leading API platform, used by more than 45 million+ developers and 500,000 organizations, including 98% of the Fortune 500. Postman is helping developers and professionals across the globe build the API-first world by simplifying each step of the API lifecycle an\u2026[trimmed for fixture]",
+     "departments": [
+      {
+       "id": 4060249003,
+       "name": "Customer Experience & Services",
+       "child_ids": [],
+       "parent_id": 4060248003
+      }
+     ],
+     "offices": [
+      {
+       "id": 4137034003,
+       "name": "Montreal, Canada",
+       "location": "Montreal, Quebec, Canada",
+       "child_ids": [],
+       "parent_id": 4033417003
+      },
+      {
+       "id": 4127191003,
+       "name": "Toronto, Canada",
+       "location": "Toronto, Ontario, Canada",
+       "child_ids": [],
+       "parent_id": 4033417003
+      }
+     ],
+     "ai_disclaimer": null,
+     "include_ai_disclaimer": null,
+     "ai_opt_out_request_url": null
+    },
+    {
+     "absolute_url": "https://job-boards.greenhouse.io/postman/jobs/7501796003",
+     "data_compliance": [
+      {
+       "type": "gdpr",
+       "requires_consent": false,
+       "requires_processing_consent": false,
+       "requires_retention_consent": false,
+       "retention_period": null,
+       "demographic_data_consent_applies": false
+      }
+     ],
+     "internal_job_id": 5667923003,
+     "location": {
+      "name": "New York, New York, United States; San Francisco, California, United States"
+     },
+     "metadata": null,
+     "id": 7501796003,
+     "updated_at": "2026-08-17T18:15:55-04:00",
+     "requisition_id": "1759",
+     "title": "Customer Success Engineer/Devops",
+     "company_name": "Postman",
+     "first_published": "2025-10-18T14:44:11-04:00",
+     "language": "en",
+     "application_deadline": null,
+     "content": "&lt;div class=&quot;content-intro&quot;&gt;&lt;h2&gt;&lt;strong&gt;Who Are We?&lt;/strong&gt;&lt;/h2&gt;\n&lt;p&gt;Postman is the world\u2019s leading API platform, used by more than 45 million+ developers and 500,000 organizations, including 98% of the Fortune 500. Postman is helping developers and professionals across the globe build the API-first world by simplifying each step of the API lifecycle an\u2026[trimmed for fixture]",
+     "departments": [
+      {
+       "id": 4060249003,
+       "name": "Customer Experience & Services",
+       "child_ids": [],
+       "parent_id": 4060248003
+      }
+     ],
+     "offices": [
+      {
+       "id": 4038752003,
+       "name": "New York, New York",
+       "location": "New York, New York, United States",
+       "child_ids": [],
+       "parent_id": 4033416003
+      },
+      {
+       "id": 4015622003,
+       "name": "San Francisco, California",
+       "location": "San Francisco, California, United States",
+       "child_ids": [],
+       "parent_id": 4033416003
+      }
+     ],
+     "ai_disclaimer": null,
+     "include_ai_disclaimer": null,
+     "ai_opt_out_request_url": null
+    },
+    {
+     "absolute_url": "https://job-boards.greenhouse.io/postman/jobs/7501797003",
+     "data_compliance": [
+      {
+       "type": "gdpr",
+       "requires_consent": false,
+       "requires_processing_consent": false,
+       "requires_retention_consent": false,
+       "retention_period": null,
+       "demographic_data_consent_applies": false
+      }
+     ],
+     "internal_job_id": 5667924003,
+     "location": {
+      "name": "Paris, Paris, France"
+     },
+     "metadata": null,
+     "id": 7501797003,
+     "updated_at": "2026-08-17T18:15:55-04:00",
+     "requisition_id": "1760",
+     "title": "Customer Success Engineer, French Speaking",
+     "company_name": "Postman",
+     "first_published": "2026-04-07T13:02:47-04:00",
+     "language": "en",
+     "application_deadline": null,
+     "content": "&lt;div class=&quot;content-intro&quot;&gt;&lt;h2&gt;&lt;strong&gt;Who Are We?&lt;/strong&gt;&lt;/h2&gt;\n&lt;p&gt;Postman is the world\u2019s leading API platform, used by more than 45 million+ developers and 500,000 organizations, including 98% of the Fortune 500. Postman is helping developers and professionals across the globe build the API-first world by simplifying each step of the API lifecycle an\u2026[trimmed for fixture]",
+     "departments": [
+      {
+       "id": 4060249003,
+       "name": "Customer Experience & Services",
+       "child_ids": [],
+       "parent_id": 4060248003
+      }
+     ],
+     "offices": [
+      {
+       "id": 4023624003,
+       "name": "London, UK",
+       "location": "London, UK",
+       "child_ids": [],
+       "parent_id": 4033396003
+      }
+     ],
+     "ai_disclaimer": null,
+     "include_ai_disclaimer": null,
+     "ai_opt_out_request_url": null
+    },
+    {
+     "absolute_url": "https://job-boards.greenhouse.io/postman/jobs/7692476003",
+     "data_compliance": [
+      {
+       "type": "gdpr",
+       "requires_consent": false,
+       "requires_processing_consent": false,
+       "requires_retention_consent": false,
+       "retention_period": null,
+       "demographic_data_consent_applies": false
+      }
+     ],
+     "internal_job_id": 5747408003,
+     "location": {
+      "name": "London, UK"
+     },
+     "metadata": null,
+     "id": 7692476003,
+     "updated_at": "2026-08-17T18:15:55-04:00",
+     "requisition_id": "1980",
+     "title": "Customer Success Engineer, German Speaking ",
+     "company_name": "Postman",
+     "first_published": "2026-06-11T11:28:09-04:00",
+     "language": "en",
+     "application_deadline": null,
+     "content": "&lt;div class=&quot;content-intro&quot;&gt;&lt;h2&gt;&lt;strong&gt;Who Are We?&lt;/strong&gt;&lt;/h2&gt;\n&lt;p&gt;Postman is the world\u2019s leading API platform, used by more than 45 million+ developers and 500,000 organizations, including 98% of the Fortune 500. Postman is helping developers and professionals across the globe build the API-first world by simplifying each step of the API lifecycle an\u2026[trimmed for fixture]",
+     "departments": [
+      {
+       "id": 4060249003,
+       "name": "Customer Experience & Services",
+       "child_ids": [],
+       "parent_id": 4060248003
+      }
+     ],
+     "offices": [
+      {
+       "id": 4023624003,
+       "name": "London, UK",
+       "location": "London, UK",
+       "child_ids": [],
+       "parent_id": 4033396003
+      }
+     ],
+     "ai_disclaimer": null,
+     "include_ai_disclaimer": null,
+     "ai_opt_out_request_url": null
+    },
+    {
+     "absolute_url": "https://job-boards.greenhouse.io/postman/jobs/7692473003",
+     "data_compliance": [
+      {
+       "type": "gdpr",
+       "requires_consent": false,
+       "requires_processing_consent": false,
+       "requires_retention_consent": false,
+       "retention_period": null,
+       "demographic_data_consent_applies": false
+      }
+     ],
+     "internal_job_id": 5747407003,
+     "location": {
+      "name": "London, UK"
+     },
+     "metadata": null,
+     "id": 7692473003,
+     "updated_at": "2026-08-17T18:15:55-04:00",
+     "requisition_id": "1979",
+     "title": "Customer Success Engineer, Spanish Speaking ",
+     "company_name": "Postman",
+     "first_published": "2026-04-07T13:05:08-04:00",
+     "language": "en",
+     "application_deadline": null,
+     "content": "&lt;div class=&quot;content-intro&quot;&gt;&lt;h2&gt;&lt;strong&gt;Who Are We?&lt;/strong&gt;&lt;/h2&gt;\n&lt;p&gt;Postman is the world\u2019s leading API platform, used by more than 45 million+ developers and 500,000 organizations, including 98% of the Fortune 500. Postman is helping developers and professionals across the globe build the API-first world by simplifying each step of the API lifecycle an\u2026[trimmed for fixture]",
+     "departments": [
+      {
+       "id": 4060249003,
+       "name": "Customer Experience & Services",
+       "child_ids": [],
+       "parent_id": 4060248003
+      }
+     ],
+     "offices": [
+      {
+       "id": 4023624003,
+       "name": "London, UK",
+       "location": "London, UK",
+       "child_ids": [],
+       "parent_id": 4033396003
+      }
+     ],
+     "ai_disclaimer": null,
+     "include_ai_disclaimer": null,
+     "ai_opt_out_request_url": null
+    },
+    {
+     "absolute_url": "https://job-boards.greenhouse.io/postman/jobs/7559037003",
+     "data_compliance": [
+      {
+       "type": "gdpr",
+       "requires_consent": false,
+       "requires_processing_consent": false,
+       "requires_retention_consent": false,
+       "retention_period": null,
+       "demographic_data_consent_applies": false
+      }
+     ],
+     "employment": "employment_required",
+     "internal_job_id": 5688835003,
+     "location": {
+      "name": "San Francisco, California, United States"
+     },
+     "metadata": null,
+     "id": 7559037003,
+     "updated_at": "2026-08-21T12:15:11-04:00",
+     "requisition_id": "1852",
+     "title": "Digital Named Enterprise Account Executive",
+     "company_name": "Postman",
+     "first_published": "2026-01-12T14:24:36-05:00",
+     "language": "en",
+     "application_deadline": null,
+     "content": "&lt;div class=&quot;content-intro&quot;&gt;&lt;h2&gt;&lt;strong&gt;Who Are We?&lt;/strong&gt;&lt;/h2&gt;\n&lt;p&gt;Postman is the world\u2019s leading API platform, used by more than 45 million+ developers and 500,000 organizations, including 98% of the Fortune 500. Postman is helping developers and professionals across the globe build the API-first world by simplifying each step of the API lifecycle an\u2026[trimmed for fixture]",
+     "departments": [
+      {
+       "id": 4045833003,
+       "name": "Sales",
+       "child_ids": [],
+       "parent_id": 4047977003
+      }
+     ],
+     "offices": [
+      {
+       "id": 4038752003,
+       "name": "New York, New York",
+       "location": "New York, New York, United States",
+       "child_ids": [],
+       "parent_id": 4033416003
+      },
+      {
+       "id": 4015622003,
+       "name": "San Francisco, California",
+       "location": "San Francisco, California, United States",
+       "child_ids": [],
+       "parent_id": 4033416003
+      }
+     ],
+     "ai_disclaimer": null,
+     "include_ai_disclaimer": null,
+     "ai_opt_out_request_url": null
+    },
+    {
+     "absolute_url": "https://job-boards.greenhouse.io/postman/jobs/7802294003",
+     "data_compliance": [
+      {
+       "type": "gdpr",
+       "requires_consent": false,
+       "requires_processing_consent": false,
+       "requires_retention_consent": false,
+       "retention_period": null,
+       "demographic_data_consent_applies": false
+      }
+     ],
+     "internal_job_id": 5794172003,
+     "location": {
+      "name": "Bengaluru, Karnataka, India"
+     },
+     "metadata": null,
+     "id": 7802294003,
+     "updated_at": "2026-08-17T18:15:55-04:00",
+     "requisition_id": "2116",
+     "title": "Enterprise Account Executive",
+     "company_name": "Postman",
+     "first_published": "2026-07-21T06:24:52-04:00",
+     "language": "en",
+     "application_deadline": null,
+     "content": "&lt;div class=&quot;content-intro&quot;&gt;&lt;h2&gt;&lt;strong&gt;Who Are We?&lt;/strong&gt;&lt;/h2&gt;\n&lt;p&gt;Postman is the world\u2019s leading API platform, used by more than 45 million+ developers and 500,000 organizations, including 98% of the Fortune 500. Postman is helping developers and professionals across the globe build the API-first world by simplifying each step of the API lifecycle an\u2026[trimmed for fixture]",
+     "departments": [
+      {
+       "id": 4045833003,
+       "name": "Sales",
+       "child_ids": [],
+       "parent_id": 4047977003
+      }
+     ],
+     "offices": [
+      {
+       "id": 4015621003,
+       "name": "Bangalore, India",
+       "location": "Bengaluru, Karnataka, India",
+       "child_ids": [],
+       "parent_id": 4033388003
+      }
+     ],
+     "ai_disclaimer": null,
+     "include_ai_disclaimer": null,
+     "ai_opt_out_request_url": null
+    },
+    {
+     "absolute_url": "https://job-boards.greenhouse.io/postman/jobs/7741989003",
+     "data_compliance": [
+      {
+       "type": "gdpr",
+       "requires_consent": false,
+       "requires_processing_consent": false,
+       "requires_retention_consent": false,
+       "retention_period": null,
+       "demographic_data_consent_applies": false
+      }
+     ],
+     "internal_job_id": 5769151003,
+     "location": {
+      "name": "Calgary, Alberta, Canada"
+     },
+     "metadata": null,
+     "id": 7741989003,
+     "updated_at": "2026-08-17T18:15:55-04:00",
+     "requisition_id": "2030",
+     "title": "Enterprise Solutions Engineer",
+     "company_name": "Postman",
+     "first_published": "2026-05-20T16:16:21-04:00",
+     "language": "en",
+     "application_deadline": null,
+     "content": "&lt;div class=&quot;content-intro&quot;&gt;&lt;h2&gt;&lt;strong&gt;Who Are We?&lt;/strong&gt;&lt;/h2&gt;\n&lt;p&gt;Postman is the world\u2019s leading API platform, used by more than 45 million+ developers and 500,000 organizations, including 98% of the Fortune 500. Postman is helping developers and professionals across the globe build the API-first world by simplifying each step of the API lifecycle an\u2026[trimmed for fixture]",
+     "departments": [
+      {
+       "id": 4045833003,
+       "name": "Sales",
+       "child_ids": [],
+       "parent_id": 4047977003
+      }
+     ],
+     "offices": [
+      {
+       "id": 4033418003,
+       "name": "Remote, Canada",
+       "location": null,
+       "child_ids": [],
+       "parent_id": 4033417003
+      }
+     ],
+     "ai_disclaimer": null,
+     "include_ai_disclaimer": null,
+     "ai_opt_out_request_url": null
+    },
+    {
+     "absolute_url": "https://job-boards.greenhouse.io/postman/jobs/7691477003",
+     "data_compliance": [
+      {
+       "type": "gdpr",
+       "requires_consent": false,
+       "requires_processing_consent": false,
+       "requires_retention_consent": false,
+       "retention_period": null,
+       "demographic_data_consent_applies": false
+      }
+     ],
+     "internal_job_id": 5747042003,
+     "location": {
+      "name": "Boston, Massachusetts; New York, New York, United States"
+     },
+     "metadata": null,
+     "id": 7691477003,
+     "updated_at": "2026-08-17T18:15:55-04:00",
+     "requisition_id": "1977",
+     "title": "Enterprise Solutions Engineer",
+     "company_name": "Postman",
+     "first_published": "2026-04-06T18:31:38-04:00",
+     "language": "en",
+     "application_deadline": null,
+     "content": "&lt;div class=&quot;content-intro&quot;&gt;&lt;h2&gt;&lt;strong&gt;Who Are We?&lt;/strong&gt;&lt;/h2&gt;\n&lt;p&gt;Postman is the world\u2019s leading API platform, used by more than 45 million+ developers and 500,000 organizations, including 98% of the Fortune 500. Postman is helping developers and professionals across the globe build the API-first world by simplifying each step of the API lifecycle an\u2026[trimmed for fixture]",
+     "departments": [
+      {
+       "id": 4045833003,
+       "name": "Sales",
+       "child_ids": [],
+       "parent_id": 4047977003
+      }
+     ],
+     "offices": [
+      {
+       "id": 4038751003,
+       "name": "Austin, Texas",
+       "location": "Austin, Texas, United States",
+       "child_ids": [],
+       "parent_id": 4033416003
+      },
+      {
+       "id": 4038750003,
+       "name": "Boston, Massachusetts",
+       "location": null,
+       "child_ids": [],
+       "parent_id": 4033416003
+      }
+     ],
+     "ai_disclaimer": null,
+     "include_ai_disclaimer": null,
+     "ai_opt_out_request_url": null
+    },
+    {
+     "absolute_url": "https://job-boards.greenhouse.io/postman/jobs/7691486003",
+     "data_compliance": [
+      {
+       "type": "gdpr",
+       "requires_consent": false,
+       "requires_processing_consent": false,
+       "requires_retention_consent": false,
+       "retention_period": null,
+       "demographic_data_consent_applies": false
+      }
+     ],
+     "internal_job_id": 5747042003,
+     "location": {
+      "name": "Austin, Texas, United States"
+     },
+     "metadata": null,
+     "id": 7691486003,
+     "updated_at": "2026-08-17T18:15:55-04:00",
+     "requisition_id": "1977",
+     "title": "Enterprise Solutions Engineer",
+     "company_name": "Postman",
+     "first_published": "2026-04-06T18:31:39-04:00",
+     "language": "en",
+     "application_deadline": null,
+     "content": "&lt;div class=&quot;content-intro&quot;&gt;&lt;h2&gt;&lt;strong&gt;Who Are We?&lt;/strong&gt;&lt;/h2&gt;\n&lt;p&gt;Postman is the world\u2019s leading API platform, used by more than 45 million+ developers and 500,000 organizations, including 98% of the Fortune 500. Postman is helping developers and professionals across the globe build the API-first world by simplifying each step of the API lifecycle an\u2026[trimmed for fixture]",
+     "departments": [
+      {
+       "id": 4045833003,
+       "name": "Sales",
+       "child_ids": [],
+       "parent_id": 4047977003
+      }
+     ],
+     "offices": [
+      {
+       "id": 4038751003,
+       "name": "Austin, Texas",
+       "location": "Austin, Texas, United States",
+       "child_ids": [],
+       "parent_id": 4033416003
+      },
+      {
+       "id": 4038750003,
+       "name": "Boston, Massachusetts",
+       "location": null,
+       "child_ids": [],
+       "parent_id": 4033416003
+      }
+     ],
+     "ai_disclaimer": null,
+     "include_ai_disclaimer": null,
+     "ai_opt_out_request_url": null
+    },
+    {
+     "absolute_url": "https://job-boards.greenhouse.io/postman/jobs/7676842003",
+     "data_compliance": [
+      {
+       "type": "gdpr",
+       "requires_consent": false,
+       "requires_processing_consent": false,
+       "requires_retention_consent": false,
+       "retention_period": null,
+       "demographic_data_consent_applies": false
+      }
+     ],
+     "internal_job_id": 5738467003,
+     "location": {
+      "name": "Tel Aviv District, Israel"
+     },
+     "metadata": null,
+     "id": 7676842003,
+     "updated_at": "2026-08-17T18:15:55-04:00",
+     "requisition_id": "1954",
+     "title": "Enterprise Solutions Engineer, Israel ",
+     "company_name": "Postman",
+     "first_published": "2026-03-24T03:23:01-04:00",
+     "language": "en",
+     "application_deadline": null,
+     "content": "&lt;div class=&quot;content-intro&quot;&gt;&lt;h2&gt;&lt;strong&gt;Who Are We?&lt;/strong&gt;&lt;/h2&gt;\n&lt;p&gt;Postman is the world\u2019s leading API platform, used by more than 45 million+ developers and 500,000 organizations, including 98% of the Fortune 500. Postman is helping developers and professionals across the globe build the API-first world by simplifying each step of the API lifecycle an\u2026[trimmed for fixture]",
+     "departments": [
+      {
+       "id": 4045833003,
+       "name": "Sales",
+       "child_ids": [],
+       "parent_id": 4047977003
+      }
+     ],
+     "offices": [
+      {
+       "id": 4118015003,
+       "name": "Remote, Israel",
+       "location": "Tel Aviv District, Israel",
+       "child_ids": [],
+       "parent_id": 4101881003
+      }
+     ],
+     "ai_disclaimer": null,
+     "include_ai_disclaimer": null,
+     "ai_opt_out_request_url": null
+    },
+    {
+     "absolute_url": "https://job-boards.greenhouse.io/postman/jobs/7528350003",
+     "data_compliance": [
+      {
+       "type": "gdpr",
+       "requires_consent": false,
+       "requires_processing_consent": false,
+       "requires_retention_consent": false,
+       "retention_period": null,
+       "demographic_data_consent_applies": false
+      }
+     ],
+     "internal_job_id": 5678573003,
+     "location": {
+      "name": "Remote, Italy"
+     },
+     "metadata": null,
+     "id": 7528350003,
+     "updated_at": "2026-08-17T18:15:55-04:00",
+     "requisition_id": "1808",
+     "title": "Enterprise Solutions Engineer, Italy",
+     "company_name": "Postman",
+     "first_published": "2025-11-20T02:09:24-05:00",
+     "language": "en",
+     "application_deadline": null,
+     "content": "&lt;div class=&quot;content-intro&quot;&gt;&lt;h2&gt;&lt;strong&gt;Who Are We?&lt;/strong&gt;&lt;/h2&gt;\n&lt;p&gt;Postman is the world\u2019s leading API platform, used by more than 45 million+ developers and 500,000 organizations, including 98% of the Fortune 500. Postman is helping developers and professionals across the globe build the API-first world by simplifying each step of the API lifecycle an\u2026[trimmed for fixture]",
+     "departments": [
+      {
+       "id": 4045833003,
+       "name": "Sales",
+       "child_ids": [],
+       "parent_id": 4047977003
+      }
+     ],
+     "offices": [
+      {
+       "id": 4038736003,
+       "name": "Remote, Italy",
+       "location": null,
+       "child_ids": [],
+       "parent_id": 4038735003
+      }
+     ],
+     "ai_disclaimer": null,
+     "include_ai_disclaimer": null,
+     "ai_opt_out_request_url": null
+    },
+    {
+     "absolute_url": "https://job-boards.greenhouse.io/postman/jobs/7528361003",
+     "data_compliance": [
+      {
+       "type": "gdpr",
+       "requires_consent": false,
+       "requires_processing_consent": false,
+       "requires_retention_consent": false,
+       "retention_period": null,
+       "demographic_data_consent_applies": false
+      }
+     ],
+     "internal_job_id": 5678577003,
+     "location": {
+      "name": "London, UK"
+     },
+     "metadata": null,
+     "id": 7528361003,
+     "updated_at": "2026-08-17T18:15:55-04:00",
+     "requisition_id": "1810",
+     "title": "Enterprise Solutions Engineer, UK",
+     "company_name": "Postman",
+     "first_published": "2025-11-20T01:41:34-05:00",
+     "language": "en",
+     "application_deadline": null,
+     "content": "&lt;div class=&quot;content-intro&quot;&gt;&lt;h2&gt;&lt;strong&gt;Who Are We?&lt;/strong&gt;&lt;/h2&gt;\n&lt;p&gt;Postman is the world\u2019s leading API platform, used by more than 45 million+ developers and 500,000 organizations, including 98% of the Fortune 500. Postman is helping developers and professionals across the globe build the API-first world by simplifying each step of the API lifecycle an\u2026[trimmed for fixture]",
+     "departments": [
+      {
+       "id": 4045833003,
+       "name": "Sales",
+       "child_ids": [],
+       "parent_id": 4047977003
+      }
+     ],
+     "offices": [
+      {
+       "id": 4023624003,
+       "name": "London, UK",
+       "location": "London, UK",
+       "child_ids": [],
+       "parent_id": 4033396003
+      }
+     ],
+     "ai_disclaimer": null,
+     "include_ai_disclaimer": null,
+     "ai_opt_out_request_url": null
+    },
+    {
+     "absolute_url": "https://job-boards.greenhouse.io/postman/jobs/7689262003",
+     "data_compliance": [
+      {
+       "type": "gdpr",
+       "requires_consent": false,
+       "requires_processing_consent": false,
+       "requires_retention_consent": false,
+       "retention_period": null,
+       "demographic_data_consent_applies": false
+      }
+     ],
+     "internal_job_id": 5745809003,
+     "location": {
+      "name": "London, UK"
+     },
+     "metadata": null,
+     "id": 7689262003,
+     "updated_at": "2026-08-17T18:15:55-04:00",
+     "requisition_id": "1970",
+     "title": "Field Marketing Manager ",
+     "company_name": "Postman",
+     "first_published": "2026-05-08T06:06:53-04:00",
+     "language": "en",
+     "application_deadline": null,
+     "content": "&lt;div class=&quot;content-intro&quot;&gt;&lt;h2&gt;&lt;strong&gt;Who Are We?&lt;/strong&gt;&lt;/h2&gt;\n&lt;p&gt;Postman is the world\u2019s leading API platform, used by more than 45 million+ developers and 500,000 organizations, including 98% of the Fortune 500. Postman is helping developers and professionals across the globe build the API-first world by simplifying each step of the API lifecycle an\u2026[trimmed for fixture]",
+     "departments": [
+      {
+       "id": 4060258003,
+       "name": "Product Marketing",
+       "child_ids": [],
+       "parent_id": 4060257003
+      }
+     ],
+     "offices": [
+      {
+       "id": 4023624003,
+       "name": "London, UK",
+       "location": "London, UK",
+       "child_ids": [],
+       "parent_id": 4033396003
+      }
+     ],
+     "ai_disclaimer": null,
+     "include_ai_disclaimer": null,
+     "ai_opt_out_request_url": null
+    },
+    {
+     "absolute_url": "https://job-boards.greenhouse.io/postman/jobs/7452531003",
+     "data_compliance": [
+      {
+       "type": "gdpr",
+       "requires_consent": false,
+       "requires_processing_consent": false,
+       "requires_retention_consent": false,
+       "retention_period": null,
+       "demographic_data_consent_applies": false
+      }
+     ],
+     "internal_job_id": 5634095003,
+     "location": {
+      "name": "San Francisco, California, United States"
+     },
+     "metadata": null,
+     "id": 7452531003,
+     "updated_at": "2026-08-17T18:15:55-04:00",
+     "requisition_id": "1713",
+     "title": "Head of AI Platform Engineering",
+     "company_name": "Postman",
+     "first_published": "2025-10-08T13:02:12-04:00",
+     "language": "en",
+     "application_deadline": null,
+     "content": "&lt;div class=&quot;content-intro&quot;&gt;&lt;h2&gt;&lt;strong&gt;Who Are We?&lt;/strong&gt;&lt;/h2&gt;\n&lt;p&gt;Postman is the world\u2019s leading API platform, used by more than 45 million+ developers and 500,000 organizations, including 98% of the Fortune 500. Postman is helping developers and professionals across the globe build the API-first world by simplifying each step of the API lifecycle an\u2026[trimmed for fixture]",
+     "departments": [
+      {
+       "id": 4125444003,
+       "name": "AI",
+       "child_ids": [],
+       "parent_id": 4139544003
+      }
+     ],
+     "offices": [
+      {
+       "id": 4015622003,
+       "name": "San Francisco, California",
+       "location": "San Francisco, California, United States",
+       "child_ids": [],
+       "parent_id": 4033416003
+      }
+     ],
+     "ai_disclaimer": null,
+     "include_ai_disclaimer": null,
+     "ai_opt_out_request_url": null
+    },
+    {
+     "absolute_url": "https://job-boards.greenhouse.io/postman/jobs/7865524003",
+     "data_compliance": [
+      {
+       "type": "gdpr",
+       "requires_consent": false,
+       "requires_processing_consent": false,
+       "requires_retention_consent": false,
+       "retention_period": null,
+       "demographic_data_consent_applies": false
+      }
+     ],
+     "internal_job_id": 5823552003,
+     "location": {
+      "name": "San Francisco, California, United States"
+     },
+     "metadata": null,
+     "id": 7865524003,
+     "updated_at": "2026-08-25T14:02:06-04:00",
+     "requisition_id": "2150",
+     "title": "Head of Engineering, Infrastructure & SRE",
+     "company_name": "Postman",
+     "first_published": "2026-08-21T15:56:33-04:00",
+     "language": "en",
+     "application_deadline": null,
+     "content": "&lt;div class=&quot;content-intro&quot;&gt;&lt;h2&gt;&lt;strong&gt;Who Are We?&lt;/strong&gt;&lt;/h2&gt;\n&lt;p&gt;Postman is the world\u2019s leading API platform, used by more than 45 million+ developers and 500,000 organizations, including 98% of the Fortune 500. Postman is helping developers and professionals across the globe build the API-first world by simplifying each step of the API lifecycle an\u2026[trimmed for fixture]",
+     "departments": [
+      {
+       "id": 4075803003,
+       "name": "Product Engineering",
+       "child_ids": [],
+       "parent_id": 4139544003
+      }
+     ],
+     "offices": [
+      {
+       "id": 4015622003,
+       "name": "San Francisco, California",
+       "location": "San Francisco, California, United States",
+       "child_ids": [],
+       "parent_id": 4033416003
+      }
+     ],
+     "ai_disclaimer": null,
+     "include_ai_disclaimer": null,
+     "ai_opt_out_request_url": null
+    },
+    {
+     "absolute_url": "https://job-boards.greenhouse.io/postman/jobs/7660765003",
+     "data_compliance": [
+      {
+       "type": "gdpr",
+       "requires_consent": false,
+       "requires_processing_consent": false,
+       "requires_retention_consent": false,
+       "retention_period": null,
+       "demographic_data_consent_applies": false
+      }
+     ],
+     "internal_job_id": 5730306003,
+     "location": {
+      "name": "New York, New York, United States"
+     },
+     "metadata": null,
+     "id": 7660765003,
+     "updated_at": "2026-08-17T18:15:55-04:00",
+     "requisition_id": "1938",
+     "title": "Head of Financial Services, Americas",
+     "company_name": "Postman",
+     "first_published": "2026-03-24T16:58:13-04:00",
+     "language": "en",
+     "application_deadline": null,
+     "content": "&lt;div class=&quot;content-intro&quot;&gt;&lt;h2&gt;&lt;strong&gt;Who Are We?&lt;/strong&gt;&lt;/h2&gt;\n&lt;p&gt;Postman is the world\u2019s leading API platform, used by more than 45 million+ developers and 500,000 organizations, including 98% of the Fortune 500. Postman is helping developers and professionals across the globe build the API-first world by simplifying each step of the API lifecycle an\u2026[trimmed for fixture]",
+     "departments": [
+      {
+       "id": 4115820003,
+       "name": "Leadership",
+       "child_ids": [],
+       "parent_id": 4115819003
+      }
+     ],
+     "offices": [
+      {
+       "id": 4038752003,
+       "name": "New York, New York",
+       "location": "New York, New York, United States",
+       "child_ids": [],
+       "parent_id": 4033416003
+      }
+     ],
+     "ai_disclaimer": null,
+     "include_ai_disclaimer": null,
+     "ai_opt_out_request_url": null
+    },
+    {
+     "absolute_url": "https://job-boards.greenhouse.io/postman/jobs/7766503003",
+     "data_compliance": [
+      {
+       "type": "gdpr",
+       "requires_consent": false,
+       "requires_processing_consent": false,
+       "requires_retention_consent": false,
+       "retention_period": null,
+       "demographic_data_consent_applies": false
+      }
+     ],
+     "internal_job_id": 5778464003,
+     "location": {
+      "name": "Los Angeles, California, United States"
+     },
+     "metadata": null,
+     "id": 7766503003,
+     "updated_at": "2026-08-31T16:49:56-04:00",
+     "requisition_id": "2070",
+     "title": "Key Account Director",
+     "company_name": "Postman",
+     "first_published": "2026-06-11T12:19:11-04:00",
+     "language": "en",
+     "application_deadline": null,
+     "content": "&lt;div class=&quot;content-intro&quot;&gt;&lt;h2&gt;&lt;strong&gt;Who Are We?&lt;/strong&gt;&lt;/h2&gt;\n&lt;p&gt;Postman is the world\u2019s leading API platform, used by more than 45 million+ developers and 500,000 organizations, including 98% of the Fortune 500. Postman is helping developers and professionals across the globe build the API-first world by simplifying each step of the API lifecycle an\u2026[trimmed for fixture]",
+     "departments": [
+      {
+       "id": 4045833003,
+       "name": "Sales",
+       "child_ids": [],
+       "parent_id": 4047977003
+      }
+     ],
+     "offices": [
+      {
+       "id": 4121357003,
+       "name": "Los Angeles, California",
+       "location": "Los Angeles, California, United States",
+       "child_ids": [],
+       "parent_id": 4033416003
+      }
+     ],
+     "ai_disclaimer": null,
+     "include_ai_disclaimer": null,
+     "ai_opt_out_request_url": null
+    },
+    {
+     "absolute_url": "https://job-boards.greenhouse.io/postman/jobs/7452542003",
+     "data_compliance": [
+      {
+       "type": "gdpr",
+       "requires_consent": false,
+       "requires_processing_consent": false,
+       "requires_retention_consent": false,
+       "retention_period": null,
+       "demographic_data_consent_applies": false
+      }
+     ],
+     "internal_job_id": 5634103003,
+     "location": {
+      "name": "San Francisco, California, United States"
+     },
+     "metadata": null,
+     "id": 7452542003,
+     "updated_at": "2026-08-17T18:15:55-04:00",
+     "requisition_id": "1717",
+     "title": "Member of Technical Staff, AI Agent Development Lead",
+     "company_name": "Postman",
+     "first_published": "2025-10-08T13:49:47-04:00",
+     "language": "en",
+     "application_deadline": null,
+     "content": "&lt;div class=&quot;content-intro&quot;&gt;&lt;h2&gt;&lt;strong&gt;Who Are We?&lt;/strong&gt;&lt;/h2&gt;\n&lt;p&gt;Postman is the world\u2019s leading API platform, used by more than 45 million+ developers and 500,000 organizations, including 98% of the Fortune 500. Postman is helping developers and professionals across the globe build the API-first world by simplifying each step of the API lifecycle an\u2026[trimmed for fixture]",
+     "departments": [
+      {
+       "id": 4125444003,
+       "name": "AI",
+       "child_ids": [],
+       "parent_id": 4139544003
+      }
+     ],
+     "offices": [
+      {
+       "id": 4015622003,
+       "name": "San Francisco, California",
+       "location": "San Francisco, California, United States",
+       "child_ids": [],
+       "parent_id": 4033416003
+      }
+     ],
+     "ai_disclaimer": null,
+     "include_ai_disclaimer": null,
+     "ai_opt_out_request_url": null
+    },
+    {
+     "absolute_url": "https://job-boards.greenhouse.io/postman/jobs/7452546003",
+     "data_compliance": [
+      {
+       "type": "gdpr",
+       "requires_consent": false,
+       "requires_processing_consent": false,
+       "requires_retention_consent": false,
+       "retention_period": null,
+       "demographic_data_consent_applies": false
+      }
+     ],
+     "internal_job_id": 5634105003,
+     "location": {
+      "name": "San Francisco, California, United States"
+     },
+     "metadata": null,
+     "id": 7452546003,
+     "updated_at": "2026-08-17T18:15:55-04:00",
+     "requisition_id": "1718",
+     "title": "Member of Technical Staff, AI Reliability & Monitoring Engineering Lead",
+     "company_name": "Postman",
+     "first_published": "2025-10-08T13:52:24-04:00",
+     "language": "en",
+     "application_deadline": null,
+     "content": "&lt;div class=&quot;content-intro&quot;&gt;&lt;h2&gt;&lt;strong&gt;Who Are We?&lt;/strong&gt;&lt;/h2&gt;\n&lt;p&gt;Postman is the world\u2019s leading API platform, used by more than 45 million+ developers and 500,000 organizations, including 98% of the Fortune 500. Postman is helping developers and professionals across the globe build the API-first world by simplifying each step of the API lifecycle an\u2026[trimmed for fixture]",
+     "departments": [
+      {
+       "id": 4125444003,
+       "name": "AI",
+       "child_ids": [],
+       "parent_id": 4139544003
+      }
+     ],
+     "offices": [
+      {
+       "id": 4015622003,
+       "name": "San Francisco, California",
+       "location": "San Francisco, California, United States",
+       "child_ids": [],
+       "parent_id": 4033416003
+      }
+     ],
+     "ai_disclaimer": null,
+     "include_ai_disclaimer": null,
+     "ai_opt_out_request_url": null
+    },
+    {
+     "absolute_url": "https://job-boards.greenhouse.io/postman/jobs/7722310003",
+     "data_compliance": [
+      {
+       "type": "gdpr",
+       "requires_consent": false,
+       "requires_processing_consent": false,
+       "requires_retention_consent": false,
+       "retention_period": null,
+       "demographic_data_consent_applies": false
+      }
+     ],
+     "internal_job_id": 5073419003,
+     "location": {
+      "name": "Boston, Massachusetts"
+     },
+     "metadata": null,
+     "id": 7722310003,
+     "updated_at": "2026-08-17T18:15:55-04:00",
+     "requisition_id": "1266",
+     "title": "Mid-Market Account Executive ",
+     "company_name": "Postman",
+     "first_published": "2026-05-01T15:30:46-04:00",
+     "language": "en",
+     "application_deadline": null,
+     "content": "&lt;div class=&quot;content-intro&quot;&gt;&lt;h2&gt;&lt;strong&gt;Who Are We?&lt;/strong&gt;&lt;/h2&gt;\n&lt;p&gt;Postman is the world\u2019s leading API platform, used by more than 45 million+ developers and 500,000 organizations, including 98% of the Fortune 500. Postman is helping developers and professionals across the globe build the API-first world by simplifying each step of the API lifecycle an\u2026[trimmed for fixture]",
+     "departments": [
+      {
+       "id": 4045833003,
+       "name": "Sales",
+       "child_ids": [],
+       "parent_id": 4047977003
+      }
+     ],
+     "offices": [
+      {
+       "id": 4032632003,
+       "name": "Remote, United States",
+       "location": null,
+       "child_ids": [],
+       "parent_id": 4033416003
+      }
+     ],
+     "ai_disclaimer": null,
+     "include_ai_disclaimer": null,
+     "ai_opt_out_request_url": null
+    },
+    {
+     "absolute_url": "https://job-boards.greenhouse.io/postman/jobs/7722311003",
+     "data_compliance": [
+      {
+       "type": "gdpr",
+       "requires_consent": false,
+       "requires_processing_consent": false,
+       "requires_retention_consent": false,
+       "retention_period": null,
+       "demographic_data_consent_applies": false
+      }
+     ],
+     "internal_job_id": 5073419003,
+     "location": {
+      "name": "New York, New York, United States"
+     },
+     "metadata": null,
+     "id": 7722311003,
+     "updated_at": "2026-08-17T18:15:55-04:00",
+     "requisition_id": "1266",
+     "title": "Mid-Market Account Executive ",
+     "company_name": "Postman",
+     "first_published": "2026-05-01T15:31:33-04:00",
+     "language": "en",
+     "application_deadline": null,
+     "content": "&lt;div class=&quot;content-intro&quot;&gt;&lt;h2&gt;&lt;strong&gt;Who Are We?&lt;/strong&gt;&lt;/h2&gt;\n&lt;p&gt;Postman is the world\u2019s leading API platform, used by more than 45 million+ developers and 500,000 organizations, including 98% of the Fortune 500. Postman is helping developers and professionals across the globe build the API-first world by simplifying each step of the API lifecycle an\u2026[trimmed for fixture]",
+     "departments": [
+      {
+       "id": 4045833003,
+       "name": "Sales",
+       "child_ids": [],
+       "parent_id": 4047977003
+      }
+     ],
+     "offices": [
+      {
+       "id": 4032632003,
+       "name": "Remote, United States",
+       "location": null,
+       "child_ids": [],
+       "parent_id": 4033416003
+      }
+     ],
+     "ai_disclaimer": null,
+     "include_ai_disclaimer": null,
+     "ai_opt_out_request_url": null
+    },
+    {
+     "absolute_url": "https://job-boards.greenhouse.io/postman/jobs/7721349003",
+     "data_compliance": [
+      {
+       "type": "gdpr",
+       "requires_consent": false,
+       "requires_processing_consent": false,
+       "requires_retention_consent": false,
+       "retention_period": null,
+       "demographic_data_consent_applies": false
+      }
+     ],
+     "internal_job_id": 5758687003,
+     "location": {
+      "name": "San Francisco, California, United States"
+     },
+     "metadata": null,
+     "id": 7721349003,
+     "updated_at": "2026-08-17T18:15:55-04:00",
+     "requisition_id": "2004",
+     "title": "Principal Offensive Security Engineer",
+     "company_name": "Postman",
+     "first_published": "2026-04-30T17:52:34-04:00",
+     "language": "en",
+     "application_deadline": null,
+     "content": "&lt;div class=&quot;content-intro&quot;&gt;&lt;h2&gt;&lt;strong&gt;Who Are We?&lt;/strong&gt;&lt;/h2&gt;\n&lt;p&gt;Postman is the world\u2019s leading API platform, used by more than 45 million+ developers and 500,000 organizations, including 98% of the Fortune 500. Postman is helping developers and professionals across the globe build the API-first world by simplifying each step of the API lifecycle an\u2026[trimmed for fixture]",
+     "departments": [
+      {
+       "id": 4057268003,
+       "name": "Platform Engineering",
+       "child_ids": [],
+       "parent_id": 4139544003
+      }
+     ],
+     "offices": [
+      {
+       "id": 4038749003,
+       "name": "Cupertino, California",
+       "location": "Cupertino, California, United States",
+       "child_ids": [],
+       "parent_id": 4033416003
+      },
+      {
+       "id": 4015622003,
+       "name": "San Francisco, California",
+       "location": "San Francisco, California, United States",
+       "child_ids": [],
+       "parent_id": 4033416003
+      }
+     ],
+     "ai_disclaimer": null,
+     "include_ai_disclaimer": null,
+     "ai_opt_out_request_url": null
+    },
+    {
+     "absolute_url": "https://job-boards.greenhouse.io/postman/jobs/7780627003",
+     "data_compliance": [
+      {
+       "type": "gdpr",
+       "requires_consent": false,
+       "requires_processing_consent": false,
+       "requires_retention_consent": false,
+       "retention_period": null,
+       "demographic_data_consent_applies": false
+      }
+     ],
+     "employment": "employment_required",
+     "internal_job_id": 5784329003,
+     "location": {
+      "name": "New York, New York, United States; San Francisco, California, United States"
+     },
+     "metadata": null,
+     "id": 7780627003,
+     "updated_at": "2026-08-17T18:15:55-04:00",
+     "requisition_id": "2085",
+     "title": "Regional Channel Sales Leader, North America",
+     "company_name": "Postman",
+     "first_published": "2026-06-22T18:37:38-04:00",
+     "language": "en",
+     "application_deadline": null,
+     "content": "&lt;div class=&quot;content-intro&quot;&gt;&lt;h2&gt;&lt;strong&gt;Who Are We?&lt;/strong&gt;&lt;/h2&gt;\n&lt;p&gt;Postman is the world\u2019s leading API platform, used by more than 45 million+ developers and 500,000 organizations, including 98% of the Fortune 500. Postman is helping developers and professionals across the globe build the API-first world by simplifying each step of the API lifecycle an\u2026[trimmed for fixture]",
+     "departments": [
+      {
+       "id": 4045833003,
+       "name": "Sales",
+       "child_ids": [],
+       "parent_id": 4047977003
+      }
+     ],
+     "offices": [
+      {
+       "id": 4015622003,
+       "name": "San Francisco, California",
+       "location": "San Francisco, California, United States",
+       "child_ids": [],
+       "parent_id": 4033416003
+      }
+     ],
+     "ai_disclaimer": null,
+     "include_ai_disclaimer": null,
+     "ai_opt_out_request_url": null
+    },
+    {
+     "absolute_url": "https://job-boards.greenhouse.io/postman/jobs/7603159003",
+     "data_compliance": [
+      {
+       "type": "gdpr",
+       "requires_consent": false,
+       "requires_processing_consent": false,
+       "requires_retention_consent": false,
+       "retention_period": null,
+       "demographic_data_consent_applies": false
+      }
+     ],
+     "internal_job_id": 5707068003,
+     "location": {
+      "name": "San Francisco, California, United States"
+     },
+     "metadata": null,
+     "id": 7603159003,
+     "updated_at": "2026-08-17T18:15:55-04:00",
+     "requisition_id": "1886",
+     "title": "Sales Compensation Analyst",
+     "company_name": "Postman",
+     "first_published": "2026-02-02T21:04:44-05:00",
+     "language": "en",
+     "application_deadline": null,
+     "content": "&lt;div class=&quot;content-intro&quot;&gt;&lt;h2&gt;&lt;strong&gt;Who Are We?&lt;/strong&gt;&lt;/h2&gt;\n&lt;p&gt;Postman is the world\u2019s leading API platform, used by more than 45 million+ developers and 500,000 organizations, including 98% of the Fortune 500. Postman is helping developers and professionals across the globe build the API-first world by simplifying each step of the API lifecycle an\u2026[trimmed for fixture]",
+     "departments": [
+      {
+       "id": 4024216003,
+       "name": "People",
+       "child_ids": [],
+       "parent_id": 4047974003
+      }
+     ],
+     "offices": [
+      {
+       "id": 4015622003,
+       "name": "San Francisco, California",
+       "location": "San Francisco, California, United States",
+       "child_ids": [],
+       "parent_id": 4033416003
+      }
+     ],
+     "ai_disclaimer": null,
+     "include_ai_disclaimer": null,
+     "ai_opt_out_request_url": null
+    },
+    {
+     "absolute_url": "https://job-boards.greenhouse.io/postman/jobs/7419694003",
+     "data_compliance": [
+      {
+       "type": "gdpr",
+       "requires_consent": false,
+       "requires_processing_consent": false,
+       "requires_retention_consent": false,
+       "retention_period": null,
+       "demographic_data_consent_applies": false
+      }
+     ],
+     "internal_job_id": 5618300003,
+     "location": {
+      "name": "San Francisco, California, United States"
+     },
+     "metadata": null,
+     "id": 7419694003,
+     "updated_at": "2026-08-17T18:15:55-04:00",
+     "requisition_id": "1704",
+     "title": "Senior Backend Engineer, Cloud Platform",
+     "company_name": "Postman",
+     "first_published": "2025-09-18T22:20:48-04:00",
+     "language": "en",
+     "application_deadline": null,
+     "content": "&lt;div class=&quot;content-intro&quot;&gt;&lt;h2&gt;&lt;strong&gt;Who Are We?&lt;/strong&gt;&lt;/h2&gt;\n&lt;p&gt;Postman is the world\u2019s leading API platform, used by more than 45 million+ developers and 500,000 organizations, including 98% of the Fortune 500. Postman is helping developers and professionals across the globe build the API-first world by simplifying each step of the API lifecycle an\u2026[trimmed for fixture]",
+     "departments": [
+      {
+       "id": 4057268003,
+       "name": "Platform Engineering",
+       "child_ids": [],
+       "parent_id": 4139544003
+      }
+     ],
+     "offices": [
+      {
+       "id": 4015622003,
+       "name": "San Francisco, California",
+       "location": "San Francisco, California, United States",
+       "child_ids": [],
+       "parent_id": 4033416003
+      }
+     ],
+     "ai_disclaimer": null,
+     "include_ai_disclaimer": null,
+     "ai_opt_out_request_url": null
+    },
+    {
+     "absolute_url": "https://job-boards.greenhouse.io/postman/jobs/7801699003",
+     "data_compliance": [
+      {
+       "type": "gdpr",
+       "requires_consent": false,
+       "requires_processing_consent": false,
+       "requires_retention_consent": false,
+       "retention_period": null,
+       "demographic_data_consent_applies": false
+      }
+     ],
+     "education": "education_required",
+     "internal_job_id": 5793793003,
+     "location": {
+      "name": "London, UK"
+     },
+     "metadata": null,
+     "id": 7801699003,
+     "updated_at": "2026-08-17T18:15:55-04:00",
+     "requisition_id": "2115",
+     "title": "Senior Commercial Counsel",
+     "company_name": "Postman",
+     "first_published": "2026-07-10T17:12:18-04:00",
+     "language": "en",
+     "application_deadline": null,
+     "content": "&lt;div class=&quot;content-intro&quot;&gt;&lt;h2&gt;&lt;strong&gt;Who Are We?&lt;/strong&gt;&lt;/h2&gt;\n&lt;p&gt;Postman is the world\u2019s leading API platform, used by more than 45 million+ developers and 500,000 organizations, including 98% of the Fortune 500. Postman is helping developers and professionals across the globe build the API-first world by simplifying each step of the API lifecycle an\u2026[trimmed for fixture]",
+     "departments": [
+      {
+       "id": 4027951003,
+       "name": "Legal",
+       "child_ids": [],
+       "parent_id": 4047974003
+      }
+     ],
+     "offices": [
+      {
+       "id": 4023624003,
+       "name": "London, UK",
+       "location": "London, UK",
+       "child_ids": [],
+       "parent_id": 4033396003
+      }
+     ],
+     "ai_disclaimer": null,
+     "include_ai_disclaimer": null,
+     "ai_opt_out_request_url": null
+    },
+    {
+     "absolute_url": "https://job-boards.greenhouse.io/postman/jobs/7983961003",
+     "data_compliance": [
+      {
+       "type": "gdpr",
+       "requires_consent": false,
+       "requires_processing_consent": false,
+       "requires_retention_consent": false,
+       "retention_period": null,
+       "demographic_data_consent_applies": false
+      }
+     ],
+     "internal_job_id": 5881164003,
+     "location": {
+      "name": "San Francisco, California, United States"
+     },
+     "metadata": null,
+     "id": 7983961003,
+     "updated_at": "2026-09-01T19:40:14-04:00",
+     "requisition_id": "2162",
+     "title": "Senior Demand Generation Manager",
+     "company_name": "Postman",
+     "first_published": "2026-09-01T19:40:14-04:00",
+     "language": "en",
+     "application_deadline": null,
+     "content": "&lt;div class=&quot;content-intro&quot;&gt;&lt;h2&gt;&lt;strong&gt;Who Are We?&lt;/strong&gt;&lt;/h2&gt;\n&lt;p&gt;Postman is the world\u2019s leading API platform, used by more than 45 million+ developers and 500,000 organizations, including 98% of the Fortune 500. Postman is helping developers and professionals across the globe build the API-first world by simplifying each step of the API lifecycle an\u2026[trimmed for fixture]",
+     "departments": [
+      {
+       "id": 4060258003,
+       "name": "Product Marketing",
+       "child_ids": [],
+       "parent_id": 4060257003
+      }
+     ],
+     "offices": [
+      {
+       "id": 4015622003,
+       "name": "San Francisco, California",
+       "location": "San Francisco, California, United States",
+       "child_ids": [],
+       "parent_id": 4033416003
+      }
+     ],
+     "ai_disclaimer": null,
+     "include_ai_disclaimer": null,
+     "ai_opt_out_request_url": null
+    },
+    {
+     "absolute_url": "https://job-boards.greenhouse.io/postman/jobs/7651740003",
+     "data_compliance": [
+      {
+       "type": "gdpr",
+       "requires_consent": false,
+       "requires_processing_consent": false,
+       "requires_retention_consent": false,
+       "retention_period": null,
+       "demographic_data_consent_applies": false
+      }
+     ],
+     "internal_job_id": 5726712003,
+     "location": {
+      "name": "San Francisco, California, United States"
+     },
+     "metadata": null,
+     "id": 7651740003,
+     "updated_at": "2026-08-17T18:15:55-04:00",
+     "requisition_id": "1933",
+     "title": "Senior Developer Advocate",
+     "company_name": "Postman",
+     "first_published": "2026-03-09T22:24:24-04:00",
+     "language": "en",
+     "application_deadline": null,
+     "content": "&lt;div class=&quot;content-intro&quot;&gt;&lt;h2&gt;&lt;strong&gt;Who Are We?&lt;/strong&gt;&lt;/h2&gt;\n&lt;p&gt;Postman is the world\u2019s leading API platform, used by more than 45 million+ developers and 500,000 organizations, including 98% of the Fortune 500. Postman is helping developers and professionals across the globe build the API-first world by simplifying each step of the API lifecycle an\u2026[trimmed for fixture]",
+     "departments": [
+      {
+       "id": 4139273003,
+       "name": "Developer Relations",
+       "child_ids": [],
+       "parent_id": 4139544003
+      }
+     ],
+     "offices": [
+      {
+       "id": 4015622003,
+       "name": "San Francisco, California",
+       "location": "San Francisco, California, United States",
+       "child_ids": [],
+       "parent_id": 4033416003
+      }
+     ],
+     "ai_disclaimer": null,
+     "include_ai_disclaimer": null,
+     "ai_opt_out_request_url": null
+    },
+    {
+     "absolute_url": "https://job-boards.greenhouse.io/postman/jobs/7762102003",
+     "data_compliance": [
+      {
+       "type": "gdpr",
+       "requires_consent": false,
+       "requires_processing_consent": false,
+       "requires_retention_consent": false,
+       "retention_period": null,
+       "demographic_data_consent_applies": false
+      }
+     ],
+     "internal_job_id": 5776494003,
+     "location": {
+      "name": "Bengaluru, Karnataka, India"
+     },
+     "metadata": null,
+     "id": 7762102003,
+     "updated_at": "2026-08-17T18:15:55-04:00",
+     "requisition_id": "2056",
+     "title": "Senior Engineer - Fabric Gateway",
+     "company_name": "Postman",
+     "first_published": "2026-06-04T00:35:10-04:00",
+     "language": "en",
+     "application_deadline": null,
+     "content": "&lt;div class=&quot;content-intro&quot;&gt;&lt;h2&gt;&lt;strong&gt;Who Are We?&lt;/strong&gt;&lt;/h2&gt;\n&lt;p&gt;Postman is the world\u2019s leading API platform, used by more than 45 million+ developers and 500,000 organizations, including 98% of the Fortune 500. Postman is helping developers and professionals across the globe build the API-first world by simplifying each step of the API lifecycle an\u2026[trimmed for fixture]",
+     "departments": [
+      {
+       "id": 4075803003,
+       "name": "Product Engineering",
+       "child_ids": [],
+       "parent_id": 4139544003
+      }
+     ],
+     "offices": [
+      {
+       "id": 4015621003,
+       "name": "Bangalore, India",
+       "location": "Bengaluru, Karnataka, India",
+       "child_ids": [],
+       "parent_id": 4033388003
+      }
+     ],
+     "ai_disclaimer": null,
+     "include_ai_disclaimer": null,
+     "ai_opt_out_request_url": null
+    },
+    {
+     "absolute_url": "https://job-boards.greenhouse.io/postman/jobs/7820052003",
+     "data_compliance": [
+      {
+       "type": "gdpr",
+       "requires_consent": false,
+       "requires_processing_consent": false,
+       "requires_retention_consent": false,
+       "retention_period": null,
+       "demographic_data_consent_applies": false
+      }
+     ],
+     "internal_job_id": 5802075003,
+     "location": {
+      "name": "Hyderabad, Telangana, India"
+     },
+     "metadata": null,
+     "id": 7820052003,
+     "updated_at": "2026-08-17T18:15:55-04:00",
+     "requisition_id": "2131",
+     "title": "Senior Engineer, IAM ",
+     "company_name": "Postman",
+     "first_published": "2026-07-29T23:03:59-04:00",
+     "language": "en",
+     "application_deadline": null,
+     "content": "&lt;div class=&quot;content-intro&quot;&gt;&lt;h2&gt;&lt;strong&gt;Who Are We?&lt;/strong&gt;&lt;/h2&gt;\n&lt;p&gt;Postman is the world\u2019s leading API platform, used by more than 45 million+ developers and 500,000 organizations, including 98% of the Fortune 500. Postman is helping developers and professionals across the globe build the API-first world by simplifying each step of the API lifecycle an\u2026[trimmed for fixture]",
+     "departments": [
+      {
+       "id": 4057268003,
+       "name": "Platform Engineering",
+       "child_ids": [],
+       "parent_id": 4139544003
+      }
+     ],
+     "offices": [
+      {
+       "id": 4063695003,
+       "name": "Hyderabad, India",
+       "location": "Hyderabad, Telangana, India",
+       "child_ids": [],
+       "parent_id": 4033388003
+      }
+     ],
+     "ai_disclaimer": null,
+     "include_ai_disclaimer": null,
+     "ai_opt_out_request_url": null
+    },
+    {
+     "absolute_url": "https://job-boards.greenhouse.io/postman/jobs/7983896003",
+     "data_compliance": [
+      {
+       "type": "gdpr",
+       "requires_consent": false,
+       "requires_processing_consent": false,
+       "requires_retention_consent": false,
+       "retention_period": null,
+       "demographic_data_consent_applies": false
+      }
+     ],
+     "internal_job_id": 5881132003,
+     "location": {
+      "name": "Cupertino, California, United States; San Francisco, California, United States"
+     },
+     "metadata": null,
+     "id": 7983896003,
+     "updated_at": "2026-09-01T16:29:28-04:00",
+     "requisition_id": "2160",
+     "title": "Senior Engineering Manager, API Catalog",
+     "company_name": "Postman",
+     "first_published": "2026-09-01T16:29:28-04:00",
+     "language": "en",
+     "application_deadline": null,
+     "content": "&lt;div class=&quot;content-intro&quot;&gt;&lt;h2&gt;&lt;strong&gt;Who Are We?&lt;/strong&gt;&lt;/h2&gt;\n&lt;p&gt;Postman is the world\u2019s leading API platform, used by more than 45 million+ developers and 500,000 organizations, including 98% of the Fortune 500. Postman is helping developers and professionals across the globe build the API-first world by simplifying each step of the API lifecycle an\u2026[trimmed for fixture]",
+     "departments": [
+      {
+       "id": 4075803003,
+       "name": "Product Engineering",
+       "child_ids": [],
+       "parent_id": 4139544003
+      }
+     ],
+     "offices": [
+      {
+       "id": 4038749003,
+       "name": "Cupertino, California",
+       "location": "Cupertino, California, United States",
+       "child_ids": [],
+       "parent_id": 4033416003
+      },
+      {
+       "id": 4015622003,
+       "name": "San Francisco, California",
+       "location": "San Francisco, California, United States",
+       "child_ids": [],
+       "parent_id": 4033416003
+      }
+     ],
+     "ai_disclaimer": null,
+     "include_ai_disclaimer": null,
+     "ai_opt_out_request_url": null
+    },
+    {
+     "absolute_url": "https://job-boards.greenhouse.io/postman/jobs/6672559003",
+     "data_compliance": [
+      {
+       "type": "gdpr",
+       "requires_consent": false,
+       "requires_processing_consent": false,
+       "requires_retention_consent": false,
+       "retention_period": null,
+       "demographic_data_consent_applies": false
+      }
+     ],
+     "internal_job_id": 5249848003,
+     "location": {
+      "name": "San Francisco, California, United States"
+     },
+     "metadata": null,
+     "id": 6672559003,
+     "updated_at": "2026-08-17T18:15:55-04:00",
+     "requisition_id": "1636",
+     "title": "Senior Forward Deployed Engineer (Backend)",
+     "company_name": "Postman",
+     "first_published": "2025-08-08T17:28:31-04:00",
+     "language": "en",
+     "application_deadline": null,
+     "content": "&lt;div class=&quot;content-intro&quot;&gt;&lt;h2&gt;&lt;strong&gt;Who Are We?&lt;/strong&gt;&lt;/h2&gt;\n&lt;p&gt;Postman is the world\u2019s leading API platform, used by more than 45 million+ developers and 500,000 organizations, including 98% of the Fortune 500. Postman is helping developers and professionals across the globe build the API-first world by simplifying each step of the API lifecycle an\u2026[trimmed for fixture]",
+     "departments": [
+      {
+       "id": 4093111003,
+       "name": "Field Engineering",
+       "child_ids": [],
+       "parent_id": 4093110003
+      }
+     ],
+     "offices": [
+      {
+       "id": 4015622003,
+       "name": "San Francisco, California",
+       "location": "San Francisco, California, United States",
+       "child_ids": [],
+       "parent_id": 4033416003
+      }
+     ],
+     "ai_disclaimer": null,
+     "include_ai_disclaimer": null,
+     "ai_opt_out_request_url": null
+    },
+    {
+     "absolute_url": "https://job-boards.greenhouse.io/postman/jobs/7790859003",
+     "data_compliance": [
+      {
+       "type": "gdpr",
+       "requires_consent": false,
+       "requires_processing_consent": false,
+       "requires_retention_consent": false,
+       "retention_period": null,
+       "demographic_data_consent_applies": false
+      }
+     ],
+     "education": "education_required",
+     "internal_job_id": 5788736003,
+     "location": {
+      "name": "San Francisco, California, United States"
+     },
+     "metadata": null,
+     "id": 7790859003,
+     "updated_at": "2026-08-17T18:15:55-04:00",
+     "requisition_id": "2099",
+     "title": "Senior Frontend Engineer, Observability",
+     "company_name": "Postman",
+     "first_published": "2026-06-30T19:16:47-04:00",
+     "language": "en",
+     "application_deadline": null,
+     "content": "&lt;div class=&quot;content-intro&quot;&gt;&lt;h2&gt;&lt;strong&gt;Who Are We?&lt;/strong&gt;&lt;/h2&gt;\n&lt;p&gt;Postman is the world\u2019s leading API platform, used by more than 45 million+ developers and 500,000 organizations, including 98% of the Fortune 500. Postman is helping developers and professionals across the globe build the API-first world by simplifying each step of the API lifecycle an\u2026[trimmed for fixture]",
+     "departments": [
+      {
+       "id": 4060256003,
+       "name": "Observability",
+       "child_ids": [],
+       "parent_id": 4139544003
+      }
+     ],
+     "offices": [
+      {
+       "id": 4015622003,
+       "name": "San Francisco, California",
+       "location": "San Francisco, California, United States",
+       "child_ids": [],
+       "parent_id": 4033416003
+      }
+     ],
+     "ai_disclaimer": null,
+     "include_ai_disclaimer": null,
+     "ai_opt_out_request_url": null
+    },
+    {
+     "absolute_url": "https://job-boards.greenhouse.io/postman/jobs/7715478003",
+     "data_compliance": [
+      {
+       "type": "gdpr",
+       "requires_consent": false,
+       "requires_processing_consent": false,
+       "requires_retention_consent": false,
+       "retention_period": null,
+       "demographic_data_consent_applies": false
+      }
+     ],
+     "internal_job_id": 5756473003,
+     "location": {
+      "name": "San Francisco, California, United States"
+     },
+     "metadata": null,
+     "id": 7715478003,
+     "updated_at": "2026-08-17T18:15:55-04:00",
+     "requisition_id": "2000",
+     "title": "Senior Fullstack Software Engineer - (Customer Journey)",
+     "company_name": "Postman",
+     "first_published": "2026-04-27T16:57:42-04:00",
+     "language": "en",
+     "application_deadline": null,
+     "content": "&lt;div class=&quot;content-intro&quot;&gt;&lt;h2&gt;&lt;strong&gt;Who Are We?&lt;/strong&gt;&lt;/h2&gt;\n&lt;p&gt;Postman is the world\u2019s leading API platform, used by more than 45 million+ developers and 500,000 organizations, including 98% of the Fortune 500. Postman is helping developers and professionals across the globe build the API-first world by simplifying each step of the API lifecycle an\u2026[trimmed for fixture]",
+     "departments": [
+      {
+       "id": 4075803003,
+       "name": "Product Engineering",
+       "child_ids": [],
+       "parent_id": 4139544003
+      }
+     ],
+     "offices": [
+      {
+       "id": 4015622003,
+       "name": "San Francisco, California",
+       "location": "San Francisco, California, United States",
+       "child_ids": [],
+       "parent_id": 4033416003
+      }
+     ],
+     "ai_disclaimer": null,
+     "include_ai_disclaimer": null,
+     "ai_opt_out_request_url": null
+    },
+    {
+     "absolute_url": "https://job-boards.greenhouse.io/postman/jobs/7773486003",
+     "data_compliance": [
+      {
+       "type": "gdpr",
+       "requires_consent": false,
+       "requires_processing_consent": false,
+       "requires_retention_consent": false,
+       "retention_period": null,
+       "demographic_data_consent_applies": false
+      }
+     ],
+     "internal_job_id": 5781445003,
+     "location": {
+      "name": "London, UK"
+     },
+     "metadata": null,
+     "id": 7773486003,
+     "updated_at": "2026-08-17T18:15:55-04:00",
+     "requisition_id": "2077",
+     "title": "Senior Manager, Customer Success Engineering",
+     "company_name": "Postman",
+     "first_published": "2026-06-30T18:57:54-04:00",
+     "language": "en",
+     "application_deadline": null,
+     "content": "&lt;div class=&quot;content-intro&quot;&gt;&lt;h2&gt;&lt;strong&gt;Who Are We?&lt;/strong&gt;&lt;/h2&gt;\n&lt;p&gt;Postman is the world\u2019s leading API platform, used by more than 45 million+ developers and 500,000 organizations, including 98% of the Fortune 500. Postman is helping developers and professionals across the globe build the API-first world by simplifying each step of the API lifecycle an\u2026[trimmed for fixture]",
+     "departments": [
+      {
+       "id": 4045833003,
+       "name": "Sales",
+       "child_ids": [],
+       "parent_id": 4047977003
+      }
+     ],
+     "offices": [
+      {
+       "id": 4023624003,
+       "name": "London, UK",
+       "location": "London, UK",
+       "child_ids": [],
+       "parent_id": 4033396003
+      }
+     ],
+     "ai_disclaimer": null,
+     "include_ai_disclaimer": null,
+     "ai_opt_out_request_url": null
+    },
+    {
+     "absolute_url": "https://job-boards.greenhouse.io/postman/jobs/7871879003",
+     "data_compliance": [
+      {
+       "type": "gdpr",
+       "requires_consent": false,
+       "requires_processing_consent": false,
+       "requires_retention_consent": false,
+       "retention_period": null,
+       "demographic_data_consent_applies": false
+      }
+     ],
+     "internal_job_id": 5826582003,
+     "location": {
+      "name": "New York, New York, United States"
+     },
+     "metadata": null,
+     "id": 7871879003,
+     "updated_at": "2026-08-17T18:15:55-04:00",
+     "requisition_id": "2152",
+     "title": "Senior Mid-Market Account Executive",
+     "company_name": "Postman",
+     "first_published": "2026-08-14T16:10:03-04:00",
+     "language": "en",
+     "application_deadline": null,
+     "content": "&lt;div class=&quot;content-intro&quot;&gt;&lt;h2&gt;&lt;strong&gt;Who Are We?&lt;/strong&gt;&lt;/h2&gt;\n&lt;p&gt;Postman is the world\u2019s leading API platform, used by more than 45 million+ developers and 500,000 organizations, including 98% of the Fortune 500. Postman is helping developers and professionals across the globe build the API-first world by simplifying each step of the API lifecycle an\u2026[trimmed for fixture]",
+     "departments": [
+      {
+       "id": 4045833003,
+       "name": "Sales",
+       "child_ids": [],
+       "parent_id": 4047977003
+      }
+     ],
+     "offices": [
+      {
+       "id": 4032632003,
+       "name": "Remote, United States",
+       "location": null,
+       "child_ids": [],
+       "parent_id": 4033416003
+      }
+     ],
+     "ai_disclaimer": null,
+     "include_ai_disclaimer": null,
+     "ai_opt_out_request_url": null
+    },
+    {
+     "absolute_url": "https://job-boards.greenhouse.io/postman/jobs/7871968003",
+     "data_compliance": [
+      {
+       "type": "gdpr",
+       "requires_consent": false,
+       "requires_processing_consent": false,
+       "requires_retention_consent": false,
+       "retention_period": null,
+       "demographic_data_consent_applies": false
+      }
+     ],
+     "internal_job_id": 5826582003,
+     "location": {
+      "name": "Boston, Massachusetts"
+     },
+     "metadata": null,
+     "id": 7871968003,
+     "updated_at": "2026-08-17T18:15:55-04:00",
+     "requisition_id": "2152",
+     "title": "Senior Mid-Market Account Executive",
+     "company_name": "Postman",
+     "first_published": "2026-08-14T16:15:03-04:00",
+     "language": "en",
+     "application_deadline": null,
+     "content": "&lt;div class=&quot;content-intro&quot;&gt;&lt;h2&gt;&lt;strong&gt;Who Are We?&lt;/strong&gt;&lt;/h2&gt;\n&lt;p&gt;Postman is the world\u2019s leading API platform, used by more than 45 million+ developers and 500,000 organizations, including 98% of the Fortune 500. Postman is helping developers and professionals across the globe build the API-first world by simplifying each step of the API lifecycle an\u2026[trimmed for fixture]",
+     "departments": [
+      {
+       "id": 4045833003,
+       "name": "Sales",
+       "child_ids": [],
+       "parent_id": 4047977003
+      }
+     ],
+     "offices": [
+      {
+       "id": 4032632003,
+       "name": "Remote, United States",
+       "location": null,
+       "child_ids": [],
+       "parent_id": 4033416003
+      }
+     ],
+     "ai_disclaimer": null,
+     "include_ai_disclaimer": null,
+     "ai_opt_out_request_url": null
+    },
+    {
+     "absolute_url": "https://job-boards.greenhouse.io/postman/jobs/7767101003",
+     "data_compliance": [
+      {
+       "type": "gdpr",
+       "requires_consent": false,
+       "requires_processing_consent": false,
+       "requires_retention_consent": false,
+       "retention_period": null,
+       "demographic_data_consent_applies": false
+      }
+     ],
+     "internal_job_id": 5778716003,
+     "location": {
+      "name": "New York, New York, United States; San Francisco, California, United States"
+     },
+     "metadata": null,
+     "id": 7767101003,
+     "updated_at": "2026-08-17T18:15:55-04:00",
+     "requisition_id": "2072",
+     "title": "Senior Software Engineer - Fern",
+     "company_name": "Postman",
+     "first_published": "2026-06-09T12:00:26-04:00",
+     "language": "en",
+     "application_deadline": null,
+     "content": "&lt;div class=&quot;content-intro&quot;&gt;&lt;h2&gt;&lt;strong&gt;Who Are We?&lt;/strong&gt;&lt;/h2&gt;\n&lt;p&gt;Postman is the world\u2019s leading API platform, used by more than 45 million+ developers and 500,000 organizations, including 98% of the Fortune 500. Postman is helping developers and professionals across the globe build the API-first world by simplifying each step of the API lifecycle an\u2026[trimmed for fixture]",
+     "departments": [
+      {
+       "id": 4075803003,
+       "name": "Product Engineering",
+       "child_ids": [],
+       "parent_id": 4139544003
+      }
+     ],
+     "offices": [
+      {
+       "id": 4038752003,
+       "name": "New York, New York",
+       "location": "New York, New York, United States",
+       "child_ids": [],
+       "parent_id": 4033416003
+      }
+     ],
+     "ai_disclaimer": null,
+     "include_ai_disclaimer": null,
+     "ai_opt_out_request_url": null
+    },
+    {
+     "absolute_url": "https://job-boards.greenhouse.io/postman/jobs/7677743003",
+     "data_compliance": [
+      {
+       "type": "gdpr",
+       "requires_consent": false,
+       "requires_processing_consent": false,
+       "requires_retention_consent": false,
+       "retention_period": null,
+       "demographic_data_consent_applies": false
+      }
+     ],
+     "internal_job_id": 5738893003,
+     "location": {
+      "name": "Cupertino, California, United States; San Francisco, California, United States"
+     },
+     "metadata": null,
+     "id": 7677743003,
+     "updated_at": "2026-08-26T16:23:41-04:00",
+     "requisition_id": "1956",
+     "title": "Senior Software Engineer Manager - Ecosystems & Integration",
+     "company_name": "Postman",
+     "first_published": "2026-03-24T16:00:48-04:00",
+     "language": "en",
+     "application_deadline": null,
+     "content": "&lt;div class=&quot;content-intro&quot;&gt;&lt;h2&gt;&lt;strong&gt;Who Are We?&lt;/strong&gt;&lt;/h2&gt;\n&lt;p&gt;Postman is the world\u2019s leading API platform, used by more than 45 million+ developers and 500,000 organizations, including 98% of the Fortune 500. Postman is helping developers and professionals across the globe build the API-first world by simplifying each step of the API lifecycle an\u2026[trimmed for fixture]",
+     "departments": [
+      {
+       "id": 4057268003,
+       "name": "Platform Engineering",
+       "child_ids": [],
+       "parent_id": 4139544003
+      }
+     ],
+     "offices": [
+      {
+       "id": 4038749003,
+       "name": "Cupertino, California",
+       "location": "Cupertino, California, United States",
+       "child_ids": [],
+       "parent_id": 4033416003
+      },
+      {
+       "id": 4015622003,
+       "name": "San Francisco, California",
+       "location": "San Francisco, California, United States",
+       "child_ids": [],
+       "parent_id": 4033416003
+      }
+     ],
+     "ai_disclaimer": null,
+     "include_ai_disclaimer": null,
+     "ai_opt_out_request_url": null
+    },
+    {
+     "absolute_url": "https://job-boards.greenhouse.io/postman/jobs/7703523003",
+     "data_compliance": [
+      {
+       "type": "gdpr",
+       "requires_consent": false,
+       "requires_processing_consent": false,
+       "requires_retention_consent": false,
+       "retention_period": null,
+       "demographic_data_consent_applies": false
+      }
+     ],
+     "internal_job_id": 5751800003,
+     "location": {
+      "name": "San Francisco, California, United States"
+     },
+     "metadata": null,
+     "id": 7703523003,
+     "updated_at": "2026-08-17T18:15:55-04:00",
+     "requisition_id": "1992",
+     "title": "Senior Software Engineer, Monetization ",
+     "company_name": "Postman",
+     "first_published": "2026-04-16T22:13:27-04:00",
+     "language": "en",
+     "application_deadline": null,
+     "content": "&lt;div class=&quot;content-intro&quot;&gt;&lt;h2&gt;&lt;strong&gt;Who Are We?&lt;/strong&gt;&lt;/h2&gt;\n&lt;p&gt;Postman is the world\u2019s leading API platform, used by more than 45 million+ developers and 500,000 organizations, including 98% of the Fortune 500. Postman is helping developers and professionals across the globe build the API-first world by simplifying each step of the API lifecycle an\u2026[trimmed for fixture]",
+     "departments": [
+      {
+       "id": 4057268003,
+       "name": "Platform Engineering",
+       "child_ids": [],
+       "parent_id": 4139544003
+      }
+     ],
+     "offices": [
+      {
+       "id": 4015622003,
+       "name": "San Francisco, California",
+       "location": "San Francisco, California, United States",
+       "child_ids": [],
+       "parent_id": 4033416003
+      }
+     ],
+     "ai_disclaimer": null,
+     "include_ai_disclaimer": null,
+     "ai_opt_out_request_url": null
+    },
+    {
+     "absolute_url": "https://job-boards.greenhouse.io/postman/jobs/7729935003",
+     "data_compliance": [
+      {
+       "type": "gdpr",
+       "requires_consent": false,
+       "requires_processing_consent": false,
+       "requires_retention_consent": false,
+       "retention_period": null,
+       "demographic_data_consent_applies": false
+      }
+     ],
+     "internal_job_id": 5763075003,
+     "location": {
+      "name": "London, UK"
+     },
+     "metadata": null,
+     "id": 7729935003,
+     "updated_at": "2026-08-29T00:07:33-04:00",
+     "requisition_id": "2023",
+     "title": "Senior Solutions Architect - London, UK",
+     "company_name": "Postman",
+     "first_published": "2026-05-18T17:46:33-04:00",
+     "language": "en",
+     "application_deadline": null,
+     "content": "&lt;div class=&quot;content-intro&quot;&gt;&lt;h2&gt;&lt;strong&gt;Who Are We?&lt;/strong&gt;&lt;/h2&gt;\n&lt;p&gt;Postman is the world\u2019s leading API platform, used by more than 45 million+ developers and 500,000 organizations, including 98% of the Fortune 500. Postman is helping developers and professionals across the globe build the API-first world by simplifying each step of the API lifecycle an\u2026[trimmed for fixture]",
+     "departments": [
+      {
+       "id": 4093109003,
+       "name": "Customer Engineering",
+       "child_ids": [],
+       "parent_id": 4093108003
+      }
+     ],
+     "offices": [
+      {
+       "id": 4023624003,
+       "name": "London, UK",
+       "location": "London, UK",
+       "child_ids": [],
+       "parent_id": 4033396003
+      }
+     ],
+     "ai_disclaimer": null,
+     "include_ai_disclaimer": null,
+     "ai_opt_out_request_url": null
+    },
+    {
+     "absolute_url": "https://job-boards.greenhouse.io/postman/jobs/7689499003",
+     "data_compliance": [
+      {
+       "type": "gdpr",
+       "requires_consent": false,
+       "requires_processing_consent": false,
+       "requires_retention_consent": false,
+       "retention_period": null,
+       "demographic_data_consent_applies": false
+      }
+     ],
+     "internal_job_id": 5745902003,
+     "location": {
+      "name": "New York, New York, United States; San Francisco, California, United States"
+     },
+     "metadata": null,
+     "id": 7689499003,
+     "updated_at": "2026-08-17T18:15:55-04:00",
+     "requisition_id": "1975",
+     "title": "SEO Manager",
+     "company_name": "Postman",
+     "first_published": "2026-04-10T13:03:40-04:00",
+     "language": "en",
+     "application_deadline": null,
+     "content": "&lt;div class=&quot;content-intro&quot;&gt;&lt;h2&gt;&lt;strong&gt;Who Are We?&lt;/strong&gt;&lt;/h2&gt;\n&lt;p&gt;Postman is the world\u2019s leading API platform, used by more than 45 million+ developers and 500,000 organizations, including 98% of the Fortune 500. Postman is helping developers and professionals across the globe build the API-first world by simplifying each step of the API lifecycle an\u2026[trimmed for fixture]",
+     "departments": [
+      {
+       "id": 4060258003,
+       "name": "Product Marketing",
+       "child_ids": [],
+       "parent_id": 4060257003
+      }
+     ],
+     "offices": [
+      {
+       "id": 4015622003,
+       "name": "San Francisco, California",
+       "location": "San Francisco, California, United States",
+       "child_ids": [],
+       "parent_id": 4033416003
+      }
+     ],
+     "ai_disclaimer": null,
+     "include_ai_disclaimer": null,
+     "ai_opt_out_request_url": null
+    },
+    {
+     "absolute_url": "https://job-boards.greenhouse.io/postman/jobs/7518513003",
+     "data_compliance": [
+      {
+       "type": "gdpr",
+       "requires_consent": false,
+       "requires_processing_consent": false,
+       "requires_retention_consent": false,
+       "retention_period": null,
+       "demographic_data_consent_applies": false
+      }
+     ],
+     "education": "education_required",
+     "internal_job_id": 5674606003,
+     "location": {
+      "name": "Remote, Germany"
+     },
+     "metadata": null,
+     "id": 7518513003,
+     "updated_at": "2026-08-17T18:15:55-04:00",
+     "requisition_id": "1787",
+     "title": "SMB Account Executive, Germany",
+     "company_name": "Postman",
+     "first_published": "2025-11-06T17:21:47-05:00",
+     "language": "en",
+     "application_deadline": null,
+     "content": "&lt;div class=&quot;content-intro&quot;&gt;&lt;h2&gt;&lt;strong&gt;Who Are We?&lt;/strong&gt;&lt;/h2&gt;\n&lt;p&gt;Postman is the world\u2019s leading API platform, used by more than 45 million+ developers and 500,000 organizations, including 98% of the Fortune 500. Postman is helping developers and professionals across the globe build the API-first world by simplifying each step of the API lifecycle an\u2026[trimmed for fixture]",
+     "departments": [
+      {
+       "id": 4045833003,
+       "name": "Sales",
+       "child_ids": [],
+       "parent_id": 4047977003
+      }
+     ],
+     "offices": [
+      {
+       "id": 4033411003,
+       "name": "Remote, Germany",
+       "location": null,
+       "child_ids": [],
+       "parent_id": 4033401003
+      }
+     ],
+     "ai_disclaimer": null,
+     "include_ai_disclaimer": null,
+     "ai_opt_out_request_url": null
+    },
+    {
+     "absolute_url": "https://job-boards.greenhouse.io/postman/jobs/7979746003",
+     "data_compliance": [
+      {
+       "type": "gdpr",
+       "requires_consent": false,
+       "requires_processing_consent": false,
+       "requires_retention_consent": false,
+       "retention_period": null,
+       "demographic_data_consent_applies": false
+      }
+     ],
+     "internal_job_id": 5879374003,
+     "location": {
+      "name": "Cupertino, California, United States; San Francisco, California, United States"
+     },
+     "metadata": null,
+     "id": 7979746003,
+     "updated_at": "2026-08-27T22:28:09-04:00",
+     "requisition_id": "2153",
+     "title": "Software Engineer, IAM",
+     "company_name": "Postman",
+     "first_published": "2026-08-27T18:11:33-04:00",
+     "language": "en",
+     "application_deadline": null,
+     "content": "&lt;div class=&quot;content-intro&quot;&gt;&lt;h2&gt;&lt;strong&gt;Who Are We?&lt;/strong&gt;&lt;/h2&gt;\n&lt;p&gt;Postman is the world\u2019s leading API platform, used by more than 45 million+ developers and 500,000 organizations, including 98% of the Fortune 500. Postman is helping developers and professionals across the globe build the API-first world by simplifying each step of the API lifecycle an\u2026[trimmed for fixture]",
+     "departments": [
+      {
+       "id": 4057268003,
+       "name": "Platform Engineering",
+       "child_ids": [],
+       "parent_id": 4139544003
+      }
+     ],
+     "offices": [
+      {
+       "id": 4038749003,
+       "name": "Cupertino, California",
+       "location": "Cupertino, California, United States",
+       "child_ids": [],
+       "parent_id": 4033416003
+      }
+     ],
+     "ai_disclaimer": null,
+     "include_ai_disclaimer": null,
+     "ai_opt_out_request_url": null
+    },
+    {
+     "absolute_url": "https://job-boards.greenhouse.io/postman/jobs/7790832003",
+     "data_compliance": [
+      {
+       "type": "gdpr",
+       "requires_consent": false,
+       "requires_processing_consent": false,
+       "requires_retention_consent": false,
+       "retention_period": null,
+       "demographic_data_consent_applies": false
+      }
+     ],
+     "internal_job_id": 5788719003,
+     "location": {
+      "name": "San Francisco, California, United States"
+     },
+     "metadata": null,
+     "id": 7790832003,
+     "updated_at": "2026-08-17T18:15:55-04:00",
+     "requisition_id": "2097",
+     "title": "Solutions Consultant",
+     "company_name": "Postman",
+     "first_published": "2026-07-03T14:14:31-04:00",
+     "language": "en",
+     "application_deadline": null,
+     "content": "&lt;div class=&quot;content-intro&quot;&gt;&lt;h2&gt;&lt;strong&gt;Who Are We?&lt;/strong&gt;&lt;/h2&gt;\n&lt;p&gt;Postman is the world\u2019s leading API platform, used by more than 45 million+ developers and 500,000 organizations, including 98% of the Fortune 500. Postman is helping developers and professionals across the globe build the API-first world by simplifying each step of the API lifecycle an\u2026[trimmed for fixture]",
+     "departments": [
+      {
+       "id": 4045833003,
+       "name": "Sales",
+       "child_ids": [],
+       "parent_id": 4047977003
+      }
+     ],
+     "offices": [
+      {
+       "id": 4038752003,
+       "name": "New York, New York",
+       "location": "New York, New York, United States",
+       "child_ids": [],
+       "parent_id": 4033416003
+      },
+      {
+       "id": 4015622003,
+       "name": "San Francisco, California",
+       "location": "San Francisco, California, United States",
+       "child_ids": [],
+       "parent_id": 4033416003
+      }
+     ],
+     "ai_disclaimer": null,
+     "include_ai_disclaimer": null,
+     "ai_opt_out_request_url": null
+    },
+    {
+     "absolute_url": "https://job-boards.greenhouse.io/postman/jobs/7782459003",
+     "data_compliance": [
+      {
+       "type": "gdpr",
+       "requires_consent": false,
+       "requires_processing_consent": false,
+       "requires_retention_consent": false,
+       "retention_period": null,
+       "demographic_data_consent_applies": false
+      }
+     ],
+     "internal_job_id": 5785314003,
+     "location": {
+      "name": "Bengaluru, Karnataka, India"
+     },
+     "metadata": null,
+     "id": 7782459003,
+     "updated_at": "2026-08-17T18:15:55-04:00",
+     "requisition_id": "2086",
+     "title": "Staff Engineer \u2013 Observability Platform",
+     "company_name": "Postman",
+     "first_published": "2026-06-23T23:51:17-04:00",
+     "language": "en",
+     "application_deadline": null,
+     "content": "&lt;div class=&quot;content-intro&quot;&gt;&lt;h2&gt;&lt;strong&gt;Who Are We?&lt;/strong&gt;&lt;/h2&gt;\n&lt;p&gt;Postman is the world\u2019s leading API platform, used by more than 45 million+ developers and 500,000 organizations, including 98% of the Fortune 500. Postman is helping developers and professionals across the globe build the API-first world by simplifying each step of the API lifecycle an\u2026[trimmed for fixture]",
+     "departments": [
+      {
+       "id": 4057268003,
+       "name": "Platform Engineering",
+       "child_ids": [],
+       "parent_id": 4139544003
+      }
+     ],
+     "offices": [
+      {
+       "id": 4015621003,
+       "name": "Bangalore, India",
+       "location": "Bengaluru, Karnataka, India",
+       "child_ids": [],
+       "parent_id": 4033388003
+      }
+     ],
+     "ai_disclaimer": null,
+     "include_ai_disclaimer": null,
+     "ai_opt_out_request_url": null
+    },
+    {
+     "absolute_url": "https://job-boards.greenhouse.io/postman/jobs/7578716003",
+     "data_compliance": [
+      {
+       "type": "gdpr",
+       "requires_consent": false,
+       "requires_processing_consent": false,
+       "requires_retention_consent": false,
+       "retention_period": null,
+       "demographic_data_consent_applies": false
+      }
+     ],
+     "internal_job_id": 5696742003,
+     "location": {
+      "name": "San Francisco, California, United States"
+     },
+     "metadata": null,
+     "id": 7578716003,
+     "updated_at": "2026-08-17T18:15:55-04:00",
+     "requisition_id": "1870",
+     "title": "Staff Software Engineer, Business Platform",
+     "company_name": "Postman",
+     "first_published": "2026-01-12T12:42:49-05:00",
+     "language": "en",
+     "application_deadline": null,
+     "content": "&lt;div class=&quot;content-intro&quot;&gt;&lt;h2&gt;&lt;strong&gt;Who Are We?&lt;/strong&gt;&lt;/h2&gt;\n&lt;p&gt;Postman is the world\u2019s leading API platform, used by more than 45 million+ developers and 500,000 organizations, including 98% of the Fortune 500. Postman is helping developers and professionals across the globe build the API-first world by simplifying each step of the API lifecycle an\u2026[trimmed for fixture]",
+     "departments": [
+      {
+       "id": 4057268003,
+       "name": "Platform Engineering",
+       "child_ids": [],
+       "parent_id": 4139544003
+      }
+     ],
+     "offices": [
+      {
+       "id": 4015622003,
+       "name": "San Francisco, California",
+       "location": "San Francisco, California, United States",
+       "child_ids": [],
+       "parent_id": 4033416003
+      }
+     ],
+     "ai_disclaimer": null,
+     "include_ai_disclaimer": null,
+     "ai_opt_out_request_url": null
+    },
+    {
+     "absolute_url": "https://job-boards.greenhouse.io/postman/jobs/7778449003",
+     "data_compliance": [
+      {
+       "type": "gdpr",
+       "requires_consent": false,
+       "requires_processing_consent": false,
+       "requires_retention_consent": false,
+       "retention_period": null,
+       "demographic_data_consent_applies": false
+      }
+     ],
+     "internal_job_id": 5783349003,
+     "location": {
+      "name": "Austin, Texas, United States"
+     },
+     "metadata": null,
+     "id": 7778449003,
+     "updated_at": "2026-08-17T18:15:55-04:00",
+     "requisition_id": "2083",
+     "title": "Staff Software Engineer- Codegen",
+     "company_name": "Postman",
+     "first_published": "2026-06-18T23:01:22-04:00",
+     "language": "en",
+     "application_deadline": null,
+     "content": "&lt;div class=&quot;content-intro&quot;&gt;&lt;h2&gt;&lt;strong&gt;Who Are We?&lt;/strong&gt;&lt;/h2&gt;\n&lt;p&gt;Postman is the world\u2019s leading API platform, used by more than 45 million+ developers and 500,000 organizations, including 98% of the Fortune 500. Postman is helping developers and professionals across the globe build the API-first world by simplifying each step of the API lifecycle an\u2026[trimmed for fixture]",
+     "departments": [
+      {
+       "id": 4057268003,
+       "name": "Platform Engineering",
+       "child_ids": [],
+       "parent_id": 4139544003
+      }
+     ],
+     "offices": [
+      {
+       "id": 4038751003,
+       "name": "Austin, Texas",
+       "location": "Austin, Texas, United States",
+       "child_ids": [],
+       "parent_id": 4033416003
+      }
+     ],
+     "ai_disclaimer": null,
+     "include_ai_disclaimer": null,
+     "ai_opt_out_request_url": null
+    },
+    {
+     "absolute_url": "https://job-boards.greenhouse.io/postman/jobs/7767126003",
+     "data_compliance": [
+      {
+       "type": "gdpr",
+       "requires_consent": false,
+       "requires_processing_consent": false,
+       "requires_retention_consent": false,
+       "retention_period": null,
+       "demographic_data_consent_applies": false
+      }
+     ],
+     "internal_job_id": 5778727003,
+     "location": {
+      "name": "New York, New York, United States; San Francisco, California, United States"
+     },
+     "metadata": null,
+     "id": 7767126003,
+     "updated_at": "2026-08-17T18:15:55-04:00",
+     "requisition_id": "2073",
+     "title": "Staff Software Engineer - Fern",
+     "company_name": "Postman",
+     "first_published": "2026-06-09T12:05:21-04:00",
+     "language": "en",
+     "application_deadline": null,
+     "content": "&lt;div class=&quot;content-intro&quot;&gt;&lt;h2&gt;&lt;strong&gt;Who Are We?&lt;/strong&gt;&lt;/h2&gt;\n&lt;p&gt;Postman is the world\u2019s leading API platform, used by more than 45 million+ developers and 500,000 organizations, including 98% of the Fortune 500. Postman is helping developers and professionals across the globe build the API-first world by simplifying each step of the API lifecycle an\u2026[trimmed for fixture]",
+     "departments": [
+      {
+       "id": 4075803003,
+       "name": "Product Engineering",
+       "child_ids": [],
+       "parent_id": 4139544003
+      }
+     ],
+     "offices": [
+      {
+       "id": 4038752003,
+       "name": "New York, New York",
+       "location": "New York, New York, United States",
+       "child_ids": [],
+       "parent_id": 4033416003
+      },
+      {
+       "id": 4015622003,
+       "name": "San Francisco, California",
+       "location": "San Francisco, California, United States",
+       "child_ids": [],
+       "parent_id": 4033416003
+      }
+     ],
+     "ai_disclaimer": null,
+     "include_ai_disclaimer": null,
+     "ai_opt_out_request_url": null
+    },
+    {
+     "absolute_url": "https://job-boards.greenhouse.io/postman/jobs/7528077003",
+     "data_compliance": [
+      {
+       "type": "gdpr",
+       "requires_consent": false,
+       "requires_processing_consent": false,
+       "requires_retention_consent": false,
+       "retention_period": null,
+       "demographic_data_consent_applies": false
+      }
+     ],
+     "internal_job_id": 5678474003,
+     "location": {
+      "name": "Remote, Denmark"
+     },
+     "metadata": null,
+     "id": 7528077003,
+     "updated_at": "2026-08-17T18:15:55-04:00",
+     "requisition_id": "1806",
+     "title": "Strategic Solutions Engineering, Netherlands/Sweden/Denmark",
+     "company_name": "Postman",
+     "first_published": "2025-11-20T02:09:05-05:00",
+     "language": "en",
+     "application_deadline": null,
+     "content": "&lt;div class=&quot;content-intro&quot;&gt;&lt;h2&gt;&lt;strong&gt;Who Are We?&lt;/strong&gt;&lt;/h2&gt;\n&lt;p&gt;Postman is the world\u2019s leading API platform, used by more than 45 million+ developers and 500,000 organizations, including 98% of the Fortune 500. Postman is helping developers and professionals across the globe build the API-first world by simplifying each step of the API lifecycle an\u2026[trimmed for fixture]",
+     "departments": [
+      {
+       "id": 4045833003,
+       "name": "Sales",
+       "child_ids": [],
+       "parent_id": 4047977003
+      }
+     ],
+     "offices": [
+      {
+       "id": 4033412003,
+       "name": "Remote, Denmark",
+       "location": null,
+       "child_ids": [],
+       "parent_id": 4033402003
+      }
+     ],
+     "ai_disclaimer": null,
+     "include_ai_disclaimer": null,
+     "ai_opt_out_request_url": null
+    },
+    {
+     "absolute_url": "https://job-boards.greenhouse.io/postman/jobs/7761536003",
+     "data_compliance": [
+      {
+       "type": "gdpr",
+       "requires_consent": false,
+       "requires_processing_consent": false,
+       "requires_retention_consent": false,
+       "retention_period": null,
+       "demographic_data_consent_applies": false
+      }
+     ],
+     "internal_job_id": 5776229003,
+     "location": {
+      "name": "San Francisco, California, United States"
+     },
+     "metadata": null,
+     "id": 7761536003,
+     "updated_at": "2026-08-17T18:15:55-04:00",
+     "requisition_id": "2052",
+     "title": "Technical Community Manager",
+     "company_name": "Postman",
+     "first_published": "2026-06-02T14:04:52-04:00",
+     "language": "en",
+     "application_deadline": null,
+     "content": "&lt;div class=&quot;content-intro&quot;&gt;&lt;h2&gt;&lt;strong&gt;Who Are We?&lt;/strong&gt;&lt;/h2&gt;\n&lt;p&gt;Postman is the world\u2019s leading API platform, used by more than 45 million+ developers and 500,000 organizations, including 98% of the Fortune 500. Postman is helping developers and professionals across the globe build the API-first world by simplifying each step of the API lifecycle an\u2026[trimmed for fixture]",
+     "departments": [
+      {
+       "id": 4139273003,
+       "name": "Developer Relations",
+       "child_ids": [],
+       "parent_id": 4139544003
+      }
+     ],
+     "offices": [
+      {
+       "id": 4015622003,
+       "name": "San Francisco, California",
+       "location": "San Francisco, California, United States",
+       "child_ids": [],
+       "parent_id": 4033416003
+      }
+     ],
+     "ai_disclaimer": null,
+     "include_ai_disclaimer": null,
+     "ai_opt_out_request_url": null
+    }
+   ],
+   "meta": {
+    "total": 63
+   }
+  }
+ ],
+ "details": {}
+}

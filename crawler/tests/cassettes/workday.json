@@ -1,0 +1,1607 @@
+{
+ "config": {
+  "tenant": "nvidia",
+  "dataCenter": "wd5",
+  "site": "NVIDIAExternalCareerSite"
+ },
+ "careers_url": "https://nvidia.wd5.myworkdayjobs.com/NVIDIAExternalCareerSite",
+ "list": [
+  {
+   "total": 60,
+   "jobPostings": [
+    {
+     "title": "Senior Network Infrastructure Engineer",
+     "externalPath": "/job/India-Remote/Senior-Network-Infrastructure-Engineer_JR2015526",
+     "locationsText": "5 Locations",
+     "postedOn": "Posted Today",
+     "bulletFields": [
+      "JR2015526"
+     ]
+    },
+    {
+     "title": "Senior Software Engineer, AIOps",
+     "externalPath": "/job/Israel-Raanana/Senior-Software-Engineer--AIOps_JR2024941",
+     "locationsText": "2 Locations",
+     "postedOn": "Posted Today",
+     "bulletFields": [
+      "JR2024941"
+     ]
+    },
+    {
+     "title": "Senior Software Engineer - Backend Platform",
+     "externalPath": "/job/Israel-Raanana/Senior-Software-Engineer---Backend-Platform_JR2024955",
+     "locationsText": "Israel, Raanana",
+     "postedOn": "Posted Today",
+     "bulletFields": [
+      "JR2024955"
+     ]
+    },
+    {
+     "title": "Israel Country Sales Leader",
+     "externalPath": "/job/Israel-Tel-Aviv/Israel-Country-Sales-Leader_JR2024628",
+     "locationsText": "Israel, Tel Aviv",
+     "postedOn": "Posted Today",
+     "bulletFields": [
+      "JR2024628"
+     ]
+    },
+    {
+     "title": "Senior AI Model Test Developer, SDET",
+     "externalPath": "/job/China-Shanghai/Senior-AI-Model-Test-Developer--SDET_JR2025044",
+     "locationsText": "China, Shanghai",
+     "postedOn": "Posted Today",
+     "bulletFields": [
+      "JR2025044"
+     ]
+    },
+    {
+     "title": "Marketing Specialist, Event and Marcom",
+     "externalPath": "/job/Taiwan-Taipei/Marketing-Specialist--Event-and-Marcom_JR2024846",
+     "locationsText": "Taiwan, Taipei",
+     "postedOn": "Posted Today",
+     "bulletFields": [
+      "JR2024846"
+     ]
+    },
+    {
+     "title": "Principal Block and File Storage Software Engineer, Linux - DGX Cloud",
+     "externalPath": "/job/US-CA-Santa-Clara/Principal-Block-File-Storage-Software-Engineer--Linux---DGX-Cloud_JR2024421",
+     "locationsText": "US, CA, Santa Clara",
+     "postedOn": "Posted Yesterday",
+     "bulletFields": [
+      "JR2024421"
+     ]
+    },
+    {
+     "title": "Senior System Software Engineer - Scientific Computing PaaS",
+     "externalPath": "/job/US-CA-Santa-Clara/Senior-System-Software-Engineer---Scientific-Computing-PaaS_JR2024331",
+     "locationsText": "2 Locations",
+     "postedOn": "Posted Yesterday",
+     "bulletFields": [
+      "JR2024331"
+     ]
+    },
+    {
+     "title": "Principal Software Engineer, E2E Performance and Goodput \u2014 CSP Engagements",
+     "externalPath": "/job/US-CA-Santa-Clara/Principal-Software-Engineer--E2E-Performance-and-Goodput---CSP-Engagements_JR2020321",
+     "locationsText": "4 Locations",
+     "postedOn": "Posted Yesterday",
+     "bulletFields": [
+      "JR2020321"
+     ]
+    },
+    {
+     "title": "Principal Software Engineer, Rack-Scale System Software \u2014 CSP Engagements",
+     "externalPath": "/job/US-CA-Santa-Clara/Principal-Software-Engineer--Rack-Scale-System-Software---CSP-Engagements_JR2020316",
+     "locationsText": "4 Locations",
+     "postedOn": "Posted Yesterday",
+     "bulletFields": [
+      "JR2020316"
+     ]
+    },
+    {
+     "title": "Principal Software Engineer, GPU Firmware and GPU System Software \u2014 CSP Engagements",
+     "externalPath": "/job/US-CA-Santa-Clara/Principal-Software-Engineer--GPU-Firmware-and-GPU-System-Software---CSP-Engagements_JR2020319",
+     "locationsText": "4 Locations",
+     "postedOn": "Posted Yesterday",
+     "bulletFields": [
+      "JR2020319"
+     ]
+    },
+    {
+     "title": "Senior Platform Engineer, Network Infrastructure - DGX Cloud",
+     "externalPath": "/job/US-CA-Santa-Clara/Senior-Platform-Engineer--Network-Infrastructure---DGX-Cloud_JR2021436",
+     "locationsText": "6 Locations",
+     "postedOn": "Posted Yesterday",
+     "bulletFields": [
+      "JR2021436"
+     ]
+    },
+    {
+     "title": "Senior Software Engineer - Manufacturing and Factory",
+     "externalPath": "/job/US-CA-Santa-Clara/Senior-Software-Engineer---Manufacturing-and-Factory_JR2020348-1",
+     "locationsText": "5 Locations",
+     "postedOn": "Posted Yesterday",
+     "bulletFields": [
+      "JR2020348"
+     ]
+    },
+    {
+     "title": "Lead Systems Software Test Engineer \u2013 CSP Engagements",
+     "externalPath": "/job/US-CA-Santa-Clara/Lead-Systems-Software-Test-Engineer---CSP-Engagements_JR2020107",
+     "locationsText": "US, CA, Santa Clara",
+     "postedOn": "Posted Yesterday",
+     "bulletFields": [
+      "JR2020107"
+     ]
+    },
+    {
+     "title": "Senior Manager, Engineering - Data Center Firmware",
+     "externalPath": "/job/US-CA-Santa-Clara/Senior-Manager--Engineering---Data-Center-Firmware_JR2019986",
+     "locationsText": "2 Locations",
+     "postedOn": "Posted Yesterday",
+     "bulletFields": [
+      "JR2019986"
+     ]
+    },
+    {
+     "title": "Principal Architect, System Software - Orbital Data Center",
+     "externalPath": "/job/US-CA-Santa-Clara/Principal-Architect--System-Software---Orbital-Data-Center_JR2019010",
+     "locationsText": "2 Locations",
+     "postedOn": "Posted Yesterday",
+     "bulletFields": [
+      "JR2019010"
+     ]
+    },
+    {
+     "title": "Senior Network Reliability Engineer - DGX Cloud",
+     "externalPath": "/job/US-CA-Santa-Clara/Senior-Network-Reliability-Engineer---DGX-Cloud_JR2018113",
+     "locationsText": "2 Locations",
+     "postedOn": "Posted Yesterday",
+     "bulletFields": [
+      "JR2018113"
+     ]
+    },
+    {
+     "title": "Senior Performance Architect - Heterogeneous Workload Optimization",
+     "externalPath": "/job/US-CA-Santa-Clara/Senior-Performance-Architect---Heterogeneous-Workload-Optimization_JR2012988",
+     "locationsText": "4 Locations",
+     "postedOn": "Posted Yesterday",
+     "bulletFields": [
+      "JR2012988"
+     ]
+    },
+    {
+     "title": "Senior Systems Software Engineer, Compute Stack Acceleration",
+     "externalPath": "/job/US-CA-Santa-Clara/Senior-Systems-Software-Engineer--Compute-Stack-Acceleration_JR2021549",
+     "locationsText": "4 Locations",
+     "postedOn": "Posted Yesterday",
+     "bulletFields": [
+      "JR2021549"
+     ]
+    },
+    {
+     "title": "Senior Software Engineer, System Validation - EDA Infrastructure",
+     "externalPath": "/job/US-CA-Santa-Clara/Senior-Software-Engineer--Next-Generation-Architecture---EDA-Infrastructure_JR2014880",
+     "locationsText": "5 Locations",
+     "postedOn": "Posted Yesterday",
+     "bulletFields": [
+      "JR2014880"
+     ]
+    }
+   ],
+   "facets": [
+    {
+     "facetParameter": "jobFamilyGroup",
+     "descriptor": "Job Category",
+     "values": [
+      {
+       "descriptor": "Engineering",
+       "id": "0c40f6bd1d8f10ae43ffaefd46dc7e78",
+       "count": 1760
+      },
+      {
+       "descriptor": "Sales",
+       "id": "0c40f6bd1d8f10ae43ffcac5bbec7e90",
+       "count": 327
+      },
+      {
+       "descriptor": "Operations",
+       "id": "0c40f6bd1d8f10ae43ffc3fc7d8c7e8a",
+       "count": 149
+      },
+      {
+       "descriptor": "Program Manager",
+       "id": "0c40f6bd1d8f10ae43ffc668c6847e8c",
+       "count": 110
+      },
+      {
+       "descriptor": "Marketing",
+       "id": "0c40f6bd1d8f10ae43ffc19725ec7e88",
+       "count": 98
+      },
+      {
+       "descriptor": "Univ Employment",
+       "id": "0c40f6bd1d8f10ae43ffda1e8d447e94",
+       "count": 80
+      },
+      {
+       "descriptor": "Research",
+       "id": "0c40f6bd1d8f10ae43ffc8817cf47e8e",
+       "count": 41
+      },
+      {
+       "descriptor": "Professional Services",
+       "id": "e8bdc341a93101bd5f4d2b0a1c005e36",
+       "count": 39
+      },
+      {
+       "descriptor": "IT - Information Technology",
+       "id": "0c40f6bd1d8f10ae43ffbd1459047e84",
+       "count": 38
+      },
+      {
+       "descriptor": "Finance",
+       "id": "0c40f6bd1d8f10ae43ffb5dd06f47e7e",
+       "count": 22
+      },
+      {
+       "descriptor": "Human Resources",
+       "id": "0c40f6bd1d8f10ae43ffbac3680c7e82",
+       "count": 9
+      },
+      {
+       "descriptor": "Business Development",
+       "id": "0c40f6bd1d8f10ae43ffac5fdfac7e76",
+       "count": 9
+      },
+      {
+       "descriptor": "Legal",
+       "id": "0c40f6bd1d8f10ae43ffbf4412147e86",
+       "count": 5
+      },
+      {
+       "descriptor": "Facilities",
+       "id": "0c40f6bd1d8f10ae43ffb3a6aaac7e7c",
+       "count": 2
+      },
+      {
+       "descriptor": "Administration",
+       "id": "0c40f6bd1d8f10ae43ffaa1e1d6c7e74",
+       "count": 1
+      }
+     ]
+    },
+    {
+     "facetParameter": "workerSubType",
+     "descriptor": "Job Type",
+     "values": [
+      {
+       "descriptor": "Regular Employee",
+       "id": "0c40f6bd1d8f10adf6dae161b1844a15",
+       "count": 2342
+      },
+      {
+       "descriptor": "Management",
+       "id": "0c40f6bd1d8f10adf6dae2cd57444a16",
+       "count": 197
+      },
+      {
+       "descriptor": "Intern (Fixed Term)",
+       "id": "0c40f6bd1d8f10adf6dae42e46d44a17",
+       "count": 78
+      },
+      {
+       "descriptor": "New College Graduate",
+       "id": "ab40a98049581037a3ada55b087049b7",
+       "count": 71
+      },
+      {
+       "descriptor": "Regular Employee (Fixed Term)",
+       "id": "cc40d60d614c01809d56fe967144ce2c",
+       "count": 1
+      },
+      {
+       "descriptor": "Academic (Fixed Term)",
+       "id": "ec9560ee6dc71001d6f3cf17ea640000",
+       "count": 1
+      }
+     ]
+    },
+    {
+     "facetParameter": "timeType",
+     "descriptor": "Time Type",
+     "values": [
+      {
+       "descriptor": "Full time",
+       "id": "5509c0b5959810ac0029943377d47364",
+       "count": 2688
+      },
+      {
+       "descriptor": "Part time",
+       "id": "5509c0b5959810ac00299430e7947363",
+       "count": 2
+      }
+     ]
+    },
+    {
+     "facetParameter": "locationMainGroup",
+     "values": [
+      {
+       "facetParameter": "locationHierarchy2",
+       "descriptor": "Location Type",
+       "values": [
+        {
+         "descriptor": "Office",
+         "id": "0c3f5f117e9a0101f6422f0fe79d0000",
+         "count": 2555
+        },
+        {
+         "descriptor": "Remote",
+         "id": "0c3f5f117e9a0101f63dc469c3010000",
+         "count": 573
+        }
+       ]
+      },
+      {
+       "facetParameter": "locationHierarchy1",
+       "descriptor": "Locations",
+       "values": [
+        {
+         "descriptor": "Armenia",
+         "id": "d21cf68980ad0128000fd2c6b107c000",
+         "count": 3
+        },
+        {
+         "descriptor": "Australia",
+         "id": "2fcb99c455831013ea528dce556b3224",
+         "count": 10
+        },
+        {
+         "descriptor": "Belgium",
+         "id": "e5375aecc8d9103bebc47017be18ffd3",
+         "count": 1
+        },
+        {
+         "descriptor": "Brazil",
+         "id": "2fcb99c455831013ea5298c9e1f63230",
+         "count": 2
+        },
+        {
+         "descriptor": "Canada",
+         "id": "2fcb99c455831013ea529c3b93ba3236",
+         "count": 13
+        },
+        {
+         "descriptor": "China",
+         "id": "2fcb99c455831013ea529fe151e3323c",
+         "count": 197
+        },
+        {
+         "descriptor": "Czechia",
+         "id": "2fcb99c455831013ea52a358b3d53242",
+         "count": 4
+        },
+        {
+         "descriptor": "Denmark",
+         "id": "d21cf68980ad0121a67d319db107a200",
+         "count": 7
+        },
+        {
+         "descriptor": "Finland",
+         "id": "2fcb99c455831013ea52a6cbc15f3248",
+         "count": 5
+        },
+        {
+         "descriptor": "France",
+         "id": "2fcb99c455831013ea52aa2df70e324e",
+         "count": 20
+        },
+        {
+         "descriptor": "Germany",
+         "id": "2fcb99c455831013ea52adc65f5d3254",
+         "count": 51
+        },
+        {
+         "descriptor": "Greece",
+         "id": "c498fba66f4e01b7b7931c0fd400ab04",
+         "count": 1
+        },
+        {
+         "descriptor": "Hong Kong",
+         "id": "2fcb99c455831013ea52b157d0d6325a",
+         "count": 4
+        },
+        {
+         "descriptor": "Hungary",
+         "id": "7bcfe8379f6b01ad4d347d1ca87689a6",
+         "count": 3
+        },
+        {
+         "descriptor": "India",
+         "id": "2fcb99c455831013ea52b82135ba3266",
+         "count": 244
+        },
+        {
+         "descriptor": "Israel",
+         "id": "2fcb99c455831013ea52bbe14cf9326c",
+         "count": 426
+        },
+        {
+         "descriptor": "Italy",
+         "id": "2fcb99c455831013ea52bf52796c3272",
+         "count": 4
+        },
+        {
+         "descriptor": "Japan",
+         "id": "2fcb99c455831013ea52c29d2e923278",
+         "count": 22
+        },
+        {
+         "descriptor": "Korea",
+         "id": "2fcb99c455831013ea52c61ded6e327e",
+         "count": 20
+        },
+        {
+         "descriptor": "Mexico",
+         "id": "2fcb99c455831013ea52cd244532328a",
+         "count": 3
+        },
+        {
+         "descriptor": "Netherlands",
+         "id": "2fcb99c455831013ea52d0e0e4583290",
+         "count": 7
+        },
+        {
+         "descriptor": "Palestine",
+         "id": "970bf8c909a701f9c086d363d300fa06",
+         "count": 2
+        },
+        {
+         "descriptor": "Poland",
+         "id": "2fcb99c455831013ea52d8783aa0329c",
+         "count": 21
+        },
+        {
+         "descriptor": "Romania",
+         "id": "e5375aecc8d9103bebfb513cb69200d4",
+         "count": 1
+        },
+        {
+         "descriptor": "Singapore",
+         "id": "2fcb99c455831013ea52df1adb7432a8",
+         "count": 20
+        },
+        {
+         "descriptor": "Spain",
+         "id": "2fcb99c455831013ea52e31a43e832ae",
+         "count": 9
+        },
+        {
+         "descriptor": "Sweden",
+         "id": "2fcb99c455831013ea52e6c3067832b4",
+         "count": 7
+        },
+        {
+         "descriptor": "Switzerland",
+         "id": "2fcb99c455831013ea52e9ef1a0032ba",
+         "count": 32
+        },
+        {
+         "descriptor": "Taiwan",
+         "id": "2fcb99c455831013ea52ed162d4932c0",
+         "count": 132
+        },
+        {
+         "descriptor": "Thailand",
+         "id": "2fcb99c455831013ea52f07ea4c732c6",
+         "count": 4
+        },
+        {
+         "descriptor": "Ukraine",
+         "id": "970bf8c909a7012c3733f063d3000107",
+         "count": 7
+        },
+        {
+         "descriptor": "United Arab Emirates",
+         "id": "2fcb99c455831013ea52f3d5d2c232cc",
+         "count": 4
+        },
+        {
+         "descriptor": "United Kingdom",
+         "id": "2fcb99c455831013ea52f785717432d2",
+         "count": 45
+        },
+        {
+         "descriptor": "United States",
+         "id": "2fcb99c455831013ea52fb338f2932d8",
+         "count": 1426
+        },
+        {
+         "descriptor": "Vietnam",
+         "id": "2fcb99c455831013ea52fea3f8d732de",
+         "count": 37
+        }
+       ]
+      },
+      {
+       "facetParameter": "locations",
+       "descriptor": "Sites",
+       "values": [
+        {
+         "descriptor": "Armenia, Remote",
+         "id": "d21cf68980ad01f2f9f0b1bdb5075e07",
+         "count": 2
+        },
+        {
+         "descriptor": "Armenia, Yerevan",
+         "id": "c0ed409f79231000eaff724467330000",
+         "count": 2
+        },
+        {
+         "descriptor": "Australia, Remote",
+         "id": "91336993fab910af6d70362ab49cc2f7",
+         "count": 10
+        },
+        {
+         "descriptor": "Australia, Sydney",
+         "id": "0d86a8e04eda011538f0ac5d90019611",
+         "count": 1
+        },
+        {
+         "descriptor": "Belgium, Remote",
+         "id": "5f84e8157c6a101b3ae4a5e4e1b3b1ce",
+         "count": 1
+        },
+        {
+         "descriptor": "Brazil, Remote",
+         "id": "91336993fab910af6d7115f6c23cc357",
+         "count": 1
+        },
+        {
+         "descriptor": "Brazil, Sao Paulo",
+         "id": "91336993fab910af6d7113d4a58cc352",
+         "count": 2
+        },
+        {
+         "descriptor": "Canada, Remote",
+         "id": "91336993fab910af6d7111b9ef64c34d",
+         "count": 7
+        },
+        {
+         "descriptor": "Canada, Toronto",
+         "id": "4205b8279d1110811b5e0a9820d6693a",
+         "count": 8
+        },
+        {
+         "descriptor": "China, Beijing",
+         "id": "91336993fab910af6d710912773cc339",
+         "count": 78
+        },
+        {
+         "descriptor": "China, Guangzhou",
+         "id": "a91ba405af43014cbf6c6d9e38015a54",
+         "count": 1
+        },
+        {
+         "descriptor": "China, Remote",
+         "id": "b4fd8272c6061070475410ad248007f0",
+         "count": 1
+        },
+        {
+         "descriptor": "China, Shanghai",
+         "id": "91336993fab910af6d710b3449b4c33e",
+         "count": 159
+        },
+        {
+         "descriptor": "China, Shenzhen",
+         "id": "91336993fab910af6d7106eea8f4c334",
+         "count": 54
+        },
+        {
+         "descriptor": "Czechia, Remote",
+         "id": "91336993fab910af6d70ecbaa6f4c2fd",
+         "count": 4
+        },
+        {
+         "descriptor": "Denmark, Remote",
+         "id": "d21cf68980ad0193b0bfc3cab2079202",
+         "count": 1
+        },
+        {
+         "descriptor": "Denmark, Roskilde",
+         "id": "c498fba66f4e01c0944dde87d5005f05",
+         "count": 6
+        },
+        {
+         "descriptor": "Finland, Helsinki",
+         "id": "91336993fab910af6d6fdb4a260cc22a",
+         "count": 4
+        },
+        {
+         "descriptor": "Finland, Remote",
+         "id": "91336993fab910af6d6fd9177efcc225",
+         "count": 3
+        },
+        {
+         "descriptor": "France, Courbevoie",
+         "id": "91336993fab910af6d6fd25f3c44c216",
+         "count": 9
+        },
+        {
+         "descriptor": "France, Remote",
+         "id": "91336993fab910af6d6fd6c8476cc220",
+         "count": 14
+        },
+        {
+         "descriptor": "Germany, Berlin",
+         "id": "91336993fab910af6d6fc2799054c1f3",
+         "count": 4
+        },
+        {
+         "descriptor": "Germany, Munich",
+         "id": "91336993fab910af6d6fc4f707bcc1f8",
+         "count": 33
+        },
+        {
+         "descriptor": "Germany, Remote",
+         "id": "91336993fab910af6d6fc96a405cc202",
+         "count": 43
+        },
+        {
+         "descriptor": "Germany, Wuerselen",
+         "id": "91336993fab910af6d6fc737d3e4c1fd",
+         "count": 3
+        },
+        {
+         "descriptor": "Greece, Remote",
+         "id": "970bf8c909a701babc1935ddd400b807",
+         "count": 1
+        },
+        {
+         "descriptor": "Hong Kong, STP",
+         "id": "91336993fab910af6d6fc02e0a14c1ee",
+         "count": 4
+        },
+        {
+         "descriptor": "Hungary, Budapest",
+         "id": "fc94d97a3a280100b73f626fd1610000",
+         "count": 1
+        },
+        {
+         "descriptor": "Hungary, Remote",
+         "id": "7bcfe8379f6b017176531c86a87649a7",
+         "count": 2
+        },
+        {
+         "descriptor": "India, Bengaluru",
+         "id": "91336993fab910af6d6fb9748af4c1df",
+         "count": 201
+        },
+        {
+         "descriptor": "India, Gurugram",
+         "id": "f28ae3c49d2601aff203e114d301695f",
+         "count": 8
+        },
+        {
+         "descriptor": "India, Hyderabad",
+         "id": "91336993fab910af6d6fb2be0974c1d0",
+         "count": 42
+        },
+        {
+         "descriptor": "India, Mumbai",
+         "id": "91336993fab910af6d6fabbb968cc1c1",
+         "count": 12
+        },
+        {
+         "descriptor": "India, Pune",
+         "id": "91336993fab910af6d6fb0782884c1cb",
+         "count": 66
+        },
+        {
+         "descriptor": "India, Remote",
+         "id": "91336993fab910af6d6fb4ee7634c1d5",
+         "count": 16
+        },
+        {
+         "descriptor": "Israel, Beer Sheva",
+         "id": "970bf8c909a701bb080521ddd400ae07",
+         "count": 27
+        },
+        {
+         "descriptor": "Israel, Raanana",
+         "id": "970bf8c909a7013ea54a57dcd4008107",
+         "count": 89
+        },
+        {
+         "descriptor": "Israel, Tel Aviv",
+         "id": "c7769ee377291036b08490819096b8bf",
+         "count": 241
+        },
+        {
+         "descriptor": "Israel, Tel Hai",
+         "id": "970bf8c909a7016a7d893ddcd4007c07",
+         "count": 13
+        },
+        {
+         "descriptor": "Israel, Yokneam",
+         "id": "970bf8c909a701c749f87bdcd4008607",
+         "count": 304
+        },
+        {
+         "descriptor": "Italy, Remote",
+         "id": "91336993fab910af6d6fa203fa6cc1ad",
+         "count": 4
+        },
+        {
+         "descriptor": "Japan, Remote",
+         "id": "b00b3256ed551015d42d2bebe06b02b7",
+         "count": 5
+        },
+        {
+         "descriptor": "Japan, Tokyo",
+         "id": "91336993fab910af6d6f9a47b91cc19e",
+         "count": 20
+        },
+        {
+         "descriptor": "Korea, Remote",
+         "id": "91336993fab910af6d71963a259cc46f",
+         "count": 2
+        },
+        {
+         "descriptor": "Korea, Seoul",
+         "id": "91336993fab910af6d6f3f56714cc112",
+         "count": 20
+        },
+        {
+         "descriptor": "Mexico, Remote",
+         "id": "91336993fab910af6d6f97e94b04c199",
+         "count": 3
+        },
+        {
+         "descriptor": "Netherlands, Amsterdam",
+         "id": "42289dda31210100f43ca5dad0ff0000",
+         "count": 2
+        },
+        {
+         "descriptor": "Netherlands, Remote",
+         "id": "5f84e8157c6a101b415772d270da2de1",
+         "count": 6
+        },
+        {
+         "descriptor": "Palestine, Rawabi",
+         "id": "30350996b69b01a7dbccf4403c0174a8",
+         "count": 2
+        },
+        {
+         "descriptor": "Poland, Remote",
+         "id": "91336993fab910af6d6f931ae68cc18f",
+         "count": 19
+        },
+        {
+         "descriptor": "Poland, Warsaw",
+         "id": "811700f7388d0103b8ceed030d490e48",
+         "count": 10
+        },
+        {
+         "descriptor": "Romania, Remote",
+         "id": "5f84e8157c6a101b435468d5d0e34bd9",
+         "count": 1
+        },
+        {
+         "descriptor": "Singapore, Pasir Panjang",
+         "id": "de99d77118d51016b3861587f8f30000",
+         "count": 2
+        },
+        {
+         "descriptor": "Singapore, Remote",
+         "id": "91336993fab910af6d6f8a1a368cc17b",
+         "count": 9
+        },
+        {
+         "descriptor": "Singapore, Singapore-Suntec Tower",
+         "id": "c498fba66f4e01971ba26688d5008705",
+         "count": 15
+        },
+        {
+         "descriptor": "Spain, Remote",
+         "id": "91336993fab910af6d6f87de293cc176",
+         "count": 9
+        },
+        {
+         "descriptor": "Sweden, Gothenburg",
+         "id": "c18da66b8c3f01e4f8939069de3534f8",
+         "count": 4
+        },
+        {
+         "descriptor": "Sweden, Lund",
+         "id": "91336993fab910af6d6f859de1e4c171",
+         "count": 2
+        },
+        {
+         "descriptor": "Sweden, Remote",
+         "id": "91336993fab910af6d6f8342ac04c16c",
+         "count": 6
+        },
+        {
+         "descriptor": "Switzerland, Remote",
+         "id": "91336993fab910af6d6f7e35a07cc162",
+         "count": 21
+        },
+        {
+         "descriptor": "Switzerland, Zurich",
+         "id": "91336993fab910af6d6f80c09504c167",
+         "count": 17
+        },
+        {
+         "descriptor": "Taiwan, Hsinchu",
+         "id": "91336993fab910af6d6f7933b49cc158",
+         "count": 86
+        },
+        {
+         "descriptor": "Taiwan, Remote",
+         "id": "91336993fab910af6d6f56c5409cc13f",
+         "count": 1
+        },
+        {
+         "descriptor": "Taiwan, Taipei",
+         "id": "91336993fab910af6d6f5eaae3acc14e",
+         "count": 85
+        },
+        {
+         "descriptor": "Thailand, Remote",
+         "id": "f57d67c891a11057224421d76bc979ab",
+         "count": 4
+        },
+        {
+         "descriptor": "UAE, Dubai",
+         "id": "91336993fab910af6d6f516bf58cc135",
+         "count": 4
+        },
+        {
+         "descriptor": "UAE, Remote",
+         "id": "fd8f9cd69ba6019914bb053e4e01ebba",
+         "count": 1
+        },
+        {
+         "descriptor": "UK, Belfast",
+         "id": "970bf8c909a7015f56c618ded400e007",
+         "count": 1
+        },
+        {
+         "descriptor": "UK, Bristol",
+         "id": "91336993fab910af6d6f41d01ff4c117",
+         "count": 4
+        },
+        {
+         "descriptor": "UK, Cambridge",
+         "id": "91336993fab910af6d6f445436acc11c",
+         "count": 7
+        },
+        {
+         "descriptor": "UK, Reading",
+         "id": "91336993fab910af6d6f4c211db4c12b",
+         "count": 10
+        },
+        {
+         "descriptor": "UK, Remote",
+         "id": "91336993fab910af6d6f4954559cc126",
+         "count": 40
+        },
+        {
+         "descriptor": "Ukraine, Kyiv",
+         "id": "970bf8c909a701acf1aa08ded400db07",
+         "count": 6
+        },
+        {
+         "descriptor": "Ukraine, Remote",
+         "id": "970bf8c909a70104bdbe3eddd400bd07",
+         "count": 7
+        },
+        {
+         "descriptor": "US, AL, Madison",
+         "id": "91336993fab910af6d7140d48764c3b6",
+         "count": 3
+        },
+        {
+         "descriptor": "US, AL, Remote",
+         "id": "91336993fab910af6d7170a1a684c41f",
+         "count": 1
+        },
+        {
+         "descriptor": "US, AR, Remote",
+         "id": "df27165dab550120b41aa51fc701619d",
+         "count": 5
+        },
+        {
+         "descriptor": "US, AZ, Remote",
+         "id": "91336993fab910af6d7013ca699cc2a7",
+         "count": 11
+        },
+        {
+         "descriptor": "US, CA, Remote",
+         "id": "91336993fab910af6d716528e9d4c406",
+         "count": 231
+        },
+        {
+         "descriptor": "US, CA, San Jose",
+         "id": "895d7243647101d8c9619dd37377338f",
+         "count": 1
+        },
+        {
+         "descriptor": "US, CA, Santa Clara",
+         "id": "91336993fab910af6d702fae0bb4c2e8",
+         "count": 1308
+        },
+        {
+         "descriptor": "US, CO, Boulder",
+         "id": "91336993fab910af6d712ddeebf4c38e",
+         "count": 9
+        },
+        {
+         "descriptor": "US, CO, Remote",
+         "id": "91336993fab910af6d716c1bb8d4c415",
+         "count": 24
+        },
+        {
+         "descriptor": "US, CT, Remote",
+         "id": "91336993fab910af6d715e41b394c3f7",
+         "count": 2
+        },
+        {
+         "descriptor": "US, DC, Remote",
+         "id": "91336993fab910af6d713a0f5044c3a7",
+         "count": 13
+        },
+        {
+         "descriptor": "US, FL, Remote",
+         "id": "91336993fab910af6d7020bf3b14c2c5",
+         "count": 11
+        },
+        {
+         "descriptor": "US, GA, Remote",
+         "id": "91336993fab910af6d6fe4b908fcc23e",
+         "count": 6
+        },
+        {
+         "descriptor": "US, ID, Remote",
+         "id": "91336993fab910af6d7143163a04c3bb",
+         "count": 1
+        },
+        {
+         "descriptor": "US, IL, Champaign",
+         "id": "3f056d7dcee210447f581d1002c2e672",
+         "count": 5
+        },
+        {
+         "descriptor": "US, IL, Remote",
+         "id": "91336993fab910af6d714794d4b4c3c5",
+         "count": 12
+        },
+        {
+         "descriptor": "US, MA, Remote",
+         "id": "91336993fab910af6d702d89918cc2e3",
+         "count": 41
+        },
+        {
+         "descriptor": "US, MA, Westford",
+         "id": "91336993fab910af6d7008ff1774c28e",
+         "count": 51
+        },
+        {
+         "descriptor": "US, MD, Remote",
+         "id": "91336993fab910af6d719855647cc474",
+         "count": 4
+        },
+        {
+         "descriptor": "US, MI, Remote",
+         "id": "91336993fab910af6d6fe9a03534c248",
+         "count": 2
+        },
+        {
+         "descriptor": "US, MN, Remote",
+         "id": "91336993fab910af6d700b282d4cc293",
+         "count": 1
+        },
+        {
+         "descriptor": "US, MO, St. Louis",
+         "id": "91336993fab910af6d7130bb158cc393",
+         "count": 1
+        },
+        {
+         "descriptor": "US, NC, Durham",
+         "id": "91336993fab910af6d7022e347dcc2ca",
+         "count": 65
+        },
+        {
+         "descriptor": "US, NC, Remote",
+         "id": "91336993fab910af6d7006cdf31cc289",
+         "count": 23
+        },
+        {
+         "descriptor": "US, NH, Remote",
+         "id": "91336993fab910af6d6ffd32b89cc275",
+         "count": 2
+        },
+        {
+         "descriptor": "US, NJ, Holmdel",
+         "id": "2b3c46170e30100a3d72f9d5780d7c39",
+         "count": 2
+        },
+        {
+         "descriptor": "US, NJ, Remote",
+         "id": "91336993fab910af6d7152b6749cc3de",
+         "count": 9
+        },
+        {
+         "descriptor": "US, NM, Remote",
+         "id": "91336993fab910af6d712b900a54c389",
+         "count": 1
+        },
+        {
+         "descriptor": "US, NV, Remote",
+         "id": "91336993fab910af6d7015dee21cc2ac",
+         "count": 3
+        },
+        {
+         "descriptor": "US, NY, New York",
+         "id": "d2088e737cbb01293f745dc7ce017070",
+         "count": 18
+        },
+        {
+         "descriptor": "US, NY, Remote",
+         "id": "91336993fab910af6d6ff2800b0cc25c",
+         "count": 34
+        },
+        {
+         "descriptor": "US, OH, Remote",
+         "id": "91336993fab910af6d700d4fc83cc298",
+         "count": 2
+        },
+        {
+         "descriptor": "US, OR, Hillsboro",
+         "id": "91336993fab910af6d7027195454c2d4",
+         "count": 48
+        },
+        {
+         "descriptor": "US, OR, Remote",
+         "id": "91336993fab910af6d6ff05591bcc257",
+         "count": 27
+        },
+        {
+         "descriptor": "US, PA, Remote",
+         "id": "91336993fab910af6d700193f3c4c27f",
+         "count": 3
+        },
+        {
+         "descriptor": "US, Remote",
+         "id": "16fc4607fc4310011e929f7115f90000",
+         "count": 116
+        },
+        {
+         "descriptor": "US, SC, Remote",
+         "id": "91336993fab910af6d6ffb099324c270",
+         "count": 4
+        },
+        {
+         "descriptor": "US, SD, Remote",
+         "id": "91336993fab910af6d715788d0b4c3e8",
+         "count": 1
+        },
+        {
+         "descriptor": "US, TN, Remote",
+         "id": "91336993fab910af6d7122ef682cc375",
+         "count": 4
+        },
+        {
+         "descriptor": "US, TX, Austin",
+         "id": "91336993fab910af6d702b631b94c2de",
+         "count": 189
+        },
+        {
+         "descriptor": "US, TX, Dallas",
+         "id": "10b0744835e11001032365ce4e460000",
+         "count": 3
+        },
+        {
+         "descriptor": "US, TX, Houston",
+         "id": "10b0744835e11001030c2489586f0000",
+         "count": 3
+        },
+        {
+         "descriptor": "US, TX, Remote",
+         "id": "91336993fab910af6d702939a7fcc2d9",
+         "count": 111
+        },
+        {
+         "descriptor": "US, UT, Remote",
+         "id": "91336993fab910af6d6fee30ae1cc252",
+         "count": 1
+        },
+        {
+         "descriptor": "US, UT, Salt Lake City",
+         "id": "91336993fab910af6d6ff8e9d004c26b",
+         "count": 2
+        },
+        {
+         "descriptor": "US, VA, Charlottesville",
+         "id": "91336993fab910af6d6fdfb0f2fcc234",
+         "count": 1
+        },
+        {
+         "descriptor": "US, VA, Herndon",
+         "id": "c498fba66f4e012b5a8a2e88d5007805",
+         "count": 2
+        },
+        {
+         "descriptor": "US, VA, Remote",
+         "id": "91336993fab910af6d7159be65c4c3ed",
+         "count": 19
+        },
+        {
+         "descriptor": "US, WA, Redmond",
+         "id": "91336993fab910af6d701e82d004c2c0",
+         "count": 69
+        },
+        {
+         "descriptor": "US, WA, Remote",
+         "id": "91336993fab910af6d7169a81124c410",
+         "count": 76
+        },
+        {
+         "descriptor": "US, WA, Seattle",
+         "id": "d2088e737cbb01d5e2be9e52ce01926f",
+         "count": 65
+        },
+        {
+         "descriptor": "US, WI, Remote",
+         "id": "91336993fab910af6d701c62554cc2bb",
+         "count": 1
+        },
+        {
+         "descriptor": "US, WY, Remote",
+         "id": "91336993fab910af6d72a99f46acc4f2",
+         "count": 1
+        },
+        {
+         "descriptor": "Vietnam, Hanoi",
+         "id": "dd4916e138561000a8f8afa559f50000",
+         "count": 20
+        },
+        {
+         "descriptor": "Vietnam, Ho Chi Minh City",
+         "id": "229b3d23e3f91000aa5f712809fa0000",
+         "count": 15
+        },
+        {
+         "descriptor": "Vietnam, Remote",
+         "id": "7ae28cf24c8b10874977c2d1387c19b0",
+         "count": 16
+        }
+       ]
+      }
+     ]
+    }
+   ],
+   "userAuthenticated": false
+  },
+  {
+   "total": 0,
+   "jobPostings": [
+    {
+     "title": "Senior Linux Kernel Systems Software Engineer \u2013 CSP Engagements",
+     "externalPath": "/job/US-CA-Santa-Clara/Senior-Linux-Kernel-Systems-Software-Engineer---CSP-Engagements_JR2015287",
+     "locationsText": "4 Locations",
+     "postedOn": "Posted Yesterday",
+     "bulletFields": [
+      "JR2015287"
+     ]
+    },
+    {
+     "title": "Principal Software Engineer - Rack Scale Systems Infrastructure",
+     "externalPath": "/job/US-CA-Santa-Clara/Principal-Software-Engineer---Rack-Scale-Systems-Infrastructure_JR2017966",
+     "locationsText": "5 Locations",
+     "postedOn": "Posted Yesterday",
+     "bulletFields": [
+      "JR2017966"
+     ]
+    },
+    {
+     "title": "Senior Systems Software Engineer, Data Center Platform Enablement",
+     "externalPath": "/job/US-CA-Santa-Clara/Senior-Systems-Software-Engineer--Data-Center-Platform-Enablement_JR2019870",
+     "locationsText": "US, CA, Santa Clara",
+     "postedOn": "Posted Yesterday",
+     "bulletFields": [
+      "JR2019870"
+     ]
+    },
+    {
+     "title": "Senior Software Program Manager \u2013 CSP Engagements",
+     "externalPath": "/job/US-CA-Santa-Clara/Senior-Software-Program-Manager---CSP-Engagements_JR2013691",
+     "locationsText": "US, CA, Santa Clara",
+     "postedOn": "Posted Yesterday",
+     "bulletFields": [
+      "JR2013691"
+     ]
+    },
+    {
+     "title": "Director, Software TPM - Server Firmware and System Software",
+     "externalPath": "/job/US-CA-Santa-Clara/Manager--Software-TPM---Server-Firmware-and-System-Software_JR2007277-1",
+     "locationsText": "US, CA, Santa Clara",
+     "postedOn": "Posted Yesterday",
+     "bulletFields": [
+      "JR2007277"
+     ]
+    },
+    {
+     "title": "Senior Network Engineer - DGX Cloud",
+     "externalPath": "/job/US-CA-Santa-Clara/Senior-Network-Engineer---DGX-Cloud_JR2002387-2",
+     "locationsText": "2 Locations",
+     "postedOn": "Posted Yesterday",
+     "bulletFields": [
+      "JR2002387"
+     ]
+    },
+    {
+     "title": "NPI Engineer, Chip",
+     "externalPath": "/job/Israel-Yokneam/NPI-Engineer--Chip_JR2017732",
+     "locationsText": "Israel, Yokneam",
+     "postedOn": "Posted Yesterday",
+     "bulletFields": [
+      "JR2017732"
+     ]
+    },
+    {
+     "title": "Senior Software Architect - Data Center Systems",
+     "externalPath": "/job/US-CA-Santa-Clara/Senior-Software-Architect---Data-Center-Systems_JR1973150",
+     "locationsText": "6 Locations",
+     "postedOn": "Posted Yesterday",
+     "bulletFields": [
+      "JR1973150"
+     ]
+    },
+    {
+     "title": "Senior Software Program Manager - Datacenter Compute Server",
+     "externalPath": "/job/US-CA-Santa-Clara/Senior-Software-Program-Manager---Datacenter-Compute-Server_JR1996363",
+     "locationsText": "US, CA, Santa Clara",
+     "postedOn": "Posted Yesterday",
+     "bulletFields": [
+      "JR1996363"
+     ]
+    },
+    {
+     "title": "Circuit Validation Engineer Intern - 2027",
+     "externalPath": "/job/China-Shanghai/Circuit-Validation-Engineer-Intern---2027_JR2024949",
+     "locationsText": "China, Shanghai",
+     "postedOn": "Posted Today",
+     "bulletFields": [
+      "JR2024949"
+     ]
+    },
+    {
+     "title": "Senior Software Engineer - SONiC Design Group",
+     "externalPath": "/job/Israel-Raanana/Senior-Software-Engineer---SONiC-Design-Group_JR2008620",
+     "locationsText": "Israel, Raanana",
+     "postedOn": "Posted Yesterday",
+     "bulletFields": [
+      "JR2008620"
+     ]
+    },
+    {
+     "title": "Software Engineer \u2013 Networking Platforms, Diagnostics Tools and Performance",
+     "externalPath": "/job/Israel-Tel-Aviv/Software-Engineer---Networking-Platforms--Diagnostics-Tools-and-Performance_JR2025162",
+     "locationsText": "2 Locations",
+     "postedOn": "Posted Yesterday",
+     "bulletFields": [
+      "JR2025162"
+     ]
+    },
+    {
+     "title": "System Software Engineer",
+     "externalPath": "/job/Israel-Yokneam/System-Software-Engineer_JR2016510",
+     "locationsText": "Israel, Yokneam",
+     "postedOn": "Posted Yesterday",
+     "bulletFields": [
+      "JR2016510"
+     ]
+    },
+    {
+     "title": "Senior Business Intelligence Analyst",
+     "externalPath": "/job/Israel-Yokneam/Senior-Business-Intelligence-Analyst_JR2024502",
+     "locationsText": "Israel, Yokneam",
+     "postedOn": "Posted Yesterday",
+     "bulletFields": [
+      "JR2024502"
+     ]
+    },
+    {
+     "title": "Senior Security Engineer, Infrastructure Security Engineering - DGX Cloud",
+     "externalPath": "/job/Canada-Remote/Senior-Security-Engineer--Infrastructure-Security-Engineering---DGX-Cloud_JR2023143-1",
+     "locationsText": "Canada, Remote",
+     "postedOn": "Posted 2 Days Ago",
+     "bulletFields": [
+      "JR2023143"
+     ]
+    },
+    {
+     "title": "Senior Engineering Manager, Infrastructure Security Engineering - DGX Cloud",
+     "externalPath": "/job/US-CA-Remote/Senior-Engineering-Manager--Infrastructure-Security-Engineering---DGX-Cloud_JR2024800",
+     "locationsText": "5 Locations",
+     "postedOn": "Posted 2 Days Ago",
+     "bulletFields": [
+      "JR2024800"
+     ]
+    },
+    {
+     "title": "Senior Datacenter Technical Program Manager, At-Scale AI Clusters",
+     "externalPath": "/job/US-CA-Santa-Clara/Datacenter-Technical-Program-Manager_JR2011480",
+     "locationsText": "3 Locations",
+     "postedOn": "Posted 2 Days Ago",
+     "bulletFields": [
+      "JR2011480"
+     ]
+    },
+    {
+     "title": "Senior Software Engineer, At Scale Compute Analysis",
+     "externalPath": "/job/US-CA-Santa-Clara/Systems-Data-Engineer_JR1999730",
+     "locationsText": "5 Locations",
+     "postedOn": "Posted 2 Days Ago",
+     "bulletFields": [
+      "JR1999730"
+     ]
+    },
+    {
+     "title": "Senior Software Engineer, Security",
+     "externalPath": "/job/US-CA-Santa-Clara/Senior-Security-Architect_JR2018245",
+     "locationsText": "2 Locations",
+     "postedOn": "Posted 2 Days Ago",
+     "bulletFields": [
+      "JR2018245"
+     ]
+    },
+    {
+     "title": "Principal Firmware Engineer \u2013 Server Manageability and Observability",
+     "externalPath": "/job/US-CA-Santa-Clara/Principal-Firmware-Engineer---Server-Manageability-and-Observability_JR2001996",
+     "locationsText": "US, CA, Santa Clara",
+     "postedOn": "Posted 2 Days Ago",
+     "bulletFields": [
+      "JR2001996"
+     ]
+    }
+   ],
+   "facets": [],
+   "userAuthenticated": false
+  },
+  {
+   "total": 0,
+   "jobPostings": [
+    {
+     "title": "Senior HPC Architect, Automation and At-Scale Deployment",
+     "externalPath": "/job/US-CA-Santa-Clara/Senior-HPC-Architect_JR1999579",
+     "locationsText": "13 Locations",
+     "postedOn": "Posted 2 Days Ago",
+     "bulletFields": [
+      "JR1999579"
+     ]
+    },
+    {
+     "title": "Senior Firmware Engineer \u2013 CSP Engagements",
+     "externalPath": "/job/US-CA-Santa-Clara/Senior-Firmware-Engineer---CSP-Engagements_JR1999599",
+     "locationsText": "US, CA, Santa Clara",
+     "postedOn": "Posted 2 Days Ago",
+     "bulletFields": [
+      "JR1999599"
+     ]
+    },
+    {
+     "title": "Senior System Software Engineer - GPU Performance",
+     "externalPath": "/job/US-CA-Santa-Clara/Senior-HPC-Performance-Engineer_JR1997214",
+     "locationsText": "2 Locations",
+     "postedOn": "Posted 2 Days Ago",
+     "bulletFields": [
+      "JR1997214"
+     ]
+    },
+    {
+     "title": "Principal Software Engineer \u2013 CSP Engagements",
+     "externalPath": "/job/US-CA-Santa-Clara/Principal-Software-Engineer---CSP-Engagements_JR1998405",
+     "locationsText": "US, CA, Santa Clara",
+     "postedOn": "Posted 2 Days Ago",
+     "bulletFields": [
+      "JR1998405"
+     ]
+    },
+    {
+     "title": "Senior Systems Software Engineer - GPU Performance at Scale",
+     "externalPath": "/job/US-CA-Santa-Clara/Senior-Performance-Engineer_JR1996987",
+     "locationsText": "5 Locations",
+     "postedOn": "Posted 2 Days Ago",
+     "bulletFields": [
+      "JR1996987"
+     ]
+    },
+    {
+     "title": "Distinguished Software Architect - Deep Learning and HPC Communications",
+     "externalPath": "/job/US-CA-Santa-Clara/Distinguished-Software-Architect---Deep-Learning-and-HPC-Communications_JR1980127",
+     "locationsText": "US, CA, Santa Clara",
+     "postedOn": "Posted 2 Days Ago",
+     "bulletFields": [
+      "JR1980127"
+     ]
+    },
+    {
+     "title": "Senior HPC and LSF Operations Engineer",
+     "externalPath": "/job/US-CA-Santa-Clara/Senior-HPC-and-LSF-Operations-Engineer_JR2014127",
+     "locationsText": "4 Locations",
+     "postedOn": "Posted 2 Days Ago",
+     "bulletFields": [
+      "JR2014127"
+     ]
+    },
+    {
+     "title": "EDA License Engineer",
+     "externalPath": "/job/US-CA-Santa-Clara/EDA-License-Engineer_JR2018563",
+     "locationsText": "US, CA, Santa Clara",
+     "postedOn": "Posted 2 Days Ago",
+     "bulletFields": [
+      "JR2018563"
+     ]
+    },
+    {
+     "title": "Compute Platform Engineer, License Scheduling",
+     "externalPath": "/job/US-CA-Santa-Clara/Compute-Platform-Engineer--License-Scheduling_JR2023965",
+     "locationsText": "2 Locations",
+     "postedOn": "Posted 2 Days Ago",
+     "bulletFields": [
+      "JR2023965"
+     ]
+    },
+    {
+     "title": "Senior Cloud Software Engineer, DGXC Data Services",
+     "externalPath": "/job/US-CA-Santa-Clara/Senior-Software-Engineer--DGXC-Data-Services_JR2003389",
+     "locationsText": "2 Locations",
+     "postedOn": "Posted 2 Days Ago",
+     "bulletFields": [
+      "JR2003389"
+     ]
+    },
+    {
+     "title": "Engineering Manager - OpenBMC Platform",
+     "externalPath": "/job/US-CA-Santa-Clara/Manager--Engineering---Data-Center-Management_JR1997726",
+     "locationsText": "US, CA, Santa Clara",
+     "postedOn": "Posted 2 Days Ago",
+     "bulletFields": [
+      "JR1997726"
+     ]
+    },
+    {
+     "title": "Senior Software Architect - Deep Learning and HPC Communications",
+     "externalPath": "/job/US-CA-Santa-Clara/Senior-Software-Architect---Deep-Learning-and-HPC-Communications_JR2001099-1",
+     "locationsText": "5 Locations",
+     "postedOn": "Posted 2 Days Ago",
+     "bulletFields": [
+      "JR2001099"
+     ]
+    },
+    {
+     "title": "Senior Software Architect - Deep Learning and HPC Communications",
+     "externalPath": "/job/US-CA-Santa-Clara/Senior-Software-Architect---Deep-Learning-and-HPC-Communications_JR2016116",
+     "locationsText": "5 Locations",
+     "postedOn": "Posted 2 Days Ago",
+     "bulletFields": [
+      "JR2016116"
+     ]
+    },
+    {
+     "title": "Senior Software Engineer, NCCL",
+     "externalPath": "/job/US-CA-Santa-Clara/Senior-Software-Engineer--GPU-Communications-and-Networking_JR1997186",
+     "locationsText": "US, CA, Santa Clara",
+     "postedOn": "Posted 3 Days Ago",
+     "bulletFields": [
+      "JR1997186"
+     ]
+    },
+    {
+     "title": "Senior DFT Engineer",
+     "externalPath": "/job/US-CA-Santa-Clara/Senior-DFT-Engineer_JR2022681",
+     "locationsText": "US, CA, Santa Clara",
+     "postedOn": "Posted 3 Days Ago",
+     "bulletFields": [
+      "JR2022681"
+     ]
+    },
+    {
+     "title": "Senior EDA Engineer, SOC Design Methodology",
+     "externalPath": "/job/US-CA-Santa-Clara/Senior-Software-Engineer--SOC-Design-Methodology_JR2022268",
+     "locationsText": "US, CA, Santa Clara",
+     "postedOn": "Posted 3 Days Ago",
+     "bulletFields": [
+      "JR2022268"
+     ]
+    },
+    {
+     "title": "Senior DFT Power Methodology Engineer",
+     "externalPath": "/job/US-CA-Santa-Clara/Senior-DFT-Power-Methodology-Engineer_JR2021098-1",
+     "locationsText": "US, CA, Santa Clara",
+     "postedOn": "Posted 3 Days Ago",
+     "bulletFields": [
+      "JR2021098"
+     ]
+    },
+    {
+     "title": "DFT Methodology Engineer",
+     "externalPath": "/job/US-CA-Santa-Clara/DFT-Methodology-Engineer_JR2020884",
+     "locationsText": "US, CA, Santa Clara",
+     "postedOn": "Posted 3 Days Ago",
+     "bulletFields": [
+      "JR2020884"
+     ]
+    },
+    {
+     "title": "Senior ASIC Design Engineer - DFX",
+     "externalPath": "/job/US-CA-Santa-Clara/Senior-ASIC-Design-Engineer---DFX_JR2020883",
+     "locationsText": "US, CA, Santa Clara",
+     "postedOn": "Posted 3 Days Ago",
+     "bulletFields": [
+      "JR2020883"
+     ]
+    },
+    {
+     "title": "Senior DFT Engineer",
+     "externalPath": "/job/US-CA-Santa-Clara/Senior-DFT-Engineer_JR2020872",
+     "locationsText": "US, CA, Santa Clara",
+     "postedOn": "Posted 3 Days Ago",
+     "bulletFields": [
+      "JR2020872"
+     ]
+    }
+   ],
+   "facets": [],
+   "userAuthenticated": false
+  }
+ ],
+ "details": {
+  "/job/India-Remote/Senior-Network-Infrastructure-Engineer_JR2015526": {
+   "jobPostingInfo": {
+    "id": "37f8d39432f01003545266c080af0000",
+    "title": "Senior Network Infrastructure Engineer",
+    "jobDescription": "<p><span>NVIDIA is looking for a Network Operations Engineer to support and maintain our cloud network infrastructure. This network serves the needs across the whole software stack for NVIDIA, from Graphics Drivers to Autonomous Vehicles and Artificial Intelligence. In this role, the Network Operations Engineer will remediate critical alerts within defined SLAs, triage production impacting network\u2026[trimmed for fixture]",
+    "location": "India, Remote",
+    "additionalLocations": [
+     "India, Mumbai",
+     "India, Gurugram",
+     "India, Hyderabad",
+     "India, Pune"
+    ],
+    "postedOn": "Posted Today",
+    "startDate": "2026-09-07",
+    "timeType": "Full time",
+    "jobReqId": "JR2015526",
+    "jobPostingId": "Senior-Network-Infrastructure-Engineer_JR2015526",
+    "jobPostingSiteId": "NVIDIAExternalCareerSite",
+    "country": {
+     "descriptor": "India",
+     "id": "c4f78be1a8f14da0ab49ce1162348a5e"
+    },
+    "canApply": true,
+    "posted": true,
+    "includeResumeParsing": true,
+    "jobRequisitionLocation": {
+     "descriptor": "India, Remote",
+     "country": {
+      "descriptor": "India",
+      "id": "c4f78be1a8f14da0ab49ce1162348a5e",
+      "alpha2Code": "IN"
+     }
+    },
+    "externalUrl": "https://nvidia.wd5.myworkdayjobs.com/NVIDIAExternalCareerSite/job/India-Remote/Senior-Network-Infrastructure-Engineer_JR2015526"
+   },
+   "hiringOrganization": {
+    "name": "IN01 NVIDIA Graphics Bengaluru",
+    "url": ""
+   },
+   "similarJobs": [],
+   "userAuthenticated": false
+  }
+ }
+}
