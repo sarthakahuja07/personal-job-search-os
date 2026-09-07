@@ -26,6 +26,18 @@ def load_cassette(source_type: str) -> dict[str, Any] | None:
     return json.loads(path.read_text(encoding="utf-8"))
 
 
+class _FakeResponse:
+    """Just enough of httpx.Response for an adapter that reads .text."""
+
+    def __init__(self, text: str, status_code: int = 200) -> None:
+        self.text = text
+        self.status_code = status_code
+
+    def raise_for_status(self) -> None:
+        if self.status_code >= 400:
+            raise AssertionError(f"recorded response was {self.status_code}")
+
+
 class ReplayClient:
     """Serves recorded responses, and records what it was asked for.
 
@@ -50,20 +62,35 @@ class ReplayClient:
             return self._empty_like(page)
         return page
 
-    @staticmethod
-    def _empty_like(page: Any) -> Any:
+    def _empty_like(self, page: Any) -> Any:
+        """A page shaped like the recorded one but carrying no jobs.
+
+        Emptying the right key matters: a source whose payload key this does not know keeps
+        returning a full page, the adapter never sees exhaustion, and the run looks like an
+        infinite board of duplicates. The envelope key is read from the cassette's own config
+        so every adapter is handled, not just the ones with a hardcoded key here.
+        """
         if isinstance(page, list):
             return []
-        if isinstance(page, dict):
-            out = dict(page)
-            for key in ("jobs", "jobPostings", "content"):
-                if key in out:
-                    out[key] = []
-            # Mirrors the real Workday behaviour: later pages report total 0.
-            if "total" in out:
-                out["total"] = 0
-            return out
-        return page
+        if not isinstance(page, dict):
+            return page
+
+        out = dict(page)
+        config = self.cassette.get("config") or {}
+        keys = {"jobs", "jobPostings", "content"}
+        for configured in (config.get("jobsPath"), config.get("htmlPath")):
+            if isinstance(configured, str) and "." not in configured:
+                keys.add(configured)
+
+        for key in keys:
+            if key in out:
+                # An HTML envelope empties to a string; a JSON list empties to a list.
+                out[key] = "" if isinstance(out[key], str) else []
+
+        # Mirrors the real Workday behaviour: later pages report total 0.
+        if "total" in out:
+            out["total"] = 0
+        return out
 
     def _detail(self, url: str) -> Any:
         for key, value in self.cassette.get("details", {}).items():
@@ -85,8 +112,14 @@ class ReplayClient:
         self.requests.append({"method": "POST", "url": url, **kwargs})
         return self._next_list_page(), None
 
-    async def request(self, method: str, url: str, **kwargs: Any):  # pragma: no cover
-        raise AssertionError("adapters should use get_json/post_json")
+    async def request(self, method: str, url: str, **kwargs: Any):
+        """Serve the recorded HTML page. Used by adapters that read markup rather than JSON."""
+        self.requests.append({"method": method, "url": url, **kwargs})
+        html = self.cassette.get("html")
+        if html is None:
+            raise AssertionError(f"no recorded HTML for {url}")
+        self.list_calls += 1
+        return _FakeResponse(html)
 
 
 def registered_adapters() -> list[tuple[str, Any, dict[str, Any]]]:

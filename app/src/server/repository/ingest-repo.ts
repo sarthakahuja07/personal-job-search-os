@@ -26,12 +26,26 @@ import {
 import type { ExistingJob, PlannedJob, PlannedNotification } from "../domain/ingest-plan";
 import { DEFAULT_MATCH_RULES, type MatchRules } from "../domain/matching";
 
-/** jobs has 18 bound columns per row; 100 / 18 -> 5. */
-const JOB_CHUNK = 5;
-/** notifications has 6 bound columns per row. */
-const NOTIFICATION_CHUNK = 16;
-/** Single-column id lists. Kept below 100 with headroom. */
-const ID_CHUNK = 90;
+/**
+ * Chunk sizes are D1's 100-bound-parameter limit divided by the columns each row binds.
+ *
+ * Get this wrong and the failure is invisible until a company is big enough to fill a chunk:
+ * Amazon's first crawl produced 181 notifications and died with "too many SQL variables", while
+ * every smaller company had been fine for weeks. The arithmetic is asserted in
+ * ingest-repo.test.ts so a new column cannot quietly push a chunk over the limit.
+ */
+const MAX_BOUND_PARAMS = 100;
+
+/** jobs binds 18 columns per row. */
+export const JOB_COLUMNS = 18;
+export const JOB_CHUNK = Math.floor(MAX_BOUND_PARAMS / JOB_COLUMNS); // 5
+
+/** notifications binds 9: id, dedup_key, type, entity_type, entity_id, channel, status, payload, attempts. */
+export const NOTIFICATION_COLUMNS = 9;
+export const NOTIFICATION_CHUNK = Math.floor(MAX_BOUND_PARAMS / NOTIFICATION_COLUMNS); // 11
+
+/** Single-column id lists, with headroom for the surrounding statement. */
+export const ID_CHUNK = 90;
 
 function chunk<T>(items: T[], size: number): T[][] {
   const out: T[][] = [];

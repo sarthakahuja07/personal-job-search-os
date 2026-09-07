@@ -236,8 +236,20 @@ async def test_consumes_every_recorded_page(adapter_case):
 
 
 async def test_detect_round_trips_its_own_careers_url(adapter_case):
-    """If an adapter can detect a URL, the config it extracts must be one it accepts."""
+    """If an adapter detects URLs, the config it extracts must be one it accepts.
+
+    Adapters that do not implement `detect` are exempt, and legitimately so: a bespoke JSON
+    endpoint or an embedded-hydration path cannot be inferred from a careers URL. Those
+    companies are configured deliberately, which is an honest reflection of how they were
+    found -- guessing a config from a URL that carries no such information would produce an
+    adapter that fails silently.
+    """
+    from crawler.adapters.base import JobSourceAdapter
+
     _, adapter, cassette = adapter_case
+    if type(adapter).detect is JobSourceAdapter.detect:
+        pytest.skip("adapter is configured by hand, not detected from a URL")
+
     sample = cassette.get("careers_url")
     if not sample:
         pytest.skip("no sample careers URL recorded")

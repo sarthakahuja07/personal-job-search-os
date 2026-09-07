@@ -12,6 +12,9 @@ from typing import Any
 from crawler.adapters.ashby import AshbyAdapter
 from crawler.adapters.base import JobSourceAdapter
 from crawler.adapters.greenhouse import GreenhouseAdapter
+from crawler.adapters.html_list import HtmlListAdapter
+from crawler.adapters.hydration import HydrationAdapter
+from crawler.adapters.json_api import JsonApiAdapter
 from crawler.adapters.lever import LeverAdapter
 from crawler.adapters.smartrecruiters import SmartRecruitersAdapter
 from crawler.adapters.workday import WorkdayAdapter
@@ -24,6 +27,9 @@ ADAPTERS: dict[str, JobSourceAdapter] = {
         AshbyAdapter(),
         SmartRecruitersAdapter(),
         WorkdayAdapter(),
+        JsonApiAdapter(),
+        HydrationAdapter(),
+        HtmlListAdapter(),
     )
 }
 

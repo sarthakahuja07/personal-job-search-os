@@ -172,12 +172,138 @@ async def record_workday(client: httpx.AsyncClient) -> dict[str, Any]:
     }
 
 
+
+# --- Config-driven sources ------------------------------------------------
+#
+# These two adapters are configured entirely by data, so their cassette carries the config the
+# conformance suite will replay against. Adding another company on the same pattern means a new
+# company row, not a new recorder.
+
+AMAZON_CONFIG = {
+    "adapter": "json_api",
+    # Scoped to India deliberately: the board carries 10,000+ roles globally and matching only
+    # ever accepts four Indian locations, so fetching the rest is waste for us and load for them.
+    "listUrl": (
+        "https://www.amazon.jobs/en/search.json?result_limit={limit}&offset={offset}"
+        "&loc_query=India&country=IND&sort=recent"
+    ),
+    "jobsPath": "jobs",
+    "totalPath": "hits",
+    "pageSize": 100,
+    "maxPages": 30,
+    "fields": {
+        "external_job_id": "id_icims",
+        "title": "title",
+        "job_url": {"template": "https://www.amazon.jobs{job_path}"},
+        "location": "normalized_location",
+        "department": "job_category",
+        "description": "description",
+        "posted_at": "posted_date",
+    },
+}
+
+DESHAW_CONFIG = {
+    "adapter": "hydration",
+    "pageUrl": "https://www.deshawindia.com/careers/work-with-us",
+    "scriptId": "__NEXT_DATA__",
+    "jobsPath": "props.pageProps.regularJobs",
+    "fields": {
+        "external_job_id": "id",
+        "title": "displayName",
+        # Verified by comparing hydration output against a nonsense path: /careers/<slug>
+        # returns jobData, every other candidate falls back to redirectToCareers.
+        "job_url": {"template": "https://www.deshawindia.com/careers/{data.jobUrl}"},
+        "location": {"path": "office", "pluck": "name", "join": ", "},
+        "department": "data.department.name",
+        "description": "data.jobDescription.websiteDescription",
+    },
+}
+
+
+async def record_json_api(client: httpx.AsyncClient) -> dict[str, Any]:
+    url = AMAZON_CONFIG["listUrl"].format(limit=100, offset=0, page=0)
+    r = await client.get(url, headers={"Accept": "application/json"}, timeout=60)
+    r.raise_for_status()
+    return {
+        "config": AMAZON_CONFIG,
+        "careers_url": "https://www.amazon.jobs/en/search",
+        "list": [trim(r.json())],
+        "details": {},
+    }
+
+
+async def record_hydration(client: httpx.AsyncClient) -> dict[str, Any]:
+    r = await client.get(DESHAW_CONFIG["pageUrl"], timeout=60)
+    r.raise_for_status()
+
+    # The adapter reads raw HTML, but only the hydration script matters. Storing the whole
+    # 2.5 MB page would make the fixture unreadable in review for no extra coverage, so keep
+    # the script tag and a minimal wrapper -- the shape the adapter actually parses.
+    import re as _re
+
+    match = _re.search(
+        r'<script id="__NEXT_DATA__"[^>]*>.*?</script>', r.text, _re.S
+    )
+    html = f"<html><body>{match.group(0)}</body></html>" if match else r.text
+
+    return {
+        "config": DESHAW_CONFIG,
+        "careers_url": DESHAW_CONFIG["pageUrl"],
+        "html": html,
+        "list": [],
+        "details": {},
+    }
+
+
+
+INTUIT_CONFIG = {
+    "adapter": "html_list",
+    "listUrl": (
+        "https://jobs.intuit.com/search-jobs/results?ActiveFacetID=0&CurrentPage={page}"
+        "&RecordsPerPage={limit}&Distance=50&RadiusUnitType=0&Queries=&Facet="
+        "&SearchResultsModuleName=Search+Results&SearchFiltersModuleName=Search+Filters"
+        "&SortCriteria=0&SortDirection=0&SearchType=5"
+    ),
+    # Radancy/TalentBrew wraps its markup in a JSON envelope, so the HTML lives under a key.
+    "htmlPath": "results",
+    "itemSelector": "li[data-intuit-jobid]",
+    "pageSize": 100,
+    "startPage": 1,
+    "maxPages": 20,
+    "fields": {
+        "external_job_id": {"attr": "data-intuit-jobid"},
+        "title": {"selector": "h2", "text": True},
+        "job_url": {"selector": "a", "attr": "href", "base": "https://jobs.intuit.com"},
+        "location": {"selector": "span.job-location", "text": True},
+        "department": {"attr": "data-category"},
+    },
+}
+
+
+async def record_html_list(client: httpx.AsyncClient) -> dict[str, Any]:
+    pages = []
+    for page in (1, 2):
+        url = INTUIT_CONFIG["listUrl"].format(page=page, limit=100, offset=0)
+        r = await client.get(url, headers={"Accept": "application/json"}, timeout=60)
+        r.raise_for_status()
+        pages.append(r.json())
+    return {
+        "config": INTUIT_CONFIG,
+        "careers_url": "https://jobs.intuit.com/search-jobs",
+        "list": pages,
+        "details": {},
+    }
+
+
 RECORDERS = {
     "greenhouse": record_greenhouse,
     "lever": record_lever,
     "ashby": record_ashby,
     "smartrecruiters": record_smartrecruiters,
     "workday": record_workday,
+    "json_api": record_json_api,
+    "hydration": record_hydration,
+    "html_list": record_html_list,
 }
 
 
@@ -192,7 +318,7 @@ async def main() -> None:
                 continue
             path = OUT / f"{name}.json"
             path.write_text(json.dumps(cassette, indent=1), encoding="utf-8")
-            pages = len(cassette["list"])
+            pages = len(cassette["list"]) or ("html" if cassette.get("html") else 0)
             size = path.stat().st_size // 1024
             print(f"  ok   {name:<16} {pages} page(s), {len(cassette['details'])} detail(s), {size}KB")
 

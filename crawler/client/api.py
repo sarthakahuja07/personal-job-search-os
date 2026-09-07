@@ -87,7 +87,8 @@ class ApiClient:
             return await self._post(payload)
 
         chunks = [jobs[i : i + JOB_CHUNK] for i in range(0, len(jobs), JOB_CHUNK)]
-        result: dict[str, Any] = {}
+        totals: dict[str, Any] = {}
+
         for index, chunk in enumerate(chunks):
             is_last = index == len(chunks) - 1
             result = await self._post(
@@ -99,7 +100,9 @@ class ApiClient:
                     "is_final": is_last,
                 }
             )
-        return result
+            totals = _merge(totals, result, is_last)
+
+        return totals
 
     async def _post(self, payload: dict[str, Any]) -> dict[str, Any]:
         r = await self._client.post(f"{self.base_url}/api/ingest/jobs", json=payload)
@@ -107,3 +110,35 @@ class ApiClient:
             log.error("ingest.failed", status=r.status_code, body=r.text[:500])
             r.raise_for_status()
         return r.json()
+
+
+# Counters that describe work done and must be summed across chunks; everything else describes
+# the run as a whole and is taken from the final chunk.
+_SUMMED = (
+    "received",
+    "created",
+    "updated",
+    "relevantNew",
+    "notificationsQueued",
+    "jobsClosed",
+    "jobsMarkedMissing",
+)
+
+
+def _merge(totals: dict[str, Any], result: dict[str, Any], is_last: bool) -> dict[str, Any]:
+    """Aggregate a chunked ingest into one honest summary.
+
+    Returning only the last chunk's numbers under-reports the run: Amazon's 181 candidates
+    arrived as chunks of 100 and 81, and the log said "created=81" while 181 rows had actually
+    been written. A crawl that misrepresents what it did is precisely the failure this project
+    is built to avoid, even when the misreport is flattering rather than alarming.
+    """
+    merged = dict(totals)
+    for key, value in result.items():
+        if key in _SUMMED and isinstance(value, (int, float)):
+            merged[key] = merged.get(key, 0) + value
+        elif is_last or key not in merged:
+            # Status, reason and identifiers describe the run; the final chunk is authoritative
+            # because it is the one that carried the complete observed id set.
+            merged[key] = value
+    return merged

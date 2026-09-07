@@ -10,6 +10,24 @@
    "total": 60,
    "jobPostings": [
     {
+     "title": "IC Practical Engineer",
+     "externalPath": "/job/Israel-Yokneam/IC-Practical-Engineer_JR2022657",
+     "locationsText": "Israel, Yokneam",
+     "postedOn": "Posted Today",
+     "bulletFields": [
+      "JR2022657"
+     ]
+    },
+    {
+     "title": "IC Reliability Practical Engineer",
+     "externalPath": "/job/Israel-Yokneam/IC-Reliability-Practical-Engineer_JR2019125",
+     "locationsText": "Israel, Yokneam",
+     "postedOn": "Posted Today",
+     "bulletFields": [
+      "JR2019125"
+     ]
+    },
+    {
      "title": "Senior Network Infrastructure Engineer",
      "externalPath": "/job/India-Remote/Senior-Network-Infrastructure-Engineer_JR2015526",
      "locationsText": "5 Locations",
@@ -170,24 +188,6 @@
      "bulletFields": [
       "JR2012988"
      ]
-    },
-    {
-     "title": "Senior Systems Software Engineer, Compute Stack Acceleration",
-     "externalPath": "/job/US-CA-Santa-Clara/Senior-Systems-Software-Engineer--Compute-Stack-Acceleration_JR2021549",
-     "locationsText": "4 Locations",
-     "postedOn": "Posted Yesterday",
-     "bulletFields": [
-      "JR2021549"
-     ]
-    },
-    {
-     "title": "Senior Software Engineer, System Validation - EDA Infrastructure",
-     "externalPath": "/job/US-CA-Santa-Clara/Senior-Software-Engineer--Next-Generation-Architecture---EDA-Infrastructure_JR2014880",
-     "locationsText": "5 Locations",
-     "postedOn": "Posted Yesterday",
-     "bulletFields": [
-      "JR2014880"
-     ]
     }
    ],
    "facets": [
@@ -198,7 +198,7 @@
       {
        "descriptor": "Engineering",
        "id": "0c40f6bd1d8f10ae43ffaefd46dc7e78",
-       "count": 1760
+       "count": 1758
       },
       {
        "descriptor": "Sales",
@@ -231,14 +231,14 @@
        "count": 41
       },
       {
+       "descriptor": "IT - Information Technology",
+       "id": "0c40f6bd1d8f10ae43ffbd1459047e84",
+       "count": 40
+      },
+      {
        "descriptor": "Professional Services",
        "id": "e8bdc341a93101bd5f4d2b0a1c005e36",
        "count": 39
-      },
-      {
-       "descriptor": "IT - Information Technology",
-       "id": "0c40f6bd1d8f10ae43ffbd1459047e84",
-       "count": 38
       },
       {
        "descriptor": "Finance",
@@ -297,13 +297,13 @@
        "count": 71
       },
       {
-       "descriptor": "Regular Employee (Fixed Term)",
-       "id": "cc40d60d614c01809d56fe967144ce2c",
+       "descriptor": "Academic (Fixed Term)",
+       "id": "ec9560ee6dc71001d6f3cf17ea640000",
        "count": 1
       },
       {
-       "descriptor": "Academic (Fixed Term)",
-       "id": "ec9560ee6dc71001d6f3cf17ea640000",
+       "descriptor": "Regular Employee (Fixed Term)",
+       "id": "cc40d60d614c01809d56fe967144ce2c",
        "count": 1
       }
      ]
@@ -339,7 +339,7 @@
         {
          "descriptor": "Remote",
          "id": "0c3f5f117e9a0101f63dc469c3010000",
-         "count": 573
+         "count": 574
         }
        ]
       },
@@ -355,7 +355,7 @@
         {
          "descriptor": "Australia",
          "id": "2fcb99c455831013ea528dce556b3224",
-         "count": 10
+         "count": 11
         },
         {
          "descriptor": "Belgium",
@@ -541,7 +541,7 @@
         {
          "descriptor": "Australia, Remote",
          "id": "91336993fab910af6d70362ab49cc2f7",
-         "count": 10
+         "count": 11
         },
         {
          "descriptor": "Australia, Sydney",
@@ -711,7 +711,7 @@
         {
          "descriptor": "Israel, Raanana",
          "id": "970bf8c909a7013ea54a57dcd4008107",
-         "count": 89
+         "count": 88
         },
         {
          "descriptor": "Israel, Tel Aviv",
@@ -1189,6 +1189,24 @@
    "total": 0,
    "jobPostings": [
     {
+     "title": "Senior Systems Software Engineer, Compute Stack Acceleration",
+     "externalPath": "/job/US-CA-Santa-Clara/Senior-Systems-Software-Engineer--Compute-Stack-Acceleration_JR2021549",
+     "locationsText": "4 Locations",
+     "postedOn": "Posted Yesterday",
+     "bulletFields": [
+      "JR2021549"
+     ]
+    },
+    {
+     "title": "Senior Software Engineer, System Validation - EDA Infrastructure",
+     "externalPath": "/job/US-CA-Santa-Clara/Senior-Software-Engineer--Next-Generation-Architecture---EDA-Infrastructure_JR2014880",
+     "locationsText": "5 Locations",
+     "postedOn": "Posted Yesterday",
+     "bulletFields": [
+      "JR2014880"
+     ]
+    },
+    {
      "title": "Senior Linux Kernel Systems Software Engineer \u2013 CSP Engagements",
      "externalPath": "/job/US-CA-Santa-Clara/Senior-Linux-Kernel-Systems-Software-Engineer---CSP-Engagements_JR2015287",
      "locationsText": "4 Locations",
@@ -1349,7 +1367,14 @@
      "bulletFields": [
       "JR1999730"
      ]
-    },
+    }
+   ],
+   "facets": [],
+   "userAuthenticated": false
+  },
+  {
+   "total": 0,
+   "jobPostings": [
     {
      "title": "Senior Software Engineer, Security",
      "externalPath": "/job/US-CA-Santa-Clara/Senior-Security-Architect_JR2018245",
@@ -1367,14 +1392,7 @@
      "bulletFields": [
       "JR2001996"
      ]
-    }
-   ],
-   "facets": [],
-   "userAuthenticated": false
-  },
-  {
-   "total": 0,
-   "jobPostings": [
+    },
     {
      "title": "Senior HPC Architect, Automation and At-Scale Deployment",
      "externalPath": "/job/US-CA-Santa-Clara/Senior-HPC-Architect_JR1999579",
@@ -1536,24 +1554,6 @@
      "bulletFields": [
       "JR2020884"
      ]
-    },
-    {
-     "title": "Senior ASIC Design Engineer - DFX",
-     "externalPath": "/job/US-CA-Santa-Clara/Senior-ASIC-Design-Engineer---DFX_JR2020883",
-     "locationsText": "US, CA, Santa Clara",
-     "postedOn": "Posted 3 Days Ago",
-     "bulletFields": [
-      "JR2020883"
-     ]
-    },
-    {
-     "title": "Senior DFT Engineer",
-     "externalPath": "/job/US-CA-Santa-Clara/Senior-DFT-Engineer_JR2020872",
-     "locationsText": "US, CA, Santa Clara",
-     "postedOn": "Posted 3 Days Ago",
-     "bulletFields": [
-      "JR2020872"
-     ]
     }
    ],
    "facets": [],
@@ -1561,43 +1561,38 @@
   }
  ],
  "details": {
-  "/job/India-Remote/Senior-Network-Infrastructure-Engineer_JR2015526": {
+  "/job/Israel-Yokneam/IC-Practical-Engineer_JR2022657": {
    "jobPostingInfo": {
-    "id": "37f8d39432f01003545266c080af0000",
-    "title": "Senior Network Infrastructure Engineer",
-    "jobDescription": "<p><span>NVIDIA is looking for a Network Operations Engineer to support and maintain our cloud network infrastructure. This network serves the needs across the whole software stack for NVIDIA, from Graphics Drivers to Autonomous Vehicles and Artificial Intelligence. In this role, the Network Operations Engineer will remediate critical alerts within defined SLAs, triage production impacting network\u2026[trimmed for fixture]",
-    "location": "India, Remote",
-    "additionalLocations": [
-     "India, Mumbai",
-     "India, Gurugram",
-     "India, Hyderabad",
-     "India, Pune"
-    ],
+    "id": "4f52f0483ee31032595f9c2504080000",
+    "title": "IC Practical Engineer",
+    "jobDescription": "<p>NVIDIA Networking business unit is looking for Lab practical engineer for IC product engineering group, who will work in NVIDIA R&amp;D labs in Yokneam. As an IC test practical engineer candidate will be performing various types of testing of NVIDIA/Mellanox ICs on ATE, evaluation boards and reliability platforms, as part of design and production validation, IC characterization and reliability \u2026[trimmed for fixture]",
+    "location": "Israel, Yokneam",
     "postedOn": "Posted Today",
     "startDate": "2026-09-07",
     "timeType": "Full time",
-    "jobReqId": "JR2015526",
-    "jobPostingId": "Senior-Network-Infrastructure-Engineer_JR2015526",
+    "jobReqId": "JR2022657",
+    "jobPostingId": "IC-Practical-Engineer_JR2022657",
     "jobPostingSiteId": "NVIDIAExternalCareerSite",
     "country": {
-     "descriptor": "India",
-     "id": "c4f78be1a8f14da0ab49ce1162348a5e"
+     "descriptor": "Israel",
+     "id": "084562884af243748dad7c84c304d89a"
     },
     "canApply": true,
     "posted": true,
     "includeResumeParsing": true,
     "jobRequisitionLocation": {
-     "descriptor": "India, Remote",
+     "descriptor": "Israel, Yokneam",
      "country": {
-      "descriptor": "India",
-      "id": "c4f78be1a8f14da0ab49ce1162348a5e",
-      "alpha2Code": "IN"
+      "descriptor": "Israel",
+      "id": "084562884af243748dad7c84c304d89a",
+      "alpha2Code": "IL"
      }
     },
-    "externalUrl": "https://nvidia.wd5.myworkdayjobs.com/NVIDIAExternalCareerSite/job/India-Remote/Senior-Network-Infrastructure-Engineer_JR2015526"
+    "externalUrl": "https://nvidia.wd5.myworkdayjobs.com/NVIDIAExternalCareerSite/job/Israel-Yokneam/IC-Practical-Engineer_JR2022657",
+    "questionnaireId": "2f2764b3a82910064296831695150000"
    },
    "hiringOrganization": {
-    "name": "IN01 NVIDIA Graphics Bengaluru",
+    "name": "IL00 Mellanox Technologies, Ltd.",
     "url": ""
    },
    "similarJobs": [],

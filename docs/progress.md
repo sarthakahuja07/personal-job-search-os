@@ -55,8 +55,14 @@ is optional and additive:
 
 1. **Notion import** — bring Sarthak's existing prep content into `prep_items`. The schema was
    shaped to absorb it; this is a field mapping, not a redesign.
-2. **Deferred adapters** — Amazon, Microsoft and the JS-rendered boards, one at a time, only if
-   the manual check proves annoying enough to be worth it.
+2. **Browser-rendered sources** — DigitalOcean, CHEQ, Moveworks and Keychain need a headless
+   browser. Deliberately deferred: PRD §13 allows browser automation "only when genuinely
+   required", and four companies with no known SDE-2 opening between them do not clear that bar.
+3. **Microsoft** — its published API endpoint now fails TLS with a hostname mismatch, so it has
+   moved. The replacement is not discoverable statically.
+
+See `docs/source-catalogue.md` for every company, its technique, and the evidence behind each
+decision.
 
 ---
 

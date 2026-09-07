@@ -36,6 +36,11 @@ _RELATIVE_DATE_PATTERN = re.compile(
 
 _HTML_TAG_PATTERN = re.compile(r"<[^>]+>")
 
+# Lowercase labels, dot-separated, ending in an alphabetic TLD. Deliberately strict: a hostname
+# carrying capitals or a 40-character label is a malformed template, not a real host.
+_LABEL = r"[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?"
+_HOSTNAME_PATTERN = re.compile(rf"{_LABEL}(?:\.{_LABEL})*\.[a-z]{{2,24}}")
+
 
 # Parameters that vary between crawls and never carry identity.
 _TRACKING_PARAMS = {
@@ -113,6 +118,18 @@ class NormalizedJob(BaseModel):
             raise ValueError(f"job_url must be absolute http(s), got {v!r}")
         if not parts.netloc:
             raise ValueError(f"job_url must include a host, got {v!r}")
+        # The host must actually look like a hostname.
+        #
+        # A field-map template missing its separator produces
+        # "https://www.example.comSome-Job-Slug-123" -- which has a scheme and a "host", so the
+        # checks above pass, and the result is a plausible-looking URL that goes nowhere. This
+        # caught exactly that bug in the DE Shaw configuration.
+        host = parts.netloc.split("@")[-1].split(":")[0]
+        if not _HOSTNAME_PATTERN.fullmatch(host):
+            raise ValueError(
+                f"job_url host {host!r} is not a valid hostname — a field-map template is "
+                f"probably missing a '/' separator. Full URL: {v!r}"
+            )
         return v
 
     @field_validator("posted_at", mode="before")

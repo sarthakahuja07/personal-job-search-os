@@ -44,12 +44,17 @@ row so it is visible, and lower tiers get monitored harder.
 | 1 | Ashby | `GET api.ashbyhq.com/posting-api/job-board/{name}` | config only |
 | 1 | SmartRecruiters | `GET api.smartrecruiters.com/v1/companies/{id}/postings` | config only |
 | 2 | Workday CXS | `POST {tenant}.wd{N}.myworkdayjobs.com/wday/cxs/{tenant}/{site}/jobs` | config only |
-| 3 | Bespoke company JSON | per company | new adapter |
-| 4 | Embedded JSON-LD `JobPosting` | careers HTML | config only |
-| 5 | HTML selectors | careers HTML | config only |
+| 3 | Bespoke JSON search (`json_api`) | the company's own search endpoint | config only |
+| 4 | Embedded hydration (`hydration`) | `__NEXT_DATA__` in the careers page | config only |
+| 5 | Rendered HTML list (`html_list`) | markup, sometimes inside a JSON envelope | config only |
 | 6 | Manual check | — | config only |
 
-Tiers 1–2 cover most targets with **no code change** (PRD §97). Prefer them always.
+**Every tier is now config-only.** Tiers 3–5 are driven by a field-mapping language
+(`crawler/normalization/fieldmap.py`), so adding a company on any known pattern is a row in
+`companies` rather than a Python file (PRD §97). Prefer the highest tier that works.
+
+See `docs/source-catalogue.md` for which company uses which, and the evidence for every source
+that is deliberately not crawled.
 
 **Tier 6 is a supported outcome, not a failure.** Sites that signal they do not want automated
 access — bot challenge, `robots.txt` disallow, hard block — are marked manual and surfaced as a

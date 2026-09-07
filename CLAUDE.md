@@ -67,10 +67,12 @@ GitHub Actions ── Python crawler ───────┘  POST /api/ingest/
 | `app/src/server/service/` | Orchestration: ingest, jobs, applications, notifications |
 | `app/src/server/repository/` | **The only code that touches D1** |
 | `app/src/db/` | Drizzle schema + generated migrations |
-| `crawler/adapters/` | One adapter per source platform. Fetch/parse/normalize only. |
+| `crawler/adapters/` | One adapter per source *pattern*, not per company. Fetch/parse/normalize only. |
+| `crawler/normalization/fieldmap.py` | Field-mapping language: makes a bespoke source config, not code |
 | `crawler/tests/conformance/` | Runs against *every* registered adapter |
 | `crawler/tests/cassettes/` | Recorded real HTTP responses; tests never hit the network |
 | `docs/decisions/` | ADRs — read these before changing architecture |
+| `docs/source-catalogue.md` | Every company, how it is crawled, and why the rest are not |
 
 ## Non-negotiable invariants
 
