@@ -56,6 +56,19 @@ row so it is visible, and lower tiers get monitored harder.
 See `docs/source-catalogue.md` for which company uses which, and the evidence for every source
 that is deliberately not crawled.
 
+### Finding the endpoint behind a JavaScript careers page
+
+When static analysis fails — no hydration state, no ATS fingerprint, nothing in the JS bundles —
+load the page once in a headless browser and watch what it requests. `scripts/` has no permanent
+tool for this because it is not part of the crawl: it is a **one-off discovery aid**, used by
+hand, and the crawler never launches a browser.
+
+It is unreasonably effective. It found DigitalOcean's real Greenhouse token (`digitalocean98`,
+which no amount of guessing would have produced), Microsoft's live API after its published one
+died, and Keychain's CSRF-gated board. All three are now called with plain HTTP.
+
+If the page's own JavaScript can reach it, so can the crawler — once you know where to look.
+
 **Tier 6 is a supported outcome, not a failure.** Sites that signal they do not want automated
 access — bot challenge, `robots.txt` disallow, hard block — are marked manual and surfaced as a
 recurring dashboard reminder. We do not spoof fingerprints, solve challenges, or rotate identities.

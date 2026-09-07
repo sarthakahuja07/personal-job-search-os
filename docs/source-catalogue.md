@@ -3,9 +3,27 @@
 Every target company, the technique used to crawl it, and — where it is not crawled — the
 specific reason, verified rather than assumed.
 
-The organising idea: **twelve stubborn companies were not twelve problems, they were four
-patterns.** Building for the pattern rather than the company is what turned most of them into
-configuration rather than code.
+The organising idea: **the stubborn companies were never individual problems, they were a
+handful of patterns.** Building for the pattern rather than the company is what turned nearly
+all of them into configuration rather than code.
+
+**21 of 26 active companies now crawl automatically.** The five that do not are documented
+below with the evidence, and four of those are deliberate blocks we choose to respect.
+
+One technique deserves separating out, because it changed the outcome more than any adapter:
+a headless browser was used **once, offline, as a discovery tool** — to watch what each stuck
+careers page asked for. It is not a runtime dependency and the crawler never launches one. Every
+endpoint it revealed is now called with plain HTTP:
+
+| Company | What the browser revealed | How it is crawled now |
+|---|---|---|
+| DigitalOcean | Greenhouse board token is `digitalocean98` | the ordinary Greenhouse adapter |
+| Microsoft | `apply.careers.microsoft.com/api/pcsx/search` | `json_api` |
+| Keychain AI | a CSRF-gated POST board | `json_api` with session priming |
+| CHEQ | Zoho Recruit, rendered client-side | still manual |
+
+Guessing `digitalocean` as the board token failed for weeks. The real token was `digitalocean98`,
+and no amount of static analysis was going to produce that.
 
 ---
 
@@ -26,9 +44,9 @@ company on any of these patterns is a row in `companies`, not a Python file.
 
 ---
 
-## Crawled automatically (17)
+## Crawled automatically (21)
 
-### Tier 1 — public ATS feed (9)
+### Tier 1 — public ATS feed (10)
 
 | Company | ATS | Identifier |
 |---|---|---|
@@ -41,6 +59,7 @@ company on any of these patterns is a row in `companies`, not a Python file.
 | Sarvam AI | Ashby | `sarvam` |
 | Confluent | Ashby | `confluent` |
 | Zeta Suite | Lever | `zeta` |
+| DigitalOcean | Greenhouse | `digitalocean98` |
 
 ### Tier 2 — Workday CXS (5)
 
@@ -52,7 +71,7 @@ company on any of these patterns is a row in `companies`, not a Python file.
 | Visa | `visa` | `wd5` | `Visa` |
 | Adobe | `adobe` | `wd5` | `external_experienced` |
 
-### Tier 3 — bespoke JSON search (1)
+### Tier 3 — bespoke JSON search (3)
 
 **Amazon** — `amazon.jobs/en/search.json`, scoped to India at the query level.
 
@@ -60,6 +79,19 @@ The board carries over 10,000 roles globally while matching only ever accepts fo
 locations, so the crawl filters server-side: better for us, and far less load for them. Stable
 `id_icims` identity. First crawl found **2,391 India roles, 160 of them SDE-2 matches** — the
 single largest source of relevant results in the product.
+
+**Microsoft** — `apply.careers.microsoft.com/api/pcsx/search`, scoped to India (226 roles).
+
+The widely-cited `gcsservices` endpoint is dead: it now fails TLS with a hostname mismatch.
+This is its live replacement. It also **silently caps its page size at 10** however large a
+`num` you send, while correctly reporting `count=226` — so the crawl first returned 10 of 226
+and called it success. The adapter now trusts an authoritative total over the "fewer rows than
+requested means done" heuristic, which is the same lesson Workday taught in different clothes.
+
+**Keychain AI** — `jobs.lsvp.com/api-boards/search-jobs`, a Lightspeed portfolio board.
+
+Requires a per-session CSRF token issued on the page, so the adapter primes: fetch the page,
+lift the token, send it as a header with the session cookie intact. Seven roles, all in Gurgaon.
 
 ### Tier 4 — embedded hydration (1)
 
@@ -70,10 +102,15 @@ browser required. The canonical job URL was confirmed empirically rather than gu
 candidate path returns HTTP 200 because the site is a catch-all SPA, but only `/careers/<slug>`
 returns `jobData` in its hydration — the rest fall back to `redirectToCareers`.
 
-### Tier 5 — rendered HTML list (1)
+### Tier 5 — rendered HTML list (2)
 
 **Intuit** — Radancy/TalentBrew, which returns a JSON envelope whose `results` key is a blob of
 HTML. Items are `li[data-intuit-jobid]`, carrying a stable id, title, location and href.
+
+**Moveworks** — the careers page ships its 85 jobs in static HTML after all, in
+`div.cmp-job-listings__job`. The earlier searches missed them because the board sits below a
+JavaScript filter widget; the markup was always there. Its only stable id lives inside the apply
+link, so the field map pulls it out with a regex.
 
 Markup is the least stable thing to depend on, so this adapter treats an item selector that
 matches nothing on the first page as a hard error. A silently empty result would be
@@ -82,7 +119,7 @@ built to avoid.
 
 ---
 
-## Not crawled (9)
+## Not crawled (5)
 
 Split by *why*, because the two reasons deserve different responses.
 
@@ -100,30 +137,17 @@ identities (ADR 008). Beyond being the right call, evasion is the *unreliable* o
 constantly and rots silently, which is exactly the failure mode this project exists to prevent.
 Each links straight to its board for a manual check, Qualcomm's pre-filtered to Bengaluru.
 
-### Renders only in a browser (4) — deferred, not refused
+### Renders only in a browser (1) — deferred, not refused
 
-| Company | What was checked |
-|---|---|
-| **DigitalOcean** | No hydration state, no ATS fingerprint, no job URLs in the sitemap. The one "lever" match in the page was the word *leverage*. |
-| **CHEQ** | No hydration variables, no ATS markers. |
-| **Moveworks** | Workday tenant `moveworks.wd12` confirmed to exist, but the site slug is not guessable and appears nowhere in the page or its ten JS bundles. Its only JSON-LD block is a `BreadcrumbList`. |
-| **Keychain AI** | The URL available is the Lightspeed portfolio board (Getro), not Keychain's own ATS. Its collection API returned 401. |
+**CHEQ** — its board is Zoho Recruit at `cheq.zohorecruit.in`, which builds the listing in the
+browser. Checked and ruled out: the static page carries no job ids, every Zoho feed path
+(`GetJobs.do`, `RssFeed.do`, `EmbedJobs`, `?embed=true`) returns an HTML shell, and watching the
+rendered page produced no JSON request to intercept.
 
-Each was investigated by fetching the page, extracting hydration blobs, downloading and grepping
-its JS bundles for API paths, and testing every ATS fingerprint. Nothing is reachable without
-executing JavaScript.
-
-A headless browser would likely reach these. It is deliberately not built: PRD §13 permits
-browser automation "only when genuinely required", and four companies — none of which has yet
-produced a known SDE-2 opening — does not clear that bar against the fragility and CI cost it
-would add. The door is open if that changes.
-
-### Endpoint moved (1)
-
-**Microsoft** — the widely-cited `gcsservices.careers.microsoft.com` endpoint now fails TLS with
-a hostname mismatch, so it has moved or been retired. Disabling certificate verification would
-"fix" it and is not on the table. Its replacement is not discoverable statically: the careers SPA
-references no API path, and its bundles expose only analytics hosts.
+It would need a browser **at runtime**, which is a different and much higher bar than using one
+once for discovery. PRD §13 permits browser automation "only when genuinely required", and one
+company does not clear it against the fragility and CI cost of shipping Chromium into the crawl.
+The door is open if CHEQ starts posting roles worth having.
 
 ---
 

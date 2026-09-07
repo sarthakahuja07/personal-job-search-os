@@ -33,7 +33,7 @@ are loaded and reachable only from behind Access.
 | M7 Templates | done — variable detection, auto-fill, preview, copy, WhatsApp and email |
 | M8 Applications Kanban | done — five stages, drag and drop with a keyboard fallback, follow-up reminders |
 | M9 Dashboard | partial — first version done |
-| M10 Deferred adapters | deliberately deferred |
+| M10 Deferred adapters | done — 21 of 26 companies crawl automatically; the 5 remaining are documented with evidence |
 
 ### Phase 1 — Interview preparation
 
@@ -55,11 +55,8 @@ is optional and additive:
 
 1. **Notion import** — bring Sarthak's existing prep content into `prep_items`. The schema was
    shaped to absorb it; this is a field mapping, not a redesign.
-2. **Browser-rendered sources** — DigitalOcean, CHEQ, Moveworks and Keychain need a headless
-   browser. Deliberately deferred: PRD §13 allows browser automation "only when genuinely
-   required", and four companies with no known SDE-2 opening between them do not clear that bar.
-3. **Microsoft** — its published API endpoint now fails TLS with a hostname mismatch, so it has
-   moved. The replacement is not discoverable statically.
+2. **CHEQ** — the only remaining source that would need a headless browser *at runtime*. One
+   company does not justify shipping Chromium into the crawl (PRD §13).
 
 See `docs/source-catalogue.md` for every company, its technique, and the evidence behind each
 decision.

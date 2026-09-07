@@ -24,6 +24,7 @@ of the zero-result guard, enforced one layer earlier.
 
 from __future__ import annotations
 
+import re
 from typing import Any
 from urllib.parse import urljoin
 
@@ -154,6 +155,8 @@ def _extract(root: Any, spec: Any) -> str | None:
     {"selector": "h2", "text": true}           text of the first match
     {"selector": "a", "attr": "href",          attribute of the first match, resolved against
      "base": "https://x.com"}                  a base URL
+    {"selector": "a", "attr": "href",          ...then a regex, taking group 1. Needed where the
+     "pattern": "sr_id=(\\d+)"}                stable id only exists inside a URL.
     """
     if isinstance(spec, str):
         node = root.select_one(spec)
@@ -172,9 +175,20 @@ def _extract(root: Any, spec: Any) -> str | None:
         value = node.get(spec["attr"])
         if isinstance(value, list):
             value = " ".join(value)
-        if value and spec.get("base"):
-            value = urljoin(spec["base"], value)
-        return value or None
+    else:
+        value = node.get_text(strip=True)
 
-    text = node.get_text(strip=True)
-    return text or None
+    if not value:
+        return None
+
+    # The pattern runs before the base is applied, so an id can be pulled out of a relative
+    # href without the base URL interfering with the match.
+    if spec.get("pattern"):
+        match = re.search(spec["pattern"], value)
+        if not match:
+            return None
+        value = match.group(1) if match.groups() else match.group(0)
+    elif spec.get("base"):
+        value = urljoin(spec["base"], value)
+
+    return value or None

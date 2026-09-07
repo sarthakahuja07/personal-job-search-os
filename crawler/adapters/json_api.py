@@ -23,9 +23,11 @@ Amazon is the first user. Others follow by adding a company row, not a Python fi
 
 from __future__ import annotations
 
+import json
+import re
 from typing import Any
 
-from crawler.adapters.base import ConfigError, JobSourceAdapter
+from crawler.adapters.base import ConfigError, JobSourceAdapter, SchemaDriftError
 from crawler.http.client import CrawlBudget, HttpClient
 from crawler.models.job import NormalizedJob, RawJob
 from crawler.normalization.dates import parse_date
@@ -69,7 +71,25 @@ class JsonApiAdapter(JobSourceAdapter):
         total_path: str | None = config.get("totalPath")
         page_size = int(config.get("pageSize", DEFAULT_PAGE_SIZE))
         max_pages = int(config.get("maxPages", DEFAULT_MAX_PAGES))
-        headers = config.get("headers") or {"Accept": "application/json"}
+        method = str(config.get("method", "GET")).upper()
+        headers = dict(config.get("headers") or {"Accept": "application/json"})
+
+        # Some boards issue a per-session CSRF token on the careers page and reject API calls
+        # without it. Priming fetches that page first, lifts the token, and sends it as a header.
+        # Cookies persist on the shared client, so the token and its session stay paired.
+        prime = config.get("prime")
+        if prime:
+            response = await client.request(
+                "GET", prime["url"], headers={"Accept": "text/html"}, budget=budget
+            )
+            match = re.search(prime["tokenPattern"], response.text)
+            if not match:
+                raise SchemaDriftError(
+                    f"could not find a session token on {prime['url']} using "
+                    f"{prime['tokenPattern']!r}; the board's auth has changed"
+                )
+            headers[prime.get("tokenHeader", "x-csrf-token")] = match.group(1)
+            headers.setdefault("Referer", prime["url"])
 
         out: list[RawJob] = []
         offset = 0
@@ -77,7 +97,18 @@ class JsonApiAdapter(JobSourceAdapter):
 
         for _ in range(max_pages):
             url = list_url.format(offset=offset, limit=page_size, page=offset // page_size)
-            data, _resp = await client.get_json(url, headers=headers, budget=budget)
+
+            if method == "POST":
+                body = json.loads(
+                    json.dumps(config.get("body") or {})
+                    .replace("{offset}", str(offset))
+                    .replace("{limit}", str(page_size))
+                )
+                data, _resp = await client.post_json(
+                    url, json=body, headers=headers, budget=budget
+                )
+            else:
+                data, _resp = await client.get_json(url, headers=headers, budget=budget)
 
             records = resolve_path(data, jobs_path)
             if records is None:
@@ -98,9 +129,21 @@ class JsonApiAdapter(JobSourceAdapter):
                 out.append(RawJob(data=record, source_url=url))
 
             offset += len(records)
-            if not records or len(records) < page_size:
+            if not records:
                 break
-            if total is not None and offset >= total:
+
+            # An authoritative total beats the short-page heuristic, and must be checked first.
+            #
+            # Several of these endpoints silently cap their page size: Microsoft's returns 10
+            # rows however large a `num` you ask for, while correctly reporting count=226. Ending
+            # the crawl on "fewer rows than requested" therefore stopped it after 10 of 226 jobs
+            # and reported success -- the same silent truncation as the Workday `total` trap,
+            # wearing different clothes. A short page only means "done" when nothing better is
+            # available.
+            if total is not None:
+                if offset >= total:
+                    break
+            elif len(records) < page_size:
                 break
 
         return out
