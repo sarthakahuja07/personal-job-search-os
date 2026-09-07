@@ -72,12 +72,12 @@ Nothing. Deployment, credentials and access control are all complete.
 
 ---
 
-## Company coverage — 25 of 26 crawled automatically
+## Company coverage — 28 of 30 crawled automatically
 
 Full detail, and the evidence behind every decision, in
 [`source-catalogue.md`](source-catalogue.md).
 
-**Crawled (25)**
+**Crawled (28)**
 
 | Tier | Adapter | Companies |
 |---|---|---|
@@ -86,12 +86,13 @@ Full detail, and the evidence behind every decision, in
 | 1 | Ashby | Sarvam AI, Confluent |
 | 1 | Lever | Zeta Suite |
 | 2 | Workday | NVIDIA, Adobe, Salesforce, Target, Visa |
-| 3 | `json_api` | Amazon, Microsoft, Qualcomm, Atlassian, Akamai, Keychain AI |
+| 3 | `json_api` | Amazon, Microsoft, Qualcomm, Atlassian, Akamai, Keychain AI, Rippling |
 | 4 | `hydration` | DE Shaw, CHEQ |
-| 5 | `html_list` | Intuit, Moveworks |
+| 5 | `html_list` | Intuit, Moveworks, Apple, Ringg |
 
-**Manual (1)** — Google, which disallows its job results in `robots.txt`. Honoured, not worked
-around (ADR 008).
+**Manual (2)** — Google, which disallows its job results in `robots.txt` (honoured, not worked
+around, ADR 008), and Wint Wealth, which has no first-party board at all and hires through
+aggregators.
 
 **Deactivated (3)** — Dell, Samsung India and VinFast, at Sarthak's request.
 

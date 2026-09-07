@@ -20,6 +20,8 @@ RELATIVE = re.compile(
     re.IGNORECASE,
 )
 
+_SEPT = re.compile(r"\bSept\b", re.IGNORECASE)
+
 # Formats seen across the sources actually in use, most specific first.
 FORMATS = (
     "%Y-%m-%d",
@@ -50,6 +52,12 @@ def parse_date(value: Any) -> date | None:
     # Refuse display text outright rather than letting a fuzzy parser invent a date from it.
     if RELATIVE.search(text):
         return None
+
+    # "Sept" is the one four-letter month abbreviation in common use (Apple's board writes
+    # "07 Sept 2026"). Every format below understands "Sep" or "September" but not this, so a
+    # perfectly real date was silently becoming None. The word boundary keeps "September"
+    # intact -- a bare replace would turn it into "Seper".
+    text = _SEPT.sub("Sep", text)
 
     # ISO 8601, with or without a time and timezone.
     iso = text.replace("Z", "+00:00")

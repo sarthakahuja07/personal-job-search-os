@@ -98,7 +98,13 @@ class JsonApiAdapter(JobSourceAdapter):
         # Without this the loop would re-request the identical URL maxPages times and emit the
         # same jobs over and over -- Atlassian returns 253 records, which would have become
         # 10,120 duplicates while looking like a perfectly successful crawl.
-        paginated = "{offset}" in list_url or "{page}" in list_url
+        # A POST board paginates in its body, not its URL -- Rippling's Algolia index takes a
+        # {page} in the request body while the URL never changes -- so both are inspected.
+        _pagination_markers = ("{offset}", "{page}")
+        _body_text = json.dumps(config.get("body") or {})
+        paginated = any(
+            marker in list_url or marker in _body_text for marker in _pagination_markers
+        )
 
         out: list[RawJob] = []
         offset = 0
@@ -110,11 +116,20 @@ class JsonApiAdapter(JobSourceAdapter):
             )
 
             if method == "POST":
-                body = json.loads(
-                    json.dumps(config.get("body") or {})
-                    .replace("{offset}", str(offset))
-                    .replace("{limit}", str(page_size))
-                )
+                # A placeholder that is the whole value becomes a JSON *number*; one embedded
+                # in a larger string stays text. Algolia rejects {"page": "0"} -- the quotes
+                # make it a string -- so substituting blindly would have sent every request
+                # for the same page while looking perfectly well-formed.
+                values = {
+                    "offset": offset,
+                    "limit": page_size,
+                    "page": start_page + offset // page_size,
+                }
+                rendered = _body_text
+                for key, value in values.items():
+                    rendered = rendered.replace(f'"{{{key}}}"', str(value))
+                    rendered = rendered.replace(f"{{{key}}}", str(value))
+                body = json.loads(rendered)
                 data, _resp = await client.post_json(
                     url, json=body, headers=headers, budget=budget
                 )

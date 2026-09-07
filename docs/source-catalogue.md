@@ -7,8 +7,8 @@ The organising idea: **the stubborn companies were never individual problems, th
 handful of patterns.** Building for the pattern rather than the company is what turned all but
 one of them into configuration rather than code.
 
-**25 of 26 active companies now crawl automatically.** The one that does not is Google, which
-refuses in `robots.txt` — a machine-readable request we honour.
+**28 of 30 active companies now crawl automatically.** The two that do not are Google, which
+refuses in `robots.txt`, and Wint Wealth, which publishes no first-party board at all.
 
 ---
 
@@ -69,7 +69,7 @@ not a Python file.
 
 ---
 
-## Crawled automatically (25)
+## Crawled automatically (28)
 
 ### Tier 1 — public ATS feed (10)
 
@@ -96,7 +96,7 @@ not a Python file.
 | Visa | `visa` | `wd5` | `Visa` |
 | Adobe | `adobe` | `wd5` | `external_experienced` |
 
-### Tier 3 — bespoke JSON search (6)
+### Tier 3 — bespoke JSON search (7)
 
 **Amazon** — `amazon.jobs/en/search.json`, scoped to India at the query level. The board carries
 over 10,000 roles globally while matching only ever accepts four Indian locations, so the crawl
@@ -129,6 +129,15 @@ backends time out. But Akamai syndicates its jobs to DirectEmployers (`akamai.de
 1-based page numbers, which is why `json_api` grew a `startPage`. Its job URLs embed a slugified
 city, which is why the field-mapping language grew `{location_exact|slug}`.
 
+**Rippling** — an Algolia index (`careers_en-US_production`), 679 roles, 208 of them in India.
+
+The careers page renders client-side and `rippling.com/robots.txt` says `Disallow: /api`, so the
+company's own endpoint is off-limits. Its search is not there, though: it is a hosted Algolia
+index on `algolia.net`, queried with the public search-only key every visitor's browser uses. The
+board paginates in the POST **body** rather than the URL, which is why `json_api` learned to look
+for pagination markers in both. Note `objectID`, not `jobId`, is the stable identity -- a role
+open in three cities appears three times, sharing one `jobId`.
+
 **Keychain AI** — `jobs.lsvp.com/api-boards/search-jobs`, a Lightspeed portfolio board. Requires a
 per-session CSRF token issued on the page, so the adapter primes: fetch the page, lift the token,
 send it as a header with the session cookie intact. Seven roles, all in Gurgaon.
@@ -146,7 +155,7 @@ runtime browser was unavoidable. It is not: the data is in the first response, a
 reads it over plain HTTP. This is the third shape of "the page ships its own data", alongside
 `__NEXT_DATA__` and `window.__X__`.
 
-### Tier 5 — rendered HTML list (2)
+### Tier 5 — rendered HTML list (4)
 
 **Intuit** — Radancy/TalentBrew, which returns a JSON envelope whose `results` key is a blob of
 HTML. Items are `li[data-intuit-jobid]`, carrying a stable id, title, location and href.
@@ -156,12 +165,30 @@ HTML. Items are `li[data-intuit-jobid]`, carrying a stable id, title, location a
 JavaScript filter widget; the markup was always there. Its only stable id lives inside the apply
 link, so the field map pulls it out with a regex.
 
+**Apple** — `jobs.apple.com/en-in/search`, scoped to India (177 roles, 136 of them engineering).
+
+Server-rendered, so despite appearances there is no API to intercept: watching the page produced
+no job XHR at all. Rows are `div.job-title.job-list-item`. Its ids are not plain numbers but
+`200677836-0321` — a requisition plus a location suffix, so one role open in two cities is two
+rows with two ids, as it should be. Its posted dates read `07 Sept 2026`, the one four-letter
+month abbreviation no standard format understands, which was silently discarding every date until
+`parse_date` learned it.
+
+**Ringg** — six roles as plain anchors on `ringg.ai/careers`. Small enough that the whole board is
+one page of static HTML; the slug is the id.
+
 Markup is the least stable thing to depend on, so this adapter treats an item selector that
 matches nothing on the first page as a hard error.
 
 ---
 
-## Not crawled (1)
+## Not crawled (2)
+
+**Wint Wealth** — no first-party job board exists. Their site has no careers page (`/careers` is a
+404 and nothing career-shaped appears in their sitemap or homepage), and they hire through
+aggregators: LinkedIn, Instahyre, Wellfound. There is nothing to crawl rather than something
+refusing to be crawled, so it is manual with a link to their LinkedIn jobs tab. If they adopt an
+ATS later it becomes a config row like any other.
 
 **Google** — `robots.txt` contains:
 

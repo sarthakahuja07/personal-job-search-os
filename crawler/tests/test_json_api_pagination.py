@@ -201,3 +201,62 @@ async def test_start_page_makes_numbering_one_based():
     jobs = await JsonApiAdapter().fetch_list(config, client, CrawlBudget())
     assert client.pages_seen == [1, 2]
     assert len(jobs) == 16
+
+
+class PostBodyClient:
+    """A POST board that paginates in its request body while the URL never changes, which is
+    how Rippling's Algolia index works."""
+
+    def __init__(self, total: int, page_size: int) -> None:
+        self.total = total
+        self.page_size = page_size
+        self.pages_seen: list[int] = []
+
+    async def post_json(self, url: str, json: dict[str, Any], **kwargs: Any):
+        page = json["requests"][0]["page"]
+        self.pages_seen.append(page)
+        start = page * self.page_size
+        n = max(0, min(self.page_size, self.total - start))
+        return {
+            "results": [
+                {
+                    "hits": [
+                        {"displayJobId": f"4471{start + i}", "name": f"Engineer {start + i}"}
+                        for i in range(n)
+                    ],
+                    "nbHits": self.total,
+                }
+            ]
+        }, None
+
+
+BODY_PAGED_CONFIG: dict[str, Any] = {
+    "adapter": "json_api",
+    "method": "POST",
+    "listUrl": "https://example.algolia.net/1/indexes/*/queries",
+    "body": {"requests": [{"indexName": "careers", "hitsPerPage": 100, "page": "{page}"}]},
+    "jobsPath": "results.0.hits",
+    "totalPath": "results.0.nbHits",
+    "pageSize": 100,
+    "fields": CONFIG["fields"],
+}
+
+
+@pytest.mark.asyncio
+async def test_pagination_markers_are_honoured_in_the_request_body():
+    """The URL carries no {page}, so judging pagination by the URL alone would fetch page 0
+    once and report 100 of 679 jobs as a complete, successful crawl."""
+    client = PostBodyClient(total=679, page_size=100)
+    jobs = await JsonApiAdapter().fetch_list(BODY_PAGED_CONFIG, client, CrawlBudget())
+    assert client.pages_seen == [0, 1, 2, 3, 4, 5, 6]
+    assert len(jobs) == 679
+
+
+@pytest.mark.asyncio
+async def test_body_page_is_substituted_as_a_number_not_a_string():
+    """A quoted "{page}" that survives into the request as text is rejected by real search
+    backends, so the placeholder must resolve to a JSON number."""
+    client = PostBodyClient(total=10, page_size=100)
+    await JsonApiAdapter().fetch_list(BODY_PAGED_CONFIG, client, CrawlBudget())
+    assert client.pages_seen == [0]
+    assert isinstance(client.pages_seen[0], int)
