@@ -332,7 +332,7 @@ degraded — is recorded in `crawl_runs` with duration, counts, tier used, and e
 
 | Workflow | Cadence | Purpose |
 |---|---|---|
-| `crawl.yml` | every 3 hours | discover jobs, POST to ingest, drain the notification outbox |
+| `crawl.yml` | every 12 hours | discover jobs, POST to ingest, drain the notification outbox |
 | `contracts.yml` | daily | live schema canary against real endpoints |
 
 Budget: roughly 8 runs/day, 240/month, at about 2 minutes each — around 480 of the 2,000 free

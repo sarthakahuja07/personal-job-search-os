@@ -127,7 +127,7 @@ gh secret set INGEST_TOKEN
 
 | Workflow | Trigger | Purpose |
 |---|---|---|
-| `crawl.yml` | cron every 3h + manual | run crawler → POST ingest → drain outbox |
+| `crawl.yml` | cron every 12h + manual | run crawler → POST ingest → drain outbox |
 | `contracts.yml` | cron daily | live schema canary against real endpoints |
 | `ci.yml` | push / PR | Vitest, pytest, lint |
 | `deploy.yml` | push to `main` | build and deploy the Worker |

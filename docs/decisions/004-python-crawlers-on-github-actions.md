@@ -11,7 +11,7 @@ with `requests`/BeautifulSoup for exactly this.
 
 ## Decision
 
-Crawlers are Python, executed by a scheduled GitHub Actions workflow (`crawl.yml`, every 3 hours).
+Crawlers are Python, executed by a scheduled GitHub Actions workflow (`crawl.yml`, every 12 hours).
 The crawler holds no credentials for the database — it POSTs normalized jobs to the app's ingest
 endpoint (ADR 007) and never writes to D1 directly.
 

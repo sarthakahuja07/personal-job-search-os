@@ -1,11 +1,15 @@
 name: Crawl and notify
 
-# Every 6 hours. Discovery latency matters -- the point of this project is to reach a posting
-# before it is flooded -- but 4 runs a day is well inside the free Actions budget and is polite
-# to the job boards being crawled.
+# Twice a day, at 06:30 and 18:30 IST (01:00 and 13:00 UTC).
+#
+# The times are chosen rather than merely spaced: 06:30 catches anything posted overnight before
+# the working day starts, and 18:30 catches the day's postings the same evening -- which is the
+# window that matters, since the point of this project is to ask for a referral before a posting
+# is flooded. A bare "every 12 hours" would land at 05:30 and 17:30 IST and do slightly worse at
+# both ends.
 on:
   schedule:
-    - cron: "0 */6 * * *"
+    - cron: "0 1,13 * * *"
   workflow_dispatch:
     inputs:
       company:

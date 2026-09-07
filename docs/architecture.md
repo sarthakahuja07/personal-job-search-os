@@ -67,7 +67,7 @@ exhaustively tested. See [`crawlers.md`](crawlers.md).
 
 | Workflow | Cadence | Does |
 |---|---|---|
-| `crawl.yml` | every 3h | run crawler, POST to ingest, drain notification outbox over SMTP |
+| `crawl.yml` | every 12h | run crawler, POST to ingest, drain notification outbox over SMTP |
 | `contracts.yml` | daily | hit real endpoints, validate live response shape against cassettes |
 | `ci.yml` | on push | TypeScript tests, Python tests, lint |
 | `deploy.yml` | on push to main | build and deploy the Worker |

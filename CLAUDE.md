@@ -13,7 +13,7 @@ Not a SaaS product. One user. Private. Free to run.
 
 ## Current phase
 
-**Phase 0 (job discovery) is deployed and running.** A crawl runs every 6 hours, ingests, and
+**Phase 0 (job discovery) is deployed and running.** A crawl runs every 12 hours, ingests, and
 emails a digest of genuinely new matches.
 
 **Phase 1 (interview preparation) is built** with starter content: DSA, System Design and
@@ -42,7 +42,7 @@ week." Read `docs/decisions/008-crawler-correctness-strategy.md` before touching
 | UI | Tailwind CSS + shadcn/ui |
 | Database | Cloudflare D1 (SQLite) via Drizzle ORM |
 | Crawler | Python 3.12, `httpx` + BeautifulSoup |
-| Scheduling | GitHub Actions (`crawl.yml` every 3h, `contracts.yml` daily) |
+| Scheduling | GitHub Actions (`crawl.yml` every 12h, `contracts.yml` daily) |
 | Email | Gmail SMTP from GitHub Actions (`smtplib`) |
 | Auth | Cloudflare Access on the `*.workers.dev` URL |
 

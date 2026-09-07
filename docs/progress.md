@@ -14,7 +14,7 @@ Phase 0 is **deployed and running in production**: <https://job-search-os.sartha
 104 jobs from 14 companies, 16 relevant SDE-2 matches, and a digest email delivered to Sarthak's
 inbox. Re-running the crawl creates nothing and re-running the notifier sends nothing.
 
-**Fully autonomous.** The GitHub Actions workflow runs end to end every 6 hours: it reaches the
+**Fully autonomous.** The GitHub Actions workflow runs end to end every 12 hours: it reaches the
 app through an Access service token, crawls 14 companies, ingests, and sends a digest.
 
 Cloudflare Access is verified in both directions — browser pages 302 to the login, the crawler's
