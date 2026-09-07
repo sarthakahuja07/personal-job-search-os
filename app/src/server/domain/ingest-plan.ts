@@ -134,7 +134,13 @@ export function planIngest(input: PlanInput): IngestPlan {
   }
 
   // Zero results is an error by default: it is indistinguishable from a silently broken adapter.
-  if (seenExternalIds.length === 0 && !allowZeroResults && hasSeenJobsBefore) {
+  //
+  // Only the final chunk can say this, though. When a company's jobs are split across requests
+  // every earlier chunk carries an empty `seen_external_ids` by design -- the complete observed
+  // set rides on the last one. Judging a non-final chunk by it returned the empty plan, so that
+  // chunk's jobs were silently dropped: at Amazon, the largest source of relevant results here,
+  // a genuinely new job stayed invisible until it happened to fall in the final chunk.
+  if (isFinal && seenExternalIds.length === 0 && !allowZeroResults && hasSeenJobsBefore) {
     return {
       ...empty,
       status: "suspicious",
@@ -144,9 +150,11 @@ export function planIngest(input: PlanInput): IngestPlan {
   }
 
   // Volume drift: a large drop against recent history is suspicious even when non-zero.
+  // Same reasoning as above -- a partial chunk is not a measurement of the board's size.
   let status: CrawlStatus = "success";
   let statusReason: string | null = null;
   if (
+    isFinal &&
     recentMedianCount !== null &&
     recentMedianCount > 0 &&
     seenExternalIds.length < recentMedianCount * DRIFT_DROP_RATIO

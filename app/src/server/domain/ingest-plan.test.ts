@@ -271,3 +271,60 @@ describe("planIngest — chunked crawls", () => {
     expect(p.notifications).toHaveLength(1);
   });
 });
+
+// ---------------------------------------------------------------------------
+// Chunked runs
+// ---------------------------------------------------------------------------
+
+describe("a non-final chunk is not a measurement of the board", () => {
+  // Regression, and the costliest kind: silent job loss. Every chunk but the last carries an
+  // empty seenExternalIds by design, so the zero-result guard fired on it and returned the
+  // empty plan -- discarding that chunk's jobs. Amazon is the only company large enough to
+  // chunk today and also the source of most relevant matches, so a genuinely new SDE-2 role
+  // could sit undiscovered until it happened to land in the final chunk.
+  it("keeps the jobs a non-final chunk carries", () => {
+    const p = planIngest(
+      input({ isFinal: false, seenExternalIds: [], jobs: [job({ externalJobId: "R-9" })] }),
+    );
+    expect(p.upserts).toHaveLength(1);
+    expect(p.createdExternalIds).toEqual(["R-9"]);
+  });
+
+  it("still notifies for a relevant new job found in a non-final chunk", () => {
+    const p = planIngest(
+      input({ isFinal: false, seenExternalIds: [], jobs: [job({ externalJobId: "R-9" })] }),
+    );
+    expect(p.notifications).toHaveLength(1);
+  });
+
+  it("does not call a non-final chunk suspicious", () => {
+    const p = planIngest(input({ isFinal: false, seenExternalIds: [] }));
+    expect(p.status).toBe("success");
+    expect(p.statusReason).toBeNull();
+  });
+
+  it("does not call a non-final chunk degraded on volume drift", () => {
+    const p = planIngest(input({ isFinal: false, seenExternalIds: [], recentMedianCount: 2000 }));
+    expect(p.status).toBe("success");
+  });
+
+  it("never touches presence state on a non-final chunk", () => {
+    const p = planIngest(
+      input({ isFinal: false, seenExternalIds: [], existing: [existing({ id: "old" })] }),
+    );
+    expect(p.presenceTrackingSkipped).toBe(true);
+    expect(p.missingJobIds).toEqual([]);
+    expect(p.closeJobIds).toEqual([]);
+  });
+
+  it("still flags a genuinely empty board when the final chunk says so", () => {
+    const p = planIngest(input({ isFinal: true, seenExternalIds: [], jobs: [] }));
+    expect(p.status).toBe("suspicious");
+    expect(p.upserts).toEqual([]);
+  });
+
+  it("still flags volume drift on the final chunk", () => {
+    const p = planIngest(input({ isFinal: true, recentMedianCount: 2000 }));
+    expect(p.status).toBe("degraded");
+  });
+});

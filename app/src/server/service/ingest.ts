@@ -113,33 +113,41 @@ export async function ingestJobs(
     if (plan.closeJobIds.length) await repo.closeJobs(db, plan.closeJobIds);
   }
 
-  await repo.recordCrawlRun(db, {
-    runId: payload.run_id,
-    companyId: company.id,
-    status: plan.status,
-    tier: payload.tier ?? null,
-    jobsFound: payload.seen_external_ids.length,
-    newJobs: plan.createdExternalIds.length,
-    durationMs: payload.duration_ms ?? null,
-    skipReason: payload.skip_reason ?? null,
-    error: payload.error ?? plan.statusReason ?? null,
-    startedAt,
-  });
+  // Only the final chunk describes the run. A non-final chunk deliberately carries an empty
+  // seen_external_ids (the full observed set rides on the last one), so recording it would
+  // write a zero-jobs row and flip the company to `suspicious` mid-crawl -- Amazon's 2,385 jobs
+  // did exactly that on every single run. The danger is not the stray row, it is that routine
+  // chunking then looks identical to a genuine empty board, which is the one alarm this
+  // project cannot afford to have crying wolf.
+  if (payload.is_final) {
+    await repo.recordCrawlRun(db, {
+      runId: payload.run_id,
+      companyId: company.id,
+      status: plan.status,
+      tier: payload.tier ?? null,
+      jobsFound: payload.seen_external_ids.length,
+      newJobs: plan.createdExternalIds.length,
+      durationMs: payload.duration_ms ?? null,
+      skipReason: payload.skip_reason ?? null,
+      error: payload.error ?? plan.statusReason ?? null,
+      startedAt,
+    });
 
-  await repo.updateCompanyHealth(db, company.id, {
-    healthStatus: HEALTH_BY_STATUS[plan.status],
-    lastError: payload.error ?? plan.statusReason ?? null,
-    succeeded: plan.status === "success",
-    // Only persist cache keys from a run we trust; caching a broken run would make the next
-    // one short-circuit on a 304 and hide the failure.
-    ...(plan.status === "success"
-      ? {
-          etag: payload.etag ?? null,
-          lastModified: payload.last_modified ?? null,
-          lastContentHash: payload.content_hash ?? null,
-        }
-      : {}),
-  });
+    await repo.updateCompanyHealth(db, company.id, {
+      healthStatus: HEALTH_BY_STATUS[plan.status],
+      lastError: payload.error ?? plan.statusReason ?? null,
+      succeeded: plan.status === "success",
+      // Only persist cache keys from a run we trust; caching a broken run would make the next
+      // one short-circuit on a 304 and hide the failure.
+      ...(plan.status === "success"
+        ? {
+            etag: payload.etag ?? null,
+            lastModified: payload.last_modified ?? null,
+            lastContentHash: payload.content_hash ?? null,
+          }
+        : {}),
+    });
+  }
 
   return {
     runId: payload.run_id,
