@@ -2,6 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { revalidatePath } from "next/cache";
 
+import { CopyLink } from "@/components/copy-link";
 import { Badge, Card, PageHeader, SectionTitle, cx } from "@/components/ui";
 import { getDb } from "@/db";
 import { STAGES, STAGE_LABEL, isStage } from "@/server/domain/applications";
@@ -91,14 +92,17 @@ export default async function JobDetailPage({
           <Badge tone="accent">{LOCATION_LABEL[job.locationPriority]}</Badge>
         )}
         <span className="tnum text-[11px] text-ink-faint">score {job.matchScore}</span>
-        <a
-          href={job.jobUrl}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="ml-auto rounded-md bg-accent px-3 py-1.5 text-[13px] font-medium text-canvas transition hover:brightness-110"
-        >
-          Open original posting ↗
-        </a>
+        <span className="ml-auto flex items-center gap-2">
+          <CopyLink url={job.jobUrl} />
+          <a
+            href={job.jobUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="rounded-md bg-accent px-3 py-1.5 text-[13px] font-medium text-canvas transition hover:brightness-110"
+          >
+            Open original posting ↗
+          </a>
+        </span>
       </div>
 
       {/* Why this job was surfaced, in the app's own words. Filtering is never a black box. */}

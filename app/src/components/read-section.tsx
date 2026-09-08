@@ -1,6 +1,7 @@
 import Link from "next/link";
 
 import { Collapsible } from "./collapsible";
+import { CopyLink } from "./copy-link";
 import type { JobRow } from "./job-card";
 import { ReadToggle } from "./read-toggle";
 import { cx } from "./ui";
@@ -75,6 +76,7 @@ export function ReadSection({ jobs }: { jobs: JobRow[] }) {
               >
                 ↗
               </a>
+              <CopyLink url={job.jobUrl} compact />
               <ReadToggle jobId={job.id} read />
             </li>
           ))}

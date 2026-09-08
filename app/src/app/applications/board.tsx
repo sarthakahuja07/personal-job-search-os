@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState, useTransition } from "react";
 import Link from "next/link";
 
+import { CopyLink } from "@/components/copy-link";
 import { cx } from "@/components/ui";
 import type { ApplicationStatus } from "@/db/schema";
 import { STAGES, STAGE_HINT, STAGE_LABEL } from "@/server/domain/applications";
@@ -237,7 +238,9 @@ export function Board({ cards }: { cards: BoardCard[] }) {
                         </option>
                       ))}
                     </select>
-                    <button
+                    <span className="flex items-center gap-1.5">
+                      {card.jobUrl && <CopyLink url={card.jobUrl} compact />}
+                      <button
                       type="button"
                       onClick={() => {
                         setRemoved((r) => new Set(r).add(card.id));
@@ -249,7 +252,8 @@ export function Board({ cards }: { cards: BoardCard[] }) {
                       aria-label={`Remove ${card.jobTitle} from the pipeline`}
                     >
                       Remove
-                    </button>
+                      </button>
+                    </span>
                   </div>
                 </li>
               ))}

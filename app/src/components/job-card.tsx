@@ -2,6 +2,7 @@ import Link from "next/link";
 
 import type { ApplicationStatus } from "@/db/schema";
 import type { FitBand, FitSignal } from "@/server/domain/fit";
+import { CopyLink } from "./copy-link";
 import { JobActions } from "./job-actions";
 import { ReadToggle } from "./read-toggle";
 import { StagePicker } from "./stage-picker";
@@ -253,6 +254,7 @@ export function JobCard({
                 Original ↗
               </a>
             )}
+            <CopyLink url={job.jobUrl} />
             <StagePicker
               jobId={job.id}
               companyId={job.companyId}
