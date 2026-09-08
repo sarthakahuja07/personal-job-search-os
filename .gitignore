@@ -41,3 +41,11 @@ Thumbs.db
 # logs
 *.log
 npm-debug.log*
+
+# Scratch output from source investigation; never part of the app.
+conf_diag.txt
+ibm_*.txt
+jobsyn*.txt
+cheq*.txt
+dejobs*.txt
+apple_*.txt
