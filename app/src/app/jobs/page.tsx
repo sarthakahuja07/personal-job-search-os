@@ -24,9 +24,9 @@ type Search = {
 };
 
 const SORTS = [
+  { key: "posted", label: "Recently posted" },
   { key: "best", label: "Best match" },
   { key: "newest", label: "Recently found" },
-  { key: "posted", label: "Recently posted" },
 ];
 
 export default async function JobsPage({
@@ -38,7 +38,10 @@ export default async function JobsPage({
   const relevantOnly = params.all !== "1";
   const newOnly = params.new === "1";
   const grouped = params.flat !== "1";
-  const sort = (params.sort as "best" | "newest" | "posted") ?? "best";
+  // Posted date is the default everywhere. A role's age is what decides whether a referral is
+  // still worth asking for; fit decides whether it is worth asking at all, and that is a
+  // question you answer once you are looking at it.
+  const sort = (params.sort as "best" | "newest" | "posted") ?? "posted";
   const db = getDb();
 
   // Active and reviewed are fetched separately and bounded separately. Fetching one page of
@@ -82,6 +85,11 @@ export default async function JobsPage({
   // Ordered by each company's best role overall, not by what is left on the board. Sorting on
   // the remainder meant handling one job re-ranked its company mid-scroll.
   const bestFitByCompany = new Map(companyOptions.map((c) => [c.id, c.bestFit ?? 0]));
+  // Both keys come from all the company's roles, handled or not, so the order stays put as you
+  // work through the board.
+  const latestPostedByCompany = new Map(
+    companyOptions.map((c) => [c.id, Number(c.latestPostedAt ?? 0)]),
+  );
   // Within a company, honour the chosen sort. This used to re-sort by fit unconditionally, so
   // picking "Recently posted" changed the SQL order and then threw it away — the dropdown looked
   // broken because, in the grouped view, it was.
@@ -102,11 +110,18 @@ export default async function JobsPage({
       name: g.name,
       jobs: [...g.jobs].sort(withinCompany),
     }))
-    .sort(
-      (a, b) =>
-        (bestFitByCompany.get(b.id) ?? 0) - (bestFitByCompany.get(a.id) ?? 0) ||
-        a.name.localeCompare(b.name),
-    );
+    .sort((a, b) => {
+      if (sort === "best") {
+        return (
+          (bestFitByCompany.get(b.id) ?? 0) - (bestFitByCompany.get(a.id) ?? 0) ||
+          a.name.localeCompare(b.name)
+        );
+      }
+      return (
+        (latestPostedByCompany.get(b.id) ?? 0) - (latestPostedByCompany.get(a.id) ?? 0) ||
+        a.name.localeCompare(b.name)
+      );
+    });
 
   const qs = (patch: Record<string, string | undefined>) => {
     const next = new URLSearchParams(
@@ -180,7 +195,7 @@ export default async function JobsPage({
           {!grouped && <input type="hidden" name="flat" value="1" />}
           <select
             name="sort"
-            defaultValue={params.sort ?? "best"}
+            defaultValue={sort}
             className="rounded-md border border-line bg-surface-2 px-2.5 py-1.5 text-[13px] text-ink-dim outline-none focus:border-accent"
           >
             {SORTS.map((s) => (

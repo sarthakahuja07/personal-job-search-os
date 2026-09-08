@@ -48,7 +48,7 @@ export default async function DashboardPage() {
   const [stats, top, health, recent, reminderRows, settingsRows, contacts] =
     await Promise.all([
     jobStats(db),
-    listJobs(db, { sort: "best", limit: 6, unreadOnly: true }),
+    listJobs(db, { sort: "best", limit: 8, unreadOnly: true }),
     listCompanyHealth(db),
     listRecentlyDiscovered(db, RECENT_DAYS, 40),
     listReminderCandidates(db),
@@ -64,6 +64,13 @@ export default async function DashboardPage() {
     },
   );
   const overdueCount = reminders.filter((r) => r.severity === "overdue").length;
+
+  // Chosen by fit — that is what makes them "top" — but shown newest-posted first, because
+  // among roles that all match well, the one published yesterday is the one still worth a
+  // referral ask. Undated postings sink rather than sorting as epoch zero.
+  const topByPosted = [...(top as unknown as JobRow[])].sort(
+    (a, b) => (b.postedAt?.getTime() ?? -Infinity) - (a.postedAt?.getTime() ?? -Infinity),
+  );
 
   // The same outreach payload the job board passes down, so a card behaves identically wherever
   // it appears. A card that acts differently depending on the page is a card you have to think
@@ -86,9 +93,16 @@ export default async function DashboardPage() {
       .map(([id, g]) => ({
         id,
         name: g.name,
-        jobs: [...g.jobs].sort((a, b) => b.fitScore - a.fitScore),
+        jobs: [...g.jobs].sort(
+          (a, b) =>
+            (b.postedAt?.getTime() ?? -Infinity) - (a.postedAt?.getTime() ?? -Infinity),
+        ),
       }))
-      .sort((a, b) => (b.jobs[0]?.fitScore ?? 0) - (a.jobs[0]?.fitScore ?? 0));
+      .sort(
+        (a, b) =>
+          (b.jobs[0]?.postedAt?.getTime() ?? -Infinity) -
+          (a.jobs[0]?.postedAt?.getTime() ?? -Infinity),
+      );
   })();
 
   const automated = health.filter((c) => c.active && c.sourceType !== "manual");
@@ -227,7 +241,7 @@ export default async function DashboardPage() {
           />
         ) : (
           <ul className="space-y-2">
-            {(top as unknown as JobRow[]).map((job) => (
+            {topByPosted.map((job) => (
               <JobCard key={job.id} job={job} outreach={outreachFor(job.companyId)} />
             ))}
           </ul>

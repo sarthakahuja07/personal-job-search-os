@@ -310,6 +310,8 @@ export async function companiesWithJobs(db: Db, relevantOnly = true) {
        * is exactly when you are least able to tolerate it.
        */
       bestFit: sql<number>`COALESCE(MAX(${jobs.fitScore}), 0)`,
+      /** Most recent posting date across all the company's open roles, handled or not. */
+      latestPostedAt: sql<number | null>`MAX(${jobs.postedAt})`,
     })
     .from(companies)
     .innerJoin(jobs, eq(jobs.companyId, companies.id))
@@ -361,13 +363,17 @@ export async function listRecentlyDiscovered(db: Db, days = 3, limit = 12) {
         isNull(jobs.closedAt),
         eq(jobs.isRelevant, true),
         gte(jobs.discoveredAt, since),
-        // Marking a job read removes it from here. The dashboard answers "what needs me now",
-        // so a role you have already looked at and passed on is finished business — leaving it
-        // would mean the list never shrinks no matter how much you work through.
+        // Anything already dealt with leaves the dashboard entirely — read, or in the pipeline.
+        // This answers "what needs me now", so a role you have passed on *or* already asked a
+        // referral for is finished business here. Greying them out instead meant the list never
+        // shrank however much you worked through it.
         isNull(jobs.readAt),
+        isNull(applications.status),
       ),
     )
-    .orderBy(desc(jobs.fitScore), desc(jobs.discoveredAt))
+    // Newest posting first, undated last. What matters about a role found in the last three
+    // days is how long it has been open to everyone else, not how it scores.
+    .orderBy(sql`${jobs.postedAt} IS NULL`, desc(jobs.postedAt), desc(jobs.fitScore))
     .limit(limit);
 }
 
