@@ -118,34 +118,34 @@ export default async function CompaniesPage() {
           automated one that silently rots.
         </p>
         <ul className="flex flex-wrap gap-1.5">
-          {manual.map((c) =>
-            c.careersUrl ? (
-              <li key={c.id} className="flex items-center gap-1">
-                <Link
-                  href={`/companies/${c.id}`}
-                  className="rounded-md border border-line bg-surface-2 px-2 py-1 text-[12px] text-ink-faint transition hover:text-ink"
-                >
-                  edit
-                </Link>
+          {/* The company name goes to the company, everywhere. It used to open the external
+              board here, which made a manual company the one kind you could not click through
+              to its own contacts -- and one with no careers URL had no link at all. The board
+              is still one click away, just labelled as what it is. */}
+          {manual.map((c) => (
+            <li key={c.id} className="flex items-center">
+              <Link
+                href={`/companies/${c.id}`}
+                className={cx(
+                  "rounded-l-md border border-line bg-surface-2 px-2.5 py-1 text-[13px] text-ink-dim transition hover:border-line-strong hover:text-ink",
+                  !c.careersUrl && "rounded-r-md",
+                )}
+              >
+                {c.name}
+              </Link>
+              {c.careersUrl && (
                 <a
                   href={c.careersUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1 rounded-md border border-line bg-surface-2 px-2.5 py-1 text-[13px] text-ink-dim transition hover:border-line-strong hover:text-ink"
+                  title={`Open ${c.name}'s job board`}
+                  className="rounded-r-md border border-l-0 border-line bg-surface-2 px-2 py-1 text-[12px] text-ink-faint transition hover:border-line-strong hover:text-ink"
                 >
-                  {c.name}
-                  <span className="text-ink-faint">↗</span>
+                  board ↗
                 </a>
-              </li>
-            ) : (
-              <li
-                key={c.id}
-                className="rounded-md border border-line px-2.5 py-1 text-[13px] text-ink-faint"
-              >
-                {c.name}
-              </li>
-            ),
-          )}
+              )}
+            </li>
+          ))}
         </ul>
       </Card>
 

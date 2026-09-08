@@ -219,7 +219,7 @@ export default async function CompanyDetailPage({
           <ul className="mb-5 space-y-3">
             {people.map((c) => (
               <li key={c.id} className="border-b border-line/60 pb-3 last:border-0 last:pb-0">
-                <form action={updateContact} className="grid gap-2 sm:grid-cols-[1fr_1fr_1fr_auto]">
+                <form action={updateContact} className="grid gap-2 sm:grid-cols-[1fr_1fr_1fr_1fr_auto]">
                   <input type="hidden" name="id" value={c.id} />
                   <input type="hidden" name="companyId" value={company.id} />
                   <input name="name" defaultValue={c.name} className={inputStyles} />
@@ -233,6 +233,15 @@ export default async function CompanyDetailPage({
                     name="email"
                     defaultValue={c.email ?? ""}
                     placeholder="Email"
+                    className={inputStyles}
+                  />
+                  {/* Referrals often start on LinkedIn rather than a phone number, and the
+                      message modal already sends there — without this input the field was
+                      reachable only from the Add Company form. */}
+                  <input
+                    name="linkedinUrl"
+                    defaultValue={c.linkedinUrl ?? ""}
+                    placeholder="LinkedIn"
                     className={inputStyles}
                   />
                   <div className="flex gap-1.5">
@@ -259,11 +268,12 @@ export default async function CompanyDetailPage({
           </ul>
         )}
 
-        <form action={addContact} className="grid gap-2 sm:grid-cols-[1fr_1fr_1fr_auto]">
+        <form action={addContact} className="grid gap-2 sm:grid-cols-[1fr_1fr_1fr_1fr_auto]">
           <input type="hidden" name="companyId" value={company.id} />
           <input name="name" placeholder="Name" required className={inputStyles} />
           <input name="phone" placeholder="Phone" className={inputStyles} />
           <input name="email" placeholder="Email" className={inputStyles} />
+          <input name="linkedinUrl" placeholder="LinkedIn" className={inputStyles} />
           <Button type="submit" variant="primary">
             Add
           </Button>
