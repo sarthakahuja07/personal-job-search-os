@@ -12,6 +12,8 @@ function revalidateAll() {
   revalidatePath("/applications");
   revalidatePath("/jobs");
   revalidatePath("/");
+  // Every stage change alters what the reminder rules say about that job.
+  revalidatePath("/reminders");
 }
 
 export async function moveCard(applicationId: string, jobId: string, companyId: string, stage: string) {

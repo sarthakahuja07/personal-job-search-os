@@ -10,6 +10,8 @@ import { jobs } from "@/db/schema";
 function revalidateAll(jobId?: string) {
   revalidatePath("/jobs");
   revalidatePath("/");
+  // Marking a job read silences its reminder, so that page is stale until this is called.
+  revalidatePath("/reminders");
   if (jobId) revalidatePath(`/jobs/${jobId}`);
 }
 

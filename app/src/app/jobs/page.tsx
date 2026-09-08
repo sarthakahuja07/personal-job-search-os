@@ -8,6 +8,7 @@ import { getDb } from "@/db";
 import {
   companiesWithJobs,
   contactsByCompany,
+  countToReview,
   listJobs,
 } from "@/server/repository/jobs-repo";
 import { CompanySearch } from "./company-search";
@@ -48,7 +49,7 @@ export default async function JobsPage({
   // "everything" and splitting it in memory meant that once 150 jobs were read, only 50 unread
   // ones were left in the page — the board would quietly shrink as you worked, for the wrong
   // reason.
-  const [active, handled, companyOptions, contacts] = await Promise.all([
+  const [active, handled, companyOptions, contacts, toReviewTotal] = await Promise.all([
     listJobs(db, {
       companyId: params.company,
       query: params.q,
@@ -71,6 +72,10 @@ export default async function JobsPage({
     }) as unknown as Promise<JobRow[]>,
     companiesWithJobs(db, relevantOnly),
     contactsByCompany(db),
+    // The true total, not `active.length` — the board fetches at most 150 rows, so reporting
+    // what it happened to fetch made the header disagree with the nav badge the moment there
+    // were more matches than one page.
+    countToReview(db, { companyId: params.company, query: params.q }),
   ]);
 
   // Grouped by company, each group ordered by fit. Company order is by its best role, so the
@@ -132,7 +137,7 @@ export default async function JobsPage({
   };
 
   const jobs = active;
-  const untouchedTotal = active.filter((j) => !j.applicationStatus).length;
+  const untouchedTotal = toReviewTotal;
   const companyName = params.company ? jobs[0]?.companyName : undefined;
   const filtered = Boolean(
     params.company || params.q || newOnly || !relevantOnly,
@@ -157,6 +162,9 @@ export default async function JobsPage({
         subtitle={
           <>
             <span className="tnum text-ink">{untouchedTotal}</span> to review
+            {active.length < untouchedTotal && (
+              <span className="text-ink-faint"> · showing {active.length}</span>
+            )}
             {handled.length > 0 && (
               <span className="text-ink-faint"> · {handled.length} handled</span>
             )}

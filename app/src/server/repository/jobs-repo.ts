@@ -119,6 +119,44 @@ export async function listJobs(db: Db, filters: JobFilters = {}) {
     .offset(offset);
 }
 
+
+/**
+ * The one definition of "still to review": open, relevant, not read, not in the pipeline.
+ *
+ * Three places used to count three different things — the nav badge counted every relevant open
+ * job including ones already handled, the dashboard stat did not even exclude closed jobs, and
+ * the board's subtitle reported however many rows it had fetched. They disagreed, and a counter
+ * you have to reconcile is a counter you stop reading.
+ */
+export const TO_REVIEW = () =>
+  and(
+    eq(jobs.isRelevant, true),
+    isNull(jobs.closedAt),
+    isNull(jobs.readAt),
+    isNull(applications.status),
+  );
+
+/** Count of jobs still to review, optionally scoped the way the board is. */
+export async function countToReview(
+  db: Db,
+  filters: { companyId?: string; query?: string } = {},
+) {
+  const rows = await db
+    .select({ n: count() })
+    .from(jobs)
+    .leftJoin(applications, eq(applications.jobId, jobs.id))
+    .where(
+      and(
+        TO_REVIEW(),
+        filters.companyId ? eq(jobs.companyId, filters.companyId) : undefined,
+        filters.query
+          ? or(like(jobs.title, `%${filters.query}%`), like(jobs.location, `%${filters.query}%`))
+          : undefined,
+      ),
+    );
+  return rows[0]?.n ?? 0;
+}
+
 export async function countJobs(db: Db, filters: JobFilters = {}) {
   const { relevantOnly = true, includeClosed = false } = filters;
   const where = [
@@ -171,11 +209,14 @@ export async function jobStats(db: Db) {
   const rows = await db
     .select({
       total: count(),
-      relevant: sql<number>`SUM(CASE WHEN ${jobs.isRelevant} THEN 1 ELSE 0 END)`,
+      // "Relevant" previously counted closed postings too, so the headline number could only
+      // ever grow. All three now mean the same thing the badge and the board mean.
+      relevant: sql<number>`SUM(CASE WHEN ${jobs.isRelevant} AND ${jobs.closedAt} IS NULL AND ${jobs.readAt} IS NULL AND ${applications.status} IS NULL THEN 1 ELSE 0 END)`,
       open: sql<number>`SUM(CASE WHEN ${jobs.closedAt} IS NULL THEN 1 ELSE 0 END)`,
-      recent: sql<number>`SUM(CASE WHEN ${jobs.discoveredAt} >= ${Date.now() - NEW_WINDOW_MS} AND ${jobs.isRelevant} THEN 1 ELSE 0 END)`,
+      recent: sql<number>`SUM(CASE WHEN ${jobs.discoveredAt} >= ${Date.now() - NEW_WINDOW_MS} AND ${jobs.isRelevant} AND ${jobs.closedAt} IS NULL AND ${jobs.readAt} IS NULL AND ${applications.status} IS NULL THEN 1 ELSE 0 END)`,
     })
-    .from(jobs);
+    .from(jobs)
+    .leftJoin(applications, eq(applications.jobId, jobs.id));
   return rows[0] ?? { total: 0, relevant: 0, open: 0, recent: 0 };
 }
 
@@ -192,7 +233,12 @@ export async function navCounts(db: Db) {
     pipeline: number;
   }>(sql`
     SELECT
-      (SELECT COUNT(*) FROM jobs WHERE is_relevant = 1 AND closed_at IS NULL) AS relevant_jobs,
+      -- Same definition as countToReview() and the dashboard stat: what is left to look at,
+      -- not how many rows exist. A badge that counts jobs you have already handled never falls.
+      (SELECT COUNT(*) FROM jobs j
+        LEFT JOIN applications a ON a.job_id = j.id
+        WHERE j.is_relevant = 1 AND j.closed_at IS NULL
+          AND j.read_at IS NULL AND a.status IS NULL) AS relevant_jobs,
       (SELECT COUNT(*) FROM notifications WHERE status = 'pending') AS pending_notifications,
       (SELECT COUNT(*) FROM companies
         WHERE active = 1 AND source_type != 'manual'
