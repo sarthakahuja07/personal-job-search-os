@@ -14,7 +14,7 @@
  * "already applied" stops being answerable.
  */
 
-import { and, eq } from "drizzle-orm";
+import { and, eq, like } from "drizzle-orm";
 
 import type { Db } from "@/db";
 import { companies, jobs, settings } from "@/db/schema";
@@ -89,6 +89,33 @@ export function guessCompanyFromUrl(
   return null;
 }
 
+
+/**
+ * A locale-insensitive key for one posting, used ONLY when adding a job by hand.
+ *
+ * IBM serves the same requisition at /en_IN/... and /en_US/..., so pasting the link you happened
+ * to open creates a second copy of a job the crawler already has. Stripping the locale segment
+ * fixes that — but it deliberately does not touch `normalizeJobUrl`, which is the crawler's
+ * identity function and shared with Python. Loosening *that* is how 869 of Databricks' 870 jobs
+ * once collapsed onto one URL, and a duplicate you can see beats a board that silently lost
+ * everything.
+ *
+ * So the relaxation lives here: a second, softer lookup on the manual path only, where the cost
+ * of a false match is one job attached to the wrong row rather than an empty board.
+ */
+const LOCALE_SEGMENT = /^[a-z]{2}([_-][a-zA-Z]{2})?$/;
+
+export function localeRelaxedKey(normalizedUrl: string): string {
+  try {
+    const u = new URL(normalizedUrl);
+    const parts = u.pathname.split("/").filter(Boolean);
+    const kept = parts.filter((p) => !LOCALE_SEGMENT.test(p));
+    return `${u.host}/${kept.join("/")}${u.search}`.toLowerCase();
+  } catch {
+    return normalizedUrl.toLowerCase();
+  }
+}
+
 export async function addManualJob(
   db: Db,
   input: ManualJobInput,
@@ -126,8 +153,29 @@ export async function addManualJob(
     .where(eq(jobs.normalizedJobUrl, normalized))
     .limit(1);
 
-  if (alreadyKnown.length) {
-    const found = alreadyKnown[0];
+  // Same posting under a different locale path. Scoped to this host so the candidate set stays
+  // small, and only consulted when the exact URL found nothing.
+  let known = alreadyKnown;
+  if (!known.length) {
+    const relaxed = localeRelaxedKey(normalized);
+    const sameHost = await db
+      .select({
+        id: jobs.id,
+        companyId: jobs.companyId,
+        title: jobs.title,
+        readAt: jobs.readAt,
+        normalizedJobUrl: jobs.normalizedJobUrl,
+        companyName: companies.name,
+      })
+      .from(jobs)
+      .innerJoin(companies, eq(companies.id, jobs.companyId))
+      .where(like(jobs.normalizedJobUrl, `%${parsed.host}%`))
+      .limit(200);
+    known = sameHost.filter((j) => localeRelaxedKey(j.normalizedJobUrl) === relaxed);
+  }
+
+  if (known.length) {
+    const found = known[0];
     // Pasting a link is an act of attention, so the job counts as reviewed. Without this it
     // would keep showing as "to review" on a board you have demonstrably already worked through.
     if (!found.readAt) {

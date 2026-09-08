@@ -110,6 +110,44 @@ is the detail fetch the crawler plan already allows for new, pre-filtered jobs; 
 
 ---
 
+## Working the board: read state, reminders and outreach
+
+Discovery was only ever half the problem. These are the parts that stop a board being read.
+
+**Read state.** A job can be marked read — seen and consciously passed over. Deliberately neither
+`closed_at` (the posting is gone) nor an application stage (you acted on it). Read jobs leave the
+dashboard entirely and fold into a compact "Reviewed" section on the job board, so the list gets
+*shorter* as you work through it. Marking read also silences that job's reminder: nagging about a
+role you already decided on is how a reminder list loses its authority.
+
+**Reminders.** Five rules, each time-since-a-state-change so every reminder can name the date its
+clock started — referral unanswered, referred but not applied (the shortest threshold: someone
+spent their credibility), saved and undecided, applied and silent, and a strong match nobody
+touched. The nav badge runs the real rules rather than a SQL restatement of them, because that is
+how a badge and its page start disagreeing.
+
+**Outreach from the card.** Apply and Message on every job card, plus a stage picker that moves a
+job through the pipeline without leaving the page. The message modal renders a template against
+the company's contacts and hands it to whichever channel exists — WhatsApp, email, or LinkedIn
+(which has no URL that opens a chat with body text, so the message is copied and the profile
+opened, rather than a button that silently drops it).
+
+**Emails are kept.** `email_digests` stores the subject, body, recipient and exact send time of
+every digest, handed back by the drainer on delivery. The app only ever knew what was *queued*;
+rebuilding a sent email later from notification rows would diverge the first time the template
+changed. The outbox also re-checks relevance at send time, since match rules are data and can
+change between queueing and sending — a Canadian role queued before the location list learned
+"CA Remote Ontario" was found sitting ready to send, with its own rejection printed underneath.
+
+**Page weight.** The job board once shipped 1.8 MB. Two causes, both serialisation rather than
+queries: every card was handed the full contact list and every template body as props, which a
+client component serialises *per card*; and 200 cards is simply a lot of markup when one company
+accounts for 163 of them. Outreach is now fetched when the modal opens, groups show their best
+few and link onward, and every route has a `loading.tsx` — the remaining second is D1 across the
+network, and without a Suspense boundary the browser showed the *old* page for all of it.
+
+---
+
 ## Matching: company vocabularies and the experience band
 
 Two things a single global rule set cannot express.

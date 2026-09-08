@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { guessCompanyFromUrl, manualExternalId } from "./manual-job";
+import { guessCompanyFromUrl, localeRelaxedKey, manualExternalId } from "./manual-job";
 
 const KNOWN = [
   {
@@ -100,5 +100,51 @@ describe("distinct postings at one company", () => {
 
   it("keeps the id parameter, which is the identity itself", () => {
     expect(manualExternalId(a)).toContain("jobId=129283");
+  });
+});
+
+describe("locale-variant dedup (manual path only)", () => {
+  // IBM serves the same requisition under /en_IN/ and /en_US/. Pasting whichever you opened
+  // created a second copy of a job the crawler already had.
+  const IN = "https://careers.ibm.com/en_IN/careers/JobDetail?jobId=129283";
+  const US = "https://careers.ibm.com/en_US/careers/JobDetail?jobId=129283";
+
+  it("treats the two locales as the same posting", () => {
+    expect(localeRelaxedKey(IN)).toBe(localeRelaxedKey(US));
+  });
+
+  it.each([
+    ["en-in", "https://x.com/en-in/jobs/7"],
+    ["fr_FR", "https://x.com/fr_FR/jobs/7"],
+  ])("also strips %s", (_label, url) => {
+    expect(localeRelaxedKey(url)).toBe(localeRelaxedKey("https://x.com/jobs/7"));
+  });
+
+  // The whole point of keeping this off normalizeJobUrl: it must never merge distinct jobs.
+  it("keeps different requisitions apart", () => {
+    expect(localeRelaxedKey(IN)).not.toBe(
+      localeRelaxedKey("https://careers.ibm.com/en_US/careers/JobDetail?jobId=127254"),
+    );
+  });
+
+  it("does not strip a real path segment that merely looks short", () => {
+    // "job" and "abc" are three letters, not a locale, and must survive.
+    expect(localeRelaxedKey("https://x.com/job/abc")).toContain("job/abc");
+  });
+
+  it("keeps different hosts apart", () => {
+    expect(localeRelaxedKey("https://a.com/en_US/j/1")).not.toBe(
+      localeRelaxedKey("https://b.com/en_US/j/1"),
+    );
+  });
+
+  it("leaves the crawler's identity function untouched", () => {
+    // normalizeJobUrl is shared with Python and is what dedupes 400+ crawled jobs. Relaxing it
+    // is how 869 of Databricks' 870 jobs once collapsed onto one URL.
+    expect(manualExternalId(IN)).not.toBe(manualExternalId(US));
+  });
+
+  it("survives a malformed URL", () => {
+    expect(localeRelaxedKey("not a url")).toBe("not a url");
   });
 });
