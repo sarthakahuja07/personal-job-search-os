@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useRef, useState, useTransition } from "react";
 
 import { Button, Card, cx, inputStyles } from "@/components/ui";
 import { STAGES, STAGE_LABEL } from "@/server/domain/applications";
@@ -19,8 +19,10 @@ export type CompanyChoice = { id: string; name: string };
 export function AddByLink({ companies }: { companies: CompanyChoice[] }) {
   const [open, setOpen] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [message, setMessage] = useState<string | null>(null);
   const [newCompany, setNewCompany] = useState(false);
   const [pending, start] = useTransition();
+  const formRef = useRef<HTMLFormElement>(null);
 
   if (!open) {
     return (
@@ -54,14 +56,21 @@ export function AddByLink({ companies }: { companies: CompanyChoice[] }) {
         </button>
       </div>
 
+      {/* The form stays open and clears itself after a successful add. Closing it hid the
+          result, which made a working add indistinguishable from a silent failure — and
+          adding two roles at one company is the normal case, not the exception. */}
       <form
+        ref={formRef}
         action={(data) =>
           start(async () => {
             const result = await addJobByLink(data);
-            if (result?.error) setError(result.error);
-            else {
+            if (result?.error) {
+              setError(result.error);
+              setMessage(null);
+            } else {
               setError(null);
-              setOpen(false);
+              setMessage(result?.message ?? "Added.");
+              formRef.current?.reset();
             }
           })
         }
@@ -78,6 +87,10 @@ export function AddByLink({ companies }: { companies: CompanyChoice[] }) {
           <input
             name="title"
             required
+            // Prefilled with the target role and city: nearly every link pasted here is one of
+            // these, and typing them again each time is the kind of friction that stops a
+            // tracker being used at all. Both stay editable.
+            defaultValue="Software Engineer 2"
             placeholder="Role title"
             className={cx(inputStyles, "w-56")}
           />
@@ -118,7 +131,8 @@ export function AddByLink({ companies }: { companies: CompanyChoice[] }) {
 
           <input
             name="location"
-            placeholder="Location (optional)"
+            defaultValue="Bangalore"
+            placeholder="Location"
             className={cx(inputStyles, "w-44")}
           />
 
@@ -140,6 +154,9 @@ export function AddByLink({ companies }: { companies: CompanyChoice[] }) {
         </div>
 
         {error && <p className="text-[12px] text-danger">{error}</p>}
+        {message && !error && (
+          <p className="text-[12px] text-fresh">{message}</p>
+        )}
       </form>
     </Card>
   );

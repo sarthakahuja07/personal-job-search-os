@@ -1,5 +1,6 @@
 import Link from "next/link";
 
+import type { ApplicationStatus } from "@/db/schema";
 import type { FitBand, FitSignal } from "@/server/domain/fit";
 import {
   JobActions,
@@ -7,6 +8,7 @@ import {
   type OutreachTemplate,
 } from "./job-actions";
 import { ReadToggle } from "./read-toggle";
+import { StagePicker } from "./stage-picker";
 import { Badge, cx } from "./ui";
 
 const LOCATION_LABEL: Record<number, string> = {
@@ -255,6 +257,11 @@ export function JobCard({
                 Original ↗
               </a>
             )}
+            <StagePicker
+              jobId={job.id}
+              companyId={job.companyId}
+              status={(job.applicationStatus as ApplicationStatus | null) ?? null}
+            />
             <ReadToggle jobId={job.id} read={Boolean(job.readAt)} />
             {posted && <span>Posted {posted}</span>}
             {found && <span>Found {found}</span>}

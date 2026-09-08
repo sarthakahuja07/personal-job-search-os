@@ -81,3 +81,24 @@ describe("guessCompanyFromUrl", () => {
     ).toBeNull();
   });
 });
+
+describe("distinct postings at one company", () => {
+  // Reported: adding a second role at a company that already had one appeared to do nothing.
+  // These are the two links from IBM that prompted it — they must not collapse onto one id.
+  const a = "https://careers.ibm.com/en_IN/careers/JobDetail?jobId=129283&source=WEB_Search_INDIA";
+  const b = "https://careers.ibm.com/en_IN/careers/JobDetail?jobId=127254&source=WEB_Search_INDIA";
+
+  it("keeps two different postings apart", () => {
+    expect(manualExternalId(a)).not.toBe(manualExternalId(b));
+  });
+
+  it("ignores the tracking parameter when deciding identity", () => {
+    expect(manualExternalId(a)).toBe(
+      manualExternalId("https://careers.ibm.com/en_IN/careers/JobDetail?jobId=129283"),
+    );
+  });
+
+  it("keeps the id parameter, which is the identity itself", () => {
+    expect(manualExternalId(a)).toContain("jobId=129283");
+  });
+});

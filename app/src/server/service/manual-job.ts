@@ -1,12 +1,17 @@
 /**
  * Add a job the crawler did not find, from nothing but its link.
  *
- * The crawler covers 28 companies; a referral conversation covers whatever someone sends you.
+ * The crawler covers 29 companies; a referral conversation covers whatever someone sends you.
  * Without this, a link from a friend has to be tracked outside the app entirely, which is how a
  * pipeline quietly stops reflecting reality.
  *
  * Once created, such a job is an ordinary job: it appears on the board, it is scored for fit, and
  * it becomes eligible for reminders. Nothing downstream needs to know it arrived by hand.
+ *
+ * The important behaviour is what happens when the job is *already* known. Pasting a link the
+ * crawler already found must attach to that job rather than create a second copy of it —
+ * otherwise the board grows duplicates, the reminder list counts the same role twice, and
+ * "already applied" stops being answerable.
  */
 
 import { and, eq } from "drizzle-orm";
@@ -26,8 +31,18 @@ export type ManualJobInput = {
   location?: string;
 };
 
+/** What actually happened, so the UI can say so rather than silently succeeding. */
+export type ManualJobOutcome = "created" | "matched_existing" | "already_tracked";
+
 export type ManualJobResult =
-  | { ok: true; jobId: string; companyId: string; created: boolean }
+  | {
+      ok: true;
+      jobId: string;
+      companyId: string;
+      outcome: ManualJobOutcome;
+      title: string;
+      companyName: string;
+    }
   | { ok: false; error: string };
 
 /**
@@ -86,22 +101,70 @@ export async function addManualJob(
   try {
     parsed = new URL(jobUrl);
   } catch {
-    return { ok: false, error: "That does not look like a URL." };
+    return { ok: false, error: "That does not look like a URL — include https://" };
   }
   if (parsed.protocol !== "https:" && parsed.protocol !== "http:") {
     return { ok: false, error: "Only http and https links can be added." };
   }
 
+  const normalized = normalizeJobUrl(jobUrl);
+
+  // Does the crawler already have this posting? Checked by normalised URL across every company,
+  // before any company is resolved or created: the crawler stores the source's own id, so a
+  // company-scoped or external-id lookup would miss it entirely and happily create a duplicate
+  // of a job already on the board.
+  const alreadyKnown = await db
+    .select({
+      id: jobs.id,
+      companyId: jobs.companyId,
+      title: jobs.title,
+      readAt: jobs.readAt,
+      companyName: companies.name,
+    })
+    .from(jobs)
+    .innerJoin(companies, eq(companies.id, jobs.companyId))
+    .where(eq(jobs.normalizedJobUrl, normalized))
+    .limit(1);
+
+  if (alreadyKnown.length) {
+    const found = alreadyKnown[0];
+    // Pasting a link is an act of attention, so the job counts as reviewed. Without this it
+    // would keep showing as "to review" on a board you have demonstrably already worked through.
+    if (!found.readAt) {
+      await db
+        .update(jobs)
+        .set({ readAt: new Date(), updatedAt: new Date() })
+        .where(eq(jobs.id, found.id));
+    }
+    return {
+      ok: true,
+      jobId: found.id,
+      companyId: found.companyId,
+      outcome: "matched_existing",
+      title: found.title,
+      companyName: found.companyName,
+    };
+  }
+
   // Resolve the company: an existing one, or a new manual row for a company we do not track.
   let companyId = input.companyId?.trim() || "";
-  if (!companyId) {
-    const name = (input.companyName ?? "").trim();
-    if (!name) return { ok: false, error: "Pick a company, or type a new one." };
+  let companyName = "";
+  if (companyId) {
+    const rows = await db
+      .select({ name: companies.name })
+      .from(companies)
+      .where(eq(companies.id, companyId))
+      .limit(1);
+    if (!rows.length) return { ok: false, error: "That company no longer exists." };
+    companyName = rows[0].name;
+  } else {
+    companyName = (input.companyName ?? "").trim();
+    if (!companyName) return { ok: false, error: "Pick a company, or type a new one." };
 
     const existing = await db
       .select({ id: companies.id })
       .from(companies)
-      .where(eq(companies.name, name))
+      .where(eq(companies.name, companyName))
       .limit(1);
 
     if (existing.length) {
@@ -112,7 +175,7 @@ export async function addManualJob(
       // returns nothing forever.
       await db.insert(companies).values({
         id: companyId,
-        name,
+        name: companyName,
         careersUrl: `${parsed.origin}/`,
         sourceType: "manual",
         sourceTier: 6,
@@ -122,15 +185,24 @@ export async function addManualJob(
     }
   }
 
+  // A second paste of the same link at the same company. Distinct from matched_existing above,
+  // which is the crawler's copy; this is one you added yourself earlier.
   const externalJobId = manualExternalId(jobUrl);
-  const existingJob = await db
-    .select({ id: jobs.id })
+  const mine = await db
+    .select({ id: jobs.id, title: jobs.title })
     .from(jobs)
     .where(and(eq(jobs.companyId, companyId), eq(jobs.externalJobId, externalJobId)))
     .limit(1);
 
-  if (existingJob.length) {
-    return { ok: true, jobId: existingJob[0].id, companyId, created: false };
+  if (mine.length) {
+    return {
+      ok: true,
+      jobId: mine[0].id,
+      companyId,
+      outcome: "already_tracked",
+      title: mine[0].title,
+      companyName,
+    };
   }
 
   const rulesRows = await db.select({ matchRules: settings.matchRules }).from(settings).limit(1);
@@ -148,7 +220,7 @@ export async function addManualJob(
     title,
     location,
     jobUrl,
-    normalizedJobUrl: normalizeJobUrl(jobUrl),
+    normalizedJobUrl: normalized,
     source: "manual",
     // A job you added by hand is one you have already decided is worth tracking, so it is
     // relevant regardless of what the title rules make of it. The match verdict is still stored
@@ -164,7 +236,9 @@ export async function addManualJob(
     fitSignals: fit.signals,
     fitTitleOnly: fit.titleOnly,
     discoveredAt: new Date(),
+    // Added deliberately, so it is reviewed by definition.
+    readAt: new Date(),
   });
 
-  return { ok: true, jobId, companyId, created: true };
+  return { ok: true, jobId, companyId, outcome: "created", title, companyName };
 }
