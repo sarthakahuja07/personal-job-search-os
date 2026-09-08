@@ -4,7 +4,6 @@ import { CompanyGroup } from "@/components/company-group";
 import { JobCard, type JobRow } from "@/components/job-card";
 import { Badge, Card, EmptyState, PageHeader, SectionTitle, Stat } from "@/components/ui";
 import { ReminderList } from "@/components/reminder-list";
-import { listTemplates } from "@/server/repository/templates-repo";
 import { getDb } from "@/db";
 import { settings } from "@/db/schema";
 import {
@@ -46,17 +45,15 @@ const RECENT_DAYS = 3;
 
 export default async function DashboardPage() {
   const db = getDb();
-  const [stats, top, health, recent, reminderRows, settingsRows, contacts, templates, resumeRows] =
+  const [stats, top, health, recent, reminderRows, settingsRows, contacts] =
     await Promise.all([
     jobStats(db),
-    listJobs(db, { sort: "best", limit: 6 }),
+    listJobs(db, { sort: "best", limit: 6, unreadOnly: true }),
     listCompanyHealth(db),
     listRecentlyDiscovered(db, RECENT_DAYS, 40),
     listReminderCandidates(db),
     db.select({ followUpDays: settings.followUpDays }).from(settings).limit(1),
     contactsByCompany(db),
-    listTemplates(db),
-    db.select({ resumeUrl: settings.resumeUrl }).from(settings).limit(1),
   ]);
 
   const reminders = buildReminders(
@@ -71,14 +68,8 @@ export default async function DashboardPage() {
   // The same outreach payload the job board passes down, so a card behaves identically wherever
   // it appears. A card that acts differently depending on the page is a card you have to think
   // about before clicking.
-  const outreachDefaults = {
-    resume_link: resumeRows[0]?.resumeUrl ?? "",
-    your_name: "Sarthak",
-  };
   const outreachFor = (companyId: string) => ({
-    contacts: contacts.get(companyId) ?? [],
-    templates,
-    defaults: outreachDefaults,
+    contactCount: (contacts.get(companyId) ?? []).length,
   });
 
   // The same company stacks as the board, so "what arrived" reads the way "what is open" does:
@@ -209,6 +200,7 @@ export default async function DashboardPage() {
                 companyId={g.id}
                 companyName={g.name}
                 jobs={g.jobs}
+                maxVisible={3}
                 outreach={outreachFor(g.id)}
                 contactNames={(contacts.get(g.id) ?? []).map((c) => c.name)}
               />

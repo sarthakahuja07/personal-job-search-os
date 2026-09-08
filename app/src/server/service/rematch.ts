@@ -13,7 +13,7 @@
 import { eq, inArray } from "drizzle-orm";
 
 import type { Db } from "@/db";
-import { jobs, settings } from "@/db/schema";
+import { companies, jobs, settings } from "@/db/schema";
 import { scoreFit, type FitBand, type FitSignal } from "../domain/fit";
 import { matchJob, DEFAULT_MATCH_RULES } from "../domain/matching";
 
@@ -42,8 +42,13 @@ export async function rematchJobs(db: Db, maxUpdates = 40): Promise<RematchResul
       isRelevant: jobs.isRelevant,
       matchScore: jobs.matchScore,
       fitScore: jobs.fitScore,
+      // Re-matching must apply the same company vocabulary ingest does. Without it this
+      // silently demoted every role that only qualifies through its company's ladder -- it
+      // marked all three Confluent Bangalore matches irrelevant on its first run.
+      matchOverrides: companies.matchOverrides,
     })
-    .from(jobs);
+    .from(jobs)
+    .innerJoin(companies, eq(companies.id, jobs.companyId));
 
   type Change = {
     id: string;
@@ -65,6 +70,7 @@ export async function rematchJobs(db: Db, maxUpdates = 40): Promise<RematchResul
     const m = matchJob(
       { title: row.title, location: row.location, description: row.description },
       rules,
+      row.matchOverrides,
     );
     const fit = scoreFit({
       title: row.title,

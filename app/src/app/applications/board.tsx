@@ -10,6 +10,14 @@ import type { BoardCard } from "@/server/repository/applications-repo";
 import { moveCard, removeCard } from "./actions";
 
 /**
+ * How far a pointer must travel before a press counts as a drag rather than a tap.
+ *
+ * Small enough that dragging feels immediate, large enough to survive the few pixels a finger
+ * moves while tapping — which is the whole reason a link on a draggable card still works.
+ */
+const DRAG_THRESHOLD_PX = 6;
+
+/**
  * The pipeline board.
  *
  * Dragging uses Pointer Events rather than HTML5 drag-and-drop. HTML5 DnD does not fire at all
@@ -17,8 +25,11 @@ import { moveCard, removeCard } from "./actions";
  * that menu was hidden behind `group-hover`, which a touch device never triggers. The result was
  * a board that looked draggable, wasn't, and hid its own fallback.
  *
- * Only the grip handle starts a drag, and it sets `touch-action: none` so the browser does not
- * claim the gesture for scrolling. Everything else on the card stays selectable and tappable.
+ * The whole card body is the drag surface — a grip handle alone was too small a target on a
+ * touch screen. Links on the card still work because a press only becomes a drag after the
+ * pointer travels past a threshold; below it, the tap goes through as normal. `touch-action:
+ * none` on that surface stops the browser claiming the gesture for scrolling, and the stage
+ * menu and Remove sit outside it so they stay ordinary controls.
  *
  * Moves are optimistic. Waiting for a round trip before the card visibly moves makes dragging
  * feel broken, and the failure mode is benign -- a rejected move simply reverts on refresh.
@@ -30,6 +41,16 @@ export function Board({ cards }: { cards: BoardCard[] }) {
   const [dragging, setDragging] = useState<string | null>(null);
   const [over, setOver] = useState<ApplicationStatus | null>(null);
   const rootRef = useRef<HTMLDivElement>(null);
+  /**
+   * A press that has not moved far enough to count as a drag yet.
+   *
+   * This is what lets the whole card be a drag target without breaking the links on it: a press
+   * is only claimed as a drag once the pointer travels past a threshold, so a tap still opens
+   * the company or the role. A grip handle alone was too small to hit on a touch screen.
+   */
+  const press = useRef<{ id: string; x: number; y: number; dragged: boolean } | null>(null);
+  /** Set for one tick after a drag, to swallow the click the release would otherwise fire. */
+  const justDragged = useRef(false);
 
   const visible = cards.filter((c) => !removed.has(c.id));
   const stageOf = (card: BoardCard) => optimistic[card.id] ?? card.status;
@@ -55,34 +76,62 @@ export function Board({ cards }: { cards: BoardCard[] }) {
   // Pointer capture is deliberately not used: capturing to the handle stops elementFromPoint
   // from reporting the column underneath, which is exactly what the drop target depends on.
   useEffect(() => {
-    if (!dragging) return;
-
-    const card = visible.find((c) => c.id === dragging);
     const onMove = (e: PointerEvent) => {
+      const p = press.current;
+      if (!p) return;
+
+      if (!p.dragged) {
+        // Below the threshold this is still a tap in progress; claiming it early would stop
+        // links working, and claiming it never would leave the card undraggable.
+        if (Math.hypot(e.clientX - p.x, e.clientY - p.y) < DRAG_THRESHOLD_PX) return;
+        p.dragged = true;
+        setDragging(p.id);
+      }
+
       e.preventDefault();
       setOver(stageAt(e.clientX, e.clientY));
     };
+
     const onUp = (e: PointerEvent) => {
+      const p = press.current;
+      press.current = null;
+      if (!p?.dragged) return;
+
+      const card = visible.find((c) => c.id === p.id);
       const target = stageAt(e.clientX, e.clientY);
+      justDragged.current = true;
       setDragging(null);
       setOver(null);
       if (card && target) move(card, target);
     };
+
     const onCancel = () => {
+      press.current = null;
       setDragging(null);
       setOver(null);
+    };
+
+    // A drag that finishes over a link would otherwise fire that link's click on release.
+    const onClick = (e: MouseEvent) => {
+      if (justDragged.current) {
+        e.preventDefault();
+        e.stopPropagation();
+        justDragged.current = false;
+      }
     };
 
     window.addEventListener("pointermove", onMove, { passive: false });
     window.addEventListener("pointerup", onUp);
     window.addEventListener("pointercancel", onCancel);
+    window.addEventListener("click", onClick, true);
     return () => {
       window.removeEventListener("pointermove", onMove);
       window.removeEventListener("pointerup", onUp);
       window.removeEventListener("pointercancel", onCancel);
+      window.removeEventListener("click", onClick, true);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [dragging, visible]);
+  }, [visible]);
 
   return (
     <div
@@ -124,22 +173,28 @@ export function Board({ cards }: { cards: BoardCard[] }) {
                       : "hover:border-line-strong",
                   )}
                 >
-                  <div className="flex items-start gap-1.5 px-2 py-2.5">
-                    {/* The only draggable thing on the card. touch-action:none tells the browser
-                        this gesture is ours, so an iPad drags instead of scrolling; keeping it
-                        off the rest of the card means text and links stay usable. */}
-                    <button
-                      type="button"
-                      aria-label={`Drag ${card.companyName} — ${card.jobTitle}`}
-                      onPointerDown={(e) => {
-                        if (e.button !== 0 && e.pointerType === "mouse") return;
-                        e.preventDefault();
-                        setDragging(card.id);
-                      }}
-                      className="mt-0.5 shrink-0 cursor-grab touch-none select-none rounded px-1 text-[13px] leading-none text-ink-faint transition hover:text-ink-dim active:cursor-grabbing"
+                  {/* The whole body is the drag surface. touch-action:none tells the browser the
+                      gesture is ours so an iPad drags instead of scrolling, and select-none stops
+                      a long press turning into a text selection — the two things that made this
+                      fight back on a tablet. */}
+                  <div
+                    onPointerDown={(e) => {
+                      if (e.pointerType === "mouse" && e.button !== 0) return;
+                      press.current = {
+                        id: card.id,
+                        x: e.clientX,
+                        y: e.clientY,
+                        dragged: false,
+                      };
+                    }}
+                    className="flex touch-none select-none items-start gap-1.5 px-2 py-2.5 cursor-grab active:cursor-grabbing"
+                  >
+                    <span
+                      aria-hidden
+                      className="mt-0.5 shrink-0 px-1 text-[13px] leading-none text-ink-faint"
                     >
                       ⠿
-                    </button>
+                    </span>
 
                     <div className="min-w-0 flex-1">
                       {/* Company first: the board is read company-by-company — that is how a

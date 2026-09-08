@@ -64,6 +64,13 @@
       "when": 1788848196324,
       "tag": "0008_faithful_pestilence",
       "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "6",
+      "when": 1788878154207,
+      "tag": "0009_rare_machine_man",
+      "breakpoints": true
     }
   ]
 }

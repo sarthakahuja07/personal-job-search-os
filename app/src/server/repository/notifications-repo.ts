@@ -9,10 +9,10 @@
  * See docs/decisions/007-ingest-boundary-and-notification-outbox.md.
  */
 
-import { and, asc, eq, inArray, lt, sql } from "drizzle-orm";
+import { and, asc, eq, inArray, lt, sql, desc, isNull, or } from "drizzle-orm";
 
 import type { Db } from "@/db";
-import { companies, jobs, notifications, settings } from "@/db/schema";
+import { companies, jobs, notifications, settings, emailDigests } from "@/db/schema";
 
 /** Give up after this many delivery attempts so a poison row cannot block the queue forever. */
 export const MAX_ATTEMPTS = 5;
@@ -54,6 +54,15 @@ export async function listPending(db: Db, limit = 100): Promise<PendingNotificat
       and(
         eq(notifications.status, "pending"),
         lt(notifications.attempts, MAX_ATTEMPTS),
+        // Re-check relevance at send time, not only at queue time. Match rules are data and can
+        // change in between -- a Canadian role queued before the location list learned about
+        // "CA Remote Ontario" was still sitting here, ready to be emailed with a score of 0 and
+        // its own rejection printed underneath it. The job row being absent still drains, so a
+        // deleted job cannot wedge the queue.
+        or(
+          isNull(jobs.id),
+          and(eq(jobs.isRelevant, true), isNull(jobs.closedAt)),
+        ),
       ),
     )
     .orderBy(asc(notifications.createdAt))
@@ -128,5 +137,26 @@ export async function listRecent(db: Db, limit = 50) {
     .leftJoin(jobs, eq(jobs.id, notifications.entityId))
     .leftJoin(companies, eq(companies.id, jobs.companyId))
     .orderBy(sql`${notifications.createdAt} DESC`)
+    .limit(limit);
+}
+
+/**
+ * The digest emails actually sent, newest first.
+ *
+ * One row per email rather than per notification: a digest covering sixteen jobs is one thing
+ * that arrived in the inbox, and that is the unit worth reviewing.
+ */
+export async function listDigests(db: Db, limit = 60) {
+  return db
+    .select({
+      id: emailDigests.id,
+      subject: emailDigests.subject,
+      bodyText: emailDigests.bodyText,
+      recipient: emailDigests.recipient,
+      notificationCount: emailDigests.notificationCount,
+      sentAt: emailDigests.sentAt,
+    })
+    .from(emailDigests)
+    .orderBy(desc(emailDigests.sentAt))
     .limit(limit);
 }

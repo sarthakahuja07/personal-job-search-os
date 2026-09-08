@@ -1,16 +1,15 @@
 import Link from "next/link";
 
 import { CompanyGroup } from "@/components/company-group";
+import { ReadSection } from "@/components/read-section";
 import { JobCard, type JobRow } from "@/components/job-card";
 import { EmptyState, PageHeader, cx } from "@/components/ui";
 import { getDb } from "@/db";
-import { settings } from "@/db/schema";
 import {
   companiesWithJobs,
   contactsByCompany,
   listJobs,
 } from "@/server/repository/jobs-repo";
-import { listTemplates } from "@/server/repository/templates-repo";
 import { CompanySearch } from "./company-search";
 
 export const dynamic = "force-dynamic";
@@ -43,7 +42,7 @@ export default async function JobsPage({
   const grouped = params.flat !== "1";
   const db = getDb();
 
-  const [jobs, companyOptions, contacts, templates, settingsRows] = await Promise.all([
+  const [jobs, companyOptions, contacts] = await Promise.all([
     listJobs(db, {
       companyId: params.company,
       query: params.q,
@@ -55,20 +54,18 @@ export default async function JobsPage({
     }) as unknown as Promise<JobRow[]>,
     companiesWithJobs(db, relevantOnly),
     contactsByCompany(db),
-    listTemplates(db),
-    db.select({ resumeUrl: settings.resumeUrl }).from(settings).limit(1),
   ]);
 
-  const defaults = {
-    resume_link: settingsRows[0]?.resumeUrl ?? "",
-    your_name: "Sarthak",
-  };
+  // Read jobs leave the board and collect in their own folded section. Greying them in place
+  // meant the list never got shorter however much you worked through it.
+  const active = jobs.filter((j) => !j.readAt);
+  const read = jobs.filter((j) => j.readAt);
 
   // Grouped by company, each group ordered by fit. Company order is by its best role, so the
   // company most worth a referral ask today is at the top rather than whichever is alphabetically
   // first.
   const groups = new Map<string, { name: string; jobs: JobRow[] }>();
-  for (const job of jobs) {
+  for (const job of active) {
     const g = groups.get(job.companyId);
     if (g) g.jobs.push(job);
     else groups.set(job.companyId, { name: job.companyName, jobs: [job] });
@@ -89,7 +86,7 @@ export default async function JobsPage({
     return s ? `/jobs?${s}` : "/jobs";
   };
 
-  const untouchedTotal = jobs.filter((j) => !j.readAt && !j.applicationStatus).length;
+  const untouchedTotal = active.filter((j) => !j.applicationStatus).length;
   const companyName = params.company ? jobs[0]?.companyName : undefined;
   const filtered = Boolean(
     params.company || params.q || newOnly || unreadOnly || !relevantOnly,
@@ -104,9 +101,7 @@ export default async function JobsPage({
     );
 
   const outreachFor = (companyId: string) => ({
-    contacts: contacts.get(companyId) ?? [],
-    templates,
-    defaults,
+    contactCount: (contacts.get(companyId) ?? []).length,
   });
 
   return (
@@ -221,6 +216,11 @@ export default async function JobsPage({
         />
       ) : grouped ? (
         <div className="space-y-3">
+          {ordered.length === 0 && read.length > 0 && (
+            <p className="rounded-card border border-dashed border-line px-4 py-6 text-center text-[13px] text-ink-dim">
+              Everything here has been reviewed.
+            </p>
+          )}
           {ordered.map((g) => (
             <CompanyGroup
               key={g.id}
@@ -229,15 +229,21 @@ export default async function JobsPage({
               jobs={g.jobs}
               outreach={outreachFor(g.id)}
               contactNames={(contacts.get(g.id) ?? []).map((c) => c.name)}
+              // Already looking at one company? Then show everything it has.
+              maxVisible={params.company ? undefined : 6}
             />
           ))}
+          <ReadSection jobs={read} />
         </div>
       ) : (
-        <ul className="space-y-2">
-          {jobs.map((job) => (
-            <JobCard key={job.id} job={job} outreach={outreachFor(job.companyId)} />
-          ))}
-        </ul>
+        <div>
+          <ul className="space-y-2">
+            {active.map((job) => (
+              <JobCard key={job.id} job={job} outreach={outreachFor(job.companyId)} />
+            ))}
+          </ul>
+          <ReadSection jobs={read} />
+        </div>
       )}
     </div>
   );

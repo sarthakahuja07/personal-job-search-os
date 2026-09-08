@@ -5,7 +5,20 @@
  * per row. A list endpoint returning 50 jobs must never issue 50 company queries.
  */
 
-import { and, asc, count, desc, eq, gte, isNull, like, or, sql } from "drizzle-orm";
+import {
+  and,
+  asc,
+  count,
+  desc,
+  eq,
+  gte,
+  inArray,
+  isNotNull,
+  isNull,
+  like,
+  or,
+  sql,
+} from "drizzle-orm";
 
 import type { Db } from "@/db";
 import { applications, companies, contacts, jobs } from "@/db/schema";
@@ -323,7 +336,17 @@ export async function listRecentlyDiscovered(db: Db, days = 3, limit = 12) {
     .from(jobs)
     .innerJoin(companies, eq(jobs.companyId, companies.id))
     .leftJoin(applications, eq(applications.jobId, jobs.id))
-    .where(and(isNull(jobs.closedAt), eq(jobs.isRelevant, true), gte(jobs.discoveredAt, since)))
+    .where(
+      and(
+        isNull(jobs.closedAt),
+        eq(jobs.isRelevant, true),
+        gte(jobs.discoveredAt, since),
+        // Marking a job read removes it from here. The dashboard answers "what needs me now",
+        // so a role you have already looked at and passed on is finished business — leaving it
+        // would mean the list never shrinks no matter how much you work through.
+        isNull(jobs.readAt),
+      ),
+    )
     .orderBy(desc(jobs.fitScore), desc(jobs.discoveredAt))
     .limit(limit);
 }
@@ -355,7 +378,23 @@ export async function listReminderCandidates(db: Db, limit = 200) {
     .from(jobs)
     .innerJoin(companies, eq(jobs.companyId, companies.id))
     .leftJoin(applications, eq(applications.jobId, jobs.id))
-    .where(and(isNull(jobs.closedAt), eq(jobs.isRelevant, true)))
+    .where(
+      and(
+        isNull(jobs.closedAt),
+        eq(jobs.isRelevant, true),
+        // Only rows that could conceivably produce a reminder. This runs on every page load to
+        // draw the nav badge, so scanning every relevant job was the floor under every tab
+        // switch. It filters by *shape* -- in the pipeline, or an untouched strong match --
+        // never by threshold, so the rules stay the domain's business and cannot drift here.
+        or(
+          isNotNull(applications.status),
+          and(
+            isNull(jobs.readAt),
+            inArray(jobs.fitBand, ["excellent", "strong"]),
+          ),
+        ),
+      ),
+    )
     .orderBy(desc(jobs.fitScore))
     .limit(limit);
 }

@@ -1,6 +1,7 @@
-import { Badge, Card, EmptyState, PageHeader, cx } from "@/components/ui";
+import { Badge, Card, EmptyState, PageHeader, SectionTitle, cx } from "@/components/ui";
 import { getDb } from "@/db";
-import { listRecent } from "@/server/repository/notifications-repo";
+import { listDigests, listRecent } from "@/server/repository/notifications-repo";
+import { DigestList } from "./digest-list";
 
 export const dynamic = "force-dynamic";
 
@@ -21,7 +22,8 @@ function when(date: Date | null): string {
 }
 
 export default async function NotificationsPage() {
-  const rows = await listRecent(getDb(), 100);
+  const db = getDb();
+  const [rows, digests] = await Promise.all([listRecent(db, 100), listDigests(db)]);
   const pending = rows.filter((r) => r.status === "pending").length;
   const sent = rows.filter((r) => r.status === "sent").length;
 
@@ -37,6 +39,23 @@ export default async function NotificationsPage() {
         }
       />
 
+      {/* What actually arrived, day by day. The queue below is the plumbing; this is the mail. */}
+      <SectionTitle>Emails sent</SectionTitle>
+      {digests.length === 0 ? (
+        <Card className="mb-6 px-4 py-3.5">
+          <p className="text-[12px] leading-relaxed text-ink-dim">
+            No digest has been recorded yet. Emails sent before this page existed were delivered
+            but not kept — the next scheduled send (06:30 or 18:30 IST) will appear here in full,
+            subject and body exactly as it went out.
+          </p>
+        </Card>
+      ) : (
+        <div className="mb-6">
+          <DigestList digests={digests} />
+        </div>
+      )}
+
+      <SectionTitle>Queue</SectionTitle>
       <Card className="mb-5 px-4 py-3">
         <p className="text-xs leading-relaxed text-ink-dim">
           Queued when a crawl finds a new matching role, then sent as one digest by the

@@ -20,14 +20,25 @@ export type OutreachContact = {
 
 export type OutreachTemplate = { id: string; name: string; body: string };
 
-export type JobActionsProps = {
-  jobTitle: string;
-  jobUrl: string;
-  companyName: string;
+export type Outreach = {
   contacts: OutreachContact[];
   templates: OutreachTemplate[];
   /** resume_link and your_name from Settings; everything else is derived from the job. */
   defaults: Record<string, string>;
+};
+
+export type JobActionsProps = {
+  jobTitle: string;
+  jobUrl: string;
+  companyName: string;
+  companyId: string;
+  /**
+   * Only the count travels with the card. The payload itself is fetched when the modal opens:
+   * because the modal is a client component, passing it as props serialised every contact and
+   * every template body once per card — 200 copies on a full board, which is what made the job
+   * page a 1.8 MB response.
+   */
+  contactCount: number;
 };
 
 const btn =
@@ -45,11 +56,26 @@ export function JobActions({
   jobTitle,
   jobUrl,
   companyName,
-  contacts,
-  templates,
-  defaults,
+  companyId,
+  contactCount,
 }: JobActionsProps) {
   const [open, setOpen] = useState(false);
+  const [outreach, setOutreach] = useState<Outreach | null>(null);
+  const [loading, setLoading] = useState(false);
+
+  async function openModal() {
+    setOpen(true);
+    if (outreach) return;
+    setLoading(true);
+    try {
+      const r = await fetch(`/api/companies/${companyId}/outreach`);
+      setOutreach(await r.json());
+    } catch {
+      setOutreach({ contacts: [], templates: [], defaults: {} });
+    } finally {
+      setLoading(false);
+    }
+  }
 
   return (
     <>
@@ -63,21 +89,21 @@ export function JobActions({
       </a>
       <button
         type="button"
-        onClick={() => setOpen(true)}
-        disabled={contacts.length === 0}
+        onClick={openModal}
+        disabled={contactCount === 0}
         title={
-          contacts.length === 0
+          contactCount === 0
             ? `No referral contact saved for ${companyName}`
             : `Message a contact at ${companyName}`
         }
         className={cx(
           btn,
-          contacts.length === 0
+          contactCount === 0
             ? "cursor-not-allowed border-line bg-surface-2 text-ink-faint/60"
             : "border-accent/40 bg-accent-soft text-accent-ink hover:border-accent",
         )}
       >
-        Message{contacts.length > 1 ? ` (${contacts.length})` : ""}
+        Message{contactCount > 1 ? ` (${contactCount})` : ""}
       </button>
 
       {open && (
@@ -86,9 +112,10 @@ export function JobActions({
           jobTitle={jobTitle}
           jobUrl={jobUrl}
           companyName={companyName}
-          contacts={contacts}
-          templates={templates}
-          defaults={defaults}
+          loading={loading}
+          contacts={outreach?.contacts ?? []}
+          templates={outreach?.templates ?? []}
+          defaults={outreach?.defaults ?? {}}
         />
       )}
     </>
@@ -103,7 +130,14 @@ function OutreachModal({
   contacts,
   templates,
   defaults,
-}: JobActionsProps & { onClose: () => void }) {
+  loading,
+}: Outreach & {
+  onClose: () => void;
+  jobTitle: string;
+  jobUrl: string;
+  companyName: string;
+  loading: boolean;
+}) {
   const [contactId, setContactId] = useState(contacts[0]?.id ?? "");
   const [templateId, setTemplateId] = useState(templates[0]?.id ?? "");
   const [edited, setEdited] = useState<string | null>(null);
@@ -175,7 +209,11 @@ function OutreachModal({
           </button>
         </div>
 
-        <div className="space-y-3 px-4 py-3.5">
+        {loading && (
+          <p className="px-4 py-6 text-center text-[12px] text-ink-faint">Loading…</p>
+        )}
+
+        <div className={cx("space-y-3 px-4 py-3.5", loading && "hidden")}>
           <div>
             <p className="mb-1.5 text-[11px] font-medium uppercase tracking-wide text-ink-faint">
               Contact
@@ -251,7 +289,7 @@ function OutreachModal({
           </div>
         </div>
 
-        <div className="flex flex-wrap items-center gap-2 border-t border-line px-4 py-3">
+        <div className={cx("flex flex-wrap items-center gap-2 border-t border-line px-4 py-3", loading && "hidden")}>
           {wa && (
             <a href={wa} target="_blank" rel="noopener noreferrer"
               className={cx(btn, "border-fresh/40 bg-fresh-soft text-fresh hover:border-fresh")}>

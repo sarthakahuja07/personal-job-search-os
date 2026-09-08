@@ -386,6 +386,28 @@ export const notifications = sqliteTable(
 // them takes effect immediately with no crawler redeploy.
 // ---------------------------------------------------------------------------
 
+/**
+ * A digest email exactly as it was sent.
+ *
+ * The notifications table records *what was queued*; this records *what landed in the inbox* —
+ * the real subject line, the real body, the recipient and the moment it went out. Reconstructing
+ * that from the notification rows would be a guess that drifts the first time the template
+ * changes, and "what did that 06:30 email actually say" is precisely the question this needs to
+ * answer.
+ */
+export const emailDigests = sqliteTable("email_digests", {
+  id: text("id").primaryKey().$defaultFn(uuid),
+  subject: text("subject").notNull(),
+  bodyText: text("body_text").notNull(),
+  recipient: text("recipient"),
+  /** How many notifications this one email covered. */
+  notificationCount: integer("notification_count").notNull().default(0),
+  sentAt: integer("sent_at", { mode: "timestamp_ms" }).notNull(),
+  createdAt: createdAt(),
+});
+
+export type EmailDigest = typeof emailDigests.$inferSelect;
+
 export const settings = sqliteTable("settings", {
   id: integer("id").primaryKey().default(1),
 

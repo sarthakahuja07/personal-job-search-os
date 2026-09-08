@@ -22,6 +22,7 @@ export function CompanyGroup({
   outreach,
   contactNames,
   defaultOpen,
+  maxVisible,
 }: {
   companyId: string;
   companyName: string;
@@ -30,12 +31,23 @@ export function CompanyGroup({
   contactNames: string[];
   /** Overrides the default, which collapses a company you have already worked through. */
   defaultOpen?: boolean;
+  /**
+   * Cards to render before linking out to the company's own view.
+   *
+   * Amazon alone accounts for 163 of ~200 open matches, and every rendered card is markup React
+   * has to serialise into the page — 200 of them was 875 KB of flight payload and the reason
+   * changing tabs felt slow. Showing the best few and linking to the rest keeps the board a
+   * summary, which is what it is for.
+   */
+  maxVisible?: number;
 }) {
   const best = jobs[0]?.fitScore ?? 0;
   const newCount = jobs.filter((j) => isRecent(j.discoveredAt)).length;
   // Untouched: neither read nor in the pipeline. This is the number that says whether the
   // company still needs your attention, so it leads and the total follows.
   const untouched = jobs.filter((j) => !j.readAt && !j.applicationStatus).length;
+  const shown = maxVisible ? jobs.slice(0, maxVisible) : jobs;
+  const hidden = jobs.length - shown.length;
 
   return (
     <section
@@ -94,9 +106,19 @@ export function CompanyGroup({
         }
       >
         <ul className="space-y-1.5 px-1.5 pb-1.5">
-          {jobs.map((job) => (
+          {shown.map((job) => (
             <JobCard key={job.id} job={job} outreach={outreach} />
           ))}
+          {hidden > 0 && (
+            <li>
+              <Link
+                href={`/jobs?company=${companyId}`}
+                className="block rounded-md border border-dashed border-line px-3 py-2 text-center text-[12px] text-ink-dim transition hover:border-line-strong hover:text-ink"
+              >
+                View all {jobs.length} at {companyName} →
+              </Link>
+            </li>
+          )}
         </ul>
       </Collapsible>
     </section>

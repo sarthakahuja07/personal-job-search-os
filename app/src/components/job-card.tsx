@@ -2,11 +2,7 @@ import Link from "next/link";
 
 import type { ApplicationStatus } from "@/db/schema";
 import type { FitBand, FitSignal } from "@/server/domain/fit";
-import {
-  JobActions,
-  type OutreachContact,
-  type OutreachTemplate,
-} from "./job-actions";
+import { JobActions } from "./job-actions";
 import { ReadToggle } from "./read-toggle";
 import { StagePicker } from "./stage-picker";
 import { Badge, cx } from "./ui";
@@ -106,12 +102,13 @@ function bandOf(job: JobRow) {
   return job.fitBand ? BAND[job.fitBand] : BAND.fair;
 }
 
-/** Passed down from the page so the modal needs no round trip when it opens. */
-export type OutreachProps = {
-  contacts: OutreachContact[];
-  templates: OutreachTemplate[];
-  defaults: Record<string, string>;
-};
+/**
+ * Only how many contacts exist, never the contacts themselves.
+ *
+ * The modal is a client component, so anything handed to it here is serialised once per card.
+ * A count is a number; the contact list and every template body was 1.8 MB across a full board.
+ */
+export type OutreachProps = { contactCount: number };
 
 export function JobCard({
   job,
@@ -243,9 +240,8 @@ export function JobCard({
                 jobTitle={job.title}
                 jobUrl={job.jobUrl}
                 companyName={job.companyName}
-                contacts={outreach.contacts}
-                templates={outreach.templates}
-                defaults={outreach.defaults}
+                companyId={job.companyId}
+                contactCount={outreach.contactCount}
               />
             ) : (
               <a

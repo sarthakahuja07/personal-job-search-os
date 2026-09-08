@@ -58,12 +58,32 @@ def fetch_outbox() -> dict[str, Any]:
     return r.json()
 
 
-def confirm(sent_ids: list[str], failed_ids: list[str], error: str | None) -> None:
+def confirm(
+    sent_ids: list[str],
+    failed_ids: list[str],
+    error: str | None,
+    subject: str | None = None,
+    body: str | None = None,
+    recipient: str | None = None,
+) -> None:
+    """Confirm delivery, and hand back the email itself so the app can keep a copy.
+
+    The app stores what was queued; only the drainer knows what was actually rendered and sent.
+    Passing it back is the difference between "what did the 06:30 email say" being answerable
+    and being a reconstruction.
+    """
     base, headers = _api()
     r = httpx.post(
         f"{base}/api/notifications/delivered",
         headers=headers,
-        json={"sent_ids": sent_ids, "failed_ids": failed_ids, "error": error},
+        json={
+            "sent_ids": sent_ids,
+            "failed_ids": failed_ids,
+            "error": error,
+            "subject": subject,
+            "body": body,
+            "recipient": recipient,
+        },
         timeout=60,
     )
     r.raise_for_status()
@@ -230,7 +250,7 @@ def run(dry_run: bool = False) -> int:
         confirm([], ids, f"{type(exc).__name__}: {exc}"[:400])
         return 1
 
-    confirm(ids, [], None)
+    confirm(ids, [], None, subject=subject, body=text, recipient=to)
     log.info("notify.sent", to=to, notifications=len(ids), subject=subject)
     return 0
 
