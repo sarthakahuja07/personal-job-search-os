@@ -21,7 +21,6 @@ type Search = {
   all?: string;
   new?: string;
   flat?: string;
-  untouched?: string;
 };
 
 const SORTS = [
@@ -38,7 +37,6 @@ export default async function JobsPage({
   const params = await searchParams;
   const relevantOnly = params.all !== "1";
   const newOnly = params.new === "1";
-  const unreadOnly = params.untouched === "1";
   const grouped = params.flat !== "1";
   const db = getDb();
 
@@ -46,14 +44,16 @@ export default async function JobsPage({
   // "everything" and splitting it in memory meant that once 150 jobs were read, only 50 unread
   // ones were left in the page — the board would quietly shrink as you worked, for the wrong
   // reason.
-  const [active, read, companyOptions, contacts] = await Promise.all([
+  const [active, handled, companyOptions, contacts] = await Promise.all([
     listJobs(db, {
       companyId: params.company,
       query: params.q,
       relevantOnly,
       newOnly,
-      unreadOnly,
-      readOnly: false,
+      // Always exclude what has been dealt with. Passing `readOnly: false` here filtered
+      // nothing, so a job marked read stayed on the board greyed out *and* appeared in the
+      // section below it — dimmed rather than moved, which is not what marking it read means.
+      unreadOnly: true,
       sort: (params.sort as "best") ?? "best",
       limit: 150,
     }) as unknown as Promise<JobRow[]>,
@@ -61,7 +61,7 @@ export default async function JobsPage({
       companyId: params.company,
       query: params.q,
       relevantOnly,
-      readOnly: true,
+      handledOnly: true,
       sort: (params.sort as "best") ?? "best",
       limit: 60,
     }) as unknown as Promise<JobRow[]>,
@@ -98,7 +98,7 @@ export default async function JobsPage({
   const untouchedTotal = active.filter((j) => !j.applicationStatus).length;
   const companyName = params.company ? jobs[0]?.companyName : undefined;
   const filtered = Boolean(
-    params.company || params.q || newOnly || unreadOnly || !relevantOnly,
+    params.company || params.q || newOnly || !relevantOnly,
   );
 
   const chip = (active: boolean) =>
@@ -120,10 +120,9 @@ export default async function JobsPage({
         subtitle={
           <>
             <span className="tnum text-ink">{untouchedTotal}</span> to review
-            <span className="text-ink-faint">
-              {" "}
-              of {jobs.length} {relevantOnly ? "matching" : "total"}
-            </span>
+            {handled.length > 0 && (
+              <span className="text-ink-faint"> · {handled.length} handled</span>
+            )}
             {companyName ? (
               <> at {companyName}</>
             ) : (
@@ -145,7 +144,6 @@ export default async function JobsPage({
             Object.entries({
               company: params.company,
               new: newOnly ? "1" : undefined,
-              untouched: unreadOnly ? "1" : undefined,
               all: relevantOnly ? undefined : "1",
               sort: params.sort,
               flat: params.flat,
@@ -156,7 +154,6 @@ export default async function JobsPage({
           {params.company && <input type="hidden" name="company" value={params.company} />}
           {params.q && <input type="hidden" name="q" value={params.q} />}
           {newOnly && <input type="hidden" name="new" value="1" />}
-          {unreadOnly && <input type="hidden" name="untouched" value="1" />}
           {!relevantOnly && <input type="hidden" name="all" value="1" />}
           {!grouped && <input type="hidden" name="flat" value="1" />}
           <select
@@ -180,12 +177,6 @@ export default async function JobsPage({
       </div>
 
       <div className="mb-5 flex flex-wrap items-center gap-2">
-        <Link
-          href={qs({ untouched: unreadOnly ? undefined : "1" })}
-          className={chip(unreadOnly)}
-        >
-          Not yet reviewed
-        </Link>
         <Link href={qs({ new: newOnly ? undefined : "1" })} className={chip(newOnly)}>
           New only
         </Link>
@@ -225,7 +216,7 @@ export default async function JobsPage({
         />
       ) : grouped ? (
         <div className="space-y-3">
-          {ordered.length === 0 && read.length > 0 && (
+          {ordered.length === 0 && handled.length > 0 && (
             <p className="rounded-card border border-dashed border-line px-4 py-6 text-center text-[13px] text-ink-dim">
               Everything here has been reviewed.
             </p>
@@ -242,7 +233,7 @@ export default async function JobsPage({
               maxVisible={params.company ? undefined : 6}
             />
           ))}
-          <ReadSection jobs={read} />
+          <ReadSection jobs={handled} />
         </div>
       ) : (
         <div>
@@ -251,7 +242,7 @@ export default async function JobsPage({
               <JobCard key={job.id} job={job} outreach={outreachFor(job.companyId)} />
             ))}
           </ul>
-          <ReadSection jobs={read} />
+          <ReadSection jobs={handled} />
         </div>
       )}
     </div>

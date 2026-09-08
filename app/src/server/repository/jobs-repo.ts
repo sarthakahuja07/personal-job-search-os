@@ -29,8 +29,13 @@ export type JobFilters = {
   newOnly?: boolean;
   /** Hide anything already read or already in the pipeline. */
   unreadOnly?: boolean;
-  /** Only jobs already marked read — the Reviewed section. */
-  readOnly?: boolean;
+  /**
+   * Only jobs already dealt with — marked read, or in the pipeline.
+   *
+   * Tracking a job is a stronger statement than reading one, so both belong in the same "done
+   * with this for now" bucket. The board is what is left to decide.
+   */
+  handledOnly?: boolean;
   includeClosed?: boolean;
   query?: string;
   sort?: "best" | "newest" | "posted" | "company";
@@ -46,7 +51,7 @@ export async function listJobs(db: Db, filters: JobFilters = {}) {
     relevantOnly = true,
     newOnly = false,
     unreadOnly = false,
-    readOnly = false,
+    handledOnly = false,
     includeClosed = false,
     query,
     sort = "best",
@@ -63,7 +68,9 @@ export async function listJobs(db: Db, filters: JobFilters = {}) {
     // strongest possible form of having looked at something.
     unreadOnly ? isNull(jobs.readAt) : undefined,
     unreadOnly ? isNull(applications.status) : undefined,
-    readOnly ? isNotNull(jobs.readAt) : undefined,
+    handledOnly
+      ? or(isNotNull(jobs.readAt), isNotNull(applications.status))
+      : undefined,
     query
       ? or(like(jobs.title, `%${query}%`), like(jobs.location, `%${query}%`))
       : undefined,
