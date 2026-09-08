@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 
 import { getDb } from "@/db";
 import { isStage } from "@/server/domain/applications";
+import { addManualJob } from "@/server/service/manual-job";
 import * as repo from "@/server/repository/applications-repo";
 
 /** Revalidate everywhere a stage is visible, so the board, job list and dashboard agree. */
@@ -37,4 +38,32 @@ export async function addToPipeline(jobId: string, companyId: string, stage: str
   await repo.setStage(getDb(), jobId, companyId, stage);
   revalidateAll();
   revalidatePath(`/jobs/${jobId}`);
+}
+
+/**
+ * Add a job from nothing but its link, and drop it straight onto the board.
+ *
+ * The two steps are deliberately one action: a job added without a stage would sit in the job
+ * list and never reach the board, which is the opposite of why you pasted the link.
+ */
+export async function addJobByLink(formData: FormData): Promise<{ error?: string }> {
+  const stage = String(formData.get("stage") ?? "saved");
+  if (!isStage(stage)) return { error: `Unknown stage: ${stage}` };
+
+  const db = getDb();
+  const result = await addManualJob(db, {
+    jobUrl: String(formData.get("jobUrl") ?? ""),
+    title: String(formData.get("title") ?? ""),
+    companyId: String(formData.get("companyId") ?? "") || undefined,
+    companyName: String(formData.get("companyName") ?? "") || undefined,
+    location: String(formData.get("location") ?? "") || undefined,
+  });
+
+  if (!result.ok) return { error: result.error };
+
+  await repo.setStage(db, result.jobId, result.companyId, stage);
+  revalidateAll();
+  revalidatePath("/reminders");
+  revalidatePath(`/jobs/${result.jobId}`);
+  return {};
 }

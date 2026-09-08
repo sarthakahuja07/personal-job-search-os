@@ -1,6 +1,8 @@
 import Link from "next/link";
 
+import { Collapsible } from "./collapsible";
 import { isRecent, JobCard, type JobRow, type OutreachProps } from "./job-card";
+import { MarkCompanyRead } from "./read-toggle";
 import { Badge, cx } from "./ui";
 
 /**
@@ -19,19 +21,37 @@ export function CompanyGroup({
   jobs,
   outreach,
   contactNames,
+  defaultOpen,
 }: {
   companyId: string;
   companyName: string;
   jobs: JobRow[];
   outreach?: OutreachProps;
   contactNames: string[];
+  /** Overrides the default, which collapses a company you have already worked through. */
+  defaultOpen?: boolean;
 }) {
   const best = jobs[0]?.fitScore ?? 0;
   const newCount = jobs.filter((j) => isRecent(j.discoveredAt)).length;
+  // Untouched: neither read nor in the pipeline. This is the number that says whether the
+  // company still needs your attention, so it leads and the total follows.
+  const untouched = jobs.filter((j) => !j.readAt && !j.applicationStatus).length;
 
   return (
-    <section className="rounded-card border border-line bg-surface-2/40">
-      <header className="flex flex-wrap items-center justify-between gap-x-4 gap-y-1.5 px-4 py-2.5">
+    <section
+      className={cx(
+        "rounded-card border transition",
+        untouched === 0 ? "border-line/50 bg-surface-2/20" : "border-line bg-surface-2/40",
+      )}
+    >
+      <Collapsible
+        label={companyName}
+        // A company with nothing left to review folds away by default. That is the whole point
+        // of tracking read state: the board should shrink as you work through it, not stay the
+        // same size while going grey.
+        defaultOpen={defaultOpen ?? untouched > 0}
+        header={
+          <header className="flex flex-wrap items-center justify-between gap-x-4 gap-y-1.5 py-2.5 pr-4">
         <div className="flex min-w-0 flex-wrap items-center gap-2">
           <Link
             href={`/companies/${companyId}`}
@@ -40,7 +60,14 @@ export function CompanyGroup({
             {companyName}
           </Link>
           <span className="tnum text-[12px] text-ink-faint">
-            {jobs.length} open
+            {untouched > 0 ? (
+              <>
+                <span className="text-ink-dim">{untouched}</span> to review
+                {untouched !== jobs.length && ` · ${jobs.length} open`}
+              </>
+            ) : (
+              <>{jobs.length} open · all reviewed</>
+            )}
           </span>
           {newCount > 0 && <Badge tone="fresh">{newCount} new</Badge>}
         </div>
@@ -61,14 +88,17 @@ export function CompanyGroup({
           <span className={cx("tnum", best >= 80 ? "text-fresh" : "text-ink-faint")}>
             best {best}
           </span>
+          <MarkCompanyRead companyId={companyId} unreadCount={untouched} />
         </div>
-      </header>
-
-      <ul className="space-y-1.5 px-1.5 pb-1.5">
-        {jobs.map((job) => (
-          <JobCard key={job.id} job={job} outreach={outreach} />
-        ))}
-      </ul>
+          </header>
+        }
+      >
+        <ul className="space-y-1.5 px-1.5 pb-1.5">
+          {jobs.map((job) => (
+            <JobCard key={job.id} job={job} outreach={outreach} />
+          ))}
+        </ul>
+      </Collapsible>
     </section>
   );
 }

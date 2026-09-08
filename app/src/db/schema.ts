@@ -235,6 +235,15 @@ export const jobs = sqliteTable(
     fitTitleOnly: integer("fit_title_only", { mode: "boolean" }).notNull().default(false),
 
     /** Absence tracking — see the deletion-grace rule in ADR 008. */
+    /**
+     * Marked as read: seen and consciously passed over, without entering the pipeline.
+     *
+     * Distinct from `closedAt` (the posting is gone) and from an application stage (you acted on
+     * it). Without this the board has no way to say "I have looked at this one", so the same
+     * fifty roles read as new every morning and the genuinely new ones stop standing out.
+     */
+    readAt: integer("read_at", { mode: "timestamp_ms" }),
+
     missingRunCount: integer("missing_run_count").notNull().default(0),
     closedAt: integer("closed_at", { mode: "timestamp_ms" }),
 

@@ -14,6 +14,8 @@ export type JobFilters = {
   companyId?: string;
   relevantOnly?: boolean;
   newOnly?: boolean;
+  /** Hide anything already read or already in the pipeline. */
+  unreadOnly?: boolean;
   includeClosed?: boolean;
   query?: string;
   sort?: "best" | "newest" | "posted" | "company";
@@ -28,6 +30,7 @@ export async function listJobs(db: Db, filters: JobFilters = {}) {
     companyId,
     relevantOnly = true,
     newOnly = false,
+    unreadOnly = false,
     includeClosed = false,
     query,
     sort = "best",
@@ -40,6 +43,10 @@ export async function listJobs(db: Db, filters: JobFilters = {}) {
     relevantOnly ? eq(jobs.isRelevant, true) : undefined,
     includeClosed ? undefined : isNull(jobs.closedAt),
     newOnly ? gte(jobs.discoveredAt, new Date(Date.now() - NEW_WINDOW_MS)) : undefined,
+    // "Untouched" means neither read nor in the pipeline: an application is itself the
+    // strongest possible form of having looked at something.
+    unreadOnly ? isNull(jobs.readAt) : undefined,
+    unreadOnly ? isNull(applications.status) : undefined,
     query
       ? or(like(jobs.title, `%${query}%`), like(jobs.location, `%${query}%`))
       : undefined,
@@ -73,6 +80,7 @@ export async function listJobs(db: Db, filters: JobFilters = {}) {
       fitBand: jobs.fitBand,
       fitSignals: jobs.fitSignals,
       fitTitleOnly: jobs.fitTitleOnly,
+      readAt: jobs.readAt,
       closedAt: jobs.closedAt,
       companyId: companies.id,
       companyName: companies.name,
@@ -214,6 +222,7 @@ export async function getJob(db: Db, id: string) {
       fitBand: jobs.fitBand,
       fitSignals: jobs.fitSignals,
       fitTitleOnly: jobs.fitTitleOnly,
+      readAt: jobs.readAt,
       isRelevant: jobs.isRelevant,
       employmentType: jobs.employmentType,
       externalJobId: jobs.externalJobId,
@@ -305,6 +314,7 @@ export async function listRecentlyDiscovered(db: Db, days = 3, limit = 12) {
       fitBand: jobs.fitBand,
       fitSignals: jobs.fitSignals,
       fitTitleOnly: jobs.fitTitleOnly,
+      readAt: jobs.readAt,
       closedAt: jobs.closedAt,
       companyId: companies.id,
       companyName: companies.name,
@@ -339,6 +349,7 @@ export async function listReminderCandidates(db: Db, limit = 200) {
       savedAt: applications.createdAt,
       discoveredAt: jobs.discoveredAt,
       fitBand: jobs.fitBand,
+      readAt: jobs.readAt,
       hasContact: sql<number>`EXISTS (SELECT 1 FROM contacts WHERE contacts.company_id = ${companies.id})`,
     })
     .from(jobs)

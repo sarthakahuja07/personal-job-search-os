@@ -6,6 +6,7 @@ import {
   type OutreachContact,
   type OutreachTemplate,
 } from "./job-actions";
+import { ReadToggle } from "./read-toggle";
 import { Badge, cx } from "./ui";
 
 const LOCATION_LABEL: Record<number, string> = {
@@ -46,6 +47,7 @@ export type JobRow = {
   fitBand: FitBand | null;
   fitSignals: FitSignal[] | null;
   fitTitleOnly?: boolean;
+  readAt?: Date | null;
   companyName: string;
   companyId: string;
   applicationStatus: string | null;
@@ -121,15 +123,36 @@ export function JobCard({
   const found = daysAgo(job.discoveredAt);
   const band = bandOf(job);
 
+  // Interacted: either it is in the pipeline, or it was read and consciously passed over. Both
+  // mean "already considered", which is the distinction the board needs to make -- otherwise the
+  // same fifty roles read as new every morning and the three that arrived overnight do not stand
+  // out. Dimmed rather than hidden, and restored on hover, because passing on a job is a
+  // judgement that should stay easy to revisit.
+  const interacted = Boolean(job.applicationStatus || job.readAt);
+  const isRead = Boolean(job.readAt) && !job.applicationStatus;
+
   // The two or three signals that earned the most points. Showing every signal turns the card
   // into a table; showing none turns the score into an oracle.
   const signals = (job.fitSignals ?? []).filter((s) => s.points > 0).slice(0, 3);
 
   return (
-    <li className="group rounded-card border border-line bg-surface transition hover:border-line-strong">
+    <li
+      className={cx(
+        "group rounded-card border transition",
+        interacted
+          ? "border-line/60 bg-surface/40 opacity-60 hover:opacity-100 hover:border-line"
+          : "border-line bg-surface hover:border-line-strong",
+      )}
+    >
       <div className="flex items-stretch">
         {/* Fit carries the colour, so the eye can rank the list without reading a number. */}
-        <div className={cx("w-0.5 shrink-0 rounded-l-card", band.rail)} aria-hidden />
+        <div
+          className={cx(
+            "w-0.5 shrink-0 rounded-l-card",
+            interacted ? "bg-line-strong" : band.rail,
+          )}
+          aria-hidden
+        />
 
         <div className="min-w-0 flex-1 px-4 py-3.5">
           <div className="flex items-start justify-between gap-4">
@@ -141,10 +164,11 @@ export function JobCard({
                 >
                   {job.title}
                 </Link>
-                {isNew && <Badge tone="fresh">New</Badge>}
+                {isNew && !interacted && <Badge tone="fresh">New</Badge>}
                 {job.applicationStatus && (
                   <Badge tone="accent">{job.applicationStatus}</Badge>
                 )}
+                {isRead && <Badge>Read</Badge>}
               </div>
 
               <div className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-1 text-[13px] text-ink-dim">
@@ -233,6 +257,7 @@ export function JobCard({
             )}
             {posted && <span>Posted {posted}</span>}
             {found && <span>Found {found}</span>}
+            <ReadToggle jobId={job.id} read={Boolean(job.readAt)} />
             {/* "We could not assess this" and "this is a poor match" are different statements,
                 and a score alone cannot tell them apart. Apple, Microsoft and Rippling publish
                 no description on their list endpoints, so their scores rest on the title. */}

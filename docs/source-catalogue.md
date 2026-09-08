@@ -7,7 +7,7 @@ The organising idea: **the stubborn companies were never individual problems, th
 handful of patterns.** Building for the pattern rather than the company is what turned all but
 one of them into configuration rather than code.
 
-**28 of 30 active companies now crawl automatically.** The two that do not are Google, which
+**29 of 31 active companies now crawl automatically.** The two that do not are Google, which
 refuses in `robots.txt`, and Wint Wealth, which publishes no first-party board at all.
 
 ---
@@ -69,7 +69,7 @@ not a Python file.
 
 ---
 
-## Crawled automatically (28)
+## Crawled automatically (29)
 
 ### Tier 1 — public ATS feed (10)
 
@@ -96,7 +96,7 @@ not a Python file.
 | Visa | `visa` | `wd5` | `Visa` |
 | Adobe | `adobe` | `wd5` | `external_experienced` |
 
-### Tier 3 — bespoke JSON search (7)
+### Tier 3 — bespoke JSON search (8)
 
 **Amazon** — `amazon.jobs/en/search.json`, scoped to India at the query level. The board carries
 over 10,000 roles globally while matching only ever accepts four Indian locations, so the crawl
@@ -137,6 +137,23 @@ index on `algolia.net`, queried with the public search-only key every visitor's 
 board paginates in the POST **body** rather than the URL, which is why `json_api` learned to look
 for pagination markers in both. Note `objectID`, not `jobId`, is the stable identity -- a role
 open in three cities appears three times, sharing one `jobId`.
+
+**Confluent (IBM)** — the same DirectEmployers API as Akamai, scoped to
+`q=confluent&location=India` (29 roles, all Bangalore).
+
+Confluent's own Ashby board still works and is still crawled; it simply carries almost nothing in
+India — 22 roles, one of them Indian and that one Staff level. The roles are at IBM, tagged
+Confluent in the title.
+
+Getting them is a second lesson in *which door you knock on*. `careers.ibm.com` sits behind an
+**AWS WAF challenge**: it answers HTTP 202 with an empty body and expects a browser to run
+`challenge.js` and post to `mp_verify`. Solving that is exactly the evasion ADR 008 forbids, so
+that door stays shut. But IBM syndicates to DirectEmployers like Akamai does, and `ibm.dejobs.org`
+serves the same `robots.txt`-permitted `jobsyn.org` API with no challenge at all. One header value
+changes (`x-origin: ibm.dejobs.org`) and the adapter is the one that already existed.
+
+It is a separate company row rather than a second source on Confluent, because a company has one
+source config; naming it plainly is better than hiding a second board inside the first.
 
 **Keychain AI** — `jobs.lsvp.com/api-boards/search-jobs`, a Lightspeed portfolio board. Requires a
 per-session CSRF token issued on the page, so the adapter primes: fetch the page, lift the token,

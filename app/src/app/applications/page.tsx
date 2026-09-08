@@ -6,16 +6,19 @@ import { settings } from "@/db/schema";
 import { followUpsDue } from "@/server/domain/applications";
 import { whatsappLink } from "@/server/domain/templates";
 import { listBoard, requestedWithContacts } from "@/server/repository/applications-repo";
+import { listCompanyHealth } from "@/server/repository/jobs-repo";
+import { AddByLink } from "./add-by-link";
 import { Board } from "./board";
 
 export const dynamic = "force-dynamic";
 
 export default async function ApplicationsPage() {
   const db = getDb();
-  const [cards, requested, settingsRows] = await Promise.all([
+  const [cards, requested, settingsRows, allCompanies] = await Promise.all([
     listBoard(db),
     requestedWithContacts(db),
     db.select({ followUpDays: settings.followUpDays }).from(settings).limit(1),
+    listCompanyHealth(db),
   ]);
 
   const thresholdDays = settingsRows[0]?.followUpDays ?? 5;
@@ -97,6 +100,12 @@ export default async function ApplicationsPage() {
           </ul>
         </section>
       )}
+
+      <AddByLink
+        companies={allCompanies
+          .filter((c) => c.active)
+          .map((c) => ({ id: c.id, name: c.name }))}
+      />
 
       {cards.length === 0 ? (
         <EmptyState

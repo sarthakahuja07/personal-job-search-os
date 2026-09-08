@@ -62,6 +62,8 @@ export type ReminderCandidate = {
   discoveredAt: Date;
   fitBand: FitBand | null;
   hasContact: boolean;
+  /** Set when the job was seen and consciously passed over. */
+  readAt?: Date | null;
 };
 
 export type ReminderThresholds = {
@@ -183,7 +185,9 @@ export function buildReminders(
     // Never entered the pipeline at all. Only strong and excellent fits qualify — reminding
     // about every job would reproduce the board, and a reminder list nobody trusts is worse
     // than none.
-    if (!c.status && (c.fitBand === "excellent" || c.fitBand === "strong")) {
+    // Marking a job read *is* a decision, so it must silence this rule. Nagging about a role
+    // you have already considered and passed on is how a reminder list loses its authority.
+    if (!c.status && !c.readAt && (c.fitBand === "excellent" || c.fitBand === "strong")) {
       const days = daysBetween(c.discoveredAt, now);
       if (days >= thresholds.strongMatchDays) {
         out.push({

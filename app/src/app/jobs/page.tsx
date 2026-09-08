@@ -22,6 +22,7 @@ type Search = {
   all?: string;
   new?: string;
   flat?: string;
+  untouched?: string;
 };
 
 const SORTS = [
@@ -38,6 +39,7 @@ export default async function JobsPage({
   const params = await searchParams;
   const relevantOnly = params.all !== "1";
   const newOnly = params.new === "1";
+  const unreadOnly = params.untouched === "1";
   const grouped = params.flat !== "1";
   const db = getDb();
 
@@ -47,6 +49,7 @@ export default async function JobsPage({
       query: params.q,
       relevantOnly,
       newOnly,
+      unreadOnly,
       sort: (params.sort as "best") ?? "best",
       limit: 200,
     }) as unknown as Promise<JobRow[]>,
@@ -86,8 +89,11 @@ export default async function JobsPage({
     return s ? `/jobs?${s}` : "/jobs";
   };
 
+  const untouchedTotal = jobs.filter((j) => !j.readAt && !j.applicationStatus).length;
   const companyName = params.company ? jobs[0]?.companyName : undefined;
-  const filtered = Boolean(params.company || params.q || newOnly || !relevantOnly);
+  const filtered = Boolean(
+    params.company || params.q || newOnly || unreadOnly || !relevantOnly,
+  );
 
   const chip = (active: boolean) =>
     cx(
@@ -109,8 +115,11 @@ export default async function JobsPage({
         title="Jobs"
         subtitle={
           <>
-            <span className="tnum text-ink">{jobs.length}</span>{" "}
-            {relevantOnly ? "matching" : "total"} open role{jobs.length === 1 ? "" : "s"}
+            <span className="tnum text-ink">{untouchedTotal}</span> to review
+            <span className="text-ink-faint">
+              {" "}
+              of {jobs.length} {relevantOnly ? "matching" : "total"}
+            </span>
             {companyName ? (
               <> at {companyName}</>
             ) : (
@@ -132,6 +141,7 @@ export default async function JobsPage({
             Object.entries({
               company: params.company,
               new: newOnly ? "1" : undefined,
+              untouched: unreadOnly ? "1" : undefined,
               all: relevantOnly ? undefined : "1",
               sort: params.sort,
               flat: params.flat,
@@ -142,6 +152,7 @@ export default async function JobsPage({
           {params.company && <input type="hidden" name="company" value={params.company} />}
           {params.q && <input type="hidden" name="q" value={params.q} />}
           {newOnly && <input type="hidden" name="new" value="1" />}
+          {unreadOnly && <input type="hidden" name="untouched" value="1" />}
           {!relevantOnly && <input type="hidden" name="all" value="1" />}
           {!grouped && <input type="hidden" name="flat" value="1" />}
           <select
@@ -165,6 +176,12 @@ export default async function JobsPage({
       </div>
 
       <div className="mb-5 flex flex-wrap items-center gap-2">
+        <Link
+          href={qs({ untouched: unreadOnly ? undefined : "1" })}
+          className={chip(unreadOnly)}
+        >
+          Not yet reviewed
+        </Link>
         <Link href={qs({ new: newOnly ? undefined : "1" })} className={chip(newOnly)}>
           New only
         </Link>

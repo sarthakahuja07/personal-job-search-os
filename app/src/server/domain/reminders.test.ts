@@ -160,3 +160,31 @@ describe("shape", () => {
     ).toEqual([]);
   });
 });
+
+describe("read jobs", () => {
+  // Marking a job read is a decision. Nagging about a role you have already considered and
+  // passed on is how a reminder list loses its authority.
+  it("does not chase a strong match that was read and passed over", () => {
+    expect(
+      build({
+        status: null,
+        fitBand: "excellent",
+        discoveredAt: daysAgo(10),
+        readAt: daysAgo(1),
+      }),
+    ).toHaveLength(0);
+  });
+
+  it("still chases one that was never read", () => {
+    expect(
+      build({ status: null, fitBand: "excellent", discoveredAt: daysAgo(10), readAt: null }),
+    ).toHaveLength(1);
+  });
+
+  // Reading is weaker than acting: a referral already asked for still needs chasing.
+  it("keeps chasing a pipeline job even when read", () => {
+    expect(
+      build({ status: "requested", requestedAt: daysAgo(9), readAt: daysAgo(1) }),
+    ).toHaveLength(1);
+  });
+});

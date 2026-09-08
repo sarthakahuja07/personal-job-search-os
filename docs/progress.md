@@ -110,12 +110,12 @@ is the detail fetch the crawler plan already allows for new, pre-filtered jobs; 
 
 ---
 
-## Company coverage — 28 of 30 crawled automatically
+## Company coverage — 29 of 31 crawled automatically
 
 Full detail, and the evidence behind every decision, in
 [`source-catalogue.md`](source-catalogue.md).
 
-**Crawled (28)**
+**Crawled (29)**
 
 | Tier | Adapter | Companies |
 |---|---|---|
@@ -124,7 +124,7 @@ Full detail, and the evidence behind every decision, in
 | 1 | Ashby | Sarvam AI, Confluent |
 | 1 | Lever | Zeta Suite |
 | 2 | Workday | NVIDIA, Adobe, Salesforce, Target, Visa |
-| 3 | `json_api` | Amazon, Microsoft, Qualcomm, Atlassian, Akamai, Keychain AI, Rippling |
+| 3 | `json_api` | Amazon, Microsoft, Qualcomm, Atlassian, Akamai, Keychain AI, Rippling, Confluent (IBM) |
 | 4 | `hydration` | DE Shaw, CHEQ |
 | 5 | `html_list` | Intuit, Moveworks, Apple, Ringg |
 

@@ -1,8 +1,10 @@
 import Link from "next/link";
 
+import { CompanyGroup } from "@/components/company-group";
 import { JobCard, type JobRow } from "@/components/job-card";
 import { Badge, Card, EmptyState, PageHeader, SectionTitle, Stat } from "@/components/ui";
 import { ReminderList } from "@/components/reminder-list";
+import { listTemplates } from "@/server/repository/templates-repo";
 import { getDb } from "@/db";
 import { settings } from "@/db/schema";
 import {
@@ -11,6 +13,7 @@ import {
   type ReminderCandidate,
 } from "@/server/domain/reminders";
 import {
+  contactsByCompany,
   jobStats,
   listCompanyHealth,
   listJobs,
@@ -43,13 +46,17 @@ const RECENT_DAYS = 3;
 
 export default async function DashboardPage() {
   const db = getDb();
-  const [stats, top, health, recent, reminderRows, settingsRows] = await Promise.all([
+  const [stats, top, health, recent, reminderRows, settingsRows, contacts, templates, resumeRows] =
+    await Promise.all([
     jobStats(db),
     listJobs(db, { sort: "best", limit: 6 }),
     listCompanyHealth(db),
-    listRecentlyDiscovered(db, RECENT_DAYS, 8),
+    listRecentlyDiscovered(db, RECENT_DAYS, 40),
     listReminderCandidates(db),
     db.select({ followUpDays: settings.followUpDays }).from(settings).limit(1),
+    contactsByCompany(db),
+    listTemplates(db),
+    db.select({ resumeUrl: settings.resumeUrl }).from(settings).limit(1),
   ]);
 
   const reminders = buildReminders(
@@ -60,6 +67,38 @@ export default async function DashboardPage() {
     },
   );
   const overdueCount = reminders.filter((r) => r.severity === "overdue").length;
+
+  // The same outreach payload the job board passes down, so a card behaves identically wherever
+  // it appears. A card that acts differently depending on the page is a card you have to think
+  // about before clicking.
+  const outreachDefaults = {
+    resume_link: resumeRows[0]?.resumeUrl ?? "",
+    your_name: "Sarthak",
+  };
+  const outreachFor = (companyId: string) => ({
+    contacts: contacts.get(companyId) ?? [],
+    templates,
+    defaults: outreachDefaults,
+  });
+
+  // The same company stacks as the board, so "what arrived" reads the way "what is open" does:
+  // one card per company, best fit first, and a referral ask is one conversation rather than
+  // four scattered rows.
+  const recentGroups = (() => {
+    const groups = new Map<string, { name: string; jobs: JobRow[] }>();
+    for (const job of recent as unknown as JobRow[]) {
+      const g = groups.get(job.companyId);
+      if (g) g.jobs.push(job);
+      else groups.set(job.companyId, { name: job.companyName, jobs: [job] });
+    }
+    return [...groups.entries()]
+      .map(([id, g]) => ({
+        id,
+        name: g.name,
+        jobs: [...g.jobs].sort((a, b) => b.fitScore - a.fitScore),
+      }))
+      .sort((a, b) => (b.jobs[0]?.fitScore ?? 0) - (a.jobs[0]?.fitScore ?? 0));
+  })();
 
   const automated = health.filter((c) => c.active && c.sourceType !== "manual");
   const needsAttention = automated.filter(
@@ -163,11 +202,18 @@ export default async function DashboardPage() {
             body={`No new matching roles in the last ${RECENT_DAYS} days. The crawler runs twice a day, at 06:30 and 18:30.`}
           />
         ) : (
-          <ul className="space-y-2">
-            {(recent as unknown as JobRow[]).map((job) => (
-              <JobCard key={job.id} job={job} />
+          <div className="space-y-3">
+            {recentGroups.map((g) => (
+              <CompanyGroup
+                key={g.id}
+                companyId={g.id}
+                companyName={g.name}
+                jobs={g.jobs}
+                outreach={outreachFor(g.id)}
+                contactNames={(contacts.get(g.id) ?? []).map((c) => c.name)}
+              />
             ))}
-          </ul>
+          </div>
         )}
       </section>
 
@@ -190,7 +236,7 @@ export default async function DashboardPage() {
         ) : (
           <ul className="space-y-2">
             {(top as unknown as JobRow[]).map((job) => (
-              <JobCard key={job.id} job={job} />
+              <JobCard key={job.id} job={job} outreach={outreachFor(job.companyId)} />
             ))}
           </ul>
         )}

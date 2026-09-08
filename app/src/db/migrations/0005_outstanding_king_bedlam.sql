@@ -1,0 +1,1 @@
+ALTER TABLE `jobs` ADD `read_at` integer;
