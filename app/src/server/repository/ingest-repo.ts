@@ -61,6 +61,7 @@ export async function loadCompany(db: Db, companyId: string) {
       sourceType: companies.sourceType,
       active: companies.active,
       allowZeroResults: companies.allowZeroResults,
+      matchOverrides: companies.matchOverrides,
     })
     .from(companies)
     .where(eq(companies.id, companyId))

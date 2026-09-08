@@ -17,6 +17,7 @@
 import { sql } from "drizzle-orm";
 
 import type { FitBand, FitSignal } from "@/server/domain/fit";
+import type { CompanyMatchOverrides } from "@/server/domain/matching";
 import {
   index,
   integer,
@@ -104,6 +105,17 @@ export const companies = sqliteTable(
       .$type<SourceConfig>()
       .notNull()
       .default({}),
+
+    /**
+     * Company-specific title vocabulary, e.g. `{"levelTitles": ["senior software engineer"]}`.
+     *
+     * Job ladders are not comparable across companies: Sarthak's level is "SDE II" at Amazon,
+     * "Senior Software Engineer" at Confluent and "Software Engineer III" at Google. A global
+     * rule set cannot express that, so each company carries its own vocabulary as data — no
+     * deploy needed to teach the matcher a new ladder. See domain/matching.ts.
+     */
+    matchOverrides: text("match_overrides", { mode: "json" })
+      .$type<CompanyMatchOverrides>(),
 
     active: integer("active", { mode: "boolean" }).notNull().default(true),
 

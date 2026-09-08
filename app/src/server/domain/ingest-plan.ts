@@ -9,7 +9,11 @@
  */
 
 import { scoreFit, type FitBand, type FitSignal } from "./fit";
-import { matchJob, type MatchRules } from "./matching";
+import {
+  matchJob,
+  type CompanyMatchOverrides,
+  type MatchRules,
+} from "./matching";
 
 export type ExistingJob = {
   id: string;
@@ -47,6 +51,8 @@ export type PlanInput = {
   jobs: IncomingJob[];
   existing: ExistingJob[];
   rules: MatchRules;
+  /** This company's own title vocabulary, when it has one. */
+  matchOverrides?: CompanyMatchOverrides | null;
   /** Company opted in to legitimately-empty boards. */
   allowZeroResults: boolean;
   /** Whether this company has ever returned jobs before. */
@@ -114,6 +120,7 @@ export function planIngest(input: PlanInput): IngestPlan {
     jobs,
     existing,
     rules,
+    matchOverrides,
     allowZeroResults,
     hasSeenJobsBefore,
     closeAfterMissingRuns,
@@ -179,6 +186,7 @@ export function planIngest(input: PlanInput): IngestPlan {
     const match = matchJob(
       { title: job.title, location: job.location, description: job.description },
       rules,
+      matchOverrides,
     );
     const prior = existingByExternalId.get(job.externalJobId) ?? null;
 

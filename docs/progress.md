@@ -110,6 +110,37 @@ is the detail fetch the crawler plan already allows for new, pre-filtered jobs; 
 
 ---
 
+## Matching: company vocabularies and the experience band
+
+Two things a single global rule set cannot express.
+
+**Job ladders are not comparable across companies.** Sarthak'''s level is `SDE II` at Amazon,
+`Senior Software Engineer` at Confluent, and `Software Engineer III` at Google. The global
+`senior` exclusion is right for most employers and wrong for Confluent, where it dropped
+25 of 29 Bangalore roles before he ever saw them.
+
+Title exclusions are therefore split in two. `exclude` covers *discipline* — sales, QA, security,
+hardware — and is never lifted. `seniorityExclude` covers *level*, and a company can lift it by
+declaring its own vocabulary in `companies.match_overrides`, editable from the company page. A
+level override says "this level is mine here", not "any job here": "Senior Security Engineer"
+stays excluded at Confluent.
+
+The subtle half is that **the crawler needs the vocabulary too.** Its title pre-filter drops jobs
+before ingest to avoid a detail fetch per posting, so a rule only the server knew about would
+never be reached. The overrides are served by `/api/crawler/bootstrap` alongside the match rules,
+and both evaluators have tests pinning the same Confluent case so they cannot drift.
+
+**Experience is a band, not a ceiling.** Sarthak is eligible for 2-4 year roles, so a posting
+inside that window fits cleanly, one above it is penalised per year and hard-rejected at 7, and
+one *below* it is penalised gently rather than hidden — a one-year role is a worse use of a
+referral, not an ineligible one. Descriptions that state no requirement are kept: 56 of 239
+relevant jobs have no description at all.
+
+Result at Confluent: 1 relevant role became 4, and the two Bangalore roles still excluded are
+excluded for a good reason (they ask for 7+ and 8+ years).
+
+---
+
 ## Company coverage — 29 of 31 crawled automatically
 
 Full detail, and the evidence behind every decision, in

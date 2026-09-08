@@ -301,3 +301,143 @@ describe("matchTitle — security and networking are excluded", () => {
     expect(matchTitle(title).passed).toBe(true);
   });
 });
+
+// ---------------------------------------------------------------------------
+// Per-company level vocabulary
+// ---------------------------------------------------------------------------
+
+describe("company match overrides", () => {
+  const confluent = { levelTitles: ["senior software engineer"] };
+  const google = { levelTitles: ["software engineer iii"] };
+
+  // The Confluent miss: their ladder calls Sarthak's level "Senior Software Engineer", so the
+  // global `senior` rule dropped 25 of 29 India roles before he ever saw them.
+  it("lifts a seniority exclusion for the company that declared it", () => {
+    expect(matchTitle("Senior Software Engineer II - Confluent").passed).toBe(false);
+    expect(matchTitle("Senior Software Engineer II - Confluent", DEFAULT_MATCH_RULES, confluent).passed).toBe(true);
+  });
+
+  it("lifts it only for that company", () => {
+    expect(matchTitle("Senior Software Engineer", DEFAULT_MATCH_RULES, google).passed).toBe(false);
+    expect(matchTitle("Software Engineer III", DEFAULT_MATCH_RULES, google).passed).toBe(true);
+  });
+
+  // The important limit: a level override says "this level is mine here", not "any job here".
+  it("never lifts a discipline exclusion", () => {
+    for (const title of [
+      "Senior Security Engineer II - Confluent",
+      "Senior Sales Engineer - Confluent",
+      "Senior Software Engineer in Test",
+      "Senior Network Engineer",
+    ]) {
+      expect(matchTitle(title, DEFAULT_MATCH_RULES, confluent).passed).toBe(false);
+    }
+  });
+
+  it("still rejects levels the company did not declare", () => {
+    expect(matchTitle("Staff Software Engineer - Confluent", DEFAULT_MATCH_RULES, confluent).passed).toBe(false);
+    expect(matchTitle("Principal Engineer I - Confluent", DEFAULT_MATCH_RULES, confluent).passed).toBe(false);
+  });
+
+  it("explains itself, naming the pattern that matched", () => {
+    const r = matchTitle("Senior Software Engineer", DEFAULT_MATCH_RULES, confluent);
+    expect(r.label).toContain("senior software engineer");
+  });
+
+  it("keeps the better label when an ordinary include already scores higher", () => {
+    // "SDE 2" scores 100; an override at a lower score must not overwrite a clearer label.
+    const r = matchTitle("SDE 2", DEFAULT_MATCH_RULES, { levelTitles: ["sde 2"], score: 70 });
+    expect(r.label).toBe("SDE 2");
+    expect(r.score).toBe(100);
+  });
+
+  it("is inert when the company has none", () => {
+    for (const o of [undefined, null, { levelTitles: [] }]) {
+      expect(matchTitle("Senior Software Engineer", DEFAULT_MATCH_RULES, o).passed).toBe(false);
+      expect(matchTitle("Software Engineer II", DEFAULT_MATCH_RULES, o).passed).toBe(true);
+    }
+  });
+
+  it("survives a malformed pattern rather than breaking every match", () => {
+    const bad = { levelTitles: ["senior software engineer", "([unclosed"] };
+    expect(matchTitle("Senior Software Engineer", DEFAULT_MATCH_RULES, bad).passed).toBe(true);
+  });
+
+  it("flows through matchJob with location and experience still applying", () => {
+    const m = matchJob(
+      { title: "Senior Software Engineer", location: "Bangalore, India", description: null },
+      DEFAULT_MATCH_RULES,
+      confluent,
+    );
+    expect(m.isRelevant).toBe(true);
+    const abroad = matchJob(
+      { title: "Senior Software Engineer", location: "Austin, Texas", description: null },
+      DEFAULT_MATCH_RULES,
+      confluent,
+    );
+    expect(abroad.isRelevant).toBe(false);
+  });
+});
+
+describe("years-of-experience band", () => {
+  // Sarthak has ~3 years and is eligible for 2-4 year roles. The band is a ranking signal at
+  // both ends and a gate only at the extreme: a role he cannot get is worth hiding, a role
+  // below his level is only worth ranking down.
+  const job = (description: string) => ({
+    title: "Software Engineer II",
+    location: "Bengaluru, India",
+    description,
+  });
+
+  it.each([2, 3, 4])("treats %i+ years as a clean fit", (y) => {
+    const m = matchJob(job(`We are looking for ${y}+ years of experience.`));
+    expect(m.isRelevant).toBe(true);
+    expect(m.reason).toContain("fits 2-4");
+  });
+
+  it("ranks a role below the band down without hiding it", () => {
+    const under = matchJob(job("1+ years of experience required."));
+    const inBand = matchJob(job("3+ years of experience required."));
+    expect(under.score).toBeLessThan(inBand.score);
+    expect(under.reason).toMatch(/below the 2-4 band/);
+  });
+
+  it("penalises above the band proportionally", () => {
+    const five = matchJob(job("5+ years of experience."));
+    const six = matchJob(job("6+ years of experience."));
+    expect(six.score).toBeLessThan(five.score);
+    expect(five.reason).toContain("above target");
+  });
+
+  it("still hard-rejects the genuinely out-of-reach", () => {
+    const m = matchJob(job("10+ years of experience required."));
+    expect(m.isRelevant).toBe(false);
+    expect(m.reason).toMatch(/reject threshold/);
+  });
+
+  // 56 of 239 relevant jobs have no description at all, so this is the common path, not an edge.
+  it("keeps a job whose description never states a requirement", () => {
+    const m = matchJob(job("Come build great things with us."));
+    expect(m.isRelevant).toBe(true);
+    expect(m.reason).toContain("experience not stated");
+  });
+});
+
+describe("location regions, not only countries", () => {
+  // Regression: Confluent posts "CA Remote Ontario" — no country named, so a country-only
+  // reject list accepted it as plain "Remote" and put a Canadian role on the board. The same
+  // failure as the original "Italy, Remote", one level down the hierarchy.
+  it.each([
+    "CA Remote Ontario",
+    "Remote, Ontario, Canada",
+    "Toronto",
+    "Remote - Vancouver",
+  ])("rejects %s", (loc) => {
+    expect(matchLocation(loc).matched).toBeNull();
+  });
+
+  it("still accepts a genuine Indian remote role", () => {
+    expect(matchLocation("Remote - India").matched?.name).toBe("Remote");
+    expect(matchLocation("IN Remote India").matched?.name).toBe("Remote");
+  });
+});

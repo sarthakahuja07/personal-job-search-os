@@ -255,9 +255,9 @@ export function JobCard({
                 Original ↗
               </a>
             )}
+            <ReadToggle jobId={job.id} read={Boolean(job.readAt)} />
             {posted && <span>Posted {posted}</span>}
             {found && <span>Found {found}</span>}
-            <ReadToggle jobId={job.id} read={Boolean(job.readAt)} />
             {/* "We could not assess this" and "this is a poor match" are different statements,
                 and a score alone cannot tell them apart. Apple, Microsoft and Rippling publish
                 no description on their list endpoints, so their scores rest on the title. */}

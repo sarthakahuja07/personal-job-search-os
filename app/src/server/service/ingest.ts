@@ -79,6 +79,7 @@ export async function ingestJobs(
     jobs: toIncoming(payload),
     existing,
     rules,
+    matchOverrides: company.matchOverrides,
     allowZeroResults: company.allowZeroResults,
     hasSeenJobsBefore: existing.length > 0,
     closeAfterMissingRuns,

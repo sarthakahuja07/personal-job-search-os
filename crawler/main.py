@@ -95,7 +95,7 @@ async def crawl_company(
 
         # The cheap gate. This is what keeps NVIDIA's 2000 postings from becoming 2000
         # detail requests to find perhaps three matches.
-        candidates = [(raw, job) for raw, job in parsed if match_title(job.title, rules).passed]
+        candidates = [(raw, job) for raw, job in parsed if match_title(job.title, rules, company.match_overrides).passed]
 
         if adapter.needs_detail_fetch and candidates:
             enriched: list[NormalizedJob] = []

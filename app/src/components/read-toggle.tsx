@@ -21,15 +21,17 @@ export function ReadToggle({ jobId, read }: { jobId: string; read: boolean }) {
       disabled={pending}
       onClick={() => start(() => setJobRead(jobId, !read))}
       title={read ? "Mark as unread" : "Mark as read — seen and passed over"}
+      // Styled as a peer of Apply and Message rather than as footer text: marking a single job
+      // read is a primary action on this card, not a footnote to it.
       className={cx(
-        "rounded px-1.5 py-0.5 text-[11px] transition",
+        "inline-flex items-center gap-1 rounded border px-2 py-1 text-[11px] font-medium transition",
         read
-          ? "text-ink-faint hover:text-ink-dim"
-          : "text-ink-faint/70 hover:bg-surface-3 hover:text-ink-dim",
+          ? "border-line bg-surface-3 text-ink-dim hover:border-line-strong hover:text-ink"
+          : "border-line bg-surface-2 text-ink-faint hover:border-line-strong hover:text-ink-dim",
         pending && "opacity-50",
       )}
     >
-      {read ? "Unread" : "Mark read"}
+      {read ? "✓ Read" : "Mark read"}
     </button>
   );
 }

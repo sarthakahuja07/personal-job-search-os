@@ -29,6 +29,10 @@ class Company:
     source_type: str
     source_tier: int
     source_config: dict[str, Any]
+    #: This company's own level vocabulary, e.g. {"levelTitles": ["senior software engineer"]}.
+    #: Served by the app so the pre-filter and the server agree on what counts as the target
+    #: level -- if only the server knew, the pre-filter would drop the jobs before ingest.
+    match_overrides: dict[str, Any] | None
     careers_url: str | None
     allow_zero_results: bool
     etag: str | None
@@ -66,6 +70,7 @@ class ApiClient:
                 source_type=c["source_type"],
                 source_tier=c["source_tier"],
                 source_config=c.get("source_config") or {},
+                match_overrides=c.get("match_overrides") or None,
                 careers_url=c.get("careers_url"),
                 allow_zero_results=bool(c.get("allow_zero_results")),
                 etag=c.get("etag"),

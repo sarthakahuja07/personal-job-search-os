@@ -34,12 +34,32 @@ export type LocationRule = {
 export type MatchRules = {
   title: {
     include: TitleRule[];
-    /** Hard disqualifiers, checked before includes. */
+    /**
+     * Disqualifiers by *discipline* — sales, QA, security, hardware. These describe work Sarthak
+     * does not want at any company, so a company override never lifts them.
+     */
     exclude: string[];
+    /**
+     * Disqualifiers by *level* — senior, staff, principal, intern. These are the ones a company
+     * override can lift, because job ladders are not comparable across companies: "Senior
+     * Software Engineer" is the target level at Confluent while "Software Engineer III" is the
+     * equivalent at Google. Optional so an older stored rule set still loads.
+     */
+    seniorityExclude?: string[];
   };
   experience: {
+    /**
+     * The band Sarthak is actually eligible for. A posting asking for anything inside
+     * [idealMinYears, idealMaxYears] fits without penalty.
+     */
+    idealMinYears?: number;
     /** Requiring at most this many years scores full marks. */
     idealMaxYears: number;
+    /**
+     * Penalty per year *below* the band. A role asking for one year is not disqualifying with
+     * three on the clock -- it is under-levelled, which is a ranking question, not a gate.
+     */
+    underLevelPenalty?: number;
     /** Requiring at least this many years is rejected outright. */
     hardRejectYears: number;
     /** Penalty per year above idealMaxYears, up to hardRejectYears. */
@@ -60,6 +80,25 @@ export type MatchRules = {
   };
   /** Minimum total score to be considered relevant. */
   threshold: number;
+};
+
+/**
+ * Per-company title overrides.
+ *
+ * A global rule cannot express a job ladder. Confluent calls Sarthak's level "Senior Software
+ * Engineer"; Google calls it "Software Engineer III"; Amazon calls it "SDE II". Encoding that
+ * per company is the only honest way to compare them, and it is data on the company row rather
+ * than code, so adding a company's vocabulary needs no deploy.
+ */
+export type CompanyMatchOverrides = {
+  /**
+   * Titles that mean "this is my level, here". A match lifts the seniority exclusions for this
+   * company only; discipline exclusions still apply, so "Senior Security Engineer" stays out
+   * even at a company whose target level is "Senior Software Engineer".
+   */
+  levelTitles: string[];
+  /** Score awarded when a level title matches. Defaults to the strongest include score. */
+  score?: number;
 };
 
 /**
@@ -94,7 +133,11 @@ export const DEFAULT_MATCH_RULES: MatchRules = {
       { pattern: "\\bmember\\s+of\\s+technical\\s+staff\\b", score: 60, label: "Member of Technical Staff" },
       { pattern: "\\bsoftware\\s+developer\\b", score: 60, label: "Software Developer" },
     ],
-    exclude: [
+    // Level exclusions. These are the ones a company override can lift, because ladders are not
+    // comparable across companies: "Senior Software Engineer" is Sarthak's level at Confluent
+    // while "Software Engineer III" is the equivalent at Google. Everything in `exclude` below
+    // is about the *discipline* and is never lifted.
+    seniorityExclude: [
       // More senior than target.
       "\\bsenior\\b", "\\bsr\\.?\\b",
       // "Staff Engineer" is too senior, but "Member of Technical Staff" is the SDE-2 title at
@@ -110,6 +153,8 @@ export const DEFAULT_MATCH_RULES: MatchRules = {
       "\\bnew\\s+grad\\b", "\\bgraduate\\b", "\\bjunior\\b", "\\bjr\\.?\\b",
       "\\bentry[-\\s]?level\\b", "\\bsde\\s*(-|–)?\\s*(i|1)\\b", "\\bswe\\s*(-|–)?\\s*(i|1)\\b",
       "\\bengineer\\s*(-|–)?\\s*(i|1)\\b", "\\bl3\\b",
+    ],
+    exclude: [
       // Adjacent but not the target role.
       "\\bsdet\\b", "\\btest\\s+engineer\\b", "\\bqa\\b", "\\bsupport\\s+engineer\\b",
       // "Quality Assurance Software Developer Engineer in Test" slipped past \bsdet\b in live data.
@@ -137,7 +182,10 @@ export const DEFAULT_MATCH_RULES: MatchRules = {
     ],
   },
   experience: {
+    // Sarthak has ~3 years and is eligible for 2-4 year roles.
+    idealMinYears: 2,
     idealMaxYears: 4,
+    underLevelPenalty: 8,
     hardRejectYears: 7,
     penaltyPerYear: 10,
     unknownPasses: true,
@@ -154,6 +202,11 @@ export const DEFAULT_MATCH_RULES: MatchRules = {
     ],
     reject: [
       "\\bus\\b", "\\bu\\.s\\.", "united states", "\\busa\\b", "canada", "\\buk\\b",
+      // Regions, not only countries. Confluent posts "CA Remote Ontario", which names no
+      // country at all, so a country-only list accepted it as plain "Remote" — the same
+      // failure as the original "Italy, Remote", one level down.
+      "ontario", "toronto", "vancouver", "british columbia", "quebec", "montreal",
+      "alberta", "calgary", "ottawa",
       "united kingdom", "ireland", "germany", "france", "italy", "spain", "portugal",
       "netherlands", "belgium", "austria", "switzerland", "sweden", "norway", "denmark",
       "finland", "poland", "czech", "hungary", "romania", "ukraine", "russia", "turkey",
@@ -205,25 +258,64 @@ function normalizeTitle(title: string): string {
 export function matchTitle(
   title: string,
   rules: MatchRules = DEFAULT_MATCH_RULES,
+  overrides?: CompanyMatchOverrides | null,
 ): { passed: boolean; score: number; label: string | null; excludedBy: string | null } {
   const t = normalizeTitle(title);
 
+  // Discipline exclusions run first and are never lifted. A company override says "this level
+  // is mine here", not "I will take any job here".
   for (const pattern of rules.title.exclude) {
-    if (new RegExp(pattern, "i").test(t)) {
+    if (safeTest(pattern, t)) {
       return { passed: false, score: 0, label: null, excludedBy: pattern };
+    }
+  }
+
+  const levelTitle = (overrides?.levelTitles ?? []).find((p) => safeTest(p, t));
+
+  // Seniority exclusions apply unless this company has declared the title to be its target
+  // level. Without the override, "Senior Software Engineer" is correctly out; with it, it is
+  // the Confluent equivalent of SDE-2 and belongs on the board.
+  if (!levelTitle) {
+    for (const pattern of rules.title.seniorityExclude ?? []) {
+      if (safeTest(pattern, t)) {
+        return { passed: false, score: 0, label: null, excludedBy: pattern };
+      }
     }
   }
 
   let best: TitleRule | null = null;
   for (const rule of rules.title.include) {
-    if (new RegExp(rule.pattern, "i").test(t)) {
+    if (safeTest(rule.pattern, t)) {
       if (!best || rule.score > best.score) best = rule;
+    }
+  }
+
+  if (levelTitle) {
+    const score = overrides?.score ?? 100;
+    // The override wins only when it scores higher, so a title that also matches a normal
+    // include keeps whichever label describes it best.
+    if (!best || score > best.score) {
+      return {
+        passed: true,
+        score,
+        label: `Company level title: ${levelTitle}`,
+        excludedBy: null,
+      };
     }
   }
 
   return best
     ? { passed: true, score: best.score, label: best.label, excludedBy: null }
     : { passed: false, score: 0, label: null, excludedBy: null };
+}
+
+/** A malformed pattern must never take down matching for every job. */
+function safeTest(pattern: string, text: string): boolean {
+  try {
+    return new RegExp(pattern, "i").test(text);
+  } catch {
+    return false;
+  }
 }
 
 // ---------------------------------------------------------------------------
@@ -301,11 +393,12 @@ export function matchLocation(
 export function matchJob(
   job: MatchInput,
   rules: MatchRules = DEFAULT_MATCH_RULES,
+  overrides?: CompanyMatchOverrides | null,
 ): MatchResult {
   const reasons: string[] = [];
 
-  // 1. Title -- a hard gate.
-  const title = matchTitle(job.title, rules);
+  // 1. Title -- a hard gate, softened only by this company's own level vocabulary.
+  const title = matchTitle(job.title, rules, overrides);
   if (!title.passed) {
     const why = title.excludedBy
       ? `title excluded by /${title.excludedBy}/`
@@ -361,12 +454,25 @@ export function matchJob(
         requiredYears: years,
       };
     }
+    const minYears = rules.experience.idealMinYears ?? 0;
     if (years > rules.experience.idealMaxYears) {
       const penalty = (years - rules.experience.idealMaxYears) * rules.experience.penaltyPerYear;
       score -= penalty;
       reasons.push(`requires ${years}+ yrs, above target (-${penalty})`);
+    } else if (years < minYears) {
+      // Under-levelled, not ineligible: he can apply to a one-year role, it is just a worse use
+      // of a referral than one asking for three. A penalty ranks it down; a gate would hide it.
+      const penalty = (minYears - years) * (rules.experience.underLevelPenalty ?? 0);
+      score -= penalty;
+      reasons.push(
+        penalty > 0
+          ? `requires only ${years}+ yrs, below the ${minYears}-${rules.experience.idealMaxYears} band (-${penalty})`
+          : `requires ${years}+ yrs`,
+      );
     } else {
-      reasons.push(`requires ${years}+ yrs (fits)`);
+      reasons.push(
+        `requires ${years}+ yrs (fits ${minYears}-${rules.experience.idealMaxYears})`,
+      );
     }
   } else if (rules.experience.unknownPasses) {
     reasons.push("experience not stated (kept)");

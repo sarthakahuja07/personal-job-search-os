@@ -5,6 +5,7 @@ import { eq } from "drizzle-orm";
 
 import { getDb } from "@/db";
 import { companies, contacts, type SourceConfig, type SourceType } from "@/db/schema";
+import type { CompanyMatchOverrides } from "@/server/domain/matching";
 import { detectSource, validateConfig } from "@/server/domain/source-detect";
 
 function revalidateCompany(id?: string) {
@@ -38,6 +39,7 @@ export async function addCompany(formData: FormData) {
       sourceType: detected?.sourceType ?? "manual",
       sourceTier: detected?.sourceTier ?? 6,
       sourceConfig: detected?.config ?? {},
+      matchOverrides: parseLevelTitles(String(formData.get("levelTitles") ?? "")),
       active: true,
     })
     .onConflictDoNothing();
@@ -66,6 +68,22 @@ export async function addCompany(formData: FormData) {
   }
 
   revalidateCompany();
+}
+
+/**
+ * Parse the level-titles box into a match override.
+ *
+ * One phrase per line, stored as-is — they are matched as case-insensitive regexes, so plain
+ * text works and a power user can still write a pattern. An empty box clears the override
+ * rather than storing an empty rule, so "no vocabulary" and "a vocabulary of nothing" cannot
+ * drift apart.
+ */
+function parseLevelTitles(raw: string): CompanyMatchOverrides | null {
+  const levelTitles = raw
+    .split(/[\n,]/)
+    .map((t) => t.trim())
+    .filter(Boolean);
+  return levelTitles.length ? { levelTitles } : null;
 }
 
 export async function updateCompany(formData: FormData) {
@@ -98,6 +116,7 @@ export async function updateCompany(formData: FormData) {
       sourceConfig: config,
       active: formData.get("active") === "on",
       allowZeroResults: formData.get("allowZeroResults") === "on",
+      matchOverrides: parseLevelTitles(String(formData.get("levelTitles") ?? "")),
     })
     .where(eq(companies.id, id));
 

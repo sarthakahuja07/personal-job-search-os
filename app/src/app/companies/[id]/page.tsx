@@ -167,6 +167,29 @@ export default async function CompanyDetailPage({
             />
           </div>
 
+          {/* Job ladders are not comparable across companies, and a global rule cannot express
+              that. Without this, Confluent's "Senior Software Engineer" — Sarthak's actual
+              level there — was dropped by the global `senior` rule before he ever saw it. */}
+          <div>
+            <label className="block text-[13px] font-medium text-ink">
+              Level titles at this company
+            </label>
+            <p className="mb-1 mt-0.5 text-[11px] leading-relaxed text-ink-faint">
+              What this company calls your level — one per line. e.g.{" "}
+              <span className="text-ink-dim">Senior Software Engineer</span> at Confluent,{" "}
+              <span className="text-ink-dim">Software Engineer III</span> at Google. These lift
+              the seniority filter for this company only; sales, QA, security and hardware roles
+              stay excluded regardless.
+            </p>
+            <textarea
+              name="levelTitles"
+              rows={3}
+              defaultValue={(company.matchOverrides?.levelTitles ?? []).join("\n")}
+              placeholder={"Senior Software Engineer\nSoftware Engineer III"}
+              className={cx(inputStyles, "mt-1.5 font-mono text-[12px]")}
+            />
+          </div>
+
           {fields.length > 0 && (
             <div className="grid gap-4 sm:grid-cols-3">
               {fields.map((f) => (

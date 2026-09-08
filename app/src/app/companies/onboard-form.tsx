@@ -105,6 +105,14 @@ export function OnboardForm() {
         <input name="contactEmail" placeholder="Email" type="email" className={cx(inputStyles, "w-52")} />
       </div>
 
+      {/* Optional at onboarding, editable later on the company page. Worth offering here
+          because the moment you add a company is when you know its ladder. */}
+      <input
+        name="levelTitles"
+        placeholder="Level titles at this company, comma separated (optional) — e.g. Senior Software Engineer"
+        className={cx(inputStyles, "w-full")}
+      />
+
       {preview && tone && (
         <div className={cx("rounded border px-3 py-2.5 text-[12px]", tone.border, tone.bg)}>
           <p className={cx("font-medium", tone.text)}>

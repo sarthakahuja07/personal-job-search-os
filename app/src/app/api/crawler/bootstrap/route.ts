@@ -30,6 +30,10 @@ export async function GET(request: Request): Promise<Response> {
       sourceConfig: companies.sourceConfig,
       careersUrl: companies.careersUrl,
       allowZeroResults: companies.allowZeroResults,
+      // Served, not duplicated: the crawler's title pre-filter drops jobs before ingest, so if
+      // it did not know about a company's vocabulary the server would never get the chance to
+      // accept them. That was the whole Confluent miss.
+      matchOverrides: companies.matchOverrides,
       etag: companies.etag,
       lastModified: companies.lastModified,
       lastContentHash: companies.lastContentHash,
@@ -56,6 +60,10 @@ export async function GET(request: Request): Promise<Response> {
       source_config: r.sourceConfig,
       careers_url: r.careersUrl,
       allow_zero_results: r.allowZeroResults,
+      // The pre-filter drops jobs before ingest, so a company's level vocabulary has to reach
+      // the crawler too. Selecting it without serialising it here is exactly how the Confluent
+      // override looked applied while changing nothing.
+      match_overrides: r.matchOverrides,
       etag: r.etag,
       last_modified: r.lastModified,
       last_content_hash: r.lastContentHash,
