@@ -38,6 +38,7 @@ export default async function JobsPage({
   const relevantOnly = params.all !== "1";
   const newOnly = params.new === "1";
   const grouped = params.flat !== "1";
+  const sort = (params.sort as "best" | "newest" | "posted") ?? "best";
   const db = getDb();
 
   // Active and reviewed are fetched separately and bounded separately. Fetching one page of
@@ -54,7 +55,7 @@ export default async function JobsPage({
       // nothing, so a job marked read stayed on the board greyed out *and* appeared in the
       // section below it — dimmed rather than moved, which is not what marking it read means.
       unreadOnly: true,
-      sort: (params.sort as "best") ?? "best",
+      sort,
       limit: 150,
     }) as unknown as Promise<JobRow[]>,
     listJobs(db, {
@@ -62,7 +63,7 @@ export default async function JobsPage({
       query: params.q,
       relevantOnly,
       handledOnly: true,
-      sort: (params.sort as "best") ?? "best",
+      sort,
       limit: 60,
     }) as unknown as Promise<JobRow[]>,
     companiesWithJobs(db, relevantOnly),
@@ -78,13 +79,34 @@ export default async function JobsPage({
     if (g) g.jobs.push(job);
     else groups.set(job.companyId, { name: job.companyName, jobs: [job] });
   }
+  // Ordered by each company's best role overall, not by what is left on the board. Sorting on
+  // the remainder meant handling one job re-ranked its company mid-scroll.
+  const bestFitByCompany = new Map(companyOptions.map((c) => [c.id, c.bestFit ?? 0]));
+  // Within a company, honour the chosen sort. This used to re-sort by fit unconditionally, so
+  // picking "Recently posted" changed the SQL order and then threw it away — the dropdown looked
+  // broken because, in the grouped view, it was.
+  const withinCompany = (a: JobRow, b: JobRow) => {
+    if (sort === "posted") {
+      // Undated postings sink rather than sorting as epoch zero or as "today".
+      const at = a.postedAt?.getTime() ?? -Infinity;
+      const bt = b.postedAt?.getTime() ?? -Infinity;
+      return bt - at;
+    }
+    if (sort === "newest") return b.discoveredAt.getTime() - a.discoveredAt.getTime();
+    return b.fitScore - a.fitScore;
+  };
+
   const ordered = [...groups.entries()]
     .map(([id, g]) => ({
       id,
       name: g.name,
-      jobs: [...g.jobs].sort((a, b) => b.fitScore - a.fitScore),
+      jobs: [...g.jobs].sort(withinCompany),
     }))
-    .sort((a, b) => (b.jobs[0]?.fitScore ?? 0) - (a.jobs[0]?.fitScore ?? 0));
+    .sort(
+      (a, b) =>
+        (bestFitByCompany.get(b.id) ?? 0) - (bestFitByCompany.get(a.id) ?? 0) ||
+        a.name.localeCompare(b.name),
+    );
 
   const qs = (patch: Record<string, string | undefined>) => {
     const next = new URLSearchParams(
@@ -196,7 +218,10 @@ export default async function JobsPage({
         )}
       </div>
 
-      {jobs.length === 0 ? (
+      {/* Empty means empty *including* what has been handled. Testing only the active list
+          claimed "Nothing here yet" for a company whose every role was read or tracked — the
+          answer existed, one section further down, and the page said there was none. */}
+      {active.length === 0 && handled.length === 0 ? (
         <EmptyState
           title="Nothing here yet"
           body={
@@ -233,7 +258,7 @@ export default async function JobsPage({
               maxVisible={params.company ? undefined : 6}
             />
           ))}
-          <ReadSection jobs={handled} />
+          <ReadSection jobs={handled} defaultOpen={Boolean(params.company || params.q)} />
         </div>
       ) : (
         <div>
@@ -242,7 +267,7 @@ export default async function JobsPage({
               <JobCard key={job.id} job={job} outreach={outreachFor(job.companyId)} />
             ))}
           </ul>
-          <ReadSection jobs={handled} />
+          <ReadSection jobs={handled} defaultOpen={Boolean(params.company || params.q)} />
         </div>
       )}
     </div>

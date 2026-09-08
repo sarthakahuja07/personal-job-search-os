@@ -441,3 +441,36 @@ describe("location regions, not only countries", () => {
     expect(matchLocation("IN Remote India").matched?.name).toBe("Remote");
   });
 });
+
+describe("data engineering is a different discipline", () => {
+  // Sarthak worked *on* a data platform at Uber — metadata and lineage services, which is
+  // backend distributed-systems work — but is not a data engineer, and the boards carry enough
+  // of these to crowd out real matches.
+  it.each([
+    "Data Engineer - Ads",
+    "Senior Data Engineer",
+    "Data Engineering Manager",
+    "Principal Data Engineer",
+    "BI Data Engineer II",
+  ])("excludes %s", (title) => {
+    expect(matchTitle(title).passed).toBe(false);
+  });
+
+  // The neighbouring titles that ARE his work must survive.
+  it.each([
+    "Software Engineer, Data Platform",
+    "Software Engineer II",
+    "Backend Engineer - Data Infrastructure",
+  ])("keeps %s", (title) => {
+    expect(matchTitle(title).passed).toBe(true);
+  });
+
+  // Discipline exclusions are never lifted by a company's level vocabulary.
+  it("stays excluded even at a company with a level override", () => {
+    expect(
+      matchTitle("Senior Data Engineer", DEFAULT_MATCH_RULES, {
+        levelTitles: ["senior software engineer", "senior data engineer"],
+      }).passed,
+    ).toBe(false);
+  });
+});

@@ -157,6 +157,12 @@ export const DEFAULT_MATCH_RULES: MatchRules = {
     exclude: [
       // Adjacent but not the target role.
       "\\bsdet\\b", "\\btest\\s+engineer\\b", "\\bqa\\b", "\\bsupport\\s+engineer\\b",
+      // Data engineering is a neighbouring discipline, not this one. Sarthak worked *on* a data
+      // platform at Uber — building the metadata and lineage services — which is backend
+      // distributed-systems work, not pipeline authoring. The titles read as adjacent and the
+      // boards carry a lot of them, so they crowded out real matches. Deliberately in the
+      // discipline list, which a company level-title override can never lift.
+      "\\bdata\\s+engineer(ing)?\\b",
       // "Quality Assurance Software Developer Engineer in Test" slipped past \bsdet\b in live data.
       "\\bengineer\\s+in\\s+test\\b", "\\bquality\\s+assurance\\b",
       "\\bsales\\b", "\\brecruiter\\b", "\\bmarketing\\b", "\\bdesigner\\b",

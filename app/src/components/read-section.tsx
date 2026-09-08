@@ -2,7 +2,7 @@ import Link from "next/link";
 
 import { Collapsible } from "./collapsible";
 import { CopyLink } from "./copy-link";
-import type { JobRow } from "./job-card";
+import { daysSince, type JobRow } from "./job-card";
 import { ReadToggle } from "./read-toggle";
 import { cx } from "./ui";
 
@@ -17,7 +17,19 @@ import { cx } from "./ui";
  * Tracking counts as dealt with too: putting a job on the kanban is a stronger statement than
  * reading it, so it should leave the "still to decide" list just as firmly.
  */
-export function ReadSection({ jobs }: { jobs: JobRow[] }) {
+export function ReadSection({
+  jobs,
+  defaultOpen = false,
+}: {
+  jobs: JobRow[];
+  /**
+   * Open when the view is already filtered.
+   *
+   * Searching a company whose roles are all handled otherwise returned a page that looked
+   * empty — the answer was present but folded, which is indistinguishable from no answer.
+   */
+  defaultOpen?: boolean;
+}) {
   if (jobs.length === 0) return null;
   const tracked = jobs.filter((j) => j.applicationStatus).length;
 
@@ -25,7 +37,7 @@ export function ReadSection({ jobs }: { jobs: JobRow[] }) {
     <section className="mt-4 rounded-card border border-line/60 bg-surface-2/20">
       <Collapsible
         label={`${jobs.length} handled jobs`}
-        defaultOpen={false}
+        defaultOpen={defaultOpen}
         header={
           <header className="flex flex-wrap items-center gap-2 py-2.5 pr-4">
             <span className="text-[13px] font-medium text-ink-dim">Handled</span>
@@ -63,6 +75,14 @@ export function ReadSection({ jobs }: { jobs: JobRow[] }) {
               >
                 {job.companyName}
               </Link>
+              {(() => {
+                const d = daysSince(job.postedAt);
+                return d === null ? null : (
+                  <span className="hidden w-20 shrink-0 text-[11px] text-ink-faint sm:block">
+                    {d === 0 ? "today" : `${d}d ago`}
+                  </span>
+                );
+              })()}
               {job.applicationStatus && (
                 <span className="shrink-0 rounded border border-accent/30 bg-accent-soft px-1.5 py-0.5 text-[10px] text-accent-ink">
                   {job.applicationStatus}

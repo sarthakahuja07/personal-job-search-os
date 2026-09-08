@@ -23,6 +23,13 @@ export function isRecent(date: Date, windowMs: number = NEW_WINDOW_MS): boolean 
   return Date.now() - date.getTime() < windowMs;
 }
 
+/** Whole days since a date. Module scope for the same reason as isRecent: reading the clock in
+ *  a component body is a render-time side effect. */
+export function daysSince(date: Date | null): number | null {
+  if (!date) return null;
+  return Math.max(0, Math.floor((Date.now() - date.getTime()) / 86_400_000));
+}
+
 function daysAgo(date: Date | null): string | null {
   if (!date) return null;
   const days = Math.floor((Date.now() - date.getTime()) / 86_400_000);
@@ -119,8 +126,12 @@ export function JobCard({
   outreach?: OutreachProps;
 }) {
   const isNew = isRecent(job.discoveredAt);
-  const posted = daysAgo(job.postedAt);
   const found = daysAgo(job.discoveredAt);
+  // Days since the *employer* published it, which is not the same as when we found it. This is
+  // the number that decides whether a referral is still worth asking for: the whole project
+  // exists to reach a posting before it is flooded, and a role published seven weeks ago is a
+  // different proposition from one published yesterday at an identical fit score.
+  const postedDays = daysSince(job.postedAt);
   const band = bandOf(job);
 
   // Interacted: either it is in the pipeline, or it was read and consciously passed over. Both
@@ -186,6 +197,31 @@ export function JobCard({
                 )}
                 {job.locationPriority && (
                   <Badge>{LOCATION_LABEL[job.locationPriority] ?? "Match"}</Badge>
+                )}
+                <span className="text-ink-faint">·</span>
+                {postedDays === null ? (
+                  // Rippling and DE Shaw publish no date at all. Saying so is better than
+                  // implying the job is new, or leaving a gap that reads as one.
+                  <span
+                    className="text-[12px] text-ink-faint"
+                    title="This board does not publish a posting date"
+                  >
+                    posted date unknown
+                  </span>
+                ) : (
+                  <span
+                    className={cx(
+                      "text-[12px]",
+                      postedDays <= 7
+                        ? "text-fresh"
+                        : postedDays <= 30
+                          ? "text-ink-dim"
+                          : "text-ink-faint",
+                    )}
+                    title={`Published by the employer on ${job.postedAt?.toLocaleDateString("en-IN", { day: "numeric", month: "long", year: "numeric" })}`}
+                  >
+                    Posted {postedDays === 0 ? "today" : `${postedDays}d ago`}
+                  </span>
                 )}
               </div>
 
@@ -261,7 +297,6 @@ export function JobCard({
               status={(job.applicationStatus as ApplicationStatus | null) ?? null}
             />
             <ReadToggle jobId={job.id} read={Boolean(job.readAt)} />
-            {posted && <span>Posted {posted}</span>}
             {found && <span>Found {found}</span>}
             {/* "We could not assess this" and "this is a poor match" are different statements,
                 and a score alone cannot tell them apart. Apple, Microsoft and Rippling publish

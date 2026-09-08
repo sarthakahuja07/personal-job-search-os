@@ -301,6 +301,15 @@ export async function companiesWithJobs(db: Db, relevantOnly = true) {
       id: companies.id,
       name: companies.name,
       jobCount: count(jobs.id),
+      /**
+       * Best fit across *all* the company's open roles, handled or not.
+       *
+       * The board orders companies by this rather than by their remaining jobs, so tracking or
+       * reading one role does not make its company jump position under the cursor. Ordering
+       * that depends on what you have already dealt with rearranges itself as you work, which
+       * is exactly when you are least able to tolerate it.
+       */
+      bestFit: sql<number>`COALESCE(MAX(${jobs.fitScore}), 0)`,
     })
     .from(companies)
     .innerJoin(jobs, eq(jobs.companyId, companies.id))
