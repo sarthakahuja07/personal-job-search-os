@@ -42,24 +42,32 @@ export default async function JobsPage({
   const grouped = params.flat !== "1";
   const db = getDb();
 
-  const [jobs, companyOptions, contacts] = await Promise.all([
+  // Active and reviewed are fetched separately and bounded separately. Fetching one page of
+  // "everything" and splitting it in memory meant that once 150 jobs were read, only 50 unread
+  // ones were left in the page — the board would quietly shrink as you worked, for the wrong
+  // reason.
+  const [active, read, companyOptions, contacts] = await Promise.all([
     listJobs(db, {
       companyId: params.company,
       query: params.q,
       relevantOnly,
       newOnly,
       unreadOnly,
+      readOnly: false,
       sort: (params.sort as "best") ?? "best",
-      limit: 200,
+      limit: 150,
+    }) as unknown as Promise<JobRow[]>,
+    listJobs(db, {
+      companyId: params.company,
+      query: params.q,
+      relevantOnly,
+      readOnly: true,
+      sort: (params.sort as "best") ?? "best",
+      limit: 60,
     }) as unknown as Promise<JobRow[]>,
     companiesWithJobs(db, relevantOnly),
     contactsByCompany(db),
   ]);
-
-  // Read jobs leave the board and collect in their own folded section. Greying them in place
-  // meant the list never got shorter however much you worked through it.
-  const active = jobs.filter((j) => !j.readAt);
-  const read = jobs.filter((j) => j.readAt);
 
   // Grouped by company, each group ordered by fit. Company order is by its best role, so the
   // company most worth a referral ask today is at the top rather than whichever is alphabetically
@@ -86,6 +94,7 @@ export default async function JobsPage({
     return s ? `/jobs?${s}` : "/jobs";
   };
 
+  const jobs = active;
   const untouchedTotal = active.filter((j) => !j.applicationStatus).length;
   const companyName = params.company ? jobs[0]?.companyName : undefined;
   const filtered = Boolean(

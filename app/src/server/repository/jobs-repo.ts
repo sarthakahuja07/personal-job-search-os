@@ -29,6 +29,8 @@ export type JobFilters = {
   newOnly?: boolean;
   /** Hide anything already read or already in the pipeline. */
   unreadOnly?: boolean;
+  /** Only jobs already marked read — the Reviewed section. */
+  readOnly?: boolean;
   includeClosed?: boolean;
   query?: string;
   sort?: "best" | "newest" | "posted" | "company";
@@ -44,6 +46,7 @@ export async function listJobs(db: Db, filters: JobFilters = {}) {
     relevantOnly = true,
     newOnly = false,
     unreadOnly = false,
+    readOnly = false,
     includeClosed = false,
     query,
     sort = "best",
@@ -60,6 +63,7 @@ export async function listJobs(db: Db, filters: JobFilters = {}) {
     // strongest possible form of having looked at something.
     unreadOnly ? isNull(jobs.readAt) : undefined,
     unreadOnly ? isNull(applications.status) : undefined,
+    readOnly ? isNotNull(jobs.readAt) : undefined,
     query
       ? or(like(jobs.title, `%${query}%`), like(jobs.location, `%${query}%`))
       : undefined,
