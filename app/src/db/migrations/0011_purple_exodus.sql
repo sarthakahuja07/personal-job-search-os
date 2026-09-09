@@ -1,0 +1,1 @@
+ALTER TABLE `contacts` ADD `shared_number_ok` integer DEFAULT false NOT NULL;

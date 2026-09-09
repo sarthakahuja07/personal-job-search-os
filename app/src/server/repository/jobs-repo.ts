@@ -490,6 +490,7 @@ export async function conflictingContactNumbers(db: Db) {
       phone: contacts.phone,
       companyId: contacts.companyId,
       companyName: companies.name,
+      sharedNumberOk: contacts.sharedNumberOk,
     })
     .from(contacts)
     .innerJoin(companies, eq(companies.id, contacts.companyId))
@@ -509,6 +510,9 @@ export async function conflictingContactNumbers(db: Db) {
     const names = new Set(group.map((g) => g.name.trim().toLowerCase()));
     if (names.size < 2) continue;
     for (const row of group) {
+      // Acknowledged sharing is real and stays quiet. Only this row is silenced, so a *new*
+      // name appearing on the same number still raises the alarm.
+      if (row.sharedNumberOk) continue;
       conflicts.set(
         row.id,
         group

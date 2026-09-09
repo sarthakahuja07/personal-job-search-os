@@ -8,6 +8,7 @@ import { companies, crawlRuns, type SourceType } from "@/db/schema";
 import { describeConfig } from "@/server/domain/source-detect";
 import { conflictingContactNumbers, contactsForCompany, listJobs } from "@/server/repository/jobs-repo";
 import {
+  acknowledgeSharedNumber,
   addContact,
   deleteCompany,
   deleteContact,
@@ -278,8 +279,22 @@ export default async function CompanyDetailPage({
                         .get(c.id)!
                         .map((o) => `${o.name} at ${o.companyName}`)
                         .join(", ")}
-                      . One of them is probably wrong.
+                      .{" "}
+                      <span className="text-ink-faint">
+                        If that is genuinely the same number, say so and this stops asking.
+                      </span>
                     </p>
+                  ) : null}
+                  {numberConflicts.get(c.id)?.length ? (
+                    <button
+                      type="submit"
+                      formAction={acknowledgeSharedNumber}
+                      name="id"
+                      value={c.id}
+                      className="col-span-full justify-self-start rounded px-1 text-[11px] text-ink-faint underline-offset-2 transition hover:text-ink-dim hover:underline"
+                    >
+                      That number is correct
+                    </button>
                   ) : null}
                   <div className="flex gap-1.5">
                     <button

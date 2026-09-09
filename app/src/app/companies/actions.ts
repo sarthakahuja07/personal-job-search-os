@@ -189,3 +189,22 @@ export async function deleteContact(formData: FormData) {
   await getDb().delete(contacts).where(eq(contacts.id, id));
   revalidateCompany(companyId);
 }
+
+/**
+ * Record that a contact genuinely shares its phone number with someone else.
+ *
+ * Silences the duplicate-number warning for this contact only. A different name appearing on
+ * the same number later still raises it, which is the case actually worth catching.
+ */
+export async function acknowledgeSharedNumber(formData: FormData) {
+  const id = String(formData.get("id") ?? "");
+  const companyId = String(formData.get("companyId") ?? "");
+  if (!id) return;
+
+  await getDb()
+    .update(contacts)
+    .set({ sharedNumberOk: true, updatedAt: new Date() })
+    .where(eq(contacts.id, id));
+
+  revalidateCompany(companyId);
+}

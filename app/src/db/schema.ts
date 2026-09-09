@@ -168,6 +168,17 @@ export const contacts = sqliteTable(
     /** Referrals often start on LinkedIn rather than a phone number, so it is a first-class
      *  field rather than something buried in notes. */
     linkedinUrl: text("linkedin_url"),
+    /**
+     * This contact genuinely shares a phone number with someone else.
+     *
+     * The duplicate-number check exists because a mistyped number is otherwise invisible — it
+     * once sent a Swiggy referral request into Google HR's chat. But sharing is sometimes real
+     * (a shared work phone, one person known by two names), and an alarm that cannot be
+     * silenced is one you stop reading, which would cost exactly the bug it was added to catch.
+     */
+    sharedNumberOk: integer("shared_number_ok", { mode: "boolean" })
+      .notNull()
+      .default(false),
     notes: text("notes"),
     createdAt: createdAt(),
     updatedAt: updatedAt(),
