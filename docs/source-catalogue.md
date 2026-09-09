@@ -7,8 +7,34 @@ The organising idea: **the stubborn companies were never individual problems, th
 handful of patterns.** Building for the pattern rather than the company is what turned all but
 one of them into configuration rather than code.
 
-**29 of 31 active companies now crawl automatically.** The two that do not are Google, which
-refuses in `robots.txt`, and Wint Wealth, which publishes no first-party board at all.
+**40 of 47 active companies now crawl automatically.**
+
+The seven that do not, each for a reason established by looking rather than assumed:
+
+| Company | Why not |
+|---|---|
+| **Google** | `robots.txt` disallows the job-results path. Policy, not capability — honoured. |
+| **Myntra** | The board is a Flutter app rendering to a WebGL canvas. There is no DOM to read, with or without a browser. |
+| **Deel** | A cookie-consent wall gates the board; `jobs.deel.com` is a Next.js shell that redirects into it. |
+| **super.money** | 7 KB page, no board at that URL. |
+| **Truva** | No job links on the careers page. |
+| **Wint Wealth** | No first-party board — they hire through LinkedIn and Instahyre. |
+| **Eightfold** | Their careers site is their own product behind a login. |
+
+Three former members of this list were promoted once they were investigated properly rather than
+statically scanned — a static regex over the careers HTML found nothing for any of them, and a
+browser watching what the page actually loads found all three:
+
+| Company | Found | Now |
+|---|---|---|
+| **BrowserStack** | `browserstack.wd3.myworkdayjobs.com/External` in a linked page | Workday, 32 jobs |
+| **Cohesity** | A bespoke JSON API whose own `jobUrl` field pointed at Workday | Workday, 164 jobs |
+| **PhonePe** | SmartRecruiters under `PHONEPELIMITED`, not the guessable `phonepe` | SmartRecruiters, 53 jobs, all India |
+
+The lesson is the one already recorded below for Qualcomm and Akamai, in a third form: **a
+negative result from a static scan is not evidence of absence.** Cohesity's own API answered the
+question by naming its Workday tenant in a field, and PhonePe was one wrong token away the whole
+time.
 
 ---
 
