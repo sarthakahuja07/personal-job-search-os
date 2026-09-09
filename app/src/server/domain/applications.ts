@@ -1,9 +1,14 @@
 /**
  * Application pipeline logic.
  *
- * Five stages, exactly as PRD §30 specifies, and no more. Recruiter Screen / Onsite / Offer
- * columns make a board look thorough and turn it into admin; the question this board answers is
- * "what needs a nudge today", which five stages answer and nine obscure.
+ * Five active stages, as PRD §30 specifies, plus two terminal outcomes. Recruiter Screen /
+ * Onsite / Offer columns make a board look thorough and turn it into admin; the question this
+ * board answers is "what needs a nudge today", which five stages answer and nine obscure.
+ *
+ * Selected and Rejected are different in kind from the five: they are where a job stops needing
+ * anything. Nothing chases them, and they are the only stages a card can enter and be finished
+ * with — which is precisely why they belong on the board rather than being a reason to delete
+ * the card. A rejection you can see is a search you can reason about.
  *
  * Pure: the service layer supplies the clock and persists the patch.
  */
@@ -16,7 +21,16 @@ export const STAGES: ApplicationStatus[] = [
   "referred",
   "applied",
   "interviews",
+  "selected",
+  "rejected",
 ];
+
+/** Stages where nothing further is expected of Sarthak. Reminders skip these. */
+export const TERMINAL_STAGES: ApplicationStatus[] = ["selected", "rejected"];
+
+export function isTerminal(stage: ApplicationStatus | null): boolean {
+  return stage !== null && TERMINAL_STAGES.includes(stage);
+}
 
 export const STAGE_LABEL: Record<ApplicationStatus, string> = {
   saved: "Saved",
@@ -24,6 +38,8 @@ export const STAGE_LABEL: Record<ApplicationStatus, string> = {
   referred: "Referred",
   applied: "Applied",
   interviews: "Interviews",
+  selected: "Selected",
+  rejected: "Rejected",
 };
 
 export const STAGE_HINT: Record<ApplicationStatus, string> = {
@@ -32,6 +48,8 @@ export const STAGE_HINT: Record<ApplicationStatus, string> = {
   referred: "Referral submitted",
   applied: "Application in",
   interviews: "In process",
+  selected: "Offer or accepted",
+  rejected: "Closed — no further action",
 };
 
 /** Which timestamp column each stage stamps on first entry. `saved` stamps nothing. */
@@ -40,13 +58,18 @@ const STAGE_TIMESTAMP: Partial<Record<ApplicationStatus, TimestampField>> = {
   referred: "referredAt",
   applied: "appliedAt",
   interviews: "interviewStartedAt",
+  // Both outcomes stamp the same column: what matters is when it ended, and `status` already
+  // records which way it went. A second column would only be able to disagree with it.
+  selected: "closedOutAt",
+  rejected: "closedOutAt",
 };
 
 export type TimestampField =
   | "requestedAt"
   | "referredAt"
   | "appliedAt"
-  | "interviewStartedAt";
+  | "interviewStartedAt"
+  | "closedOutAt";
 
 export type ApplicationTimestamps = Partial<Record<TimestampField, Date | null>>;
 

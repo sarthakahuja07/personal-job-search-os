@@ -14,6 +14,7 @@
  */
 
 import type { ApplicationStatus } from "@/db/schema";
+import { isTerminal } from "./applications";
 import type { FitBand } from "./fit";
 
 const DAY_MS = 86_400_000;
@@ -102,6 +103,10 @@ export function buildReminders(
   const out: Reminder[] = [];
 
   for (const c of candidates) {
+    // Selected and rejected are endings. Nothing is owed on either, and a reminder to chase a
+    // rejection is the fastest way to teach someone to ignore the list.
+    if (isTerminal(c.status)) continue;
+
     const base = {
       jobId: c.jobId,
       jobTitle: c.jobTitle,

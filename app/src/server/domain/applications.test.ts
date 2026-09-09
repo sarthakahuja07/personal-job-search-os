@@ -7,21 +7,30 @@ import {
   isStage,
   transition,
   type FollowUpCandidate,
+  isTerminal,
 } from "./applications";
 
 const NOW = new Date("2026-09-06T12:00:00Z");
 const daysAgo = (n: number) => new Date(NOW.getTime() - n * 86_400_000);
 
 describe("stages", () => {
-  it("has exactly the five stages the PRD specifies, in order", () => {
-    expect(STAGES).toEqual(["saved", "requested", "referred", "applied", "interviews"]);
+  it("has the five active stages in order, then the two outcomes", () => {
+    expect(STAGES).toEqual([
+      "saved",
+      "requested",
+      "referred",
+      "applied",
+      "interviews",
+      "selected",
+      "rejected",
+    ]);
   });
 
   it.each(["saved", "interviews"])("recognises %s", (s) => {
     expect(isStage(s)).toBe(true);
   });
 
-  it.each(["offer", "rejected", "onsite", ""])("rejects %s", (s) => {
+  it.each(["offer", "ghosted", "onsite", ""])("rejects %s", (s) => {
     expect(isStage(s)).toBe(false);
   });
 });
@@ -119,10 +128,56 @@ describe("countByStage", () => {
       referred: 0,
       applied: 0,
       interviews: 0,
+      selected: 0,
+      rejected: 0,
     });
   });
 
   it("counts an empty list without throwing", () => {
     expect(countByStage([]).saved).toBe(0);
+  });
+});
+
+describe("terminal outcomes", () => {
+  // Selected and Rejected are endings, not stages: they are where a job stops needing anything.
+  // Having them on the board is what makes deleting a card unnecessary — a rejection you can
+  // see is a search you can reason about.
+  it("are part of the board", () => {
+    expect(STAGES).toContain("selected");
+    expect(STAGES).toContain("rejected");
+    expect(STAGES).toHaveLength(7);
+  });
+
+  it("come last, after the active stages", () => {
+    expect(STAGES.slice(-2)).toEqual(["selected", "rejected"]);
+  });
+
+  it.each(["selected", "rejected"] as const)("marks %s terminal", (stage) => {
+    expect(isTerminal(stage)).toBe(true);
+  });
+
+  it.each(["saved", "requested", "referred", "applied", "interviews"] as const)(
+    "leaves %s active",
+    (stage) => {
+      expect(isTerminal(stage)).toBe(false);
+    },
+  );
+
+  it("treats an untracked job as not terminal", () => {
+    expect(isTerminal(null)).toBe(false);
+  });
+
+  // Both outcomes stamp the same column: `status` already records which way it went, and a
+  // second column could only ever disagree with it.
+  it.each(["selected", "rejected"] as const)("stamps a close-out time for %s", (stage) => {
+    const patch = transition({}, stage);
+    expect(patch.closedOutAt).toBeInstanceOf(Date);
+    expect(patch.status).toBe(stage);
+  });
+
+  it("is a real stage as far as validation is concerned", () => {
+    expect(isStage("selected")).toBe(true);
+    expect(isStage("rejected")).toBe(true);
+    expect(isStage("ghosted")).toBe(false);
   });
 });

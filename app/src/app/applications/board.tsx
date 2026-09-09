@@ -6,7 +6,7 @@ import Link from "next/link";
 import { CopyLink } from "@/components/copy-link";
 import { cx } from "@/components/ui";
 import type { ApplicationStatus } from "@/db/schema";
-import { STAGES, STAGE_HINT, STAGE_LABEL } from "@/server/domain/applications";
+import { isTerminal, STAGES, STAGE_HINT, STAGE_LABEL } from "@/server/domain/applications";
 import type { BoardCard } from "@/server/repository/applications-repo";
 import { moveCard, removeCard } from "./actions";
 
@@ -138,7 +138,7 @@ export function Board({ cards }: { cards: BoardCard[] }) {
     <div
       ref={rootRef}
       className={cx(
-        "grid gap-3 md:grid-cols-3 xl:grid-cols-5",
+        "grid gap-3 sm:grid-cols-2 md:grid-cols-4 xl:grid-cols-7",
         pending && "opacity-95",
         // While a drag is in flight, stop the page itself from selecting text under the finger.
         dragging && "select-none",
@@ -151,8 +151,15 @@ export function Board({ cards }: { cards: BoardCard[] }) {
             key={stage}
             data-stage={stage}
             className={cx(
-              "flex min-h-[160px] flex-col rounded-card border bg-surface/60 transition",
-              over === stage ? "border-accent bg-accent-soft/30" : "border-line",
+              "flex min-h-[160px] flex-col rounded-card border transition",
+              // The two outcomes sit quieter than the five active stages: they are where work
+              // stops, so they should not compete for attention with the columns that need it.
+              isTerminal(stage) ? "bg-surface/30" : "bg-surface/60",
+              over === stage
+                ? "border-accent bg-accent-soft/30"
+                : isTerminal(stage)
+                  ? "border-line/60"
+                  : "border-line",
             )}
           >
             <header className="border-b border-line px-3 py-2.5">

@@ -1,0 +1,1 @@
+ALTER TABLE `applications` ADD `closed_out_at` integer;

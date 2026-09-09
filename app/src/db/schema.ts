@@ -299,6 +299,8 @@ export const APPLICATION_STATUSES = [
   "referred",
   "applied",
   "interviews",
+  "selected",
+  "rejected",
 ] as const;
 
 export type ApplicationStatus = (typeof APPLICATION_STATUSES)[number];
@@ -321,6 +323,9 @@ export const applications = sqliteTable(
     requestedAt: integer("requested_at", { mode: "timestamp_ms" }),
     referredAt: integer("referred_at", { mode: "timestamp_ms" }),
     appliedAt: integer("applied_at", { mode: "timestamp_ms" }),
+    /** When the process ended, either way. Both outcomes stamp this. */
+    closedOutAt: integer("closed_out_at", { mode: "timestamp_ms" }),
+
     interviewStartedAt: integer("interview_started_at", {
       mode: "timestamp_ms",
     }),

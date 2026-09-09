@@ -188,3 +188,31 @@ describe("read jobs", () => {
     ).toHaveLength(1);
   });
 });
+
+describe("finished applications", () => {
+  // Selected and Rejected are endings. A reminder to chase a rejection is the fastest way to
+  // teach someone to ignore the list entirely.
+  it.each(["selected", "rejected"] as const)("never chases a %s job", (status) => {
+    expect(
+      buildReminders(
+        [
+          candidate({
+            status,
+            requestedAt: daysAgo(60),
+            referredAt: daysAgo(50),
+            appliedAt: daysAgo(40),
+            savedAt: daysAgo(90),
+            discoveredAt: daysAgo(90),
+            fitBand: "excellent",
+          }),
+        ],
+        DEFAULT_THRESHOLDS,
+        NOW,
+      ),
+    ).toEqual([]);
+  });
+
+  it("still chases one that is only applied", () => {
+    expect(build({ status: "applied", appliedAt: daysAgo(40) })).toHaveLength(1);
+  });
+});
