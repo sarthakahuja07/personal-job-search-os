@@ -232,10 +232,12 @@ function OutreachModal({
                   )}
                 >
                   {c.name}
+                  {/* The destination itself, not just which channels exist. A stored number can
+                      be wrong — one contact here was saved with another company's number, and
+                      the only clue was WhatsApp opening under a different name. Showing where
+                      the message is going makes that visible before you send it. */}
                   <span className="ml-1.5 text-[10px] text-ink-faint">
-                    {[c.phone && "WA", c.email && "Email", c.linkedinUrl && "LI"]
-                      .filter(Boolean)
-                      .join(" · ") || "no channel"}
+                    {c.phone ?? c.email ?? (c.linkedinUrl ? "LinkedIn" : "no channel")}
                   </span>
                 </button>
               ))}

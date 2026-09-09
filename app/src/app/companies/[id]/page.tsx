@@ -6,7 +6,7 @@ import { Badge, Button, Card, PageHeader, SectionTitle, cx, inputStyles } from "
 import { getDb } from "@/db";
 import { companies, crawlRuns, type SourceType } from "@/db/schema";
 import { describeConfig } from "@/server/domain/source-detect";
-import { contactsForCompany, listJobs } from "@/server/repository/jobs-repo";
+import { conflictingContactNumbers, contactsForCompany, listJobs } from "@/server/repository/jobs-repo";
 import {
   addContact,
   deleteCompany,
@@ -72,7 +72,7 @@ export default async function CompanyDetailPage({
   const company = rows[0];
   if (!company) notFound();
 
-  const [people, jobs, runs] = await Promise.all([
+  const [people, jobs, runs, numberConflicts] = await Promise.all([
     contactsForCompany(db, id),
     listJobs(db, { companyId: id, relevantOnly: false, limit: 10 }),
     db
@@ -81,6 +81,7 @@ export default async function CompanyDetailPage({
       .where(eq(crawlRuns.companyId, id))
       .orderBy(desc(crawlRuns.startedAt))
       .limit(5),
+    conflictingContactNumbers(db),
   ]);
 
   const fields = CONFIG_FIELDS[company.sourceType] ?? [];
@@ -267,6 +268,19 @@ export default async function CompanyDetailPage({
                     placeholder="LinkedIn"
                     className={inputStyles}
                   />
+                  {/* A shared number across *different names* is nearly always a typo, and it
+                      is otherwise invisible: the message goes where you stored it, and the only
+                      clue is the chat opening under someone else's name. */}
+                  {numberConflicts.get(c.id)?.length ? (
+                    <p className="col-span-full text-[11px] text-warn">
+                      This number is also saved for{" "}
+                      {numberConflicts
+                        .get(c.id)!
+                        .map((o) => `${o.name} at ${o.companyName}`)
+                        .join(", ")}
+                      . One of them is probably wrong.
+                    </p>
+                  ) : null}
                   <div className="flex gap-1.5">
                     <button
                       type="submit"

@@ -3,6 +3,7 @@ import { eq } from "drizzle-orm";
 
 import { Badge, Button, Card, PageHeader, SectionTitle, inputStyles } from "@/components/ui";
 import { getDb } from "@/db";
+import { RunCrawl } from "./run-crawl";
 import { settings } from "@/db/schema";
 
 export const dynamic = "force-dynamic";
@@ -57,6 +58,9 @@ export default async function SettingsPage() {
         title="Settings"
         subtitle="Match rules live in the database, so changing them takes effect on the next crawl without a deploy."
       />
+
+      <SectionTitle>Run now</SectionTitle>
+      <RunCrawl />
 
       <form action={saveSettings} className="space-y-6">
         <Card className="space-y-5 px-5 py-5">

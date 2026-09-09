@@ -470,3 +470,52 @@ export async function listReminderCandidates(db: Db, limit = 200) {
     .orderBy(desc(jobs.fitScore))
     .limit(limit);
 }
+
+/**
+ * Phone numbers saved against contacts with different names.
+ *
+ * One person can legitimately be your contact at several companies — Shaz covers four here — so
+ * a shared number is only suspicious when the *names* differ. That case is almost always a typo
+ * at entry, and it is invisible in the app: the message goes to the number you stored, and the
+ * only clue is WhatsApp opening under someone else's name, which is exactly how the Swiggy
+ * contact turned out to be carrying Google's HR number.
+ *
+ * Compared on digits alone, so formatting differences do not hide a collision.
+ */
+export async function conflictingContactNumbers(db: Db) {
+  const rows = await db
+    .select({
+      id: contacts.id,
+      name: contacts.name,
+      phone: contacts.phone,
+      companyId: contacts.companyId,
+      companyName: companies.name,
+    })
+    .from(contacts)
+    .innerJoin(companies, eq(companies.id, contacts.companyId))
+    .where(isNotNull(contacts.phone));
+
+  const byDigits = new Map<string, typeof rows>();
+  for (const r of rows) {
+    const digits = (r.phone ?? "").replace(/\D/g, "");
+    if (digits.length < 8) continue;
+    const list = byDigits.get(digits);
+    if (list) list.push(r);
+    else byDigits.set(digits, [r]);
+  }
+
+  const conflicts = new Map<string, { name: string; companyName: string }[]>();
+  for (const group of byDigits.values()) {
+    const names = new Set(group.map((g) => g.name.trim().toLowerCase()));
+    if (names.size < 2) continue;
+    for (const row of group) {
+      conflicts.set(
+        row.id,
+        group
+          .filter((g) => g.id !== row.id)
+          .map((g) => ({ name: g.name, companyName: g.companyName })),
+      );
+    }
+  }
+  return conflicts;
+}

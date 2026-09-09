@@ -78,7 +78,9 @@ export default async function ApplicationsPage() {
                       </p>
                     </div>
                     <div className="flex shrink-0 flex-wrap gap-1.5">
-                      {contacts.slice(0, 3).map((c) => {
+                      {/* Every contact, not the first three: a capped list silently removes
+                          the person you actually wanted to ask. */}
+                      {contacts.map((c) => {
                         const wa = whatsappLink(c.phone, message);
                         return wa ? (
                           <a
