@@ -216,3 +216,70 @@ describe("finished applications", () => {
     expect(build({ status: "applied", appliedAt: daysAgo(40) })).toHaveLength(1);
   });
 });
+
+describe("closing a reminder", () => {
+  const dismissedAt = (jobId: string, kind: string, at: Date) =>
+    new Map([[`${jobId}:${kind}`, at]]);
+
+  it("hides a reminder that was closed after it was raised", () => {
+    const c = candidate({ jobId: "j1", status: "requested", requestedAt: daysAgo(9) });
+    expect(buildReminders([c], DEFAULT_THRESHOLDS, NOW)).toHaveLength(1);
+    expect(
+      buildReminders([c], DEFAULT_THRESHOLDS, NOW, dismissedAt("j1", "referral_status", daysAgo(1))),
+    ).toEqual([]);
+  });
+
+  // The point of comparing against `since` rather than just storing a flag: closing is "not
+  // now", and a job that moves stage is a new situation that deserves to be raised again.
+  it("returns once the job moves to a stage whose clock starts later", () => {
+    const closed = dismissedAt("j1", "apply_after_referral", daysAgo(5));
+    const moved = candidate({ jobId: "j1", status: "referred", referredAt: daysAgo(3) });
+    const r = buildReminders([moved], DEFAULT_THRESHOLDS, NOW, closed);
+    expect(r).toHaveLength(1);
+    expect(r[0].kind).toBe("apply_after_referral");
+  });
+
+  it("only silences the kind that was closed", () => {
+    const c = candidate({ jobId: "j1", status: "applied", appliedAt: daysAgo(30) });
+    expect(
+      buildReminders([c], DEFAULT_THRESHOLDS, NOW, dismissedAt("j1", "referral_status", NOW)),
+    ).toHaveLength(1);
+  });
+
+  it("only silences the job that was closed", () => {
+    const rs = buildReminders(
+      [
+        candidate({ jobId: "a", status: "requested", requestedAt: daysAgo(9) }),
+        candidate({ jobId: "b", status: "requested", requestedAt: daysAgo(9) }),
+      ],
+      DEFAULT_THRESHOLDS,
+      NOW,
+      dismissedAt("a", "referral_status", daysAgo(1)),
+    );
+    expect(rs.map((r) => r.jobId)).toEqual(["b"]);
+  });
+
+  it("is inert with no dismissals", () => {
+    const c = candidate({ status: "requested", requestedAt: daysAgo(9) });
+    expect(buildReminders([c], DEFAULT_THRESHOLDS, NOW, new Map())).toHaveLength(1);
+  });
+});
+
+describe("configurable thresholds", () => {
+  const c = candidate({ status: "requested", requestedAt: daysAgo(3) });
+
+  it("stays quiet at the default and fires when tightened", () => {
+    expect(buildReminders([c], DEFAULT_THRESHOLDS, NOW)).toHaveLength(0);
+    expect(
+      buildReminders([c], { ...DEFAULT_THRESHOLDS, referralStatusDays: 2 }, NOW),
+    ).toHaveLength(1);
+  });
+
+  it("can be relaxed to silence a rule that would otherwise fire", () => {
+    const applied = candidate({ status: "applied", appliedAt: daysAgo(20) });
+    expect(buildReminders([applied], DEFAULT_THRESHOLDS, NOW)).toHaveLength(1);
+    expect(
+      buildReminders([applied], { ...DEFAULT_THRESHOLDS, applicationSilentDays: 60 }, NOW),
+    ).toHaveLength(0);
+  });
+});

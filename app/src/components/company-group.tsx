@@ -23,6 +23,7 @@ export function CompanyGroup({
   contactNames,
   defaultOpen,
   maxVisible,
+  bestFit,
 }: {
   companyId: string;
   companyName: string;
@@ -40,8 +41,17 @@ export function CompanyGroup({
    * summary, which is what it is for.
    */
   maxVisible?: number;
+  /**
+   * Best fit across *all* this company's open roles, from a MAX() over the database.
+   *
+   * Not derivable from `jobs`: that list is one page of one filter, capped, and — since the
+   * board started sorting by posting date — not even ordered by fit, so `jobs[0].fitScore` was
+   * reporting whichever role happened to be newest. A company whose every role is already
+   * handled has no rows here at all and would have shown 0.
+   */
+  bestFit?: number;
 }) {
-  const best = jobs[0]?.fitScore ?? 0;
+  const best = bestFit ?? Math.max(0, ...jobs.map((j) => j.fitScore));
   const newCount = jobs.filter((j) => isRecent(j.discoveredAt)).length;
   // Untouched: neither read nor in the pipeline. This is the number that says whether the
   // company still needs your attention, so it leads and the total follows.

@@ -48,6 +48,11 @@ export type Reminder = {
   hasContact: boolean;
 };
 
+/** When each (job, kind) reminder was last closed, keyed `${jobId}:${kind}`. */
+export type DismissalMap = Map<string, Date>;
+
+export const dismissalKey = (jobId: string, kind: ReminderKind) => `${jobId}:${kind}`;
+
 export type ReminderCandidate = {
   jobId: string;
   jobTitle: string;
@@ -99,6 +104,7 @@ export function buildReminders(
   candidates: ReminderCandidate[],
   thresholds: ReminderThresholds = DEFAULT_THRESHOLDS,
   now: Date = new Date(),
+  dismissed: DismissalMap = new Map(),
 ): Reminder[] {
   const out: Reminder[] = [];
 
@@ -210,10 +216,19 @@ export function buildReminders(
     }
   }
 
+  // A closed reminder stays closed only while it is about the same situation. The dismissal is
+  // compared against the moment the reminder's clock started, so moving the job to a new stage
+  // restarts that clock past the dismissal and the reminder legitimately returns. "Not now"
+  // rather than "never", and it cannot bury something that has genuinely changed.
+  const live = out.filter((r) => {
+    const at = dismissed.get(dismissalKey(r.jobId, r.kind));
+    return !at || at.getTime() < r.since.getTime();
+  });
+
   // Worst first, then longest-waiting. A stable order matters: this list is read at a glance
   // and a reshuffling list teaches you to stop reading it.
   const rank: Record<ReminderSeverity, number> = { overdue: 0, due: 1 };
-  return out.sort(
+  return live.sort(
     (a, b) => rank[a.severity] - rank[b.severity] || b.daysWaiting - a.daysWaiting,
   );
 }

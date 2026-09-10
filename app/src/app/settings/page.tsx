@@ -5,21 +5,43 @@ import { Badge, Button, Card, PageHeader, SectionTitle, inputStyles } from "@/co
 import { getDb } from "@/db";
 import { RunCrawl } from "./run-crawl";
 import { settings } from "@/db/schema";
+import {
+  DEFAULT_THRESHOLDS,
+  type ReminderThresholds,
+} from "@/server/domain/reminders";
 
 export const dynamic = "force-dynamic";
 
 async function saveSettings(formData: FormData) {
   "use server";
   const db = getDb();
-  const followUpDays = Number(formData.get("followUpDays") ?? 5);
   const closeAfter = Number(formData.get("closeAfterMissingRuns") ?? 3);
+
+  // One number per reminder rule. Clamped rather than rejected: a threshold of 0 would fire on
+  // everything the moment it was saved, and a silently huge one would quietly switch the rule
+  // off — both are worse than a value nudged back into a range that still means something.
+  const days = (name: keyof ReminderThresholds, fallback: number) => {
+    const raw = Number(formData.get(name));
+    if (!Number.isFinite(raw)) return fallback;
+    return Math.min(365, Math.max(1, Math.round(raw)));
+  };
+  const reminderThresholds: ReminderThresholds = {
+    referralStatusDays: days("referralStatusDays", DEFAULT_THRESHOLDS.referralStatusDays),
+    applyAfterReferralDays: days("applyAfterReferralDays", DEFAULT_THRESHOLDS.applyAfterReferralDays),
+    decideOnSavedDays: days("decideOnSavedDays", DEFAULT_THRESHOLDS.decideOnSavedDays),
+    applicationSilentDays: days("applicationSilentDays", DEFAULT_THRESHOLDS.applicationSilentDays),
+    strongMatchDays: days("strongMatchDays", DEFAULT_THRESHOLDS.strongMatchDays),
+  };
 
   await db
     .update(settings)
     .set({
       notifyEmail: String(formData.get("notifyEmail") ?? "").trim() || null,
       resumeUrl: String(formData.get("resumeUrl") ?? "").trim() || null,
-      followUpDays: Number.isFinite(followUpDays) ? followUpDays : 5,
+      // Kept in step with the reminder rule of the same meaning, so the Applications follow-up
+      // list and the Reminders page can never disagree about when a referral has gone quiet.
+      followUpDays: reminderThresholds.referralStatusDays,
+      reminderThresholds,
       closeAfterMissingRuns: Number.isFinite(closeAfter) ? closeAfter : 3,
       updatedAt: new Date(),
     })
@@ -46,10 +68,48 @@ function Field({
   );
 }
 
+/** One row per reminder rule, described in terms of what it watches rather than its field name. */
+const REMINDER_FIELDS: {
+  name: keyof ReminderThresholds;
+  label: string;
+  hint: string;
+}[] = [
+  {
+    name: "referralStatusDays",
+    label: "Chase a referral after (days)",
+    hint: "Days in Requested with no reply. Also drives the Applications follow-up list.",
+  },
+  {
+    name: "applyAfterReferralDays",
+    label: "Apply after a referral within (days)",
+    hint: "Someone has spent their credibility — deliberately the shortest window.",
+  },
+  {
+    name: "decideOnSavedDays",
+    label: "Decide on a saved role after (days)",
+    hint: "Days in Saved with no decision either way.",
+  },
+  {
+    name: "applicationSilentDays",
+    label: "Application gone quiet after (days)",
+    hint: "Days since applying with nothing recorded since.",
+  },
+  {
+    name: "strongMatchDays",
+    label: "Untouched strong match after (days)",
+    hint: "Only excellent and strong fits qualify, so this never reproduces the job board.",
+  },
+];
+
 export default async function SettingsPage() {
   const db = getDb();
   const rows = await db.select().from(settings).limit(1);
   const s = rows[0];
+  // Fall back per-key so a settings row written before a rule existed still renders sensibly.
+  const thresholds: ReminderThresholds = {
+    ...DEFAULT_THRESHOLDS,
+    ...(s?.reminderThresholds ?? {}),
+  };
   const rules = s?.matchRules;
 
   return (
@@ -89,21 +149,29 @@ export default async function SettingsPage() {
         </Card>
 
         <Card className="space-y-5 px-5 py-5">
+          <SectionTitle>Reminder timing</SectionTitle>
+          <p className="mb-3 text-[11px] leading-relaxed text-ink-faint">
+            How long each kind of silence is tolerated before it becomes a reminder. Lower is
+            pushier. These take effect immediately — reminders are computed on every page load,
+            not stored.
+          </p>
+          <div className="mb-5 grid gap-5 sm:grid-cols-2">
+            {REMINDER_FIELDS.map((f) => (
+              <Field key={f.name} label={f.label} hint={f.hint}>
+                <input
+                  name={f.name}
+                  type="number"
+                  min={1}
+                  max={365}
+                  defaultValue={thresholds[f.name]}
+                  className={inputStyles}
+                />
+              </Field>
+            ))}
+          </div>
+
           <SectionTitle>Pipeline behaviour</SectionTitle>
           <div className="grid gap-5 sm:grid-cols-2">
-            <Field
-              label="Follow up after (days)"
-              hint="Days in Requested before a reminder surfaces."
-            >
-              <input
-                name="followUpDays"
-                type="number"
-                min={1}
-                max={30}
-                defaultValue={s?.followUpDays ?? 5}
-                className={inputStyles}
-              />
-            </Field>
             <Field
               label="Close after N missed crawls"
               hint="Only successful runs count, so a broken adapter can never close a live role."

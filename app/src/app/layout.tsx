@@ -8,7 +8,11 @@ import {
   DEFAULT_THRESHOLDS,
   type ReminderCandidate,
 } from "@/server/domain/reminders";
-import { listReminderCandidates, navCounts } from "@/server/repository/jobs-repo";
+import {
+  listReminderCandidates,
+  navCounts,
+  reminderDismissalMap,
+} from "@/server/repository/jobs-repo";
 
 import "./globals.css";
 
@@ -36,20 +40,19 @@ export default async function RootLayout({
     // The reminder badge runs the real rules rather than a SQL restatement of them. Duplicating
     // thresholds in a query is how the badge and the page start disagreeing, and a badge you
     // stop believing is worse than no badge.
-    const [base, rows, settingsRows] = await Promise.all([
+    const [base, rows, settingsRows, dismissed] = await Promise.all([
       navCounts(db),
       listReminderCandidates(db),
-      db.select({ followUpDays: settings.followUpDays }).from(settings).limit(1),
+      db.select({ reminderThresholds: settings.reminderThresholds }).from(settings).limit(1),
+      reminderDismissalMap(db),
     ]);
     counts = {
       ...base,
       reminders: buildReminders(
         rows.map((r) => ({ ...r, hasContact: Boolean(r.hasContact) })) as ReminderCandidate[],
-        {
-          ...DEFAULT_THRESHOLDS,
-          referralStatusDays:
-            settingsRows[0]?.followUpDays ?? DEFAULT_THRESHOLDS.referralStatusDays,
-        },
+        { ...DEFAULT_THRESHOLDS, ...(settingsRows[0]?.reminderThresholds ?? {}) },
+        new Date(),
+        dismissed,
       ).length,
     };
   } catch {

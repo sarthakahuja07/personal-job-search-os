@@ -279,6 +279,7 @@ export default async function JobsPage({
               contactNames={(contacts.get(g.id) ?? []).map((c) => c.name)}
               // Already looking at one company? Then show everything it has.
               maxVisible={params.company ? undefined : 6}
+              bestFit={bestFitByCompany.get(g.id)}
             />
           ))}
           <ReadSection jobs={handled} defaultOpen={Boolean(params.company || params.q)} />

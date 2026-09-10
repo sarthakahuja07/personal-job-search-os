@@ -9,27 +9,30 @@ import {
   type ReminderCandidate,
   type ReminderKind,
 } from "@/server/domain/reminders";
-import { listReminderCandidates } from "@/server/repository/jobs-repo";
+import {
+  listReminderCandidates,
+  reminderDismissalMap,
+} from "@/server/repository/jobs-repo";
 
 export const dynamic = "force-dynamic";
 
 export default async function RemindersPage() {
   const db = getDb();
-  const [rows, settingsRows] = await Promise.all([
+  const [rows, settingsRows, dismissed] = await Promise.all([
     listReminderCandidates(db),
-    db.select({ followUpDays: settings.followUpDays }).from(settings).limit(1),
+    db.select({ reminderThresholds: settings.reminderThresholds }).from(settings).limit(1),
+    reminderDismissalMap(db),
   ]);
 
-  // The referral threshold is the one Sarthak can already tune in Settings; the rest are
-  // properties of the process rather than preferences.
-  const thresholds = {
-    ...DEFAULT_THRESHOLDS,
-    referralStatusDays: settingsRows[0]?.followUpDays ?? DEFAULT_THRESHOLDS.referralStatusDays,
-  };
+  // Every threshold is tunable in Settings now; DEFAULT_THRESHOLDS only fills gaps left by an
+  // older stored value.
+  const thresholds = { ...DEFAULT_THRESHOLDS, ...(settingsRows[0]?.reminderThresholds ?? {}) };
 
   const reminders = buildReminders(
     rows.map((r) => ({ ...r, hasContact: Boolean(r.hasContact) })) as ReminderCandidate[],
     thresholds,
+    new Date(),
+    dismissed,
   );
 
   const overdue = reminders.filter((r) => r.severity === "overdue");

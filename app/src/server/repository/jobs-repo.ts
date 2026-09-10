@@ -21,7 +21,8 @@ import {
 } from "drizzle-orm";
 
 import type { Db } from "@/db";
-import { applications, companies, contacts, jobs } from "@/db/schema";
+import { applications, companies, contacts, jobs, reminderDismissals } from "@/db/schema";
+import { dismissalKey, type DismissalMap } from "@/server/domain/reminders";
 
 export type JobFilters = {
   companyId?: string;
@@ -453,7 +454,11 @@ export async function listReminderCandidates(db: Db, limit = 200) {
     .where(
       and(
         isNull(jobs.closedAt),
-        eq(jobs.isRelevant, true),
+        // Relevance gates *discovery*, never the pipeline. Match rules are data, so a rule you
+        // add later can demote a job you have already asked a referral for -- two Google "SWE 3"
+        // roles went silent exactly that way. Once you have acted on a job, your judgement
+        // outranks the matcher's.
+        or(isNotNull(applications.status), eq(jobs.isRelevant, true)),
         // Only rows that could conceivably produce a reminder. This runs on every page load to
         // draw the nav badge, so scanning every relevant job was the floor under every tab
         // switch. It filters by *shape* -- in the pipeline, or an untouched strong match --
@@ -522,4 +527,16 @@ export async function conflictingContactNumbers(db: Db) {
     }
   }
   return conflicts;
+}
+
+/** Closed reminders, keyed `${jobId}:${kind}` for the domain to consult. */
+export async function reminderDismissalMap(db: Db): Promise<DismissalMap> {
+  const rows = await db
+    .select({
+      jobId: reminderDismissals.jobId,
+      kind: reminderDismissals.kind,
+      dismissedAt: reminderDismissals.dismissedAt,
+    })
+    .from(reminderDismissals);
+  return new Map(rows.map((r) => [dismissalKey(r.jobId, r.kind), r.dismissedAt]));
 }

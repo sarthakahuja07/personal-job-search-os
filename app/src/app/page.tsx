@@ -13,6 +13,7 @@ import {
 } from "@/server/domain/reminders";
 import {
   contactsByCompany,
+  reminderDismissalMap,
   jobStats,
   listCompanyHealth,
   listJobs,
@@ -45,23 +46,23 @@ const RECENT_DAYS = 3;
 
 export default async function DashboardPage() {
   const db = getDb();
-  const [stats, top, health, recent, reminderRows, settingsRows, contacts] =
+  const [stats, top, health, recent, reminderRows, settingsRows, contacts, dismissed] =
     await Promise.all([
     jobStats(db),
     listJobs(db, { sort: "best", limit: 8, unreadOnly: true }),
     listCompanyHealth(db),
     listRecentlyDiscovered(db, RECENT_DAYS, 40),
     listReminderCandidates(db),
-    db.select({ followUpDays: settings.followUpDays }).from(settings).limit(1),
+    db.select({ reminderThresholds: settings.reminderThresholds }).from(settings).limit(1),
     contactsByCompany(db),
+    reminderDismissalMap(db),
   ]);
 
   const reminders = buildReminders(
     reminderRows.map((r) => ({ ...r, hasContact: Boolean(r.hasContact) })) as ReminderCandidate[],
-    {
-      ...DEFAULT_THRESHOLDS,
-      referralStatusDays: settingsRows[0]?.followUpDays ?? DEFAULT_THRESHOLDS.referralStatusDays,
-    },
+    { ...DEFAULT_THRESHOLDS, ...(settingsRows[0]?.reminderThresholds ?? {}) },
+    new Date(),
+    dismissed,
   );
   const overdueCount = reminders.filter((r) => r.severity === "overdue").length;
 
@@ -215,6 +216,7 @@ export default async function DashboardPage() {
                 companyName={g.name}
                 jobs={g.jobs}
                 maxVisible={3}
+                bestFit={Math.max(0, ...g.jobs.map((j) => j.fitScore))}
                 outreach={outreachFor(g.id)}
                 contactNames={(contacts.get(g.id) ?? []).map((c) => c.name)}
               />

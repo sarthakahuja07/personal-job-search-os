@@ -255,7 +255,14 @@ Deliberately conservative (`crawler/http/client.py`):
   closed.
 - Failed, skipped and degraded runs never mutate job presence state.
 - Bootstrap and ingest both reject unauthenticated requests with 401.
-- 224 TypeScript tests and 221 Python tests pass; `tsc --noEmit` clean, `ruff check crawler` clean.
+- 388 TypeScript tests and 251 Python tests pass; `tsc --noEmit` clean, `ruff check crawler` clean.
+- Closing a reminder hides exactly that job-and-kind pair and nothing else, checked by running the
+  real `buildReminders` over the live candidate rows: the count fell by one and the closed pair
+  disappeared. It returns on its own once the job moves to a stage whose clock starts later.
+- A referral you have already asked for keeps reminding even after the matcher demotes the job.
+  Two Google "SWE 3" roles had gone silent this way — added by hand, then made irrelevant by the
+  seniority rules — and neither was reachable from the reminders page until the pipeline was
+  exempted from the relevance filter.
 - All 8 adapter contracts verified against live endpoints by `python -m crawler.contracts`.
 - A full crawl of 14 companies completes in about two minutes with zero failures: 104 jobs
   ingested, 16 relevant, 16 notifications queued.

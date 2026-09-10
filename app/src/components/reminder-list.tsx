@@ -1,6 +1,7 @@
 import Link from "next/link";
 
 import { KIND_LABEL, type Reminder } from "@/server/domain/reminders";
+import { DismissReminder } from "./dismiss-reminder";
 import { Badge, cx } from "./ui";
 
 function whenever(days: number): string {
@@ -67,6 +68,7 @@ export function ReminderList({
             </p>
             <p className="mt-0.5 text-[11px] text-ink-faint">{r.detail}</p>
           </div>
+          <DismissReminder jobId={r.jobId} kind={r.kind} />
           <div className="shrink-0 text-right">
             <div
               className={cx(

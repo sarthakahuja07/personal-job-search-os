@@ -19,6 +19,11 @@ import { sql } from "drizzle-orm";
 import type { FitBand, FitSignal } from "@/server/domain/fit";
 import type { CompanyMatchOverrides } from "@/server/domain/matching";
 import {
+  DEFAULT_THRESHOLDS,
+  type ReminderKind,
+  type ReminderThresholds,
+} from "@/server/domain/reminders";
+import {
   index,
   integer,
   sqliteTable,
@@ -424,6 +429,32 @@ export const emailDigests = sqliteTable("email_digests", {
 
 export type EmailDigest = typeof emailDigests.$inferSelect;
 
+/**
+ * A reminder the user has closed.
+ *
+ * Reminders are computed, never stored, so "close this" needs somewhere to live. The row records
+ * *when* it was dismissed, and a reminder is suppressed only while that moment is at or after the
+ * state it was raised about — so if the job then moves stage, the clock restarts later than the
+ * dismissal and the reminder legitimately returns. Closing something is therefore "not now",
+ * not "never again", and it cannot silently hide a genuinely new situation.
+ */
+export const reminderDismissals = sqliteTable(
+  "reminder_dismissals",
+  {
+    id: text("id").primaryKey().$defaultFn(uuid),
+    jobId: text("job_id")
+      .notNull()
+      .references(() => jobs.id, { onDelete: "cascade" }),
+    /** Which reminder rule was closed; a job can raise different kinds over its life. */
+    kind: text("kind").$type<ReminderKind>().notNull(),
+    dismissedAt: integer("dismissed_at", { mode: "timestamp_ms" }).notNull(),
+    createdAt: createdAt(),
+  },
+  (t) => [uniqueIndex("reminder_dismissal_unique").on(t.jobId, t.kind)],
+);
+
+export type ReminderDismissal = typeof reminderDismissals.$inferSelect;
+
 export const settings = sqliteTable("settings", {
   id: integer("id").primaryKey().default(1),
 
@@ -443,6 +474,18 @@ export const settings = sqliteTable("settings", {
 
   /** Days in "requested" before a referral follow-up is surfaced (PRD §33). */
   followUpDays: integer("follow_up_days").notNull().default(5),
+
+  /**
+   * How long each kind of silence is tolerated before it becomes a reminder.
+   *
+   * Data, not code, for the same reason the match rules are: the right number for "referred but
+   * not applied" is a judgement about how Sarthak works, and it should be changeable without a
+   * deploy or a re-derivation of the rules that read it.
+   */
+  reminderThresholds: text("reminder_thresholds", { mode: "json" })
+    .$type<ReminderThresholds>()
+    .notNull()
+    .default(DEFAULT_THRESHOLDS),
   /** Consecutive successful runs a job must be absent from before it is closed. */
   closeAfterMissingRuns: integer("close_after_missing_runs")
     .notNull()
