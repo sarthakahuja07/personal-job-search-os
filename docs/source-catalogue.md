@@ -7,18 +7,16 @@ The organising idea: **the stubborn companies were never individual problems, th
 handful of patterns.** Building for the pattern rather than the company is what turned all but
 one of them into configuration rather than code.
 
-**42 of 48 active companies now crawl automatically.**
+**45 of 49 active companies now crawl automatically.**
 
-The six that do not, each for a reason established by looking rather than assumed:
+The four that do not:
 
 | Company | Why not |
 |---|---|
-| **Google** | `robots.txt` disallows the job-results path. Policy, not capability — honoured. |
-| **super.money** | The careers page renders "To view this page, install the super.money app now." There is no web board to read. |
-| **Truva** | `truva.in/careers` returns their own "Page Not Found". The URL is dead; there is nothing behind it. |
-| **Myntra** | The board is a Flutter app rendering to a WebGL canvas. No DOM exists to read, with or without a browser, and its `spire2grow` backend made no data call in a full page load. |
-| **Deel** | The careers page is marketing; `jobs.deel.com` is a Next.js shell that redirects into it, and the only job-ish link on the page is a template library. No board found behind the consent wall. |
-| **Eightfold** | Their board runs on their own product at `app.eightfold.ai`, whose API returns 403 to every client — the same refusal Qualcomm's *appeared* to give until robots.txt turned out to permit a different endpoint. Here there is no such endpoint. |
+| **Google** | `robots.txt` disallows `/about/careers/applications/jobs/results`. Worth being precise about *why*, because I twice reached the wrong conclusion here: the rule sits under a `User-agent: Yandex` line, which looks Yandex-specific — but it directly follows `User-agent: *`, and **consecutive user-agent lines form one group**, so the rules apply to both. A standard robots parser says `can_fetch` is false for our UA. Excluded, and not by oversight. |
+| **super.money** | The careers page renders "install the super.money app now", and they have no Instahyre profile (`jobs-at-super-money` 404s). There is no web board anywhere to read. |
+| **Deel** | Careers is marketing, `jobs.deel.com` redirects back into it, the only job-ish link is a template library, and nothing job-shaped loads after accepting consent. |
+| **Eightfold** | Their board is their own product at `app.eightfold.ai`, whose API returns 403 to every client. Unlike Qualcomm, no robots-permitted alternative endpoint exists. |
 
 Three former members of this list were promoted once they were investigated properly rather than
 statically scanned — a static regex over the careers HTML found nothing for any of them, and a
@@ -30,6 +28,20 @@ browser watching what the page actually loads found all three:
 | **Cohesity** | A bespoke JSON API whose own `jobUrl` field pointed at Workday | Workday, 164 jobs |
 | **PhonePe** | SmartRecruiters under `PHONEPELIMITED`, not the guessable `phonepe` | SmartRecruiters, 53 jobs, all India |
 | **Wint Wealth** | A public `anon_employer` API on Instahyre — no login, despite the site itself gating pages | `json_api`, board currently empty |
+
+**Myntra** looked the most hopeless of all — the board is a Flutter app painting to a WebGL
+canvas, so there is genuinely no DOM to scrape. But a canvas still has to get its data from
+somewhere: watching the page revealed `io.spire2grow.com/ies/v1/p/requisition/_search`, and the
+only header it actually requires is `workspaceid: MYNTRA-93as3`. The browser also sends a
+timestamp-derived `workflowid`, which turned out to be unnecessary — worth testing rather than
+assuming, since a session token would have made this a much harder source. 60 jobs.
+
+**Truva** publishes a Zoho Recruit *public* API (`/recruit/v2/public/Job_Openings`) whose records
+carry a ready-made `$url`. Its own `/careers` page is a 404; the board is linked from `/about`.
+
+**Flipkart** has no reachable first-party board either, so it is crawled from Instahyre like Wint
+Wealth — and unlike Wint Wealth it is actively hiring: 55 roles, three of them matches including
+a Bangalore "Software Engineer".
 
 **Wint Wealth** deserves its own note. It has no first-party board at all, so it is crawled from
 Instahyre, where its profile is served by a public endpoint that needs no account even though
