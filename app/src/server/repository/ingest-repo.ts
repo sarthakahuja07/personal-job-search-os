@@ -115,24 +115,11 @@ export async function recentMedianJobCount(
   const rows = await db
     .select({ jobsFound: crawlRuns.jobsFound })
     .from(crawlRuns)
-    // Degraded runs count towards the baseline; failed and suspicious ones do not.
-    //
-    // A degraded run fetched successfully -- it simply found fewer jobs -- so it is a real
-    // measurement of what this company returns. Sampling only successes means a company whose
-    // board genuinely empties can never establish a new normal: every later run is compared
-    // against a high-water mark it will never reach again, and it stays amber for ever.
-    // Moveworks went from 83 open roles to none and would have alarmed twice a day indefinitely.
-    //
-    // The cost is that a sustained real decline stops alarming once it becomes the norm, which
-    // is the intended behaviour: drift detection exists to catch change, and a health signal
-    // that cries wolf every twelve hours is one you stop reading. Each significant step down
-    // still alarms as it happens, because the median lags it.
-    .where(
-      and(
-        eq(crawlRuns.companyId, companyId),
-        inArray(crawlRuns.status, ["success", "degraded"]),
-      ),
-    )
+    // Successful runs only. A degraded or failed run is not a measurement of what this company
+    // normally returns, and letting one into the baseline lets an intermittent source erode its
+    // own alarm: Moveworks serves an empty board on some requests and a full one on others, and
+    // sampling those zeros would quietly redefine "normal" as nothing.
+    .where(and(eq(crawlRuns.companyId, companyId), eq(crawlRuns.status, "success")))
     .orderBy(sql`${crawlRuns.startedAt} DESC`)
     .limit(sampleSize);
   if (rows.length < 3) return null;

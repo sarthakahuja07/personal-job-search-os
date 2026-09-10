@@ -227,15 +227,22 @@ HTML. Items are `li[data-intuit-jobid]`, carrying a stable id, title, location a
 JavaScript filter widget; the markup was always there. Its only stable id lives inside the apply
 link, so the field map pulls it out with a regex.
 
-The board is currently **empty** — the page renders "Open roles: no results", and the company
-was acquired by ServiceNow, which is on this list in its own right. That emptiness reported as
-schema drift twice a day until the adapter learned to tell the two apart: `listContainerSelector`
-names the element proving the listing component still rendered, so zero items inside a container
-that is still there is an empty board, while a container that has vanished is still loud.
+**It serves an empty board intermittently.** The same URL returns 82 jobs on one request and a
+listing component containing nothing on the next -- reproduced repeatedly, from two countries,
+minutes apart. Nothing about the markup differs otherwise, so this is almost certainly cache or
+edge variance rather than anything the crawler does.
 
-It has to be the container rather than the site's own no-results element, which Moveworks ships
-on every response carrying `hidden` and reveals from script. Keyed to that, the check would have
-returned "empty" for a page full of openings whose selector had merely stopped matching.
+That produced a false `schema drift` failure, because zero matches was the only signal the
+adapter had. `listContainerSelector` now names the element proving the listing component
+rendered: zero items inside a container that is still there is an empty response, while a
+container that has vanished is a rebuilt page and still raises loudly.
+
+Reporting zero is where it must stop, though. `allow_zero_results` stays **off**, so an empty
+response becomes `suspicious`, and a run that is not `success` never touches job presence -- the
+82 real jobs survive however many empty responses arrive in a row. Setting that flag on looks
+harmless and is not: it skips the zero check, the run is graded `degraded` on volume drift
+instead, and a degraded run *does* run presence tracking. Two empty responses took these jobs to
+`missing_run_count` 2 of 3 before it was reverted.
 
 Its detail pages are `Disallow`ed by robots.txt (`*/careers/position`), so only the listing is
 ever fetched — which is all this adapter does.
