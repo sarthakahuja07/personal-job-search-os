@@ -54,3 +54,5 @@ apple_*.txt
 # name, tracking ids tied to his account, and whatever else LinkedIn chose to put in it.
 # Test fixtures are scrubbed copies under crawler/tests/, never the original.
 *.eml
+# ...but the scrubbed fixtures are the test suite's ground truth and must be committed.
+!crawler/tests/fixtures/**/*.eml
