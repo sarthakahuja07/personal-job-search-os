@@ -76,8 +76,8 @@ export async function setDifficulty(id: string, difficulty: string | null, path:
 }
 
 export async function setFrequency(id: string, frequency: number, path: string) {
-  // 0-5. Out-of-range values would render a meter wider than its track.
-  const n = Math.max(0, Math.min(5, Math.round(frequency)));
+  // 0-100. Out-of-range values would render a bar wider than its track.
+  const n = Math.max(0, Math.min(100, Math.round(frequency)));
   await setPrepGrading(getDb(), id, { frequency: n });
   revalidatePath(path);
   revalidatePath("/prep/system-design");

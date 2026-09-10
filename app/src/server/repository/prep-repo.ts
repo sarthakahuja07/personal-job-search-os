@@ -225,6 +225,7 @@ export async function navTree(db: Db) {
       title: prepItems.title,
       parentId: prepItems.parentId,
       position: prepItems.position,
+      frequency: prepItems.frequency,
     })
     .from(prepItems)
     .orderBy(prepItems.position, prepItems.title);

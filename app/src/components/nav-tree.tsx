@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { useMemo, useState, useSyncExternalStore, useTransition } from "react";
 
 import { movePrepPage } from "@/app/prep/actions";
+import { ScoreBadge } from "./score";
 import { cx } from "./ui";
 
 export type NavNode = {
@@ -13,6 +14,8 @@ export type NavNode = {
   slug: string;
   title: string;
   href: string;
+  /** How often it is asked, 0-100. Shown beside the name so the tree itself ranks the work. */
+  score: number;
   children: NavNode[];
 };
 
@@ -248,6 +251,8 @@ function TreeRow({
         >
           {node.title}
         </Link>
+
+        <ScoreBadge score={node.score} className="ml-1.5" />
       </div>
 
       {expanded && (

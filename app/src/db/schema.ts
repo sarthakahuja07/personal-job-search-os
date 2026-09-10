@@ -612,6 +612,21 @@ export type PrepContent = {
   outcome?: string;
   /** shared */
   references?: { label: string; url: string }[];
+
+  /**
+   * A page can be something other than a document.
+   *
+   * These three turn one into a reader instead. Keeping them in `content` rather than adding
+   * columns means such a page is still an ordinary row -- it sits in the tree, drags, nests and
+   * carries progress like any other, which is the whole reason the tree is one table.
+   */
+  /** A PDF under app/public, e.g. "/books/system-design-interview-vol-1.pdf". */
+  pdf?: string;
+  /** A site to embed. Only works where the site does not forbid framing. */
+  embed?: string;
+  /** "owner/repo" whose Markdown is fetched and rendered in place. */
+  github?: string;
+
   [key: string]: unknown;
 };
 

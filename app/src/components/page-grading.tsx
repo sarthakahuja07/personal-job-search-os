@@ -1,8 +1,9 @@
 "use client";
 
-import { useTransition } from "react";
+import { useState, useTransition } from "react";
 
 import { setDifficulty, setFrequency } from "@/app/prep/actions";
+import { scoreTone } from "./score";
 import { cx } from "./ui";
 
 const LEVELS = ["easy", "medium", "hard"] as const;
@@ -35,6 +36,22 @@ export function PageGrading({
   frequency: number;
 }) {
   const [pending, startTransition] = useTransition();
+  const [score, setScore] = useState(frequency);
+  const [lastFromServer, setLastFromServer] = useState(frequency);
+
+  // Adjusting state during render rather than in an effect: React documents this exact case --
+  // resetting local state when a prop changes -- and doing it in an effect renders twice and
+  // trips react-hooks/set-state-in-effect. The `pending` guard is what stops a server value
+  // arriving mid-drag and yanking the slider out from under the pointer.
+  if (frequency !== lastFromServer && !pending) {
+    setLastFromServer(frequency);
+    setScore(frequency);
+  }
+
+  const commit = () => {
+    if (score === frequency) return;
+    startTransition(() => setFrequency(id, score, path));
+  };
 
   return (
     <div className="flex flex-wrap items-center gap-3">
@@ -60,27 +77,27 @@ export function PageGrading({
         ))}
       </div>
 
-      <div className="flex items-center gap-1.5">
-        <span className="text-[11px] text-ink-faint">Asked</span>
-        <div className="flex items-center gap-0.5">
-          {[1, 2, 3, 4, 5].map((n) => (
-            <button
-              key={n}
-              type="button"
-              disabled={pending}
-              onClick={() => startTransition(() => setFrequency(id, frequency === n ? 0 : n, path))}
-              aria-label={`Asked ${n} out of 5`}
-              title={`${n}/5 — ${
-                ["rare", "occasional", "common", "frequent", "near-certain"][n - 1]
-              }`}
-              className={cx(
-                "h-4 w-2.5 rounded-sm transition disabled:opacity-60",
-                n <= frequency ? "bg-accent" : "bg-surface-3 hover:bg-line-strong",
-              )}
-            />
-          ))}
-        </div>
-        <span className="tnum text-[11px] text-ink-faint">{frequency}/5</span>
+      <div className="flex min-w-[13rem] flex-1 items-center gap-2">
+        <span className="shrink-0 text-[11px] text-ink-faint">Asked</span>
+        <input
+          type="range"
+          min={0}
+          max={100}
+          step={5}
+          value={score}
+          disabled={pending}
+          onChange={(e) => setScore(Number(e.target.value))}
+          // Commit on release rather than on every pixel of the drag: onChange fires
+          // continuously and would post a hundred writes for one adjustment.
+          onMouseUp={() => commit()}
+          onTouchEnd={() => commit()}
+          onKeyUp={() => commit()}
+          aria-label="How often this is asked, out of 100"
+          className="h-1.5 min-w-0 flex-1 cursor-pointer appearance-none rounded-full bg-surface-3 accent-accent"
+        />
+        <span className={cx("tnum w-9 shrink-0 text-right text-[12px] font-medium", scoreTone(score))}>
+          {score}
+        </span>
       </div>
     </div>
   );

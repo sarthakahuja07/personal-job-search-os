@@ -3,7 +3,9 @@ import { notFound } from "next/navigation";
 import { revalidatePath } from "next/cache";
 
 import { RichEditor } from "@/components/rich-editor";
+import { GithubNotes } from "@/components/github-notes";
 import { PageGrading } from "@/components/page-grading";
+import { BookReader, SiteEmbed } from "@/components/page-readers";
 import { PageResources } from "@/components/page-resources";
 import { Badge, Button, Card, PageHeader, SectionTitle, cx, inputStyles } from "@/components/ui";
 import { getDb } from "@/db";
@@ -79,10 +81,13 @@ async function saveAnswer(formData: FormData) {
  */
 export default async function PrepPage({
   params,
+  searchParams,
 }: {
   params: Promise<{ kind: string; path: string[] }>;
+  searchParams: Promise<{ doc?: string }>;
 }) {
   const { kind: segment, path } = await params;
+  const { doc } = await searchParams;
   const meta = kindBySegment(segment);
   if (!meta) notFound();
 
@@ -97,7 +102,13 @@ export default async function PrepPage({
   ]);
 
   const content = item.content ?? {};
-  const isFolder = kids.length > 0;
+  const isReader = Boolean(content.pdf || content.github || content.embed);
+  const hasChildren = kids.length > 0;
+  // Two different questions that used to share one flag. `hasChildren` decides whether to list
+  // pages inside; `isPractisable` decides whether progress and answer fields belong. A reader
+  // is not practised and a folder is not either, but only a folder has a list -- conflating
+  // them rendered an empty "0 pages" section on every book.
+  const isPractisable = !hasChildren && !isReader;
   const here = path.join("/");
   const hrefFor = (slug: string) => `/prep/${segment}/${[...path, slug].join("/")}`;
 
@@ -137,7 +148,7 @@ export default async function PrepPage({
           leaving it, and it used to sit below the notes where you had to scroll past your own
           answer to reach it. Each status is a submit button, so setting one is a single click
           rather than a radio plus a Save. */}
-      {!isFolder && (
+      {isPractisable && (
         <form action={saveStatus} className="mb-5 flex flex-wrap items-center gap-2">
           <input type="hidden" name="id" value={item.id} />
           <input type="hidden" name="segment" value={segment} />
@@ -166,7 +177,7 @@ export default async function PrepPage({
         </form>
       )}
 
-      {!isFolder && (
+      {isPractisable && (
         <div className="mb-5">
           <PageGrading
             id={item.id}
@@ -183,17 +194,29 @@ export default async function PrepPage({
         resources={resources}
       />
 
-      {/* The document. Click it to edit -- see components/page-editor.tsx for why there is no
-          edit mode to enter. */}
+      {/* A page is a document unless its content says otherwise. Readers replace the editor
+          rather than sitting beside it: there is nothing to write on a book. */}
       <div className="mb-6">
-        <RichEditor
-          id={item.id}
-          path={`/prep/${segment}/${here}`}
-          initialBody={item.body ?? ""}
-        />
+        {content.pdf ? (
+          <BookReader file={String(content.pdf)} title={item.title} />
+        ) : content.github ? (
+          <GithubNotes
+            repo={String(content.github)}
+            basePath={`/prep/${segment}/${here}`}
+            open={doc}
+          />
+        ) : content.embed ? (
+          <SiteEmbed url={String(content.embed)} title={item.title} />
+        ) : (
+          <RichEditor
+            id={item.id}
+            path={`/prep/${segment}/${here}`}
+            initialBody={item.body ?? ""}
+          />
+        )}
       </div>
 
-      {isFolder && (
+      {hasChildren && (
         <section className="mb-6">
           <SectionTitle>
             {kids.length} page{kids.length === 1 ? "" : "s"}
@@ -240,7 +263,7 @@ export default async function PrepPage({
 
       {/* The seeded starting points for this discipline. Read-only: they are a prompt for your
           own answer below, not a substitute for it. */}
-      {!isFolder && meta.fields.some((f) => content[f.key]) && (
+      {isPractisable && meta.fields.some((f) => content[f.key]) && (
         <>
           <SectionTitle>Starting points</SectionTitle>
           <div className="mb-6 space-y-2">
@@ -258,7 +281,7 @@ export default async function PrepPage({
         </>
       )}
 
-      {!isFolder && (
+      {isPractisable && (
         <form action={saveAnswer} className="space-y-5">
           <input type="hidden" name="id" value={item.id} />
           <input type="hidden" name="segment" value={segment} />

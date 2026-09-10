@@ -70,6 +70,7 @@ export default async function RootLayout({
           parentId: r.parentId,
           slug: r.slug,
           title: r.title,
+          score: r.frequency ?? 0,
           href: `${base}/${r.slug}`,
           children: build(r.id, kind, `${base}/${r.slug}`),
         }));
@@ -81,6 +82,7 @@ export default async function RootLayout({
       parentId: null,
       slug: k.segment,
       title: k.title,
+      score: 0,
       href: `/prep/${k.segment}`,
       children: build(null, k.kind, `/prep/${k.segment}`),
     }));
