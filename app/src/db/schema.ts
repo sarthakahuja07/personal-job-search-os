@@ -24,6 +24,7 @@ import {
   type ReminderThresholds,
 } from "@/server/domain/reminders";
 import {
+  type AnySQLiteColumn,
   index,
   integer,
   sqliteTable,
@@ -633,6 +634,30 @@ export const prepItems = sqliteTable(
     topics: text("topics", { mode: "json" }).$type<string[]>().notNull().default([]),
     companies: text("companies", { mode: "json" }).$type<string[]>().notNull().default([]),
 
+    /**
+     * Parent page, making prep a tree rather than three flat lists.
+     *
+     * Folders and pages are the same row, exactly as in Notion: a page that has children reads
+     * as a folder, and one that does not reads as a document. A separate `folders` table would
+     * have forced every query to union two shapes and still could not express a folder holding
+     * both notes and sub-folders, which is the normal case in an imported Notion directory.
+     */
+    parentId: text("parent_id").references((): AnySQLiteColumn => prepItems.id, {
+      onDelete: "cascade",
+    }),
+
+    /** Where this sits among its siblings. Import order, then hand-arranged. */
+    position: integer("position").notNull().default(0),
+
+    /**
+     * The page itself, as Markdown.
+     *
+     * The structured `content` fields above answer a fixed set of questions and stay useful for
+     * DSA and behavioral, where the shape of a good answer is known. An imported HLD note has no
+     * such shape -- it is a document -- so it gets a document, editable as the text it already is.
+     */
+    body: text("body"),
+
     status: text("status").$type<PrepStatus>().notNull().default("not_started"),
     notes: text("notes"),
     solution: text("solution"),
@@ -648,6 +673,7 @@ export const prepItems = sqliteTable(
     index("prep_kind_idx").on(t.kind),
     index("prep_status_idx").on(t.status),
     index("prep_frequency_idx").on(t.frequency),
+    index("prep_parent_idx").on(t.parentId),
   ],
 );
 
