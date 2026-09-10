@@ -127,37 +127,61 @@ export default async function DashboardPage() {
         }
       />
 
-      <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
-        <Stat
-          label="Matching roles"
-          value={Number(stats.relevant ?? 0)}
-          hint="open and relevant"
-          tone="fresh"
-        />
-        <Stat
-          label="Found in 3 days"
-          value={Number(stats.recent ?? 0)}
-          hint="new matches"
-        />
-        <Stat label="Jobs tracked" value={Number(stats.total ?? 0)} hint="all sources" />
-        <Stat
-          label="Sources healthy"
-          value={`${automated.length - needsAttention.length}/${automated.length}`}
-          hint="automated crawlers"
-          tone={needsAttention.length ? "warn" : "neutral"}
-        />
+      {/*
+        A measured strip rather than four outlined tiles. The tile grid is the most
+        recognisable generated-dashboard pattern there is, and it gave four numbers equal
+        weight when only the first is worth acting on. Hairlines between, space around, and
+        the numbers themselves carry the emphasis. Each one is a link, because a count you
+        cannot click is a dead end -- previously you read "24 matching roles" and then went
+        looking for them in the nav.
+      */}
+      <div className="grid grid-cols-2 gap-y-6 border-y border-line py-5 sm:gap-x-8 lg:grid-cols-4 lg:divide-x lg:divide-line">
+        <div className="lg:pr-8">
+          <Stat
+            label="Matching roles"
+            value={Number(stats.relevant ?? 0)}
+            hint="open and relevant"
+            tone="fresh"
+            href="/jobs"
+          />
+        </div>
+        <div className="lg:px-8">
+          <Stat
+            label="Found in 3 days"
+            value={Number(stats.recent ?? 0)}
+            hint="new matches"
+            href="/jobs?new=1"
+          />
+        </div>
+        <div className="lg:px-8">
+          <Stat
+            label="Jobs tracked"
+            value={Number(stats.total ?? 0)}
+            hint="all sources"
+            href="/jobs?relevant=0"
+          />
+        </div>
+        <div className="lg:pl-8">
+          <Stat
+            label="Sources healthy"
+            value={`${automated.length - needsAttention.length}/${automated.length}`}
+            hint="automated crawlers"
+            tone={needsAttention.length ? "warn" : "neutral"}
+            href="/companies"
+          />
+        </div>
       </div>
 
       {needsAttention.length > 0 && (
-        <section className="mt-8">
+        <section className="mt-10">
           <SectionTitle>Needs attention</SectionTitle>
           <ul className="space-y-1.5">
             {needsAttention.map((c) => (
               <Card as="li" key={c.id} className="flex items-start justify-between gap-3 px-4 py-3">
                 <div className="min-w-0">
-                  <span className="text-sm font-medium text-ink">{c.name}</span>
+                  <span className="text-body font-medium text-ink">{c.name}</span>
                   {c.lastError && (
-                    <p className="mt-0.5 text-xs text-ink-dim">{c.lastError}</p>
+                    <p className="mt-0.5 text-meta text-ink-dim">{c.lastError}</p>
                   )}
                 </div>
                 <Badge tone={HEALTH_TONE[c.healthStatus]}>{c.healthStatus}</Badge>
@@ -168,12 +192,12 @@ export default async function DashboardPage() {
       )}
 
       {reminders.length > 0 && (
-        <section className="mt-8">
+        <section className="mt-10">
           <SectionTitle
             action={
               <Link
                 href="/reminders"
-                className="text-[13px] text-ink-dim transition hover:text-ink"
+                className="text-body text-ink-dim transition hover:text-ink"
               >
                 All {reminders.length} →
               </Link>
@@ -189,12 +213,12 @@ export default async function DashboardPage() {
           premise of the crawler is reaching a posting while a referral is still worth asking
           for -- a role found today is a different opportunity from the same role found a
           fortnight ago, even at an identical fit score. */}
-      <section className="mt-8">
+      <section className="mt-10">
         <SectionTitle
           action={
             <Link
               href="/jobs?sort=newest"
-              className="text-[13px] text-ink-dim transition hover:text-ink"
+              className="text-body text-ink-dim transition hover:text-ink"
             >
               View all →
             </Link>
@@ -225,10 +249,10 @@ export default async function DashboardPage() {
         )}
       </section>
 
-      <section className="mt-8">
+      <section className="mt-10">
         <SectionTitle
           action={
-            <Link href="/jobs" className="text-[13px] text-ink-dim transition hover:text-ink">
+            <Link href="/jobs" className="text-body text-ink-dim transition hover:text-ink">
               View all →
             </Link>
           }
@@ -251,10 +275,10 @@ export default async function DashboardPage() {
       </section>
 
       {manual.length > 0 && (
-        <section className="mt-8">
+        <section className="mt-10">
           <SectionTitle>Check by hand · {manual.length}</SectionTitle>
           <Card className="px-4 py-3.5">
-            <p className="text-xs text-ink-dim">
+            <p className="text-meta text-ink-dim">
               These sources cannot be crawled automatically — they render listings in the
               browser, or decline automated access. Manual is a supported state, not a failure.
             </p>
@@ -266,7 +290,7 @@ export default async function DashboardPage() {
                       href={c.careersUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex items-center gap-1 rounded-md border border-line bg-surface-2 px-2.5 py-1 text-[13px] text-ink-dim transition hover:border-line-strong hover:text-ink"
+                      className="inline-flex items-center gap-1 rounded-control border border-line bg-surface-2 px-2.5 py-1 text-body text-ink-dim transition hover:border-line-strong hover:text-ink"
                     >
                       {c.name}
                       <span className="text-ink-faint">↗</span>
@@ -275,7 +299,7 @@ export default async function DashboardPage() {
                 ) : (
                   <li
                     key={c.id}
-                    className="rounded-md border border-line px-2.5 py-1 text-[13px] text-ink-faint"
+                    className="rounded-control border border-line px-2.5 py-1 text-body text-ink-faint"
                   >
                     {c.name}
                   </li>

@@ -218,12 +218,12 @@ function TreeRow({
           onDrop(node, zoneFor(e), siblings);
         }}
         className={cx(
-          "group flex items-center rounded-md pr-1.5 transition",
+          "group flex items-center rounded-control pr-1.5 transition",
           active ? "bg-accent-soft" : "hover:bg-surface-2",
           dragging === node.id && "opacity-40",
           zone === "inside" && "ring-1 ring-inset ring-accent",
-          zone === "before" && "border-t-2 border-accent",
-          zone === "after" && "border-b-2 border-accent",
+          zone === "before" && "border-t-2 border-line-strong",
+          zone === "after" && "border-b-2 border-line-strong",
         )}
         style={{ paddingLeft: depth * 10 }}
       >
@@ -233,7 +233,7 @@ function TreeRow({
             onClick={() => toggle(node.href, expanded)}
             aria-label={expanded ? `Collapse ${node.title}` : `Expand ${node.title}`}
             aria-expanded={expanded}
-            className="grid size-5 shrink-0 place-items-center rounded text-ink-faint transition hover:bg-surface-3 hover:text-ink"
+            className="grid size-5 shrink-0 place-items-center rounded-control text-ink-faint transition hover:bg-surface-3 hover:text-ink"
           >
             <svg
               viewBox="0 0 12 12"
@@ -250,9 +250,9 @@ function TreeRow({
         <Link
           href={node.href}
           className={cx(
-            "min-w-0 flex-1 truncate py-1.5 text-[13px] transition",
+            "min-w-0 flex-1 truncate py-1.5 text-body transition",
             active
-              ? "font-medium text-accent-ink"
+              ? "font-medium text-ink"
               : onPath
                 ? "text-ink"
                 : "text-ink-dim group-hover:text-ink",

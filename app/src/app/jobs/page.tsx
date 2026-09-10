@@ -145,9 +145,9 @@ export default async function JobsPage({
 
   const chip = (active: boolean) =>
     cx(
-      "rounded-md border px-2.5 py-1 text-[13px] transition",
+      "rounded-control border px-2.5 py-1 text-body transition",
       active
-        ? "border-accent bg-accent-soft text-accent-ink"
+        ? "border-line-strong bg-surface-3 text-ink"
         : "border-line bg-surface-2 text-ink-dim hover:border-line-strong hover:text-ink",
     );
 
@@ -204,7 +204,7 @@ export default async function JobsPage({
           <select
             name="sort"
             defaultValue={sort}
-            className="rounded-md border border-line bg-surface-2 px-2.5 py-1.5 text-[13px] text-ink-dim outline-none focus:border-accent"
+            className="rounded-control border border-line bg-surface-2 px-2.5 py-1.5 text-body text-ink-dim outline-none focus:border-line-strong"
           >
             {SORTS.map((s) => (
               <option key={s.key} value={s.key} className="bg-surface-2">
@@ -214,7 +214,7 @@ export default async function JobsPage({
           </select>
           <button
             type="submit"
-            className="rounded-md border border-line bg-surface-2 px-2.5 py-1.5 text-[13px] text-ink-dim transition hover:border-line-strong hover:text-ink"
+            className="rounded-control border border-line bg-surface-2 px-2.5 py-1.5 text-body text-ink-dim transition hover:border-line-strong hover:text-ink"
           >
             Apply
           </button>
@@ -234,7 +234,7 @@ export default async function JobsPage({
         {filtered && (
           <Link
             href="/jobs"
-            className="px-1 text-[13px] text-ink-faint transition hover:text-ink-dim"
+            className="px-1 text-body text-ink-faint transition hover:text-ink-dim"
           >
             Clear
           </Link>
@@ -254,7 +254,7 @@ export default async function JobsPage({
           }
           hint={
             relevantOnly ? (
-              <Link href={qs({ all: "1" })} className="text-accent-ink hover:underline">
+              <Link href={qs({ all: "1" })} className="text-ink hover:underline">
                 Show all crawled roles →
               </Link>
             ) : (
@@ -265,7 +265,7 @@ export default async function JobsPage({
       ) : grouped ? (
         <div className="space-y-3">
           {ordered.length === 0 && handled.length > 0 && (
-            <p className="rounded-card border border-dashed border-line px-4 py-6 text-center text-[13px] text-ink-dim">
+            <p className="rounded-card border border-dashed border-line px-4 py-6 text-center text-body text-ink-dim">
               Everything here has been reviewed.
             </p>
           )}

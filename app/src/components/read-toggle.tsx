@@ -24,7 +24,7 @@ export function ReadToggle({ jobId, read }: { jobId: string; read: boolean }) {
       // Styled as a peer of Apply and Message rather than as footer text: marking a single job
       // read is a primary action on this card, not a footnote to it.
       className={cx(
-        "inline-flex items-center gap-1 rounded border px-2 py-1 text-[11px] font-medium transition",
+        "inline-flex items-center gap-1 rounded-control border px-2 py-1 text-label font-medium transition",
         read
           ? "border-line bg-surface-3 text-ink-dim hover:border-line-strong hover:text-ink"
           : "border-line bg-surface-2 text-ink-faint hover:border-line-strong hover:text-ink-dim",
@@ -59,7 +59,7 @@ export function MarkCompanyRead({
       onClick={() => start(() => markCompanyRead(companyId))}
       title={`Mark all ${unreadCount} open roles here as read`}
       className={cx(
-        "rounded px-1.5 py-0.5 text-[11px] text-ink-faint transition hover:bg-surface-3 hover:text-ink-dim",
+        "rounded-control px-1.5 py-0.5 text-label text-ink-faint transition hover:bg-surface-3 hover:text-ink-dim",
         pending && "opacity-50",
       )}
     >

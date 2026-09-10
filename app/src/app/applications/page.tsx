@@ -65,11 +65,11 @@ export default async function ApplicationsPage() {
                 <Card as="li" key={f.id} className="px-4 py-3">
                   <div className="flex flex-wrap items-start justify-between gap-3">
                     <div className="min-w-0">
-                      <p className="text-sm text-ink">
+                      <p className="text-body text-ink">
                         <span className="font-medium">{f.companyName}</span>
                         <span className="text-ink-dim"> — {f.jobTitle}</span>
                       </p>
-                      <p className="mt-0.5 text-xs text-ink-faint">
+                      <p className="mt-0.5 text-meta text-ink-faint">
                         Referral requested{" "}
                         <span className="tnum text-warn">{f.daysWaiting} days</span> ago
                         {contacts.length > 0 && (
@@ -88,7 +88,7 @@ export default async function ApplicationsPage() {
                             href={wa}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="rounded-md border border-line bg-surface-2 px-2.5 py-1 text-[12px] text-ink-dim transition hover:border-line-strong hover:text-ink"
+                            className="rounded-control border border-line bg-surface-2 px-2.5 py-1 text-meta text-ink-dim transition hover:border-line-strong hover:text-ink"
                           >
                             Nudge {c.name}
                           </a>
@@ -114,7 +114,7 @@ export default async function ApplicationsPage() {
           title="No applications yet"
           body="Save a role from the job board and it appears here. The board has exactly five stages — enough to know what needs a nudge, few enough that it never becomes admin."
           hint={
-            <Link href="/jobs" className="text-accent-ink hover:underline">
+            <Link href="/jobs" className="text-ink hover:underline">
               Browse matching roles →
             </Link>
           }
@@ -124,7 +124,7 @@ export default async function ApplicationsPage() {
       )}
 
       {cards.length > 0 && (
-        <p className="mt-6 text-[11px] leading-relaxed text-ink-faint">
+        <p className="mt-6 text-label leading-relaxed text-ink-faint">
           Stage timestamps are recorded the first time a card reaches a stage and are never
           cleared, so moving a card back to correct a mis-drag does not erase when you actually
           asked for the referral. <Badge>Requested</Badge> is the only stage that raises a

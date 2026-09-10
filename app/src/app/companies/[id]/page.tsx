@@ -102,7 +102,7 @@ export default async function CompanyDetailPage({
           </>
         }
         actions={
-          <Link href="/companies" className="text-[13px] text-ink-dim transition hover:text-ink">
+          <Link href="/companies" className="text-body text-ink-dim transition hover:text-ink">
             ← Companies
           </Link>
         }
@@ -111,7 +111,7 @@ export default async function CompanyDetailPage({
       <div className="mb-6 flex flex-wrap items-center gap-2">
         <Badge tone={HEALTH_TONE[company.healthStatus]}>{company.healthStatus}</Badge>
         {!company.active && <Badge tone="danger">Inactive</Badge>}
-        <span className="text-[11px] text-ink-faint">
+        <span className="text-label text-ink-faint">
           last success {ago(company.lastSuccessAt)}
         </span>
         {company.careersUrl && (
@@ -119,7 +119,7 @@ export default async function CompanyDetailPage({
             href={company.careersUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="ml-auto text-[13px] text-accent-ink hover:underline"
+            className="ml-auto text-body text-ink hover:underline"
           >
             Open careers page ↗
           </a>
@@ -128,8 +128,8 @@ export default async function CompanyDetailPage({
 
       {company.lastError && (
         <Card className="mb-6 border-danger/40 px-4 py-3">
-          <p className="text-[11px] uppercase tracking-wide text-danger">Last error</p>
-          <p className="mt-1 text-[13px] text-ink-dim">{company.lastError}</p>
+          <p className="text-label uppercase tracking-wide text-danger">Last error</p>
+          <p className="mt-1 text-body text-ink-dim">{company.lastError}</p>
         </Card>
       )}
 
@@ -140,11 +140,11 @@ export default async function CompanyDetailPage({
 
           <div className="grid gap-4 sm:grid-cols-2">
             <div>
-              <label className="block text-[13px] font-medium text-ink">Name</label>
+              <label className="block text-body font-medium text-ink">Name</label>
               <input name="name" defaultValue={company.name} className={cx(inputStyles, "mt-1.5")} />
             </div>
             <div>
-              <label className="block text-[13px] font-medium text-ink">Adapter</label>
+              <label className="block text-body font-medium text-ink">Adapter</label>
               <select
                 name="sourceType"
                 defaultValue={company.sourceType}
@@ -160,7 +160,7 @@ export default async function CompanyDetailPage({
           </div>
 
           <div>
-            <label className="block text-[13px] font-medium text-ink">Careers URL</label>
+            <label className="block text-body font-medium text-ink">Careers URL</label>
             <input
               name="careersUrl"
               defaultValue={company.careersUrl ?? ""}
@@ -173,10 +173,10 @@ export default async function CompanyDetailPage({
               that. Without this, Confluent's "Senior Software Engineer" — Sarthak's actual
               level there — was dropped by the global `senior` rule before he ever saw it. */}
           <div>
-            <label className="block text-[13px] font-medium text-ink">
+            <label className="block text-body font-medium text-ink">
               Level titles at this company
             </label>
-            <p className="mb-1 mt-0.5 text-[11px] leading-relaxed text-ink-faint">
+            <p className="mb-1 mt-0.5 text-label leading-relaxed text-ink-faint">
               What this company calls your level — one per line. e.g.{" "}
               <span className="text-ink-dim">Senior Software Engineer</span> at Confluent,{" "}
               <span className="text-ink-dim">Software Engineer III</span> at Google. These lift
@@ -188,7 +188,7 @@ export default async function CompanyDetailPage({
               rows={3}
               defaultValue={(company.matchOverrides?.levelTitles ?? []).join("\n")}
               placeholder={"Senior Software Engineer\nSoftware Engineer III"}
-              className={cx(inputStyles, "mt-1.5 font-mono text-[12px]")}
+              className={cx(inputStyles, "mt-1.5 font-mono text-meta")}
             />
           </div>
 
@@ -196,8 +196,8 @@ export default async function CompanyDetailPage({
             <div className="grid gap-4 sm:grid-cols-3">
               {fields.map((f) => (
                 <div key={f.key}>
-                  <label className="block text-[13px] font-medium text-ink">{f.label}</label>
-                  <p className="mb-1 mt-0.5 text-[11px] text-ink-faint">{f.hint}</p>
+                  <label className="block text-body font-medium text-ink">{f.label}</label>
+                  <p className="mb-1 mt-0.5 text-label text-ink-faint">{f.hint}</p>
                   <input
                     name={f.key}
                     defaultValue={String(config[f.key] ?? "")}
@@ -209,11 +209,11 @@ export default async function CompanyDetailPage({
           )}
 
           <div className="flex flex-wrap gap-5 pt-1">
-            <label className="flex items-center gap-2 text-[13px] text-ink-dim">
+            <label className="flex items-center gap-2 text-body text-ink-dim">
               <input type="checkbox" name="active" defaultChecked={company.active} />
               Crawl this company
             </label>
-            <label className="flex items-center gap-2 text-[13px] text-ink-dim">
+            <label className="flex items-center gap-2 text-body text-ink-dim">
               <input
                 type="checkbox"
                 name="allowZeroResults"
@@ -222,7 +222,7 @@ export default async function CompanyDetailPage({
               Allow zero results
             </label>
           </div>
-          <p className="text-[11px] leading-relaxed text-ink-faint">
+          <p className="text-label leading-relaxed text-ink-faint">
             Zero results is treated as an error by default — a board that returns nothing is
             indistinguishable from a broken adapter. Only tick that box for a company whose
             board is genuinely empty.
@@ -237,7 +237,7 @@ export default async function CompanyDetailPage({
       <SectionTitle>Referral contacts</SectionTitle>
       <Card className="mb-6 px-5 py-5">
         {people.length === 0 ? (
-          <p className="mb-4 text-[13px] text-ink-dim">
+          <p className="mb-4 text-body text-ink-dim">
             No contacts here yet — which is normal for plenty of companies.
           </p>
         ) : (
@@ -273,7 +273,7 @@ export default async function CompanyDetailPage({
                       is otherwise invisible: the message goes where you stored it, and the only
                       clue is the chat opening under someone else's name. */}
                   {numberConflicts.get(c.id)?.length ? (
-                    <p className="col-span-full text-[11px] text-warn">
+                    <p className="col-span-full text-label text-warn">
                       This number is also saved for{" "}
                       {numberConflicts
                         .get(c.id)!
@@ -291,7 +291,7 @@ export default async function CompanyDetailPage({
                       formAction={acknowledgeSharedNumber}
                       name="id"
                       value={c.id}
-                      className="col-span-full justify-self-start rounded px-1 text-[11px] text-ink-faint underline-offset-2 transition hover:text-ink-dim hover:underline"
+                      className="col-span-full justify-self-start rounded-control px-1 text-label text-ink-faint underline-offset-2 transition hover:text-ink-dim hover:underline"
                     >
                       That number is correct
                     </button>
@@ -299,7 +299,7 @@ export default async function CompanyDetailPage({
                   <div className="flex gap-1.5">
                     <button
                       type="submit"
-                      className="rounded-md border border-line bg-surface-2 px-2.5 py-1 text-[12px] text-ink-dim transition hover:border-line-strong hover:text-ink"
+                      className="rounded-control border border-line bg-surface-2 px-2.5 py-1 text-meta text-ink-dim transition hover:border-line-strong hover:text-ink"
                     >
                       Save
                     </button>
@@ -310,7 +310,7 @@ export default async function CompanyDetailPage({
                   <input type="hidden" name="companyId" value={company.id} />
                   <button
                     type="submit"
-                    className="text-[11px] text-ink-faint transition hover:text-danger"
+                    className="text-label text-ink-faint transition hover:text-danger"
                   >
                     Remove {c.name}
                   </button>
@@ -336,9 +336,9 @@ export default async function CompanyDetailPage({
         <>
           <SectionTitle>Recent crawls</SectionTitle>
           <Card className="mb-6 overflow-hidden">
-            <table className="w-full text-[13px]">
+            <table className="w-full text-body">
               <thead>
-                <tr className="border-b border-line text-left text-[11px] uppercase tracking-wide text-ink-faint">
+                <tr className="border-b border-line text-left text-label uppercase tracking-wide text-ink-faint">
                   <th className="px-4 py-2 font-medium">When</th>
                   <th className="px-4 py-2 font-medium">Status</th>
                   <th className="px-4 py-2 font-medium">Found</th>
@@ -373,8 +373,8 @@ export default async function CompanyDetailPage({
       )}
 
       <Card className="border-danger/30 px-5 py-4">
-        <p className="text-[13px] font-medium text-ink">Remove company</p>
-        <p className="mb-3 mt-0.5 text-[11px] text-ink-faint">
+        <p className="text-body font-medium text-ink">Remove company</p>
+        <p className="mb-3 mt-0.5 text-label text-ink-faint">
           Deletes its jobs and contacts too. To stop crawling without losing history, untick
           &ldquo;Crawl this company&rdquo; above instead.
         </p>
@@ -382,7 +382,7 @@ export default async function CompanyDetailPage({
           <input type="hidden" name="id" value={company.id} />
           <button
             type="submit"
-            className="rounded-md border border-danger/40 px-3 py-1.5 text-[13px] text-danger transition hover:bg-danger-soft"
+            className="rounded-control border border-danger/40 px-3 py-1.5 text-body text-danger transition hover:bg-danger-soft"
           >
             Delete {company.name}
           </button>

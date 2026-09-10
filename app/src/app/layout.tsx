@@ -109,7 +109,7 @@ export default async function RootLayout({
           <Sidebar counts={counts} prepTree={prepTree} />
           <div className="flex min-w-0 flex-1 flex-col">
             <MobileNav counts={counts} />
-            <main className="mx-auto w-full max-w-[1100px] px-5 py-8 md:px-8">
+            <main className="mx-auto w-full max-w-[1080px] px-5 py-9 md:px-10 md:py-12">
               {children}
             </main>
           </div>

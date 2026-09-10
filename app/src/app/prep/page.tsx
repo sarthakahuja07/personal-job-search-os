@@ -17,7 +17,7 @@ function Bar({ done, total }: { done: number; total: number }) {
           style={{ width: `${pct}%` }}
         />
       </div>
-      <div className="mt-1.5 flex justify-between text-[11px] text-ink-faint">
+      <div className="mt-1.5 flex justify-between text-label text-ink-faint">
         <span className="tnum">
           {done} of {total} done
         </span>
@@ -76,10 +76,10 @@ export default async function PrepOverviewPage() {
             <Link key={k.kind} href={`/prep/${k.segment}`} className="group">
               <Card className="h-full px-4 py-4 transition group-hover:border-line-strong">
                 <div className="flex items-start justify-between gap-2">
-                  <h2 className="text-[15px] font-medium text-ink">{k.title}</h2>
-                  <span className="tnum text-[13px] text-ink-faint">{p.total}</span>
+                  <h2 className="text-section font-medium text-ink">{k.title}</h2>
+                  <span className="tnum text-body text-ink-faint">{p.total}</span>
                 </div>
-                <p className="mb-4 mt-1 text-xs leading-relaxed text-ink-dim">{k.tagline}</p>
+                <p className="mb-4 mt-1 text-meta leading-relaxed text-ink-dim">{k.tagline}</p>
                 <Bar done={p.done} total={p.total} />
                 {(p.inProgress > 0 || p.revisit > 0) && (
                   <div className="mt-2.5 flex gap-1.5">
@@ -106,14 +106,14 @@ export default async function PrepOverviewPage() {
                     className="flex items-center justify-between gap-3"
                   >
                     <span className="min-w-0">
-                      <span className="text-sm text-ink">{r.title}</span>
-                      <span className="ml-2 text-xs text-ink-faint">{meta?.title}</span>
+                      <span className="text-body text-ink">{r.title}</span>
+                      <span className="ml-2 text-meta text-ink-faint">{meta?.title}</span>
                     </span>
                     <span className="flex shrink-0 items-center gap-2">
                       <Badge tone={r.status === "done" ? "fresh" : "accent"}>
                         {STATUS_LABEL[r.status]}
                       </Badge>
-                      <span className="text-[11px] text-ink-faint">
+                      <span className="text-label text-ink-faint">
                         {ago(r.lastPracticedAt)}
                       </span>
                     </span>
@@ -126,7 +126,7 @@ export default async function PrepOverviewPage() {
       )}
 
       <Card className="mt-8 border-dashed px-4 py-3.5">
-        <p className="text-xs leading-relaxed text-ink-faint">
+        <p className="text-meta leading-relaxed text-ink-faint">
           <span className="font-medium text-ink-dim">Starter content.</span> These are questions
           that genuinely get asked, tagged with the companies on your target list that ask them.
           Your own Notion material will extend or replace them — the schema keeps

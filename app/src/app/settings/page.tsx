@@ -61,8 +61,8 @@ function Field({
 }) {
   return (
     <div>
-      <label className="block text-[13px] font-medium text-ink">{label}</label>
-      {hint && <p className="mb-1.5 mt-0.5 text-xs text-ink-faint">{hint}</p>}
+      <label className="block text-body font-medium text-ink">{label}</label>
+      {hint && <p className="mb-1.5 mt-0.5 text-meta text-ink-faint">{hint}</p>}
       {children}
     </div>
   );
@@ -150,7 +150,7 @@ export default async function SettingsPage() {
 
         <Card className="space-y-5 px-5 py-5">
           <SectionTitle>Reminder timing</SectionTitle>
-          <p className="mb-3 text-[11px] leading-relaxed text-ink-faint">
+          <p className="mb-3 text-label leading-relaxed text-ink-faint">
             How long each kind of silence is tolerated before it becomes a reminder. Lower is
             pushier. These take effect immediately — reminders are computed on every page load,
             not stored.
@@ -195,7 +195,7 @@ export default async function SettingsPage() {
 
       <Card className="mt-8 px-5 py-5">
         <SectionTitle>Active match rules</SectionTitle>
-        <dl className="grid grid-cols-[auto_1fr] gap-x-6 gap-y-2 text-[13px]">
+        <dl className="grid grid-cols-[auto_1fr] gap-x-6 gap-y-2 text-body">
           <dt className="text-ink-dim">Target level</dt>
           <dd className="text-ink">SDE-2 / SWE-2 and equivalents, including L4 and MTS-II</dd>
 
@@ -223,7 +223,7 @@ export default async function SettingsPage() {
             exclude
           </dd>
         </dl>
-        <p className="mt-4 text-xs leading-relaxed text-ink-faint">
+        <p className="mt-4 text-meta leading-relaxed text-ink-faint">
           Exclusions cover seniority above and below target, non-engineering roles, hardware and
           silicon, and — at your request — security and networking. Every job stores the reason
           it matched, so a filtering decision is always auditable rather than a black box.

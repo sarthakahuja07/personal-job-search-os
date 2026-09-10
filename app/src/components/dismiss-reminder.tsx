@@ -24,7 +24,7 @@ export function DismissReminder({ jobId, kind }: { jobId: string; kind: string }
       title="Close this reminder — it comes back if the job moves stage"
       aria-label="Close this reminder"
       className={cx(
-        "shrink-0 rounded px-1.5 py-0.5 text-[13px] leading-none text-ink-faint transition hover:bg-surface-3 hover:text-ink-dim",
+        "shrink-0 rounded-control px-1.5 py-0.5 text-body leading-none text-ink-faint transition hover:bg-surface-3 hover:text-ink-dim",
         pending && "opacity-50",
       )}
     >

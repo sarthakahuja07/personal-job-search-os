@@ -43,7 +43,7 @@ export default async function NotificationsPage() {
       <SectionTitle>Emails sent</SectionTitle>
       {digests.length === 0 ? (
         <Card className="mb-6 px-4 py-3.5">
-          <p className="text-[12px] leading-relaxed text-ink-dim">
+          <p className="text-meta leading-relaxed text-ink-dim">
             No digest has been recorded yet. Emails sent before this page existed were delivered
             but not kept — the next scheduled send (06:30 or 18:30 IST) will appear here in full,
             subject and body exactly as it went out.
@@ -57,7 +57,7 @@ export default async function NotificationsPage() {
 
       <SectionTitle>Queue</SectionTitle>
       <Card className="mb-5 px-4 py-3">
-        <p className="text-xs leading-relaxed text-ink-dim">
+        <p className="text-meta leading-relaxed text-ink-dim">
           Queued when a crawl finds a new matching role, then sent as one digest by the
           scheduled job. A unique key per job makes a duplicate impossible at the database
           level, so a role can only ever be announced once — however many times the crawl runs.
@@ -71,9 +71,9 @@ export default async function NotificationsPage() {
         />
       ) : (
         <Card className="overflow-hidden">
-          <table className="w-full text-sm">
+          <table className="w-full text-body">
             <thead>
-              <tr className="border-b border-line text-left text-[11px] uppercase tracking-wide text-ink-faint">
+              <tr className="border-b border-line text-left text-label uppercase tracking-wide text-ink-faint">
                 <th className="px-4 py-2.5 font-medium">Role</th>
                 <th className="px-4 py-2.5 font-medium">Status</th>
                 <th className="px-4 py-2.5 font-medium">Queued</th>
@@ -95,20 +95,20 @@ export default async function NotificationsPage() {
                         href={r.jobUrl}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="font-medium text-ink transition hover:text-accent-ink"
+                        className="font-medium text-ink transition hover:text-ink"
                       >
                         {r.title}
                       </a>
                     ) : (
                       <span className="text-ink-faint">{r.dedupKey}</span>
                     )}
-                    <div className="text-xs text-ink-faint">{r.companyName}</div>
-                    {r.error && <div className="mt-0.5 text-xs text-danger">{r.error}</div>}
+                    <div className="text-meta text-ink-faint">{r.companyName}</div>
+                    {r.error && <div className="mt-0.5 text-meta text-danger">{r.error}</div>}
                   </td>
                   <td className="px-4 py-2.5">
                     <Badge tone={STATUS_TONE[r.status] ?? "neutral"}>{r.status}</Badge>
                     {r.attempts > 1 && (
-                      <span className="tnum ml-1.5 text-[11px] text-ink-faint">
+                      <span className="tnum ml-1.5 text-label text-ink-faint">
                         {r.attempts}×
                       </span>
                     )}

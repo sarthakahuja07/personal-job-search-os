@@ -90,7 +90,7 @@ export function CompanySearch({
       </form>
 
       {open && matches.length > 0 && (
-        <ul className="absolute left-0 right-0 top-full z-30 mt-1 overflow-hidden rounded-md border border-line bg-surface shadow-lg">
+        <ul className="absolute left-0 right-0 top-full z-30 mt-1 overflow-hidden rounded-control border border-line bg-surface shadow-overlay">
           {matches.map((c, i) => (
             <li key={c.id}>
               <button
@@ -98,12 +98,12 @@ export function CompanySearch({
                 onMouseEnter={() => setActive(i)}
                 onClick={() => go(c)}
                 className={cx(
-                  "flex w-full items-center justify-between gap-3 px-2.5 py-1.5 text-left text-[13px] transition",
-                  i === active ? "bg-accent-soft text-accent-ink" : "text-ink-dim hover:text-ink",
+                  "flex w-full items-center justify-between gap-3 px-2.5 py-1.5 text-left text-body transition",
+                  i === active ? "bg-accent-soft text-ink" : "text-ink-dim hover:text-ink",
                 )}
               >
                 <span className="truncate">{c.name}</span>
-                <span className="tnum shrink-0 text-[11px] text-ink-faint">
+                <span className="tnum shrink-0 text-label text-ink-faint">
                   {c.jobCount} open
                 </span>
               </button>

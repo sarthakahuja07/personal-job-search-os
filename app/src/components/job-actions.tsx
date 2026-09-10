@@ -42,7 +42,7 @@ export type JobActionsProps = {
 };
 
 const btn =
-  "inline-flex items-center gap-1 rounded border px-2 py-1 text-[11px] font-medium transition";
+  "inline-flex items-center gap-1 rounded-control border px-2 py-1 text-label font-medium transition";
 
 /**
  * The two things you actually do with a job: apply, or ask someone for a referral.
@@ -100,7 +100,7 @@ export function JobActions({
           btn,
           contactCount === 0
             ? "cursor-not-allowed border-line bg-surface-2 text-ink-faint/60"
-            : "border-accent/40 bg-accent-soft text-accent-ink hover:border-accent",
+            : "border-line-strong bg-accent-soft text-ink hover:border-line-strong",
         )}
       >
         Message{contactCount > 1 ? ` (${contactCount})` : ""}
@@ -193,16 +193,16 @@ function OutreachModal({
       aria-label={`Message a contact at ${companyName}`}
       onClick={(e) => e.target === e.currentTarget && onClose()}
     >
-      <div className="w-full max-w-xl rounded-card border border-line bg-surface shadow-xl">
+      <div className="w-full max-w-xl rounded-card border border-line bg-surface shadow-overlay">
         <div className="flex items-start justify-between gap-4 border-b border-line px-4 py-3">
           <div className="min-w-0">
-            <p className="truncate text-[14px] font-medium text-ink">{jobTitle}</p>
-            <p className="text-[12px] text-ink-dim">{companyName}</p>
+            <p className="truncate text-section font-medium text-ink">{jobTitle}</p>
+            <p className="text-meta text-ink-dim">{companyName}</p>
           </div>
           <button
             type="button"
             onClick={onClose}
-            className="shrink-0 rounded px-1.5 text-[16px] leading-none text-ink-faint transition hover:text-ink"
+            className="shrink-0 rounded-control px-1.5 text-section leading-none text-ink-faint transition hover:text-ink"
             aria-label="Close"
           >
             ×
@@ -210,12 +210,12 @@ function OutreachModal({
         </div>
 
         {loading && (
-          <p className="px-4 py-6 text-center text-[12px] text-ink-faint">Loading…</p>
+          <p className="px-4 py-6 text-center text-meta text-ink-faint">Loading…</p>
         )}
 
         <div className={cx("space-y-3 px-4 py-3.5", loading && "hidden")}>
           <div>
-            <p className="mb-1.5 text-[11px] font-medium uppercase tracking-wide text-ink-faint">
+            <p className="mb-1.5 text-label font-medium uppercase tracking-wide text-ink-faint">
               Contact
             </p>
             <div className="flex flex-wrap gap-1.5">
@@ -225,9 +225,9 @@ function OutreachModal({
                   type="button"
                   onClick={() => setContactId(c.id)}
                   className={cx(
-                    "rounded border px-2 py-1 text-[12px] transition",
+                    "rounded-control border px-2 py-1 text-meta transition",
                     c.id === contact?.id
-                      ? "border-accent bg-accent-soft text-accent-ink"
+                      ? "border-line-strong bg-surface-3 text-ink"
                       : "border-line bg-surface-2 text-ink-dim hover:text-ink",
                   )}
                 >
@@ -236,7 +236,7 @@ function OutreachModal({
                       be wrong — one contact here was saved with another company's number, and
                       the only clue was WhatsApp opening under a different name. Showing where
                       the message is going makes that visible before you send it. */}
-                  <span className="ml-1.5 text-[10px] text-ink-faint">
+                  <span className="ml-1.5 text-label text-ink-faint">
                     {c.phone ?? c.email ?? (c.linkedinUrl ? "LinkedIn" : "no channel")}
                   </span>
                 </button>
@@ -245,7 +245,7 @@ function OutreachModal({
           </div>
 
           <div>
-            <p className="mb-1.5 text-[11px] font-medium uppercase tracking-wide text-ink-faint">
+            <p className="mb-1.5 text-label font-medium uppercase tracking-wide text-ink-faint">
               Template
             </p>
             <div className="flex flex-wrap gap-1.5">
@@ -255,9 +255,9 @@ function OutreachModal({
                   type="button"
                   onClick={() => setTemplateId(t.id)}
                   className={cx(
-                    "rounded border px-2 py-1 text-[12px] transition",
+                    "rounded-control border px-2 py-1 text-meta transition",
                     t.id === template?.id
-                      ? "border-accent bg-accent-soft text-accent-ink"
+                      ? "border-line-strong bg-surface-3 text-ink"
                       : "border-line bg-surface-2 text-ink-dim hover:text-ink",
                   )}
                 >
@@ -269,14 +269,14 @@ function OutreachModal({
 
           <div>
             <div className="mb-1.5 flex items-center justify-between">
-              <p className="text-[11px] font-medium uppercase tracking-wide text-ink-faint">
+              <p className="text-label font-medium uppercase tracking-wide text-ink-faint">
                 Message
               </p>
               {edited !== null && edited !== rendered && (
                 <button
                   type="button"
                   onClick={() => setEdited(null)}
-                  className="text-[11px] text-ink-faint underline-offset-2 hover:text-ink-dim hover:underline"
+                  className="text-label text-ink-faint underline-offset-2 hover:text-ink-dim hover:underline"
                 >
                   Reset to template
                 </button>
@@ -286,7 +286,7 @@ function OutreachModal({
               value={message}
               onChange={(e) => setEdited(e.target.value)}
               rows={8}
-              className="w-full rounded border border-line bg-canvas px-2.5 py-2 text-[13px] leading-relaxed text-ink focus:border-line-strong focus:outline-none"
+              className="w-full rounded-control border border-line bg-canvas px-2.5 py-2 text-body leading-relaxed text-ink focus:border-line-strong focus:outline-none"
             />
           </div>
         </div>
@@ -300,7 +300,7 @@ function OutreachModal({
           )}
           {mail && (
             <a href={mail}
-              className={cx(btn, "border-accent/40 bg-accent-soft text-accent-ink hover:border-accent")}>
+              className={cx(btn, "border-line-strong bg-accent-soft text-ink hover:border-line-strong")}>
               Email ↗
             </a>
           )}
@@ -324,7 +324,7 @@ function OutreachModal({
           </button>
 
           {!wa && !mail && !li && (
-            <span className="text-[11px] text-warn">
+            <span className="text-label text-warn">
               {contact?.name} has no phone, email or LinkedIn saved — add one on the company page.
             </span>
           )}

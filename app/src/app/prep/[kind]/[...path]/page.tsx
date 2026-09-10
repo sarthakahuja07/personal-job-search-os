@@ -114,7 +114,7 @@ export default async function PrepPage({
 
   return (
     <div className="max-w-3xl">
-      <nav className="mb-3 flex flex-wrap items-center gap-1.5 text-[12px] text-ink-faint">
+      <nav className="mb-3 flex flex-wrap items-center gap-1.5 text-meta text-ink-faint">
         <Link href={"/prep/" + segment} className="transition hover:text-ink">
           {meta.title}
         </Link>
@@ -137,7 +137,7 @@ export default async function PrepPage({
         actions={
           <Link
             href={"/prep/" + segment}
-            className="text-[13px] text-ink-dim transition hover:text-ink"
+            className="text-body text-ink-dim transition hover:text-ink"
           >
             ← {meta.title}
           </Link>
@@ -160,9 +160,9 @@ export default async function PrepPage({
               name="status"
               value={st}
               className={cx(
-                "rounded-md border px-3 py-1.5 text-[13px] transition",
+                "rounded-control border px-3 py-1.5 text-body transition",
                 item.status === st
-                  ? "border-accent bg-accent-soft font-medium text-accent-ink"
+                  ? "border-line-strong bg-accent-soft font-medium text-ink"
                   : "border-line bg-surface-2 text-ink-dim hover:border-line-strong hover:text-ink",
               )}
             >
@@ -170,7 +170,7 @@ export default async function PrepPage({
             </button>
           ))}
           {item.topics.map((t) => (
-            <span key={t} className="text-[11px] text-ink-faint">
+            <span key={t} className="text-label text-ink-faint">
               #{t}
             </span>
           ))}
@@ -229,9 +229,9 @@ export default async function PrepPage({
                   className="flex items-center justify-between gap-3 rounded-card border border-line bg-surface px-3.5 py-2.5 transition hover:border-line-strong"
                 >
                   <span className="min-w-0">
-                    <span className="block truncate text-[13px] text-ink">{k.title}</span>
+                    <span className="block truncate text-body text-ink">{k.title}</span>
                     {k.childCount > 0 && (
-                      <span className="text-[11px] text-ink-faint">
+                      <span className="text-label text-ink-faint">
                         {k.childCount} inside
                       </span>
                     )}
@@ -246,13 +246,13 @@ export default async function PrepPage({
 
       {item.companies.length > 0 && (
         <Card className="mb-6 px-4 py-3">
-          <p className="text-[11px] uppercase tracking-wide text-ink-faint">Asked at</p>
+          <p className="text-label uppercase tracking-wide text-ink-faint">Asked at</p>
           <div className="mt-1.5 flex flex-wrap gap-1.5">
             {item.companies.map((c) => (
               <Link
                 key={c}
                 href={"/jobs?q=" + encodeURIComponent(c)}
-                className="rounded-md border border-line bg-surface-2 px-2 py-0.5 text-[12px] text-ink-dim transition hover:border-line-strong hover:text-ink"
+                className="rounded-control border border-line bg-surface-2 px-2 py-0.5 text-meta text-ink-dim transition hover:border-line-strong hover:text-ink"
               >
                 {c}
               </Link>
@@ -270,8 +270,8 @@ export default async function PrepPage({
             {meta.fields.map((f) =>
               content[f.key] ? (
                 <Card key={f.key} className="px-4 py-3">
-                  <p className="text-[11px] uppercase tracking-wide text-ink-faint">{f.label}</p>
-                  <p className="mt-1 text-[13px] leading-relaxed text-ink-dim">
+                  <p className="text-label uppercase tracking-wide text-ink-faint">{f.label}</p>
+                  <p className="mt-1 text-body leading-relaxed text-ink-dim">
                     {String(content[f.key])}
                   </p>
                 </Card>
@@ -290,10 +290,10 @@ export default async function PrepPage({
           <Card className="space-y-4 px-5 py-5">
             <SectionTitle>Your answer</SectionTitle>
             <div>
-              <label htmlFor="notes" className="block text-[13px] font-medium text-ink">
+              <label htmlFor="notes" className="block text-body font-medium text-ink">
                 Notes
               </label>
-              <p className="mb-1.5 mt-0.5 text-xs text-ink-faint">
+              <p className="mb-1.5 mt-0.5 text-meta text-ink-faint">
                 In your own words. This is the version you will actually recall in the room.
               </p>
               <textarea
@@ -308,10 +308,10 @@ export default async function PrepPage({
 
             {meta.kind === "dsa" && (
               <div>
-                <label htmlFor="solution" className="block text-[13px] font-medium text-ink">
+                <label htmlFor="solution" className="block text-body font-medium text-ink">
                   Solution
                 </label>
-                <p className="mb-1.5 mt-0.5 text-xs text-ink-faint">
+                <p className="mb-1.5 mt-0.5 text-meta text-ink-faint">
                   Code, or the outline you would write on a whiteboard.
                 </p>
                 <textarea
@@ -319,7 +319,7 @@ export default async function PrepPage({
                   name="solution"
                   rows={12}
                   defaultValue={item.solution ?? ""}
-                  className={cx(inputStyles, "resize-y font-mono text-[12.5px] leading-relaxed")}
+                  className={cx(inputStyles, "resize-y font-mono text-meta leading-relaxed")}
                 />
               </div>
             )}
@@ -332,13 +332,13 @@ export default async function PrepPage({
       )}
 
       {item.sourceUrl && (
-        <p className="mt-6 text-xs text-ink-faint">
+        <p className="mt-6 text-meta text-ink-faint">
           Source:{" "}
           <a
             href={item.sourceUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="text-accent-ink hover:underline"
+            className="text-ink hover:underline"
           >
             {item.sourceUrl}
           </a>

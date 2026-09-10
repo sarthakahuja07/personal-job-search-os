@@ -52,14 +52,14 @@ export function PageResources({
   return (
     <section className="mb-6">
       <div className="mb-2 flex items-center justify-between gap-3">
-        <h2 className="text-[11px] font-semibold uppercase tracking-[0.1em] text-ink-faint">
+        <h2 className="text-label font-semibold uppercase tracking-[0.1em] text-ink-faint">
           Watch &amp; read
           {live.length > 0 && <span className="ml-1.5 text-ink-faint">· {live.length}</span>}
         </h2>
         <button
           type="button"
           onClick={() => setAdding((v) => !v)}
-          className="text-[12px] text-ink-dim transition hover:text-ink"
+          className="text-meta text-ink-dim transition hover:text-ink"
         >
           {adding ? "Cancel" : "+ Add link"}
         </button>
@@ -82,17 +82,17 @@ export function PageResources({
             required
             autoFocus
             placeholder="Paste a YouTube or blog link"
-            className="min-w-0 flex-1 rounded-md border border-line bg-surface px-2.5 py-1.5 text-[13px] text-ink outline-none focus:border-accent"
+            className="min-w-0 flex-1 rounded-control border border-line bg-surface px-2.5 py-1.5 text-body text-ink outline-none focus:border-line-strong"
           />
           <input
             name="title"
             placeholder="Title (optional)"
-            className="min-w-0 flex-1 rounded-md border border-line bg-surface px-2.5 py-1.5 text-[13px] text-ink outline-none focus:border-accent"
+            className="min-w-0 flex-1 rounded-control border border-line bg-surface px-2.5 py-1.5 text-body text-ink outline-none focus:border-line-strong"
           />
           <button
             type="submit"
             disabled={pending}
-            className="rounded-md border border-accent bg-accent-soft px-3 py-1.5 text-[13px] text-accent-ink transition hover:border-accent-strong disabled:opacity-60"
+            className="rounded-control border border-line-strong bg-accent-soft px-3 py-1.5 text-body text-ink transition hover:border-line-strong disabled:opacity-60"
           >
             Add
           </button>
@@ -100,7 +100,7 @@ export function PageResources({
       )}
 
       {live.length === 0 && !adding && (
-        <p className="rounded-card border border-dashed border-line px-3.5 py-3 text-[12px] text-ink-faint">
+        <p className="rounded-card border border-dashed border-line px-3.5 py-3 text-meta text-ink-faint">
           Nothing pinned yet. Paste a YouTube or blog link and it will play or open from here.
         </p>
       )}
@@ -149,12 +149,12 @@ export function PageResources({
                     href={v.url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="block truncate text-[12.5px] text-ink underline-offset-2 hover:underline"
+                    className="block truncate text-meta text-ink underline-offset-2 hover:underline"
                     title={v.title}
                   >
                     {v.title}
                   </a>
-                  {v.source && <p className="text-[11px] text-ink-faint">{v.source}</p>}
+                  {v.source && <p className="text-label text-ink-faint">{v.source}</p>}
                 </div>
                 <RemoveButton onClick={() => drop(v.id)} />
               </div>
@@ -176,8 +176,8 @@ export function PageResources({
                 rel="noopener noreferrer"
                 className="min-w-0 flex-1"
               >
-                <span className="block truncate text-[13px] text-ink">{l.title}</span>
-                {l.source && <span className="text-[11px] text-ink-faint">{l.source}</span>}
+                <span className="block truncate text-body text-ink">{l.title}</span>
+                {l.source && <span className="text-label text-ink-faint">{l.source}</span>}
               </a>
               <RemoveButton onClick={() => drop(l.id)} />
             </li>
@@ -195,7 +195,7 @@ function RemoveButton({ onClick }: { onClick: () => void }) {
       onClick={onClick}
       title="Remove this link"
       className={cx(
-        "shrink-0 rounded px-1.5 text-[15px] leading-none text-ink-faint opacity-0 transition",
+        "shrink-0 rounded-control px-1.5 text-section leading-none text-ink-faint opacity-0 transition",
         "hover:text-ink group-hover:opacity-100 focus:opacity-100",
       )}
     >

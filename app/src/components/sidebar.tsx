@@ -84,48 +84,45 @@ export function Sidebar({
   const pathname = usePathname();
 
   return (
-    <aside className="sticky top-0 hidden h-dvh w-[228px] shrink-0 flex-col border-r border-line bg-surface md:flex">
-      <div className="flex h-14 items-center gap-2.5 border-b border-line px-5">
-        <span className="grid size-6 place-items-center rounded bg-accent-soft text-[11px] font-bold text-accent-ink">
-          JS
-        </span>
-        <span className="text-[13px] font-semibold tracking-tight text-ink">
-          Job Search OS
-        </span>
+    <aside className="sticky top-0 hidden h-dvh w-[232px] shrink-0 flex-col border-r border-line bg-canvas md:flex">
+      <div className="flex h-14 items-center px-4">
+        <span className="text-body font-semibold tracking-tight text-ink">Job Search OS</span>
       </div>
 
-      <nav className="flex-1 overflow-y-auto px-3 py-4">
+      <nav className="flex-1 overflow-y-auto px-4 pb-6 pt-1">
         {groups(counts).map((group) => (
-          <div key={group.title} className="mb-5">
-            <div className="px-2 pb-1.5 text-[10px] font-semibold uppercase tracking-[0.1em] text-ink-faint">
+          <div key={group.title} className="mb-6">
+            <div className="px-2 pb-2 text-label font-semibold uppercase text-ink-faint/80">
               {group.title}
             </div>
             <ul className="space-y-0.5">
               {group.items.map((item) => {
                 const active = isActive(pathname, item.href);
                 return (
-                  <li key={item.href}>
+                  <li key={item.href} className="relative">
+                    {/* The current page is marked by a rule against the rail, not a filled
+                        block. It reads at a glance and leaves the row's background free to
+                        mean "you are hovering this". */}
+                    {active && (
+                      <span
+                        className="absolute -left-3 top-1/2 h-4 w-0.5 -translate-y-1/2 rounded-full bg-ink"
+                        aria-hidden
+                      />
+                    )}
                     <Link
                       href={item.href}
+                      aria-current={active ? "page" : undefined}
                       className={cx(
-                        "group flex items-center justify-between rounded-md px-2 py-1.5 text-[13px] transition",
+                        "flex items-center justify-between gap-2 rounded-control px-2 py-[5px] text-body",
+                        "transition-colors duration-150",
                         active
-                          ? "bg-accent-soft font-medium text-accent-ink"
+                          ? "font-medium text-ink"
                           : "text-ink-dim hover:bg-surface-2 hover:text-ink",
                       )}
                     >
-                      <span className="flex items-center gap-2">
-                        <span
-                          className={cx(
-                            "h-3.5 w-0.5 rounded transition",
-                            active ? "bg-accent" : "bg-transparent",
-                          )}
-                          aria-hidden
-                        />
-                        {item.label}
-                      </span>
+                      <span className="truncate">{item.label}</span>
                       {item.count ? (
-                        <span className="tnum rounded bg-surface-3 px-1.5 text-[11px] text-ink-dim">
+                        <span className="tnum shrink-0 text-label text-ink-faint">
                           {item.count}
                         </span>
                       ) : null}
@@ -143,9 +140,7 @@ export function Sidebar({
         ))}
       </nav>
 
-      <div className="border-t border-line px-5 py-3 text-[11px] leading-relaxed text-ink-faint">
-        Discovery · Pipeline · Prep
-      </div>
+
     </aside>
   );
 }
@@ -163,9 +158,9 @@ export function MobileNav({ counts }: { counts: NavCounts }) {
             key={item.href}
             href={item.href}
             className={cx(
-              "whitespace-nowrap rounded-md px-2.5 py-1 text-[13px] transition",
+              "whitespace-nowrap rounded-control px-2.5 py-1 text-body transition",
               isActive(pathname, item.href)
-                ? "bg-accent-soft font-medium text-accent-ink"
+                ? "bg-accent-soft font-medium text-ink"
                 : "text-ink-dim",
             )}
           >

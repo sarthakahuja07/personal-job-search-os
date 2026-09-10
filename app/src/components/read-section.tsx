@@ -40,9 +40,9 @@ export function ReadSection({
         defaultOpen={defaultOpen}
         header={
           <header className="flex flex-wrap items-center gap-2 py-2.5 pr-4">
-            <span className="text-[13px] font-medium text-ink-dim">Handled</span>
-            <span className="tnum text-[12px] text-ink-faint">{jobs.length}</span>
-            <span className="text-[11px] text-ink-faint">
+            <span className="text-body font-medium text-ink-dim">Handled</span>
+            <span className="tnum text-meta text-ink-faint">{jobs.length}</span>
+            <span className="text-label text-ink-faint">
               · read or tracked
               {tracked > 0 && ` · ${tracked} in the pipeline`}
             </span>
@@ -53,11 +53,11 @@ export function ReadSection({
           {jobs.map((job) => (
             <li
               key={job.id}
-              className="flex items-center gap-3 px-3 py-1.5 text-[12px]"
+              className="flex items-center gap-3 px-3 py-1.5 text-meta"
             >
               <span
                 className={cx(
-                  "tnum w-8 shrink-0 text-right text-[11px]",
+                  "tnum w-8 shrink-0 text-right text-label",
                   job.fitScore >= 80 ? "text-fresh/70" : "text-ink-faint",
                 )}
               >
@@ -71,20 +71,20 @@ export function ReadSection({
               </Link>
               <Link
                 href={`/jobs?company=${job.companyId}`}
-                className="hidden w-32 shrink-0 truncate text-[11px] text-ink-faint transition hover:text-ink-dim sm:block"
+                className="hidden w-32 shrink-0 truncate text-label text-ink-faint transition hover:text-ink-dim sm:block"
               >
                 {job.companyName}
               </Link>
               {(() => {
                 const d = daysSince(job.postedAt);
                 return d === null ? null : (
-                  <span className="hidden w-20 shrink-0 text-[11px] text-ink-faint sm:block">
+                  <span className="hidden w-20 shrink-0 text-label text-ink-faint sm:block">
                     {d === 0 ? "today" : `${d}d ago`}
                   </span>
                 );
               })()}
               {job.applicationStatus && (
-                <span className="shrink-0 rounded border border-accent/30 bg-accent-soft px-1.5 py-0.5 text-[10px] text-accent-ink">
+                <span className="shrink-0 rounded-control border border-line-strong/30 bg-accent-soft px-1.5 py-0.5 text-label text-ink">
                   {job.applicationStatus}
                 </span>
               )}
@@ -92,7 +92,7 @@ export function ReadSection({
                 href={job.jobUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="shrink-0 text-[11px] text-ink-faint transition hover:text-ink-dim"
+                className="shrink-0 text-label text-ink-faint transition hover:text-ink-dim"
               >
                 ↗
               </a>

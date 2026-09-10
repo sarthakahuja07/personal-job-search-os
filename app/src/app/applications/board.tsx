@@ -156,7 +156,7 @@ export function Board({ cards }: { cards: BoardCard[] }) {
               // stops, so they should not compete for attention with the columns that need it.
               isTerminal(stage) ? "bg-surface/30" : "bg-surface/60",
               over === stage
-                ? "border-accent bg-accent-soft/30"
+                ? "border-line-strong bg-accent-soft/30"
                 : isTerminal(stage)
                   ? "border-line/60"
                   : "border-line",
@@ -164,10 +164,10 @@ export function Board({ cards }: { cards: BoardCard[] }) {
           >
             <header className="border-b border-line px-3 py-2.5">
               <div className="flex items-baseline justify-between">
-                <h2 className="text-[13px] font-semibold text-ink">{STAGE_LABEL[stage]}</h2>
-                <span className="tnum text-[11px] text-ink-faint">{inStage.length}</span>
+                <h2 className="text-body font-semibold text-ink">{STAGE_LABEL[stage]}</h2>
+                <span className="tnum text-label text-ink-faint">{inStage.length}</span>
               </div>
-              <p className="mt-0.5 text-[11px] text-ink-faint">{STAGE_HINT[stage]}</p>
+              <p className="mt-0.5 text-label text-ink-faint">{STAGE_HINT[stage]}</p>
             </header>
 
             <ul className="flex-1 space-y-2 p-2">
@@ -175,7 +175,7 @@ export function Board({ cards }: { cards: BoardCard[] }) {
                 <li
                   key={card.id}
                   className={cx(
-                    "group rounded-md border border-line bg-surface transition",
+                    "group rounded-control border border-line bg-surface transition",
                     dragging === card.id
                       ? "opacity-40 ring-1 ring-accent"
                       : "hover:border-line-strong",
@@ -199,7 +199,7 @@ export function Board({ cards }: { cards: BoardCard[] }) {
                   >
                     <span
                       aria-hidden
-                      className="mt-0.5 shrink-0 px-1 text-[13px] leading-none text-ink-faint"
+                      className="mt-0.5 shrink-0 px-1 text-body leading-none text-ink-faint"
                     >
                       ⠿
                     </span>
@@ -209,18 +209,18 @@ export function Board({ cards }: { cards: BoardCard[] }) {
                           referral is asked and how you scan for who to chase. */}
                       <Link
                         href={`/companies/${card.companyId}`}
-                        className="block truncate text-[13px] font-semibold leading-snug text-ink hover:text-accent-ink"
+                        className="block truncate text-body font-semibold leading-snug text-ink hover:text-ink"
                       >
                         {card.companyName}
                       </Link>
                       <Link
                         href={`/jobs/${card.jobId}`}
-                        className="mt-0.5 block text-[12px] leading-snug text-ink-dim hover:text-ink"
+                        className="mt-0.5 block text-meta leading-snug text-ink-dim hover:text-ink"
                       >
                         {card.jobTitle}
                       </Link>
                       {card.jobLocation && (
-                        <p className="mt-0.5 truncate text-[11px] text-ink-faint">
+                        <p className="mt-0.5 truncate text-label text-ink-faint">
                           {card.jobLocation}
                         </p>
                       )}
@@ -237,7 +237,7 @@ export function Board({ cards }: { cards: BoardCard[] }) {
                       id={`stage-${card.id}`}
                       value={stageOf(card)}
                       onChange={(e) => move(card, e.target.value as ApplicationStatus)}
-                      className="rounded border border-line bg-surface-2 px-1.5 py-1 text-[11px] text-ink-dim outline-none focus:border-accent"
+                      className="rounded-control border border-line bg-surface-2 px-1.5 py-1 text-label text-ink-dim outline-none focus:border-line-strong"
                     >
                       {STAGES.map((s) => (
                         <option key={s} value={s} className="bg-surface-2">
@@ -255,7 +255,7 @@ export function Board({ cards }: { cards: BoardCard[] }) {
                           await removeCard(card.id);
                         });
                       }}
-                      className="rounded px-1 py-0.5 text-[11px] text-ink-faint transition hover:text-danger"
+                      className="rounded-control px-1 py-0.5 text-label text-ink-faint transition hover:text-danger"
                       aria-label={`Remove ${card.jobTitle} from the pipeline`}
                     >
                       Remove
@@ -266,7 +266,7 @@ export function Board({ cards }: { cards: BoardCard[] }) {
               ))}
 
               {inStage.length === 0 && (
-                <li className="rounded-md border border-dashed border-line px-3 py-4 text-center text-[11px] text-ink-faint">
+                <li className="rounded-control border border-dashed border-line px-3 py-4 text-center text-label text-ink-faint">
                   {dragging ? "Drop here" : "Nothing here"}
                 </li>
               )}

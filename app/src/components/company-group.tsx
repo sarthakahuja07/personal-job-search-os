@@ -77,11 +77,11 @@ export function CompanyGroup({
         <div className="flex min-w-0 flex-wrap items-center gap-2">
           <Link
             href={`/companies/${companyId}`}
-            className="text-[14px] font-semibold text-ink transition hover:text-accent-ink"
+            className="text-section font-semibold text-ink transition hover:text-ink"
           >
             {companyName}
           </Link>
-          <span className="tnum text-[12px] text-ink-faint">
+          <span className="tnum text-meta text-ink-faint">
             {untouched > 0 ? (
               <>
                 <span className="text-ink-dim">{untouched}</span> to review
@@ -94,7 +94,7 @@ export function CompanyGroup({
           {newCount > 0 && <Badge tone="fresh">{newCount} new</Badge>}
         </div>
 
-        <div className="flex items-center gap-2 text-[11px] text-ink-faint">
+        <div className="flex items-center gap-2 text-label text-ink-faint">
           {contactNames.length > 0 ? (
             <span className="truncate">
               Referral: <span className="text-ink-dim">{contactNames.join(", ")}</span>
@@ -123,7 +123,7 @@ export function CompanyGroup({
             <li>
               <Link
                 href={`/jobs?company=${companyId}`}
-                className="block rounded-md border border-dashed border-line px-3 py-2 text-center text-[12px] text-ink-dim transition hover:border-line-strong hover:text-ink"
+                className="block rounded-control border border-dashed border-line px-3 py-2 text-center text-meta text-ink-dim transition hover:border-line-strong hover:text-ink"
               >
                 View all {jobs.length} at {companyName} →
               </Link>

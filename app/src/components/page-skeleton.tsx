@@ -14,8 +14,8 @@ export function PageSkeleton({ rows = 5 }: { rows?: number }) {
   return (
     <div className="animate-pulse" aria-busy="true" aria-label="Loading">
       <div className="mb-6">
-        <div className="h-6 w-40 rounded bg-surface-2" />
-        <div className="mt-2 h-3 w-64 rounded bg-surface-2/70" />
+        <div className="h-6 w-40 rounded-control bg-surface-2" />
+        <div className="mt-2 h-3 w-64 rounded-control bg-surface-2/70" />
       </div>
       <div className="space-y-2">
         {Array.from({ length: rows }).map((_, i) => (
@@ -23,8 +23,8 @@ export function PageSkeleton({ rows = 5 }: { rows?: number }) {
             key={i}
             className="rounded-card border border-line bg-surface/60 px-4 py-3.5"
           >
-            <div className="h-3.5 w-1/3 rounded bg-surface-2" />
-            <div className="mt-2 h-3 w-1/4 rounded bg-surface-2/70" />
+            <div className="h-3.5 w-1/3 rounded-control bg-surface-2" />
+            <div className="mt-2 h-3 w-1/4 rounded-control bg-surface-2/70" />
           </div>
         ))}
       </div>

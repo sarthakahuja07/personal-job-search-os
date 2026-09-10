@@ -79,7 +79,7 @@ export default async function RemindersPage() {
             {Object.entries(byKind).map(([kind, n]) => (
               <span
                 key={kind}
-                className="rounded border border-line bg-surface-2 px-2 py-1 text-[11px] text-ink-dim"
+                className="rounded-control border border-line bg-surface-2 px-2 py-1 text-label text-ink-dim"
               >
                 {KIND_LABEL[kind as ReminderKind]}
                 <span className="tnum ml-1.5 text-ink-faint">{n}</span>
