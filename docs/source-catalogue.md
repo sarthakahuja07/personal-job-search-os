@@ -7,19 +7,18 @@ The organising idea: **the stubborn companies were never individual problems, th
 handful of patterns.** Building for the pattern rather than the company is what turned all but
 one of them into configuration rather than code.
 
-**40 of 47 active companies now crawl automatically.**
+**42 of 48 active companies now crawl automatically.**
 
-The seven that do not, each for a reason established by looking rather than assumed:
+The six that do not, each for a reason established by looking rather than assumed:
 
 | Company | Why not |
 |---|---|
 | **Google** | `robots.txt` disallows the job-results path. Policy, not capability — honoured. |
-| **Myntra** | The board is a Flutter app rendering to a WebGL canvas. There is no DOM to read, with or without a browser. |
-| **Deel** | A cookie-consent wall gates the board; `jobs.deel.com` is a Next.js shell that redirects into it. |
-| **super.money** | 7 KB page, no board at that URL. |
-| **Truva** | No job links on the careers page. |
-| **Wint Wealth** | No first-party board — they hire through LinkedIn and Instahyre. |
-| **Eightfold** | Their careers site is their own product behind a login. |
+| **super.money** | The careers page renders "To view this page, install the super.money app now." There is no web board to read. |
+| **Truva** | `truva.in/careers` returns their own "Page Not Found". The URL is dead; there is nothing behind it. |
+| **Myntra** | The board is a Flutter app rendering to a WebGL canvas. No DOM exists to read, with or without a browser, and its `spire2grow` backend made no data call in a full page load. |
+| **Deel** | The careers page is marketing; `jobs.deel.com` is a Next.js shell that redirects into it, and the only job-ish link on the page is a template library. No board found behind the consent wall. |
+| **Eightfold** | Their board runs on their own product at `app.eightfold.ai`, whose API returns 403 to every client — the same refusal Qualcomm's *appeared* to give until robots.txt turned out to permit a different endpoint. Here there is no such endpoint. |
 
 Three former members of this list were promoted once they were investigated properly rather than
 statically scanned — a static regex over the careers HTML found nothing for any of them, and a
@@ -30,6 +29,14 @@ browser watching what the page actually loads found all three:
 | **BrowserStack** | `browserstack.wd3.myworkdayjobs.com/External` in a linked page | Workday, 32 jobs |
 | **Cohesity** | A bespoke JSON API whose own `jobUrl` field pointed at Workday | Workday, 164 jobs |
 | **PhonePe** | SmartRecruiters under `PHONEPELIMITED`, not the guessable `phonepe` | SmartRecruiters, 53 jobs, all India |
+| **Wint Wealth** | A public `anon_employer` API on Instahyre — no login, despite the site itself gating pages | `json_api`, board currently empty |
+
+**Wint Wealth** deserves its own note. It has no first-party board at all, so it is crawled from
+Instahyre, where its profile is served by a public endpoint that needs no account even though
+Instahyre's own HTML pages return 403 to a plain client. The field map was verified against an
+employer that *does* have openings rather than guessed, because Wint Wealth's board is empty
+today — and it is the one company on the list with `allow_zero_results`, since an empty board is
+its normal state and the zero-result guard would otherwise call that suspicious every run.
 
 The lesson is the one already recorded below for Qualcomm and Akamai, in a third form: **a
 negative result from a static scan is not evidence of absence.** Cohesity's own API answered the
