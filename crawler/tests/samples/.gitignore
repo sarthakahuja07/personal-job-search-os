@@ -1,0 +1,2 @@
+# Raw messages are personal mail; only scrubbed fixtures get committed.
+*.eml
