@@ -55,6 +55,7 @@ function toIncoming(payload: IngestPayload): IncomingJob[] {
     // Parsed as UTC midnight; the crawler guarantees an ISO date or null, never display text.
     postedAt: j.posted_at ? new Date(`${j.posted_at}T00:00:00Z`) : null,
     rawMetadata: j.raw_metadata,
+    source: j.source ?? null,
   }));
 }
 

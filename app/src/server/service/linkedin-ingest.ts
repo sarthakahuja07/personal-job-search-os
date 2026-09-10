@@ -43,6 +43,7 @@ function toIngestJob(posting: LinkedInPosting): IngestJob {
     // answer; the matcher already knows to score on title alone and to say so.
     description: null,
     posted_at: null,
+    source: "linkedin_email",
     raw_metadata: {
       source: "linkedin_email",
       feed: posting.feed,

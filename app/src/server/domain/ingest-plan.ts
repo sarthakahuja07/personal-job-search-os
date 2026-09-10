@@ -34,6 +34,8 @@ export type IncomingJob = {
   employmentType?: string | null;
   postedAt?: Date | null;
   rawMetadata?: Record<string, unknown>;
+  /** Overrides the company's source type when the job was found elsewhere. */
+  source?: string | null;
 };
 
 export type CrawlStatus =

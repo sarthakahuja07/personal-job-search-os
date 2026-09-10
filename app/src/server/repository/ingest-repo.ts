@@ -141,7 +141,10 @@ export async function upsertJobs(
       jobUrl: j.jobUrl,
       normalizedJobUrl: j.normalizedJobUrl,
       postedAt: j.postedAt ?? null,
-      source: sourceType as never,
+      // The job's own source wins when it has one: a Google opening found through LinkedIn
+      // mail was not found by Google's adapter, and saying so is what lets the LinkedIn page
+      // find it again.
+      source: (j.source ?? sourceType) as never,
       employmentType: j.employmentType ?? null,
       rawMetadata: j.rawMetadata ?? null,
       isRelevant: j.isRelevant,

@@ -30,6 +30,28 @@ export const ingestJobSchema = z.object({
   /** A real date or null. Never a display string -- the crawler rejects those at its boundary. */
   posted_at: isoDate.nullish(),
   raw_metadata: z.record(z.string(), z.unknown()).optional(),
+  /**
+   * Which adapter found this, when it is not the company's own.
+   *
+   * Almost always absent: a company's jobs come from its configured source. The exception is a
+   * job discovered somewhere else entirely -- a Google opening read out of LinkedIn's alert
+   * mail -- where recording Google's adapter would misattribute how it was found, and the
+   * LinkedIn page would then be unable to find it at all.
+   */
+  source: z
+    .enum([
+      "greenhouse",
+      "lever",
+      "ashby",
+      "smartrecruiters",
+      "workday",
+      "custom_json",
+      "jsonld",
+      "html",
+      "manual",
+      "linkedin_email",
+    ])
+    .optional(),
 });
 
 export const crawlStatusSchema = z.enum([

@@ -119,3 +119,24 @@ describe("chunked ingest", () => {
     });
   });
 });
+
+describe("where a job was found", () => {
+  // Regression. A Google opening read out of LinkedIn's alert mail was being stamped with
+  // Google's own adapter type, because the insert took `source` from the company rather than
+  // from the job. Nine real jobs landed that way and the LinkedIn page, which finds its jobs by
+  // source, could not see any of them -- the ingest reported success throughout.
+  it("keeps the job's own source when it names one", async () => {
+    await ingestJobs(
+      db,
+      payload({ jobs: [{ ...job("g1"), source: "linkedin_email" }] }),
+    );
+    const [, , , planned] = vi.mocked(repo.upsertJobs).mock.calls[0];
+    expect(planned[0].source).toBe("linkedin_email");
+  });
+
+  it("falls back to the company's source, which is the normal case", async () => {
+    await ingestJobs(db, payload());
+    const [, , , planned] = vi.mocked(repo.upsertJobs).mock.calls[0];
+    expect(planned[0].source ?? null).toBeNull();
+  });
+});
