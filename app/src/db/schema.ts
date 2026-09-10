@@ -746,3 +746,45 @@ export const linkedinLeads = sqliteTable(
 
 export type LinkedinLead = typeof linkedinLeads.$inferSelect;
 export type NewLinkedinLead = typeof linkedinLeads.$inferInsert;
+
+export const PREP_RESOURCE_KINDS = ["video", "article", "book"] as const;
+export type PrepResourceKind = (typeof PREP_RESOURCE_KINDS)[number];
+
+/**
+ * Videos and posts pinned to a prep page.
+ *
+ * A table rather than a JSON array on the page, because these are added and removed one at a
+ * time from the UI: a JSON column would mean read-modify-write on every change, which loses an
+ * edit whenever two happen close together.
+ *
+ * `kind` decides how it renders -- a video embeds and plays in place, an article is a card --
+ * and is derived from the URL when one is pasted, so nothing has to be classified by hand.
+ */
+export const prepResources = sqliteTable(
+  "prep_resources",
+  {
+    id: text("id").primaryKey().$defaultFn(uuid),
+    prepItemId: text("prep_item_id")
+      .notNull()
+      .references(() => prepItems.id, { onDelete: "cascade" }),
+
+    kind: text("kind").$type<PrepResourceKind>().notNull().default("article"),
+    url: text("url").notNull(),
+    title: text("title").notNull(),
+    /** Who made it -- "Hello Interview", "Gaurav Sen". Shown so you can pick by author. */
+    source: text("source"),
+    /** YouTube id, when the URL is a video. Kept so the embed never re-parses the URL. */
+    videoId: text("video_id"),
+
+    position: integer("position").notNull().default(0),
+    createdAt: createdAt(),
+  },
+  (t) => [
+    // The same link pasted twice on one page is a mistake, not a second resource.
+    uniqueIndex("prep_resource_item_url_unique").on(t.prepItemId, t.url),
+    index("prep_resource_item_idx").on(t.prepItemId),
+  ],
+);
+
+export type PrepResource = typeof prepResources.$inferSelect;
+export type NewPrepResource = typeof prepResources.$inferInsert;

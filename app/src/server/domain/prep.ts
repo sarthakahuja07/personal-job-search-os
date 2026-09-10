@@ -42,7 +42,7 @@ export const KINDS: KindMeta[] = [
       { key: "architecture", label: "Architecture", hint: "Components and data flow" },
       { key: "tradeoffs", label: "Trade-offs", hint: "What you gave up, and why" },
     ],
-    hasDifficulty: false,
+    hasDifficulty: true,
   },
   {
     kind: "behavioral",

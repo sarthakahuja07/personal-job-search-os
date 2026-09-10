@@ -6,10 +6,17 @@
  * than rows. Topic and status filtering happens in the service layer over that single result.
  */
 
-import { and, asc, desc, eq, isNull, sql } from "drizzle-orm";
+import { and, asc, desc, eq, inArray, isNull, sql } from "drizzle-orm";
 
 import type { Db } from "@/db";
-import { prepItems, type PrepKind, type PrepStatus } from "@/db/schema";
+import {
+  prepItems,
+  prepResources,
+  type NewPrepResource,
+  type PrepDifficulty,
+  type PrepKind,
+  type PrepStatus,
+} from "@/db/schema";
 
 /**
  * The top level of a discipline.
@@ -221,4 +228,45 @@ export async function navTree(db: Db) {
     })
     .from(prepItems)
     .orderBy(prepItems.position, prepItems.title);
+}
+
+export async function resourcesFor(db: Db, prepItemId: string) {
+  return db
+    .select()
+    .from(prepResources)
+    .where(eq(prepResources.prepItemId, prepItemId))
+    .orderBy(prepResources.position, prepResources.createdAt);
+}
+
+/** Resources for many pages at once, so a folder listing costs one query rather than N. */
+export async function resourceCounts(db: Db, itemIds: string[]) {
+  if (itemIds.length === 0) return new Map<string, number>();
+  const rows = await db
+    .select({ id: prepResources.prepItemId, n: sql<number>`count(*)` })
+    .from(prepResources)
+    .where(inArray(prepResources.prepItemId, itemIds.slice(0, 90)))
+    .groupBy(prepResources.prepItemId);
+  return new Map(rows.map((r) => [r.id, r.n]));
+}
+
+export async function addResource(db: Db, row: NewPrepResource) {
+  await db.insert(prepResources).values(row).onConflictDoNothing({
+    target: [prepResources.prepItemId, prepResources.url],
+  });
+}
+
+export async function removeResource(db: Db, id: string) {
+  await db.delete(prepResources).where(eq(prepResources.id, id));
+}
+
+/** Difficulty and asked-frequency. Written independently of progress and of the document. */
+export async function setPrepGrading(
+  db: Db,
+  id: string,
+  fields: { difficulty?: PrepDifficulty | null; frequency?: number },
+) {
+  await db
+    .update(prepItems)
+    .set({ ...fields, updatedAt: new Date() })
+    .where(eq(prepItems.id, id));
 }

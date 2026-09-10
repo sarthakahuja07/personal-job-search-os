@@ -4,6 +4,8 @@ import { revalidatePath } from "next/cache";
 
 import { Markdown } from "@/components/markdown";
 import { PageEditor } from "@/components/page-editor";
+import { PageGrading } from "@/components/page-grading";
+import { PageResources } from "@/components/page-resources";
 import { Badge, Button, Card, PageHeader, SectionTitle, cx, inputStyles } from "@/components/ui";
 import { getDb } from "@/db";
 import type { PrepStatus } from "@/db/schema";
@@ -13,12 +15,11 @@ import {
   ancestorsOf,
   childrenOf,
   resolvePath,
+  resourcesFor,
   updateProgress,
 } from "@/server/repository/prep-repo";
 
 export const dynamic = "force-dynamic";
-
-const DIFFICULTY_TONE = { easy: "fresh", medium: "warn", hard: "danger" } as const;
 
 const STATUS_TONE: Record<PrepStatus, "neutral" | "accent" | "fresh" | "warn"> = {
   not_started: "neutral",
@@ -33,23 +34,35 @@ function revalidateTree(segment: string, path: string[]) {
   revalidatePath("/prep");
 }
 
-async function save(formData: FormData) {
+/**
+ * Status is its own action because it now lives at the top of the page, away from the answer
+ * fields. One combined form would have meant a click on "Done" also rewriting whatever was in
+ * the notes box at the time -- including an empty one.
+ */
+async function saveStatus(formData: FormData) {
   "use server";
   const id = String(formData.get("id"));
   const segment = String(formData.get("segment"));
   const path = String(formData.get("path") ?? "").split("/").filter(Boolean);
   const rawStatus = String(formData.get("status") ?? "");
 
+  // Validate against the known set rather than trusting the form: a status the UI does not
+  // understand would render as a blank badge forever.
+  if (!(PREP_STATUSES as readonly string[]).includes(rawStatus)) return;
+  await updateProgress(getDb(), id, { status: rawStatus as PrepStatus });
+  revalidateTree(segment, path);
+}
+
+async function saveAnswer(formData: FormData) {
+  "use server";
+  const id = String(formData.get("id"));
+  const segment = String(formData.get("segment"));
+  const path = String(formData.get("path") ?? "").split("/").filter(Boolean);
+
   await updateProgress(getDb(), id, {
-    // Validate against the known set rather than trusting the form: a status the UI does not
-    // understand would render as a blank badge forever.
-    status: (PREP_STATUSES as readonly string[]).includes(rawStatus)
-      ? (rawStatus as PrepStatus)
-      : undefined,
     notes: String(formData.get("notes") ?? "").trim() || null,
     solution: String(formData.get("solution") ?? "").trim() || null,
   });
-
   revalidateTree(segment, path);
 }
 
@@ -78,9 +91,10 @@ export default async function PrepPage({
   const item = await resolvePath(db, meta.kind, path);
   if (!item) notFound();
 
-  const [kids, chain] = await Promise.all([
+  const [kids, chain, resources] = await Promise.all([
     childrenOf(db, item.id),
     ancestorsOf(db, item.id),
+    resourcesFor(db, item.id),
   ]);
 
   const content = item.content ?? {};
@@ -120,19 +134,55 @@ export default async function PrepPage({
         }
       />
 
+      {/* Progress first. It is the question you answer on arriving at a page and again on
+          leaving it, and it used to sit below the notes where you had to scroll past your own
+          answer to reach it. Each status is a submit button, so setting one is a single click
+          rather than a radio plus a Save. */}
       {!isFolder && (
-        <div className="mb-6 flex flex-wrap items-center gap-2">
-          <Badge tone={STATUS_TONE[item.status]}>{STATUS_LABEL[item.status]}</Badge>
-          {item.difficulty && (
-            <Badge tone={DIFFICULTY_TONE[item.difficulty]}>{item.difficulty}</Badge>
-          )}
+        <form action={saveStatus} className="mb-5 flex flex-wrap items-center gap-2">
+          <input type="hidden" name="id" value={item.id} />
+          <input type="hidden" name="segment" value={segment} />
+          <input type="hidden" name="path" value={here} />
+          {STATUS_ORDER.map((st) => (
+            <button
+              key={st}
+              type="submit"
+              name="status"
+              value={st}
+              className={cx(
+                "rounded-md border px-3 py-1.5 text-[13px] transition",
+                item.status === st
+                  ? "border-accent bg-accent-soft font-medium text-accent-ink"
+                  : "border-line bg-surface-2 text-ink-dim hover:border-line-strong hover:text-ink",
+              )}
+            >
+              {STATUS_LABEL[st]}
+            </button>
+          ))}
           {item.topics.map((t) => (
             <span key={t} className="text-[11px] text-ink-faint">
               #{t}
             </span>
           ))}
+        </form>
+      )}
+
+      {!isFolder && (
+        <div className="mb-5">
+          <PageGrading
+            id={item.id}
+            path={`/prep/${segment}/${here}`}
+            difficulty={item.difficulty}
+            frequency={item.frequency}
+          />
         </div>
       )}
+
+      <PageResources
+        prepItemId={item.id}
+        path={`/prep/${segment}/${here}`}
+        resources={resources}
+      />
 
       {/* The document. Click it to edit -- see components/page-editor.tsx for why there is no
           edit mode to enter. */}
@@ -207,43 +257,11 @@ export default async function PrepPage({
         </>
       )}
 
-      {/* Progress belongs to things you practise. A folder is not one of them, and letting it
-          carry a status would put it in the progress counts as work you had not done. */}
       {!isFolder && (
-        <form action={save} className="space-y-5">
+        <form action={saveAnswer} className="space-y-5">
           <input type="hidden" name="id" value={item.id} />
           <input type="hidden" name="segment" value={segment} />
           <input type="hidden" name="path" value={here} />
-
-          <Card className="px-5 py-5">
-            <SectionTitle>Your progress</SectionTitle>
-            <div className="flex flex-wrap gap-2">
-              {STATUS_ORDER.map((s) => (
-                <label
-                  key={s}
-                  className={cx(
-                    "cursor-pointer rounded-md border px-3 py-1.5 text-[13px] transition",
-                    item.status === s
-                      ? "border-accent bg-accent-soft text-accent-ink"
-                      : "border-line bg-surface-2 text-ink-dim hover:border-line-strong hover:text-ink",
-                  )}
-                >
-                  <input
-                    type="radio"
-                    name="status"
-                    value={s}
-                    defaultChecked={item.status === s}
-                    className="sr-only"
-                  />
-                  {STATUS_LABEL[s]}
-                </label>
-              ))}
-            </div>
-            <p className="mt-2 text-[11px] text-ink-faint">
-              Revisit is not counted as done — marking something for revision is an admission it
-              is not solid yet, and a progress bar that says otherwise is lying to you.
-            </p>
-          </Card>
 
           <Card className="space-y-4 px-5 py-5">
             <SectionTitle>Your answer</SectionTitle>
