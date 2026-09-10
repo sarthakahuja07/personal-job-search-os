@@ -56,3 +56,6 @@ apple_*.txt
 *.eml
 # ...but the scrubbed fixtures are the test suite's ground truth and must be committed.
 !crawler/tests/fixtures/**/*.eml
+
+# Book PDFs. Paid copies belong to whoever bought them, not in a repository.
+app/public/books/*.pdf

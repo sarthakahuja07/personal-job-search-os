@@ -7,6 +7,7 @@ import { PREP_DIFFICULTIES, type PrepDifficulty } from "@/db/schema";
 import { parseResource } from "@/server/domain/resources";
 import {
   addResource,
+  movePage,
   removeResource,
   setPrepGrading,
   updateBody,
@@ -80,4 +81,16 @@ export async function setFrequency(id: string, frequency: number, path: string) 
   await setPrepGrading(getDb(), id, { frequency: n });
   revalidatePath(path);
   revalidatePath("/prep/system-design");
+}
+
+/**
+ * Reorder or reparent a page from the navigation tree.
+ *
+ * Revalidates the layout rather than one page, because the sidebar is rendered there and a
+ * move that does not show up in the tree it was performed in looks like it failed.
+ */
+export async function movePrepPage(id: string, newParentId: string | null, newIndex: number) {
+  const result = await movePage(getDb(), id, newParentId, newIndex);
+  revalidatePath("/prep", "layout");
+  return result;
 }

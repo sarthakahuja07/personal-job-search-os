@@ -59,7 +59,11 @@ function groups(counts: NavCounts): Group[] {
       title: "Preparation",
       // Just the overview; the disciplines and their pages render as a tree below, because a
       // flat list cannot show that RDBMS sits inside HLD inside System Design.
-      items: [{ href: "/prep", label: "Overview" }],
+      items: [
+        { href: "/prep", label: "Overview" },
+        { href: "/prep/books/system-design-interview-vol-1", label: "Alex Xu · Vol 1" },
+        { href: "/prep/books/system-design-interview-vol-2", label: "Alex Xu · Vol 2" },
+      ],
       tree: true,
     },
     {

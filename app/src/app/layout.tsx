@@ -66,13 +66,19 @@ export default async function RootLayout({
       (childrenOfId.get(parentId) ?? [])
         .filter((r) => r.kind === kind)
         .map((r) => ({
+          id: r.id,
+          parentId: r.parentId,
           slug: r.slug,
           title: r.title,
           href: `${base}/${r.slug}`,
           children: build(r.id, kind, `${base}/${r.slug}`),
         }));
 
+    // A discipline is not a row -- it is the KINDS entry. The empty id marks it as such, so
+    // the tree knows it cannot be dragged and that dropping into it means "top level".
     prepTree = KINDS.map((k) => ({
+      id: "",
+      parentId: null,
       slug: k.segment,
       title: k.title,
       href: `/prep/${k.segment}`,

@@ -2,16 +2,22 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useMemo, useSyncExternalStore } from "react";
+import { useMemo, useState, useSyncExternalStore, useTransition } from "react";
 
+import { movePrepPage } from "@/app/prep/actions";
 import { cx } from "./ui";
 
 export type NavNode = {
+  id: string;
+  parentId: string | null;
   slug: string;
   title: string;
   href: string;
   children: NavNode[];
 };
+
+/** Where a drop would land: above the row, below it, or inside it. */
+type DropZone = "before" | "after" | "inside";
 
 const STORE_KEY = "prep-nav-open";
 
@@ -61,6 +67,29 @@ function writeOpen(next: string[]) {
 export function NavTree({ nodes }: { nodes: NavNode[] }) {
   const pathname = usePathname();
   const raw = useSyncExternalStore(subscribe, readOpen, () => "[]");
+  const [dragging, setDragging] = useState<string | null>(null);
+  const [over, setOver] = useState<{ id: string; zone: DropZone } | null>(null);
+  const [, startTransition] = useTransition();
+
+  const drop = (target: NavNode, zone: DropZone, siblings: NavNode[]) => {
+    const sourceId = dragging;
+    setDragging(null);
+    setOver(null);
+    if (!sourceId || sourceId === target.id) return;
+
+    // Dropping into a discipline row means the top level of that discipline, which is a null
+    // parent -- there is no row to point at.
+    if (zone === "inside") {
+      startTransition(() => void movePrepPage(sourceId, target.id || null, 0));
+      return;
+    }
+    // Reordering against a discipline row is meaningless: they are fixed and not siblings of
+    // anything in the database.
+    if (!target.id) return;
+    const index = siblings.findIndex((s) => s.id === target.id);
+    const at = zone === "before" ? index : index + 1;
+    startTransition(() => void movePrepPage(sourceId, target.parentId, at));
+  };
 
   const open = useMemo(() => {
     try {
@@ -81,7 +110,20 @@ export function NavTree({ nodes }: { nodes: NavNode[] }) {
   return (
     <ul className="space-y-0.5">
       {nodes.map((n) => (
-        <TreeRow key={n.href} node={n} depth={0} pathname={pathname} open={open} toggle={toggle} />
+        <TreeRow
+          key={n.href}
+          node={n}
+          siblings={nodes}
+          depth={0}
+          pathname={pathname}
+          open={open}
+          toggle={toggle}
+          dragging={dragging}
+          setDragging={setDragging}
+          over={over}
+          setOver={setOver}
+          onDrop={drop}
+        />
       ))}
     </ul>
   );
@@ -89,16 +131,28 @@ export function NavTree({ nodes }: { nodes: NavNode[] }) {
 
 function TreeRow({
   node,
+  siblings,
   depth,
   pathname,
   open,
   toggle,
+  dragging,
+  setDragging,
+  over,
+  setOver,
+  onDrop,
 }: {
   node: NavNode;
+  siblings: NavNode[];
   depth: number;
   pathname: string;
   open: Set<string>;
   toggle: (href: string) => void;
+  dragging: string | null;
+  setDragging: (id: string | null) => void;
+  over: { id: string; zone: DropZone } | null;
+  setOver: (v: { id: string; zone: DropZone } | null) => void;
+  onDrop: (target: NavNode, zone: DropZone, siblings: NavNode[]) => void;
 }) {
   const onPath = pathname === node.href || pathname.startsWith(node.href + "/");
   const active = pathname === node.href;
@@ -106,13 +160,57 @@ function TreeRow({
   // On the current path it is always open: you should never have to re-expand your way back to
   // where you already are.
   const expanded = hasKids && (open.has(node.href) || onPath);
+  const zone = over?.id === node.id ? over.zone : null;
+
+  // The top and bottom quarters reorder; the middle nests. Same convention as Notion, and it
+  // is the only way to express both intents with one pointer and no modifier key.
+  const zoneFor = (e: React.DragEvent<HTMLDivElement>): DropZone => {
+    const r = e.currentTarget.getBoundingClientRect();
+    const y = (e.clientY - r.top) / r.height;
+    if (y < 0.25) return "before";
+    if (y > 0.75) return "after";
+    return "inside";
+  };
 
   return (
     <li>
       <div
+        draggable={Boolean(node.id)}
+        onDragStart={(e) => {
+          if (!node.id) return;
+          e.stopPropagation();
+          setDragging(node.id);
+          e.dataTransfer.effectAllowed = "move";
+          // Firefox refuses to start a drag without payload, whatever the handlers say.
+          e.dataTransfer.setData("text/plain", node.id);
+        }}
+        onDragEnd={() => {
+          setDragging(null);
+          setOver(null);
+        }}
+        onDragOver={(e) => {
+          if (!dragging || dragging === node.id) return;
+          e.preventDefault();
+          e.stopPropagation();
+          e.dataTransfer.dropEffect = "move";
+          setOver({ id: node.id, zone: zoneFor(e) });
+        }}
+        onDragLeave={(e) => {
+          e.stopPropagation();
+          if (over?.id === node.id) setOver(null);
+        }}
+        onDrop={(e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          onDrop(node, zoneFor(e), siblings);
+        }}
         className={cx(
           "group flex items-center rounded-md pr-1.5 transition",
           active ? "bg-accent-soft" : "hover:bg-surface-2",
+          dragging === node.id && "opacity-40",
+          zone === "inside" && "ring-1 ring-inset ring-accent",
+          zone === "before" && "border-t-2 border-accent",
+          zone === "after" && "border-b-2 border-accent",
         )}
         style={{ paddingLeft: depth * 10 }}
       >
@@ -158,10 +256,16 @@ function TreeRow({
             <TreeRow
               key={c.href}
               node={c}
+              siblings={node.children}
               depth={0}
               pathname={pathname}
               open={open}
               toggle={toggle}
+              dragging={dragging}
+              setDragging={setDragging}
+              over={over}
+              setOver={setOver}
+              onDrop={onDrop}
             />
           ))}
         </ul>

@@ -270,3 +270,61 @@ export async function setPrepGrading(
     .set({ ...fields, updatedAt: new Date() })
     .where(eq(prepItems.id, id));
 }
+
+/**
+ * Move a page: to a new parent, to a new place among its siblings, or both.
+ *
+ * Positions are rewritten for the whole destination list rather than nudged, because gaps and
+ * ties accumulate otherwise and the order starts depending on the tie-break in the query. A
+ * few dozen siblings is nothing to renumber.
+ */
+export async function movePage(
+  db: Db,
+  id: string,
+  newParentId: string | null,
+  newIndex: number,
+) {
+  const [moving] = await db.select().from(prepItems).where(eq(prepItems.id, id)).limit(1);
+  if (!moving) return { ok: false as const, reason: "not_found" };
+
+  // A page cannot be moved inside itself or anything beneath it. Without this the subtree
+  // detaches from the root and becomes unreachable -- a cycle that no query would ever return.
+  let cursor = newParentId;
+  for (let depth = 0; depth < 24 && cursor; depth += 1) {
+    if (cursor === id) return { ok: false as const, reason: "would_cycle" };
+    const [row]: { parentId: string | null }[] = await db
+      .select({ parentId: prepItems.parentId })
+      .from(prepItems)
+      .where(eq(prepItems.id, cursor))
+      .limit(1);
+    cursor = row?.parentId ?? null;
+  }
+
+  const siblings = await db
+    .select({ id: prepItems.id })
+    .from(prepItems)
+    .where(
+      and(
+        eq(prepItems.kind, moving.kind),
+        newParentId === null
+          ? isNull(prepItems.parentId)
+          : eq(prepItems.parentId, newParentId),
+      ),
+    )
+    .orderBy(prepItems.position, prepItems.title);
+
+  const order = siblings.map((s) => s.id).filter((s) => s !== id);
+  const at = Math.max(0, Math.min(order.length, newIndex));
+  order.splice(at, 0, id);
+
+  await db
+    .update(prepItems)
+    .set({ parentId: newParentId, updatedAt: new Date() })
+    .where(eq(prepItems.id, id));
+
+  // Renumber in one pass. At this size the query count is comfortably inside D1's budget.
+  for (let i = 0; i < order.length; i += 1) {
+    await db.update(prepItems).set({ position: i }).where(eq(prepItems.id, order[i]));
+  }
+  return { ok: true as const };
+}
