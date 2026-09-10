@@ -669,7 +669,26 @@ export const prepItems = sqliteTable(
     updatedAt: updatedAt(),
   },
   (t) => [
-    uniqueIndex("prep_kind_slug_unique").on(t.kind, t.slug),
+    /**
+     * Unique per parent, not per kind.
+     *
+     * A tree legitimately repeats a name: this export has a "Questions" page under the root and
+     * another under RDBMS, and "consistent hashing" under both RDBMS and Questions. Paths
+     * resolve level by level, so those are distinct pages and the old kind-wide index rejected
+     * the import outright.
+     *
+     * `coalesce` because SQLite treats NULLs in a unique index as all distinct, which would
+     * have quietly allowed two root folders both called "hld".
+     *
+     * drizzle-kit cannot serialise this expression -- it splits the index on the comma inside
+     * `coalesce` and emits invalid SQL -- so migration 0016 is hand-written and authoritative.
+     * Check any regenerated migration that touches this index before applying it.
+     */
+    uniqueIndex("prep_kind_parent_slug_unique").on(
+      t.kind,
+      sql`coalesce(${t.parentId}, '')`,
+      t.slug,
+    ),
     index("prep_kind_idx").on(t.kind),
     index("prep_status_idx").on(t.status),
     index("prep_frequency_idx").on(t.frequency),
