@@ -28,8 +28,6 @@ export default async function LinkedInPage() {
     repo.linkedinMergedCount(db),
   ]);
 
-  const now = Date.now();
-
   const toCard = (r: (typeof rows)[number]): JobRow => ({
     id: r.id,
     title: r.title,
@@ -144,12 +142,7 @@ export default async function LinkedInPage() {
               >
                 <div className="space-y-2">
                   {leadGroups.map(([companyName, leads]) => (
-                    <LeadGroup
-                      key={companyName}
-                      companyName={companyName}
-                      leads={leads}
-                      now={now}
-                    />
+                    <LeadGroup key={companyName} companyName={companyName} leads={leads} />
                   ))}
                 </div>
               </Collapsible>

@@ -18,8 +18,10 @@ export type Lead = {
 
 const DAY = 86_400_000;
 
-function ago(from: Date, now: number): string {
-  const days = Math.floor((now - from.getTime()) / DAY);
+// Module scope, not the component body: react-hooks/purity rightly rejects Date.now() during
+// render, and threading a timestamp down as a prop only moves the same call somewhere else.
+function ago(from: Date): string {
+  const days = Math.floor((Date.now() - from.getTime()) / DAY);
   if (days <= 0) return "today";
   if (days === 1) return "1d ago";
   if (days < 30) return `${days}d ago`;
@@ -36,11 +38,9 @@ function ago(from: Date, now: number): string {
 export function LeadGroup({
   companyName,
   leads,
-  now,
 }: {
   companyName: string;
   leads: Lead[];
-  now: number;
 }) {
   const [pending, startTransition] = useTransition();
   const [hidden, setHidden] = useState<Set<string>>(new Set());
@@ -93,7 +93,7 @@ export function LeadGroup({
               <div className="mt-0.5 flex flex-wrap items-center gap-2 text-[11px] text-ink-faint">
                 {lead.location && <span>{lead.location}</span>}
                 <span>·</span>
-                <span>{ago(lead.discoveredAt, now)}</span>
+                <span>{ago(lead.discoveredAt)}</span>
                 {lead.feed === "recommended" && <Badge tone="neutral">Picked for you</Badge>}
               </div>
             </div>
