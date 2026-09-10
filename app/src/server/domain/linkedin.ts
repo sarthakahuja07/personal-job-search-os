@@ -154,8 +154,19 @@ function titlesMatch(a: string, b: string): boolean {
 
   const [shorter, longer] = ka.length <= kb.length ? [ka, kb] : [kb, ka];
   if (shorter.split(" ").length < 3) return false;
-  return longer.startsWith(shorter + " ");
+  if (!longer.startsWith(shorter + " ")) return false;
+
+  // What the longer title adds decides whether this is the same role. A qualifier ("..., AWS")
+  // is the same job described more fully; a level ("... II") is a different job entirely, and
+  // merging those would undo the whole point of reading levels in the first place. Real case:
+  // an alert's "Software Development Engineer" against the board's "Software Development
+  // Engineer II" -- plausibly SDE-1 against SDE-2.
+  const extra = longer.slice(shorter.length + 1).split(" ")[0];
+  return !LEVEL_TOKEN.test(extra);
 }
+
+/** A trailing level, in either notation -- titleKey has already turned "II" into "2". */
+const LEVEL_TOKEN = /^([1-5]|senior|sr|staff|principal|lead|junior|jr|associate)$/;
 
 export function resolveLinkedInPostings(input: {
   postings: LinkedInPosting[];

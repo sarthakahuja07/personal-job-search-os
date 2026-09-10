@@ -117,6 +117,26 @@ describe("merging against the existing board", () => {
     expect(r.inserts).toHaveLength(1);
   });
 
+  // Straight from a real alert: LinkedIn listed "Software Development Engineer" while the board
+  // held "Software Development Engineer II". The prefix rule merged them until it learned to
+  // read what the longer title actually adds -- a qualifier is the same role, a level is not.
+  it.each([
+    ["Software Development Engineer", "Software Development Engineer II"],
+    ["Software Engineer", "Software Engineer 3"],
+    ["Backend Software Engineer", "Backend Software Engineer Senior"],
+  ])("does not merge %s into %s", (a, b) => {
+    const r = resolve([posting({ title: a })], AMAZON, [job({ title: b })]);
+    expect(r.merges).toHaveLength(0);
+    expect(r.inserts).toHaveLength(1);
+  });
+
+  it("still merges when the extra words are a qualifier, not a level", () => {
+    const r = resolve([posting({ title: "Software Development Engineer II" })], AMAZON, [
+      job({ title: "Software Development Engineer II, Just Walk Out" }),
+    ]);
+    expect(r.merges).toHaveLength(1);
+  });
+
   it("refuses to merge two known but different cities", () => {
     const r = resolve([posting({ location: "Hyderabad, Telangana, India" })], AMAZON, [job()]);
     expect(r.merges).toHaveLength(0);
