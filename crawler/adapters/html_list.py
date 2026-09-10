@@ -28,6 +28,7 @@ import re
 from typing import Any
 from urllib.parse import urljoin
 
+import structlog
 from bs4 import BeautifulSoup
 
 from crawler.adapters.base import ConfigError, JobSourceAdapter, SchemaDriftError
@@ -36,6 +37,8 @@ from crawler.models.job import NormalizedJob, RawJob
 from crawler.normalization.dates import parse_date
 from crawler.normalization.fieldmap import resolve_path
 from crawler.normalization.text import html_to_text
+
+log = structlog.get_logger(__name__)
 
 REQUIRED_FIELDS = ("external_job_id", "title", "job_url")
 DEFAULT_MAX_PAGES = 25
@@ -93,12 +96,32 @@ class HtmlListAdapter(JobSourceAdapter):
                 response.raise_for_status()
                 markup = response.text
 
-            items = BeautifulSoup(str(markup), "lxml").select(selector)
+            soup = BeautifulSoup(str(markup), "lxml")
+            items = soup.select(selector)
 
-            # An item selector that matches nothing on the FIRST page means the markup changed.
-            # Reporting an empty board here would be indistinguishable from a company with no
-            # openings, which is the failure this project exists to prevent.
+            # An item selector that matches nothing on the FIRST page usually means the markup
+            # changed. Reporting an empty board here would be indistinguishable from a company
+            # with no openings, which is the failure this project exists to prevent.
+            #
+            # Usually, but not always: a board can genuinely empty. `listContainerSelector` names
+            # the element that proves the listing component still rendered, so zero items inside
+            # a container that is still there means "no open roles", while a container that has
+            # vanished means the page was rebuilt.
+            #
+            # It has to be the container and not the site's own "no results" element. Moveworks
+            # renders that one on every response, carrying `hidden`, and reveals it from script;
+            # keying off it would have exempted the source from drift detection permanently,
+            # which is the blanket allow-zero flag this is meant to avoid.
             if not items and page_index == 0:
+                container = config.get("listContainerSelector")
+                if container and soup.select_one(container):
+                    log.info(
+                        "html_list.empty_board",
+                        url=url,
+                        container=container,
+                        detail="listing component rendered with no jobs in it",
+                    )
+                    return []
                 raise SchemaDriftError(
                     f"itemSelector '{selector}' matched no elements on the first page. "
                     "The page structure has almost certainly changed."

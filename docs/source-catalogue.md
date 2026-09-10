@@ -222,10 +222,23 @@ reads it over plain HTTP. This is the third shape of "the page ships its own dat
 **Intuit** — Radancy/TalentBrew, which returns a JSON envelope whose `results` key is a blob of
 HTML. Items are `li[data-intuit-jobid]`, carrying a stable id, title, location and href.
 
-**Moveworks** — the careers page ships its 85 jobs in static HTML after all, in
+**Moveworks** — the careers page ships its jobs in static HTML after all, in
 `div.cmp-job-listings__job`. Earlier searches missed them because the board sits below a
 JavaScript filter widget; the markup was always there. Its only stable id lives inside the apply
 link, so the field map pulls it out with a regex.
+
+The board is currently **empty** — the page renders "Open roles: no results", and the company
+was acquired by ServiceNow, which is on this list in its own right. That emptiness reported as
+schema drift twice a day until the adapter learned to tell the two apart: `listContainerSelector`
+names the element proving the listing component still rendered, so zero items inside a container
+that is still there is an empty board, while a container that has vanished is still loud.
+
+It has to be the container rather than the site's own no-results element, which Moveworks ships
+on every response carrying `hidden` and reveals from script. Keyed to that, the check would have
+returned "empty" for a page full of openings whose selector had merely stopped matching.
+
+Its detail pages are `Disallow`ed by robots.txt (`*/careers/position`), so only the listing is
+ever fetched — which is all this adapter does.
 
 **Apple** — `jobs.apple.com/en-in/search`, scoped to India (177 roles, 136 of them engineering).
 
