@@ -13,6 +13,7 @@ import {
   navCounts,
   reminderDismissalMap,
 } from "@/server/repository/jobs-repo";
+import { linkedinCounts } from "@/server/repository/linkedin-repo";
 
 import "./globals.css";
 
@@ -34,20 +35,25 @@ export default async function RootLayout({
     dsaRemaining: 0,
     pipeline: 0,
     reminders: 0,
+    linkedin: 0,
   };
   try {
     const db = getDb();
     // The reminder badge runs the real rules rather than a SQL restatement of them. Duplicating
     // thresholds in a query is how the badge and the page start disagreeing, and a badge you
     // stop believing is worse than no badge.
-    const [base, rows, settingsRows, dismissed] = await Promise.all([
+    const [base, rows, settingsRows, dismissed, linkedin] = await Promise.all([
       navCounts(db),
       listReminderCandidates(db),
       db.select({ reminderThresholds: settings.reminderThresholds }).from(settings).limit(1),
       reminderDismissalMap(db),
+      linkedinCounts(db),
     ]);
     counts = {
       ...base,
+      // Unreviewed LinkedIn jobs plus companies waiting on a decision: both are things the
+      // page can act on, and splitting them into two badges would say less, not more.
+      linkedin: linkedin.unreadJobs + linkedin.leads,
       reminders: buildReminders(
         rows.map((r) => ({ ...r, hasContact: Boolean(r.hasContact) })) as ReminderCandidate[],
         { ...DEFAULT_THRESHOLDS, ...(settingsRows[0]?.reminderThresholds ?? {}) },

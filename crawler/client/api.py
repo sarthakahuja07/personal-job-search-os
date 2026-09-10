@@ -109,6 +109,18 @@ class ApiClient:
 
         return totals
 
+    async def linkedin_ingest(self, payload: dict[str, Any]) -> dict[str, Any]:
+        """POST postings read out of LinkedIn's mail.
+
+        Not chunked here: the caller sizes its own batches, because the server-side cost is
+        driven by how many postings merge onto existing jobs rather than by row width.
+        """
+        r = await self._client.post(f"{self.base_url}/api/ingest/linkedin", json=payload)
+        if r.status_code >= 400:
+            log.error("linkedin_ingest.failed", status=r.status_code, body=r.text[:500])
+            r.raise_for_status()
+        return r.json()
+
     async def _post(self, payload: dict[str, Any]) -> dict[str, Any]:
         r = await self._client.post(f"{self.base_url}/api/ingest/jobs", json=payload)
         if r.status_code >= 400:

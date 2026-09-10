@@ -31,6 +31,10 @@ export type LinkedInPosting = {
   jobUrl: string;
   postedAt: Date | null;
   feed: LinkedinFeed;
+  /** How the role is worked, which LinkedIn parenthesises onto the location. */
+  workMode?: string | null;
+  /** Which saved search surfaced it, when the subject named one. */
+  searchTerm?: string | null;
 };
 
 export type KnownCompany = {

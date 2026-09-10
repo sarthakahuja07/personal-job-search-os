@@ -37,6 +37,10 @@ jobs:
       CF_ACCESS_CLIENT_SECRET: ${{ secrets.CF_ACCESS_CLIENT_SECRET }}
       SMTP_USER: ${{ secrets.SMTP_USER }}
       SMTP_APP_PASSWORD: ${{ secrets.SMTP_APP_PASSWORD }}
+      # Read-only mailbox access for the LinkedIn source. A Gmail app password cannot be
+      # scoped to a label, so the narrowing lives in crawler/linkedin/inbox.py: it searches
+      # only LinkedIn's job senders and opens the mailbox readonly.
+      IMAP_APP_PASSWORD: ${{ secrets.IMAP_APP_PASSWORD }}
 
     steps:
       - uses: actions/checkout@v7
@@ -82,6 +86,36 @@ jobs:
             echo "::warning::$failures of $companies companies failed"
           fi
 
+      # Runs before the digest so a LinkedIn match reaches the same email as an ATS one.
+      #
+      # continue-on-error on purpose: LinkedIn mail supplements the company sources, so an
+      # unreadable mailbox -- a revoked app password, IMAP switched off, Gmail having a bad
+      # morning -- must not report 45 healthy companies as a failed crawl. It is loud in the
+      # log and in the step summary, and the assert below still guards the real crawl.
+      - name: Read LinkedIn job mail
+        id: linkedin
+        if: ${{ !inputs.dry_run }}
+        continue-on-error: true
+        run: |
+          if [ -z "$IMAP_APP_PASSWORD" ]; then
+            echo "::warning::IMAP_APP_PASSWORD is not set; skipping the LinkedIn source"
+            exit 0
+          fi
+          python -m crawler.linkedin.main 2>&1 | tee linkedin.log
+          echo "exit=${PIPESTATUS[0]}" >> "$GITHUB_OUTPUT"
+
+      - name: Report the LinkedIn outcome
+        if: ${{ !inputs.dry_run }}
+        run: |
+          if [ ! -f linkedin.log ]; then
+            echo "LinkedIn source did not run." >> "$GITHUB_STEP_SUMMARY"; exit 0
+          fi
+          if grep -q "linkedin.done" linkedin.log; then
+            grep -o "linkedin.done.*" linkedin.log | tail -1 >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "::warning::LinkedIn source did not finish; see linkedin.log in the artifact"
+          fi
+
       - name: Send notification digest
         if: ${{ !inputs.dry_run }}
         run: python -m crawler.notify
@@ -91,5 +125,7 @@ jobs:
         uses: actions/upload-artifact@v7
         with:
           name: crawl-log-${{ github.run_id }}
-          path: crawl.log
+          path: |
+            crawl.log
+            linkedin.log
           retention-days: 14

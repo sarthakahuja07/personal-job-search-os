@@ -32,6 +32,7 @@ export type NavCounts = {
   dsaRemaining?: number;
   pipeline?: number;
   reminders: number;
+  linkedin?: number;
 };
 
 function groups(counts: NavCounts): Group[] {
@@ -41,6 +42,7 @@ function groups(counts: NavCounts): Group[] {
       items: [
         { href: "/", label: "Dashboard" },
         { href: "/jobs", label: "Jobs", count: counts.relevantJobs },
+        { href: "/linkedin", label: "LinkedIn", count: counts.linkedin },
         { href: "/companies", label: "Companies", count: counts.unhealthySources },
         { href: "/applications", label: "Applications", count: counts.pipeline },
         { href: "/reminders", label: "Reminders", count: counts.reminders },
