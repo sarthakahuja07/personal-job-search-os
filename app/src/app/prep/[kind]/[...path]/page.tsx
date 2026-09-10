@@ -2,8 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { revalidatePath } from "next/cache";
 
-import { Markdown } from "@/components/markdown";
-import { PageEditor } from "@/components/page-editor";
+import { RichEditor } from "@/components/rich-editor";
 import { PageGrading } from "@/components/page-grading";
 import { PageResources } from "@/components/page-resources";
 import { Badge, Button, Card, PageHeader, SectionTitle, cx, inputStyles } from "@/components/ui";
@@ -187,9 +186,11 @@ export default async function PrepPage({
       {/* The document. Click it to edit -- see components/page-editor.tsx for why there is no
           edit mode to enter. */}
       <div className="mb-6">
-        <PageEditor id={item.id} path={`/prep/${segment}/${here}`} initialBody={item.body ?? ""}>
-          <Markdown>{item.body ?? ""}</Markdown>
-        </PageEditor>
+        <RichEditor
+          id={item.id}
+          path={`/prep/${segment}/${here}`}
+          initialBody={item.body ?? ""}
+        />
       </div>
 
       {isFolder && (
