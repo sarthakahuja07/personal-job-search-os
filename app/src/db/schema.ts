@@ -63,7 +63,11 @@ export type SourceType =
   | "custom_json"
   | "jsonld"
   | "html"
-  | "manual";
+  | "manual"
+  | "linkedin_email";
+
+/** Which LinkedIn feed a job came from. Drives the three sections on /linkedin. */
+export type LinkedinFeed = "search" | "recommended" | "alert";
 
 /**
  * Everything company-specific that can be data, is data — so adding a tier 1-2 company is a row,
@@ -217,6 +221,17 @@ export const jobs = sqliteTable(
     jobUrl: text("job_url").notNull(),
     /** Lowercased host, query and fragment stripped — the fallback dedup key. */
     normalizedJobUrl: text("normalized_job_url").notNull(),
+
+    /**
+     * The same opening as seen on LinkedIn, when it was found there too.
+     *
+     * These are columns rather than a `job_sources` table on purpose. There is exactly one
+     * alternate source and the only thing the UI does with it is render one "also on LinkedIn"
+     * link, so a join table would be machinery bought for a second source that does not exist.
+     * A LinkedIn id here is LinkedIn's own numeric posting id, never a synthesised one.
+     */
+    linkedinJobId: text("linkedin_job_id"),
+    linkedinUrl: text("linkedin_url"),
 
     /** A real date or null. Never a display string like "Posted Today". */
     postedAt: integer("posted_at", { mode: "timestamp_ms" }),
@@ -638,3 +653,51 @@ export const prepItems = sqliteTable(
 
 export type PrepItem = typeof prepItems.$inferSelect;
 export type NewPrepItem = typeof prepItems.$inferInsert;
+
+/**
+ * A LinkedIn posting at a company that is not in `companies`.
+ *
+ * Sarthak curates the company list by hand, so a job alert must never be able to add to it --
+ * an alert surfaces dozens of companies a week and auto-creating them would turn a deliberate
+ * list of ~50 into an unusable one. But discarding those jobs would throw away most of what an
+ * alert is *for*: the roles at companies not yet on the radar.
+ *
+ * So they wait here. A lead carries the company as free text, is never matched, never notified
+ * on, and never counted anywhere. Promoting one is an explicit click that creates the company
+ * and re-ingests the job through the normal path, at which point the lead is deleted.
+ */
+export const linkedinLeads = sqliteTable(
+  "linkedin_leads",
+  {
+    id: text("id").primaryKey().$defaultFn(uuid),
+
+    /** LinkedIn's own numeric posting id, taken from /jobs/view/<id>/. */
+    linkedinJobId: text("linkedin_job_id").notNull(),
+    /** Free text, exactly as the alert email spelled it. Not a foreign key by design. */
+    companyName: text("company_name").notNull(),
+
+    title: text("title").notNull(),
+    location: text("location"),
+    jobUrl: text("job_url").notNull(),
+
+    /** Which LinkedIn feed produced this: the saved search, the recommendations, an alert. */
+    feed: text("feed").$type<LinkedinFeed>().notNull(),
+
+    postedAt: integer("posted_at", { mode: "timestamp_ms" }),
+    discoveredAt: integer("discovered_at", { mode: "timestamp_ms" })
+      .notNull()
+      .default(sql`(unixepoch() * 1000)`),
+
+    /** Hidden by hand. Kept rather than deleted so the same alert cannot resurface it. */
+    dismissedAt: integer("dismissed_at", { mode: "timestamp_ms" }),
+  },
+  (t) => [
+    // The same posting arrives in several alerts and on several days. One row per posting.
+    uniqueIndex("linkedin_lead_job_unique").on(t.linkedinJobId),
+    index("linkedin_lead_discovered_idx").on(t.discoveredAt),
+    index("linkedin_lead_company_idx").on(t.companyName),
+  ],
+);
+
+export type LinkedinLead = typeof linkedinLeads.$inferSelect;
+export type NewLinkedinLead = typeof linkedinLeads.$inferInsert;

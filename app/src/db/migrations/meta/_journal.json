@@ -99,6 +99,13 @@
       "when": 1789028981016,
       "tag": "0013_illegal_doctor_faustus",
       "breakpoints": true
+    },
+    {
+      "idx": 14,
+      "version": "6",
+      "when": 1789035681840,
+      "tag": "0014_silly_angel",
+      "breakpoints": true
     }
   ]
 }
