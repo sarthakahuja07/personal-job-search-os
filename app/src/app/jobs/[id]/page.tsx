@@ -74,7 +74,7 @@ export default async function JobDetailPage({
           </>
         }
         actions={
-          <Link href="/jobs" className="text-body text-ink-dim transition hover:text-ink">
+          <Link href="/jobs" className="text-[13px] text-ink-dim transition hover:text-ink">
             ← Jobs
           </Link>
         }
@@ -91,14 +91,14 @@ export default async function JobDetailPage({
         {job.locationPriority && (
           <Badge tone="accent">{LOCATION_LABEL[job.locationPriority]}</Badge>
         )}
-        <span className="tnum text-label text-ink-faint">score {job.matchScore}</span>
+        <span className="tnum text-[11px] text-ink-faint">score {job.matchScore}</span>
         <span className="ml-auto flex items-center gap-2">
           <CopyLink url={job.jobUrl} />
           <a
             href={job.jobUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="rounded-control bg-accent px-3 py-1.5 text-body font-medium text-canvas transition hover:brightness-110"
+            className="rounded-md bg-accent px-3 py-1.5 text-[13px] font-medium text-canvas transition hover:brightness-110"
           >
             Open original posting ↗
           </a>
@@ -108,8 +108,8 @@ export default async function JobDetailPage({
       {/* Why this job was surfaced, in the app's own words. Filtering is never a black box. */}
       {job.matchReason && (
         <Card className="mb-6 px-4 py-3">
-          <p className="text-label uppercase tracking-wide text-ink-faint">Why this matched</p>
-          <p className="mt-1 text-body text-ink-dim">{job.matchReason}</p>
+          <p className="text-[11px] uppercase tracking-wide text-ink-faint">Why this matched</p>
+          <p className="mt-1 text-[13px] text-ink-dim">{job.matchReason}</p>
         </Card>
       )}
 
@@ -124,9 +124,9 @@ export default async function JobDetailPage({
               <button
                 type="submit"
                 className={cx(
-                  "rounded-control border px-3 py-1.5 text-body transition",
+                  "rounded-md border px-3 py-1.5 text-[13px] transition",
                   currentStage === stage
-                    ? "border-line-strong bg-surface-3 text-ink"
+                    ? "border-accent bg-accent-soft text-accent-ink"
                     : "border-line bg-surface-2 text-ink-dim hover:border-line-strong hover:text-ink",
                 )}
               >
@@ -136,18 +136,18 @@ export default async function JobDetailPage({
           ))}
         </div>
         {currentStage ? (
-          <p className="mt-3 text-label text-ink-faint">
+          <p className="mt-3 text-[11px] text-ink-faint">
             Currently <span className="text-ink-dim">{STAGE_LABEL[currentStage]}</span>
             {application?.requestedAt && (
               <> · referral requested {when(application.requestedAt)}</>
             )}
             {" · "}
-            <Link href="/applications" className="text-ink hover:underline">
+            <Link href="/applications" className="text-accent-ink hover:underline">
               open the board
             </Link>
           </p>
         ) : (
-          <p className="mt-3 text-label text-ink-faint">
+          <p className="mt-3 text-[11px] text-ink-faint">
             Not in the pipeline yet. Pick a stage to add it.
           </p>
         )}
@@ -160,7 +160,7 @@ export default async function JobDetailPage({
       </SectionTitle>
       <Card className="mb-6 px-4 py-4">
         {contacts.length === 0 ? (
-          <p className="text-body text-ink-dim">
+          <p className="text-[13px] text-ink-dim">
             You have no referral contact here — which is normal, and not a blocker. Apply
             directly through the posting.
           </p>
@@ -178,15 +178,15 @@ export default async function JobDetailPage({
                   className="flex flex-wrap items-center justify-between gap-3 border-b border-line/60 pb-2.5 last:border-0 last:pb-0"
                 >
                   <div className="min-w-0">
-                    <p className="text-body font-medium text-ink">{c.name}</p>
-                    <p className="text-label text-ink-faint">
+                    <p className="text-[13px] font-medium text-ink">{c.name}</p>
+                    <p className="text-[11px] text-ink-faint">
                       {[c.phone, c.email].filter(Boolean).join(" · ") || "no contact details"}
                     </p>
                   </div>
                   <div className="flex shrink-0 gap-1.5">
                     <Link
                       href={`/templates?job=${job.id}`}
-                      className="rounded-control border border-line bg-surface-2 px-2.5 py-1 text-meta text-ink-dim transition hover:border-line-strong hover:text-ink"
+                      className="rounded-md border border-line bg-surface-2 px-2.5 py-1 text-[12px] text-ink-dim transition hover:border-line-strong hover:text-ink"
                     >
                       Compose
                     </Link>
@@ -195,7 +195,7 @@ export default async function JobDetailPage({
                         href={wa}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="rounded-control border border-line bg-surface-2 px-2.5 py-1 text-meta text-ink-dim transition hover:border-line-strong hover:text-ink"
+                        className="rounded-md border border-line bg-surface-2 px-2.5 py-1 text-[12px] text-ink-dim transition hover:border-line-strong hover:text-ink"
                       >
                         WhatsApp
                       </a>
@@ -212,14 +212,14 @@ export default async function JobDetailPage({
         <>
           <SectionTitle>Description</SectionTitle>
           <Card className="mb-6 px-5 py-4">
-            <div className="whitespace-pre-wrap text-body leading-relaxed text-ink-dim">
+            <div className="whitespace-pre-wrap text-[13px] leading-relaxed text-ink-dim">
               {job.description}
             </div>
           </Card>
         </>
       )}
 
-      <div className="flex flex-wrap gap-x-4 gap-y-1 text-label text-ink-faint">
+      <div className="flex flex-wrap gap-x-4 gap-y-1 text-[11px] text-ink-faint">
         <span>Posted {when(job.postedAt)}</span>
         <span>Discovered {when(job.discoveredAt)}</span>
         <span>Source {job.source}</span>

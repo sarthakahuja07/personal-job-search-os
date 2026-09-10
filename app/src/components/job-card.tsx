@@ -77,17 +77,17 @@ const BAND: Record<
   },
   strong: {
     label: "Strong",
-    text: "text-ink",
+    text: "text-accent-ink",
     rail: "bg-accent",
     meter: "bg-accent",
-    chip: "bg-accent-soft text-ink",
+    chip: "bg-accent-soft text-accent-ink",
   },
   good: {
     label: "Good",
-    text: "text-ink",
+    text: "text-accent-ink",
     rail: "bg-accent/60",
     meter: "bg-accent/70",
-    chip: "bg-accent-soft/70 text-ink",
+    chip: "bg-accent-soft/70 text-accent-ink",
   },
   fair: {
     label: "Fair",
@@ -171,7 +171,7 @@ export function JobCard({
               <div className="flex flex-wrap items-center gap-2">
                 <Link
                   href={`/jobs/${job.id}`}
-                  className="truncate text-section font-medium text-ink underline-offset-4 hover:text-ink hover:underline"
+                  className="truncate text-[15px] font-medium text-ink underline-offset-4 hover:text-accent-ink hover:underline"
                 >
                   {job.title}
                 </Link>
@@ -182,7 +182,7 @@ export function JobCard({
                 {isRead && <Badge>Read</Badge>}
               </div>
 
-              <div className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-1 text-body text-ink-dim">
+              <div className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-1 text-[13px] text-ink-dim">
                 <Link
                   href={`/jobs?company=${job.companyId}`}
                   className="font-medium text-ink-dim transition hover:text-ink"
@@ -203,7 +203,7 @@ export function JobCard({
                   // Rippling and DE Shaw publish no date at all. Saying so is better than
                   // implying the job is new, or leaving a gap that reads as one.
                   <span
-                    className="text-meta text-ink-faint"
+                    className="text-[12px] text-ink-faint"
                     title="This board does not publish a posting date"
                   >
                     posted date unknown
@@ -211,7 +211,7 @@ export function JobCard({
                 ) : (
                   <span
                     className={cx(
-                      "text-meta",
+                      "text-[12px]",
                       postedDays <= 7
                         ? "text-fresh"
                         : postedDays <= 30
@@ -234,7 +234,7 @@ export function JobCard({
                       key={`${s.dimension}-${s.label}`}
                       title={`${s.detail} (+${s.points})`}
                       className={cx(
-                        "inline-flex items-center rounded-control px-1.5 py-0.5 text-label font-medium leading-4",
+                        "inline-flex items-center rounded px-1.5 py-0.5 text-[11px] font-medium leading-4",
                         band.chip,
                       )}
                     >
@@ -247,12 +247,12 @@ export function JobCard({
 
             {/* The fit read-out: figure, band, and a meter so the number has a scale. */}
             <div className="shrink-0 text-right">
-              <div className={cx("tnum text-title font-semibold leading-6", band.text)}>
+              <div className={cx("tnum text-[19px] font-semibold leading-6", band.text)}>
                 {job.fitScore}
               </div>
               <div
                 className={cx(
-                  "text-label font-medium uppercase tracking-wide",
+                  "text-[10px] font-medium uppercase tracking-wide",
                   band.text,
                 )}
               >
@@ -271,7 +271,7 @@ export function JobCard({
             </div>
           </div>
 
-          <div className="mt-2.5 flex flex-wrap items-center gap-x-3 gap-y-1 text-label text-ink-faint">
+          <div className="mt-2.5 flex flex-wrap items-center gap-x-3 gap-y-1 text-[11px] text-ink-faint">
             {outreach ? (
               <JobActions
                 jobTitle={job.title}

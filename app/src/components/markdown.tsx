@@ -14,14 +14,14 @@ import remarkGfm from "remark-gfm";
  */
 export function Markdown({ children }: { children: string }) {
   return (
-    <div className="text-body leading-relaxed text-ink-dim">
+    <div className="text-[13.5px] leading-relaxed text-ink-dim">
       <ReactMarkdown
         remarkPlugins={[remarkGfm]}
         components={{
-          h1: (p) => <h1 className="mb-3 mt-6 text-title font-semibold text-ink" {...p} />,
-          h2: (p) => <h2 className="mb-2 mt-6 text-section font-semibold text-ink" {...p} />,
-          h3: (p) => <h3 className="mb-1.5 mt-5 text-section font-semibold text-ink" {...p} />,
-          h4: (p) => <h4 className="mb-1.5 mt-4 text-body font-semibold text-ink" {...p} />,
+          h1: (p) => <h1 className="mb-3 mt-6 text-[19px] font-semibold text-ink" {...p} />,
+          h2: (p) => <h2 className="mb-2 mt-6 text-[16px] font-semibold text-ink" {...p} />,
+          h3: (p) => <h3 className="mb-1.5 mt-5 text-[14px] font-semibold text-ink" {...p} />,
+          h4: (p) => <h4 className="mb-1.5 mt-4 text-[13px] font-semibold text-ink" {...p} />,
           p: (p) => <p className="my-2.5" {...p} />,
           ul: (p) => <ul className="my-2.5 list-disc space-y-1 pl-5" {...p} />,
           ol: (p) => <ol className="my-2.5 list-decimal space-y-1 pl-5" {...p} />,
@@ -37,7 +37,7 @@ export function Markdown({ children }: { children: string }) {
           ),
           a: (p) => (
             <a
-              className="text-ink underline-offset-2 hover:underline"
+              className="text-accent-ink underline-offset-2 hover:underline"
               target="_blank"
               rel="noopener noreferrer"
               {...p}
@@ -50,7 +50,7 @@ export function Markdown({ children }: { children: string }) {
             if (fenced) {
               return (
                 <code
-                  className="block font-mono text-meta leading-relaxed text-ink-dim"
+                  className="block font-mono text-[12.5px] leading-relaxed text-ink-dim"
                   {...rest}
                 >
                   {children}
@@ -59,7 +59,7 @@ export function Markdown({ children }: { children: string }) {
             }
             return (
               <code
-                className="rounded-control border border-line bg-surface-2 px-1 py-0.5 font-mono text-meta text-ink"
+                className="rounded border border-line bg-surface-2 px-1 py-0.5 font-mono text-[12px] text-ink"
                 {...rest}
               >
                 {children}
@@ -75,7 +75,7 @@ export function Markdown({ children }: { children: string }) {
           ),
           table: (p) => (
             <div className="my-3 overflow-x-auto rounded-card border border-line">
-              <table className="w-full border-collapse text-meta" {...p} />
+              <table className="w-full border-collapse text-[12.5px]" {...p} />
             </div>
           ),
           thead: (p) => <thead className="bg-surface-2" {...p} />,

@@ -11,7 +11,7 @@ export function BookReader({ file, title }: { file: string; title: string }) {
   return (
     <div>
       <div className="mb-2 flex flex-wrap items-center justify-between gap-2">
-        <p className="text-label text-ink-faint">
+        <p className="text-[11.5px] text-ink-faint">
           Your own copy, served only from this deployment.
         </p>
         <div className="flex items-center gap-2">
@@ -19,14 +19,14 @@ export function BookReader({ file, title }: { file: string; title: string }) {
             href={file}
             target="_blank"
             rel="noopener noreferrer"
-            className="rounded-control border border-line-strong bg-accent-soft px-2.5 py-1 text-meta text-ink transition hover:border-line-strong"
+            className="rounded-md border border-accent bg-accent-soft px-2.5 py-1 text-[12px] text-accent-ink transition hover:border-accent-strong"
           >
             Open in new tab ↗
           </a>
           <a
             href={file}
             download
-            className="rounded-control border border-line bg-surface-2 px-2.5 py-1 text-meta text-ink-dim transition hover:border-line-strong hover:text-ink"
+            className="rounded-md border border-line bg-surface-2 px-2.5 py-1 text-[12px] text-ink-dim transition hover:border-line-strong hover:text-ink"
           >
             Download
           </a>
@@ -46,11 +46,11 @@ export function BookReader({ file, title }: { file: string; title: string }) {
         className="h-[calc(100dvh-15rem)] min-h-[30rem] w-full rounded-card border border-line bg-surface-2"
       />
 
-      <Card className="mt-2 px-4 py-2.5 text-meta leading-relaxed text-ink-faint">
+      <Card className="mt-2 px-4 py-2.5 text-[12px] leading-relaxed text-ink-faint">
         Blank? Open it in a new tab with the button above — some browsers refuse to render a
         PDF inside a frame, and it will always work as its own page. If the new tab also fails,
         the file is missing: save your copy as{" "}
-        <code className="rounded-control border border-line bg-surface-2 px-1 py-0.5 font-mono text-label text-ink">
+        <code className="rounded border border-line bg-surface-2 px-1 py-0.5 font-mono text-[11.5px] text-ink">
           app/public{file}
         </code>{" "}
         and redeploy.
@@ -71,12 +71,12 @@ export function SiteEmbed({ url, title }: { url: string; title: string }) {
   return (
     <div>
       <div className="mb-2 flex flex-wrap items-center justify-between gap-2">
-        <p className="truncate text-label text-ink-faint">{url}</p>
+        <p className="truncate text-[11.5px] text-ink-faint">{url}</p>
         <a
           href={url}
           target="_blank"
           rel="noopener noreferrer"
-          className="shrink-0 rounded-control border border-line-strong bg-accent-soft px-2.5 py-1 text-meta text-ink transition hover:border-line-strong"
+          className="shrink-0 rounded-md border border-accent bg-accent-soft px-2.5 py-1 text-[12px] text-accent-ink transition hover:border-accent-strong"
         >
           Open in new tab ↗
         </a>
@@ -89,7 +89,7 @@ export function SiteEmbed({ url, title }: { url: string; title: string }) {
         sandbox="allow-scripts allow-same-origin allow-popups allow-forms"
         className="h-[calc(100dvh-15rem)] min-h-[30rem] w-full rounded-card border border-line bg-surface"
       />
-      <p className="mt-2 text-label text-ink-faint">
+      <p className="mt-2 text-[11px] text-ink-faint">
         If this stays blank, the site is either down or refusing to be embedded. Use the button
         above.
       </p>

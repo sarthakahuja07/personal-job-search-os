@@ -133,7 +133,7 @@ export default async function LinkedInPage() {
                     <SectionTitle>
                       Companies you don&apos;t have · {leadGroups.length}
                     </SectionTitle>
-                    <p className="-mt-1 text-label text-ink-faint">
+                    <p className="-mt-1 text-[11px] text-ink-faint">
                       {leadRows.length} opening{leadRows.length === 1 ? "" : "s"}. Adding a
                       company brings its postings onto the board.
                     </p>

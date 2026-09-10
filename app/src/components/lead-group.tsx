@@ -53,8 +53,8 @@ export function LeadGroup({
     <div className="rounded-card border border-line bg-surface">
       <div className="flex items-center justify-between gap-3 border-b border-line px-3.5 py-2.5">
         <div className="min-w-0">
-          <div className="truncate text-body font-medium text-ink">{companyName}</div>
-          <div className="text-label text-ink-faint">
+          <div className="truncate text-[13px] font-medium text-ink">{companyName}</div>
+          <div className="text-[11px] text-ink-faint">
             {visible.length} opening{visible.length === 1 ? "" : "s"} · not on your board
           </div>
         </div>
@@ -68,10 +68,10 @@ export function LeadGroup({
             })
           }
           className={cx(
-            "shrink-0 rounded-control border px-2.5 py-1 text-meta transition",
+            "shrink-0 rounded-md border px-2.5 py-1 text-[12px] transition",
             pending
               ? "border-line bg-surface-2 text-ink-faint"
-              : "border-line-strong bg-surface-3 text-ink hover:border-line-strong",
+              : "border-accent bg-accent-soft text-accent-ink hover:border-accent-strong",
           )}
         >
           {pending ? "Adding…" : "Add company"}
@@ -86,11 +86,11 @@ export function LeadGroup({
                 href={lead.jobUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-body text-ink underline-offset-2 hover:underline"
+                className="text-[13px] text-ink underline-offset-2 hover:underline"
               >
                 {lead.title}
               </a>
-              <div className="mt-0.5 flex flex-wrap items-center gap-2 text-label text-ink-faint">
+              <div className="mt-0.5 flex flex-wrap items-center gap-2 text-[11px] text-ink-faint">
                 {lead.location && <span>{lead.location}</span>}
                 <span>·</span>
                 <span>{ago(lead.discoveredAt)}</span>
@@ -106,7 +106,7 @@ export function LeadGroup({
                   await dismissLead(lead.id);
                 })
               }
-              className="shrink-0 rounded-control px-1.5 text-section leading-none text-ink-faint transition hover:text-ink"
+              className="shrink-0 rounded px-1.5 text-[15px] leading-none text-ink-faint transition hover:text-ink"
             >
               ×
             </button>

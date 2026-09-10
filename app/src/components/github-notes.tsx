@@ -25,13 +25,13 @@ export async function GithubNotes({
 
   if (tree.error) {
     return (
-      <Card className="px-4 py-3 text-body text-ink-dim">
+      <Card className="px-4 py-3 text-[13px] text-ink-dim">
         <p>{tree.error}</p>
         <a
           href={`https://github.com/${repo}`}
           target="_blank"
           rel="noopener noreferrer"
-          className="mt-1 inline-block text-ink hover:underline"
+          className="mt-1 inline-block text-accent-ink hover:underline"
         >
           Read it on GitHub instead ↗
         </a>
@@ -45,7 +45,7 @@ export async function GithubNotes({
   return (
     <div>
       <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
-        <p className="text-label text-ink-faint">
+        <p className="text-[11.5px] text-ink-faint">
           {total} pages from{" "}
           <a
             href={`https://github.com/${repo}`}
@@ -57,7 +57,7 @@ export async function GithubNotes({
           </a>
         </p>
         {open && (
-          <Link href={basePath} className="text-meta text-ink-dim transition hover:text-ink">
+          <Link href={basePath} className="text-[12px] text-ink-dim transition hover:text-ink">
             ← All chapters
           </Link>
         )}
@@ -68,7 +68,7 @@ export async function GithubNotes({
           <Markdown>{file.markdown}</Markdown>
         </article>
       ) : file?.error ? (
-        <Card className="px-4 py-3 text-body text-warn">{file.error}</Card>
+        <Card className="px-4 py-3 text-[13px] text-warn">{file.error}</Card>
       ) : (
         <div className="space-y-4">
           {tree.groups.map((g) => (
@@ -79,7 +79,7 @@ export async function GithubNotes({
                   <li key={f.path}>
                     <Link
                       href={`${basePath}?doc=${encodeURIComponent(f.path)}`}
-                      className="block truncate rounded-card border border-line bg-surface px-3.5 py-2 text-body text-ink transition hover:border-line-strong"
+                      className="block truncate rounded-card border border-line bg-surface px-3.5 py-2 text-[13px] text-ink transition hover:border-line-strong"
                     >
                       {f.name}
                     </Link>

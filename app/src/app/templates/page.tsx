@@ -112,16 +112,16 @@ export default async function TemplatesPage({
               <Card key={t.id} className="px-4 py-3">
                 <div className="flex flex-wrap items-start justify-between gap-3">
                   <div className="min-w-0">
-                    <p className="text-body font-medium text-ink">{t.name}</p>
-                    <p className="mt-0.5 line-clamp-2 text-meta text-ink-dim">{t.body}</p>
-                    <p className="mt-1 text-label text-ink-faint">
+                    <p className="text-sm font-medium text-ink">{t.name}</p>
+                    <p className="mt-0.5 line-clamp-2 text-xs text-ink-dim">{t.body}</p>
+                    <p className="mt-1 text-[11px] text-ink-faint">
                       {vars.length > 0 ? vars.map((v) => `{{${v}}}`).join(" ") : "no variables"}
                     </p>
                   </div>
                   <div className="flex shrink-0 gap-2">
                     <a
                       href={`/templates?edit=${t.id}`}
-                      className="rounded-control border border-line bg-surface-2 px-2.5 py-1 text-meta text-ink-dim transition hover:border-line-strong hover:text-ink"
+                      className="rounded-md border border-line bg-surface-2 px-2.5 py-1 text-[12px] text-ink-dim transition hover:border-line-strong hover:text-ink"
                     >
                       Edit
                     </a>
@@ -129,7 +129,7 @@ export default async function TemplatesPage({
                       <input type="hidden" name="id" value={t.id} />
                       <button
                         type="submit"
-                        className="rounded-control border border-line bg-surface-2 px-2.5 py-1 text-meta text-ink-faint transition hover:border-danger/50 hover:text-danger"
+                        className="rounded-md border border-line bg-surface-2 px-2.5 py-1 text-[12px] text-ink-faint transition hover:border-danger/50 hover:text-danger"
                       >
                         Delete
                       </button>
@@ -142,7 +142,7 @@ export default async function TemplatesPage({
         </div>
 
         <Card className="mt-4 px-5 py-5">
-          <p className="mb-3 text-body font-medium text-ink">
+          <p className="mb-3 text-[13px] font-medium text-ink">
             {editing ? `Edit “${editing.name}”` : "New template"}
           </p>
           <form action={saveTemplate} className="space-y-3">
@@ -162,7 +162,7 @@ export default async function TemplatesPage({
               placeholder={"Hi {{name}}, I saw a {{role}} opening at {{company}} — {{job_link}}"}
               className={cx(inputStyles, "resize-y leading-relaxed")}
             />
-            <p className="text-label text-ink-faint">
+            <p className="text-[11px] text-ink-faint">
               Available variables: {"{{name}} {{company}} {{role}} {{job_link}} {{resume_link}} {{your_name}}"}.
               They are detected from the text, so adding one needs no other change.
             </p>
@@ -173,7 +173,7 @@ export default async function TemplatesPage({
               {editing && (
                 <a
                   href="/templates"
-                  className="rounded-control border border-line bg-surface-2 px-3 py-1.5 text-body text-ink-dim transition hover:border-line-strong hover:text-ink"
+                  className="rounded-md border border-line bg-surface-2 px-3 py-1.5 text-[13px] text-ink-dim transition hover:border-line-strong hover:text-ink"
                 >
                   Cancel
                 </a>

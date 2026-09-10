@@ -6,7 +6,7 @@ import { Button, cx } from "@/components/ui";
 import { addCompany } from "./actions";
 
 const inputStyles =
-  "rounded-control border border-line bg-canvas px-2.5 py-1.5 text-body text-ink placeholder:text-ink-faint focus:border-line-strong focus:outline-none";
+  "rounded border border-line bg-canvas px-2.5 py-1.5 text-[13px] text-ink placeholder:text-ink-faint focus:border-line-strong focus:outline-none";
 
 type Preview = {
   detection: { sourceType: string; sourceTier: number; label: string } | null;
@@ -114,7 +114,7 @@ export function OnboardForm() {
       />
 
       {preview && tone && (
-        <div className={cx("rounded-control border px-3 py-2.5 text-meta", tone.border, tone.bg)}>
+        <div className={cx("rounded border px-3 py-2.5 text-[12px]", tone.border, tone.bg)}>
           <p className={cx("font-medium", tone.text)}>
             {preview.ok
               ? `${preview.detection?.label} — tier ${preview.detection?.sourceTier}, ${preview.total ?? preview.sample.length} jobs found`
@@ -146,7 +146,7 @@ export function OnboardForm() {
         <Button type="submit" variant="primary" disabled={saving}>
           {saving ? "Adding…" : "Add company"}
         </Button>
-        <span className="text-label text-ink-faint">
+        <span className="text-[11px] text-ink-faint">
           Checking is optional — an unrecognised URL is saved as a manual check with a link,
           never guessed at.
         </span>

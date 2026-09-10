@@ -53,8 +53,8 @@ export default async function CompaniesPage() {
       />
 
       <Card className="mb-6 px-5 py-4">
-        <p className="text-body font-medium text-ink">Add a company</p>
-        <p className="mb-3 mt-0.5 text-label leading-relaxed text-ink-faint">
+        <p className="text-[13px] font-medium text-ink">Add a company</p>
+        <p className="mb-3 mt-0.5 text-[11px] leading-relaxed text-ink-faint">
           Paste the URL you land on when you click &ldquo;search jobs&rdquo;. Greenhouse, Lever,
           Ashby, SmartRecruiters and Workday URLs are recognised automatically; anything else is
           saved as a manual check rather than guessed at. <strong>Check source</strong> fetches
@@ -66,9 +66,9 @@ export default async function CompaniesPage() {
 
       <SectionTitle>Automated sources</SectionTitle>
       <Card className="mb-8 overflow-hidden">
-        <table className="w-full text-body">
+        <table className="w-full text-sm">
           <thead>
-            <tr className="border-b border-line text-left text-label uppercase tracking-wide text-ink-faint">
+            <tr className="border-b border-line text-left text-[11px] uppercase tracking-wide text-ink-faint">
               <th className="px-4 py-2.5 font-medium">Company</th>
               <th className="px-4 py-2.5 font-medium">Source</th>
               <th className="px-4 py-2.5 font-medium">Health</th>
@@ -87,12 +87,12 @@ export default async function CompaniesPage() {
                 <td className="px-4 py-2.5">
                   <Link
                     href={`/companies/${c.id}`}
-                    className="font-medium text-ink transition hover:text-ink"
+                    className="font-medium text-ink transition hover:text-accent-ink"
                   >
                     {c.name}
                   </Link>
                   {c.lastError && (
-                    <p className="mt-0.5 max-w-md text-meta text-ink-dim">{c.lastError}</p>
+                    <p className="mt-0.5 max-w-md text-xs text-ink-dim">{c.lastError}</p>
                   )}
                 </td>
                 <td className="whitespace-nowrap px-4 py-2.5 text-ink-dim">
@@ -112,7 +112,7 @@ export default async function CompaniesPage() {
 
       <SectionTitle>Checked by hand</SectionTitle>
       <Card className="mb-6 px-4 py-4">
-        <p className="mb-3 text-meta leading-relaxed text-ink-dim">
+        <p className="mb-3 text-xs leading-relaxed text-ink-dim">
           These render their listings in the browser, or decline automated access. Rather than
           work around that, the link opens the board directly — a reliable manual check beats an
           automated one that silently rots.
@@ -127,8 +127,8 @@ export default async function CompaniesPage() {
               <Link
                 href={`/companies/${c.id}`}
                 className={cx(
-                  "rounded-l-control border border-line bg-surface-2 px-2.5 py-1 text-body text-ink-dim transition hover:border-line-strong hover:text-ink",
-                  !c.careersUrl && "rounded-r-control",
+                  "rounded-l-md border border-line bg-surface-2 px-2.5 py-1 text-[13px] text-ink-dim transition hover:border-line-strong hover:text-ink",
+                  !c.careersUrl && "rounded-r-md",
                 )}
               >
                 {c.name}
@@ -139,7 +139,7 @@ export default async function CompaniesPage() {
                   target="_blank"
                   rel="noopener noreferrer"
                   title={`Open ${c.name}'s job board`}
-                  className="rounded-r-control border border-l-0 border-line bg-surface-2 px-2 py-1 text-meta text-ink-faint transition hover:border-line-strong hover:text-ink"
+                  className="rounded-r-md border border-l-0 border-line bg-surface-2 px-2 py-1 text-[12px] text-ink-faint transition hover:border-line-strong hover:text-ink"
                 >
                   board ↗
                 </a>
@@ -150,7 +150,7 @@ export default async function CompaniesPage() {
       </Card>
 
       {inactive.length > 0 && (
-        <p className="text-label text-ink-faint">
+        <p className="text-[11px] text-ink-faint">
           Inactive: {inactive.map((c) => c.name).join(", ")}
         </p>
       )}

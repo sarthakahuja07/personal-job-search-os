@@ -48,8 +48,8 @@ export function RunCrawl() {
     <Card className="mb-6 px-5 py-4">
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div className="min-w-0">
-          <p className="text-body font-medium text-ink">Run the crawl now</p>
-          <p className="mt-0.5 max-w-xl text-label leading-relaxed text-ink-faint">
+          <p className="text-[13px] font-medium text-ink">Run the crawl now</p>
+          <p className="mt-0.5 max-w-xl text-[11px] leading-relaxed text-ink-faint">
             Crawls every automated company and then sends the digest of anything genuinely new.
             Runs on its own at 06:30 and 18:30 IST — this is for when you do not want to wait.
             Takes a couple of minutes.
@@ -63,7 +63,7 @@ export function RunCrawl() {
       {result && (
         <p
           className={cx(
-            "mt-3 text-meta leading-relaxed",
+            "mt-3 text-[12px] leading-relaxed",
             result.ok ? "text-fresh" : "text-warn",
           )}
         >

@@ -40,9 +40,9 @@ export function StagePicker({
         });
       }}
       className={cx(
-        "rounded-control border px-1.5 py-1 text-label font-medium outline-none transition",
+        "rounded border px-1.5 py-1 text-[11px] font-medium outline-none transition",
         status
-          ? "border-line-strong bg-accent-soft text-ink"
+          ? "border-accent/40 bg-accent-soft text-accent-ink"
           : "border-line bg-surface-2 text-ink-faint hover:border-line-strong hover:text-ink-dim",
         pending && "opacity-50",
       )}

@@ -12,84 +12,41 @@
  * `slate-800` does not.
  */
 @theme {
-  /*
-   * Neutral, slightly warm greys. The old canvas leaned blue and every surface sat on a
-   * periwinkle accent, which is the single strongest reason this read as generated rather
-   * than designed. Colour now means something: the interface is greyscale, and green, amber
-   * and red are reserved for state. When something is coloured here, it is telling you
-   * something.
-   */
-  --color-canvas: #0d0e10;
-  --color-surface: #141518;
-  --color-surface-2: #1a1c20;
-  --color-surface-3: #22252a;
+  /* Canvas and surfaces, lightest step last */
+  --color-canvas: #14161b;
+  --color-surface: #1a1d24;
+  --color-surface-2: #21252e;
+  --color-surface-3: #282d38;
 
-  /* Two line weights. Hairlines by default; the stronger one only on hover and focus. */
-  --color-line: #212327;
-  --color-line-strong: #33373d;
+  /* Lines */
+  --color-line: #272c36;
+  --color-line-strong: #363d4b;
 
-  --color-ink: #f0f1f3;
-  --color-ink-dim: #9aa0a8;
-  --color-ink-faint: #6a7078;
+  /* Text, from primary to faint */
+  --color-ink: #e7eaf0;
+  --color-ink-dim: #99a1b0;
+  --color-ink-faint: #6b7383;
 
-  /*
-   * "Accent" is now near-white rather than a hue. A primary action reads as primary because
-   * it is the brightest thing on screen, not because it is blue -- which leaves the hues free
-   * to carry status, and removes the AI-SaaS tell in one move.
-   */
-  --color-accent: #f0f1f3;
-  --color-accent-soft: #1e2126;
-  --color-accent-ink: #f0f1f3;
-  --color-accent-strong: #ffffff;
+  /* Accent: a calm periwinkle. Used for focus, links and the current nav item -- never for
+     decoration, so that when something is accented it means "act here". */
+  --color-accent: #7c9cff;
+  --color-accent-soft: #1e2740;
+  --color-accent-ink: #a9bdff;
 
-  /* Status. Muted on purpose: a dozen saturated badges stop meaning anything. */
-  --color-fresh: #5bbd8b;
-  --color-fresh-soft: #14251d;
-  --color-warn: #cfa054;
-  --color-warn-soft: #2a2117;
-  --color-danger: #dd7482;
-  --color-danger-soft: #2e1b20;
+  /* Status. Muted deliberately: on a job board a dozen "NEW" badges at full saturation stop
+     meaning anything. */
+  --color-fresh: #4fd39c;
+  --color-fresh-soft: #14312a;
+  --color-warn: #e0b061;
+  --color-warn-soft: #33291a;
+  --color-danger: #f0808f;
+  --color-danger-soft: #38202a;
 
   --font-sans: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
     "Helvetica Neue", Arial, sans-serif;
   --font-mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
 
-  /*
-   * A type scale with six steps, replacing thirteen arbitrary pixel values. Hierarchy comes
-   * from weight, colour and spacing as much as size -- the largest thing on most screens is
-   * only 20px, because a dense working tool does not need 40px headings to say what matters.
-   */
-  --text-display: 1.5rem;
-  --text-display--line-height: 1.2;
-  --text-display--letter-spacing: -0.02em;
-
-  --text-title: 1.1875rem;
-  --text-title--line-height: 1.25;
-  --text-title--letter-spacing: -0.017em;
-
-  --text-section: 0.9375rem;
-  --text-section--line-height: 1.4;
-  --text-section--letter-spacing: -0.006em;
-
-  --text-body: 0.84375rem;
-  --text-body--line-height: 1.55;
-
-  --text-meta: 0.75rem;
-  --text-meta--line-height: 1.45;
-
-  --text-label: 0.6875rem;
-  --text-label--line-height: 1.3;
-  --text-label--letter-spacing: 0.045em;
-
-  /* Two radii, and only two: controls and surfaces. */
-  /*
-   * One elevation, and only for things that genuinely float: a dropdown, a modal. Shadow on a
-   * static panel is decoration, and it was the other half of why surfaces looked stuck on.
-   */
-  --shadow-overlay: 0 8px 24px -6px rgb(0 0 0 / 0.55), 0 2px 6px -2px rgb(0 0 0 / 0.4);
-
-  --radius-control: 0.375rem;
-  --radius-card: 0.5rem;
+  --radius-card: 0.625rem;
 }
 
 html {

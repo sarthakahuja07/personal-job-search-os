@@ -26,7 +26,7 @@ export function ScoreBadge({ score, className }: { score: number; className?: st
   if (!score) return null;
   return (
     <span
-      className={cx("tnum shrink-0 text-label font-medium tabular-nums", scoreTone(score), className)}
+      className={cx("tnum shrink-0 text-[10.5px] font-medium tabular-nums", scoreTone(score), className)}
       title={`Asked ${score}/100 in SDE-2 interviews`}
     >
       {score}

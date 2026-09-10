@@ -39,8 +39,8 @@ export function DigestList({ digests }: { digests: Digest[] }) {
       {[...byDay.entries()].map(([day, items]) => (
         <section key={day}>
           <div className="mb-2 flex items-baseline gap-2">
-            <h2 className="text-body font-semibold text-ink">{day}</h2>
-            <span className="tnum text-label text-ink-faint">
+            <h2 className="text-[13px] font-semibold text-ink">{day}</h2>
+            <span className="tnum text-[11px] text-ink-faint">
               {items.length} email{items.length === 1 ? "" : "s"}
             </span>
           </div>
@@ -69,7 +69,7 @@ function DigestRow({ digest }: { digest: Digest }) {
       >
         <span
           className={cx(
-            "mt-1 inline-block shrink-0 text-label leading-none text-ink-faint transition-transform",
+            "mt-1 inline-block shrink-0 text-[10px] leading-none text-ink-faint transition-transform",
             open ? "rotate-90" : "",
           )}
           aria-hidden
@@ -77,10 +77,10 @@ function DigestRow({ digest }: { digest: Digest }) {
           ▶
         </span>
         <span className="min-w-0 flex-1">
-          <span className="block truncate text-body font-medium text-ink">
+          <span className="block truncate text-[13px] font-medium text-ink">
             {digest.subject}
           </span>
-          <span className="mt-0.5 block text-label text-ink-faint">
+          <span className="mt-0.5 block text-[11px] text-ink-faint">
             {/* Exact wall-clock time, not "3h ago": the question this answers is which run sent
                 it, and 06:32 answers that where "this morning" does not. */}
             {sent.toLocaleTimeString("en-IN", {
@@ -104,7 +104,7 @@ function DigestRow({ digest }: { digest: Digest }) {
       </button>
 
       {open && (
-        <pre className="overflow-x-auto whitespace-pre-wrap border-t border-line px-4 py-3 text-meta leading-relaxed text-ink-dim">
+        <pre className="overflow-x-auto whitespace-pre-wrap border-t border-line px-4 py-3 text-[12px] leading-relaxed text-ink-dim">
           {digest.bodyText}
         </pre>
       )}

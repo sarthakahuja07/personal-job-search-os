@@ -91,7 +91,7 @@ export function Composer({
     <div className="grid gap-4 lg:grid-cols-[300px_1fr]">
       <div className="space-y-3">
         <Card className="px-4 py-4">
-          <label htmlFor="template" className="block text-body font-medium text-ink">
+          <label htmlFor="template" className="block text-[13px] font-medium text-ink">
             Template
           </label>
           <select
@@ -112,7 +112,7 @@ export function Composer({
 
           {contacts.length > 0 && (
             <>
-              <label htmlFor="contact" className="mt-4 block text-body font-medium text-ink">
+              <label htmlFor="contact" className="mt-4 block text-[13px] font-medium text-ink">
                 Contact
               </label>
               <select
@@ -138,7 +138,7 @@ export function Composer({
         </Card>
 
         <Card className="space-y-3 px-4 py-4">
-          <p className="text-label uppercase tracking-wide text-ink-faint">Fill in</p>
+          <p className="text-[11px] uppercase tracking-wide text-ink-faint">Fill in</p>
           {variables.map((v) => {
             const meta = KNOWN_VARIABLES[v];
             const isMissing = missing.includes(v);
@@ -146,10 +146,10 @@ export function Composer({
               <div key={v}>
                 <label
                   htmlFor={`var-${v}`}
-                  className="flex items-baseline justify-between text-meta font-medium text-ink"
+                  className="flex items-baseline justify-between text-[12px] font-medium text-ink"
                 >
                   {meta?.label ?? v}
-                  {isMissing && <span className="text-label text-warn">needed</span>}
+                  {isMissing && <span className="text-[10px] text-warn">needed</span>}
                 </label>
                 <input
                   id={`var-${v}`}
@@ -161,7 +161,7 @@ export function Composer({
                   placeholder={meta?.hint ?? v}
                   className={cx(
                     inputStyles,
-                    "mt-1 text-body",
+                    "mt-1 text-[13px]",
                     isMissing && "border-warn/60",
                   )}
                 />
@@ -169,7 +169,7 @@ export function Composer({
             );
           })}
           {variables.length === 0 && (
-            <p className="text-meta text-ink-faint">
+            <p className="text-xs text-ink-faint">
               This template has no variables — it is ready to copy.
             </p>
           )}
@@ -178,15 +178,15 @@ export function Composer({
 
       <Card className="flex flex-col px-4 py-4">
         <div className="mb-2 flex items-center justify-between">
-          <p className="text-label uppercase tracking-wide text-ink-faint">
+          <p className="text-[11px] uppercase tracking-wide text-ink-faint">
             Message
-            {isEdited && <span className="ml-2 text-ink">edited</span>}
+            {isEdited && <span className="ml-2 text-accent-ink">edited</span>}
           </p>
           {isEdited && (
             <button
               type="button"
               onClick={() => setEdited(null)}
-              className="text-label text-ink-faint transition hover:text-ink-dim"
+              className="text-[11px] text-ink-faint transition hover:text-ink-dim"
             >
               Reset to template
             </button>
@@ -201,7 +201,7 @@ export function Composer({
         />
 
         {missing.length > 0 && (
-          <p className="mt-2 text-label text-warn">
+          <p className="mt-2 text-[11px] text-warn">
             Still unfilled: {missing.map((m) => KNOWN_VARIABLES[m]?.label ?? m).join(", ")}.
             The placeholder is left visible rather than blanked, so nothing goes out half-written.
           </p>
@@ -211,7 +211,7 @@ export function Composer({
           <button
             type="button"
             onClick={copy}
-            className="rounded-control bg-accent px-3 py-1.5 text-body font-medium text-canvas transition hover:brightness-110"
+            className="rounded-md bg-accent px-3 py-1.5 text-[13px] font-medium text-canvas transition hover:brightness-110"
           >
             {copied ? "Copied" : "Copy message"}
           </button>
@@ -220,7 +220,7 @@ export function Composer({
               href={wa}
               target="_blank"
               rel="noopener noreferrer"
-              className="rounded-control border border-line bg-surface-2 px-3 py-1.5 text-body text-ink-dim transition hover:border-line-strong hover:text-ink"
+              className="rounded-md border border-line bg-surface-2 px-3 py-1.5 text-[13px] text-ink-dim transition hover:border-line-strong hover:text-ink"
             >
               Open WhatsApp
             </a>
@@ -228,13 +228,13 @@ export function Composer({
           {mail && (
             <a
               href={mail}
-              className="rounded-control border border-line bg-surface-2 px-3 py-1.5 text-body text-ink-dim transition hover:border-line-strong hover:text-ink"
+              className="rounded-md border border-line bg-surface-2 px-3 py-1.5 text-[13px] text-ink-dim transition hover:border-line-strong hover:text-ink"
             >
               Open email
             </a>
           )}
           {contact && !wa && !mail && (
-            <span className="self-center text-label text-ink-faint">
+            <span className="self-center text-[11px] text-ink-faint">
               {contact.name} has no usable phone or email on file.
             </span>
           )}

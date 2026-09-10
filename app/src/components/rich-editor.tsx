@@ -80,7 +80,7 @@ export function RichEditor({
       attributes: {
         class: cx(
           "prose-page min-h-[8rem] outline-none",
-          "text-body leading-relaxed text-ink-dim",
+          "text-[13.5px] leading-relaxed text-ink-dim",
         ),
       },
     },
@@ -158,8 +158,8 @@ function Toolbar({
 }) {
   const btn = (active: boolean) =>
     cx(
-      "rounded-control px-2 py-1 text-meta transition",
-      active ? "bg-accent-soft text-ink" : "text-ink-dim hover:bg-surface-3 hover:text-ink",
+      "rounded px-2 py-1 text-[12px] transition",
+      active ? "bg-accent-soft text-accent-ink" : "text-ink-dim hover:bg-surface-3 hover:text-ink",
     );
 
   return (
@@ -193,7 +193,7 @@ function Toolbar({
               .toggleHeading({ level: Number(v) as 1 | 2 | 3 | 4 })
               .run();
         }}
-        className="mr-1 rounded-control border border-line bg-surface-2 px-1.5 py-1 text-meta text-ink outline-none"
+        className="mr-1 rounded border border-line bg-surface-2 px-1.5 py-1 text-[12px] text-ink outline-none"
         aria-label="Text style"
       >
         <option value="p">Text</option>
@@ -242,7 +242,7 @@ function Toolbar({
         Link
       </button>
 
-      <span className="ml-auto pr-1 text-label text-ink-faint">
+      <span className="ml-auto pr-1 text-[11px] text-ink-faint">
         {status === "error"
           ? "Not saved — your text is still here"
           : status === "saving"

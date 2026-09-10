@@ -38,11 +38,11 @@ export function Collapsible({
           onClick={() => setOpen((v) => !v)}
           aria-expanded={open}
           aria-label={`${open ? "Collapse" : "Expand"} ${label}`}
-          className="mt-2.5 shrink-0 rounded-control px-1 py-0.5 text-ink-faint transition hover:bg-surface-3 hover:text-ink-dim"
+          className="mt-2.5 shrink-0 rounded px-1 py-0.5 text-ink-faint transition hover:bg-surface-3 hover:text-ink-dim"
         >
           <span
             className={cx(
-              "inline-block text-label leading-none transition-transform",
+              "inline-block text-[10px] leading-none transition-transform",
               open ? "rotate-90" : "rotate-0",
             )}
             aria-hidden

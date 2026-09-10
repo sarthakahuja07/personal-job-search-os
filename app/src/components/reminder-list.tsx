@@ -46,12 +46,12 @@ export function ReminderList({
           />
           <div className="min-w-0 flex-1">
             <div className="flex flex-wrap items-center gap-2">
-              <span className="text-body font-medium text-ink">{r.action}</span>
+              <span className="text-[13px] font-medium text-ink">{r.action}</span>
               <Badge tone={r.severity === "overdue" ? "warn" : "neutral"}>
                 {KIND_LABEL[r.kind]}
               </Badge>
             </div>
-            <p className="mt-0.5 truncate text-meta text-ink-dim">
+            <p className="mt-0.5 truncate text-[12px] text-ink-dim">
               <Link
                 href={`/jobs/${r.jobId}`}
                 className="underline-offset-2 transition hover:text-ink hover:underline"
@@ -66,19 +66,19 @@ export function ReminderList({
                 {r.companyName}
               </Link>
             </p>
-            <p className="mt-0.5 text-label text-ink-faint">{r.detail}</p>
+            <p className="mt-0.5 text-[11px] text-ink-faint">{r.detail}</p>
           </div>
           <DismissReminder jobId={r.jobId} kind={r.kind} />
           <div className="shrink-0 text-right">
             <div
               className={cx(
-                "tnum text-body font-semibold",
+                "tnum text-[13px] font-semibold",
                 r.severity === "overdue" ? "text-warn" : "text-ink-dim",
               )}
             >
               {whenever(r.daysWaiting)}
             </div>
-            <div className="text-label uppercase tracking-wide text-ink-faint">waiting</div>
+            <div className="text-[10px] uppercase tracking-wide text-ink-faint">waiting</div>
           </div>
         </li>
       ))}

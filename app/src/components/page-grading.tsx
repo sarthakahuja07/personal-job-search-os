@@ -66,7 +66,7 @@ export function PageGrading({
             }
             title={difficulty === l ? `Clear ${l}` : `Mark ${l}`}
             className={cx(
-              "rounded-control border px-2.5 py-1 text-meta capitalize transition disabled:opacity-60",
+              "rounded-md border px-2.5 py-1 text-[12px] capitalize transition disabled:opacity-60",
               difficulty === l
                 ? TONE[l]
                 : "border-line bg-surface-2 text-ink-faint hover:border-line-strong hover:text-ink",
@@ -78,7 +78,7 @@ export function PageGrading({
       </div>
 
       <div className="flex min-w-[13rem] flex-1 items-center gap-2">
-        <span className="shrink-0 text-label text-ink-faint">Asked</span>
+        <span className="shrink-0 text-[11px] text-ink-faint">Asked</span>
         <input
           type="range"
           min={0}
@@ -95,7 +95,7 @@ export function PageGrading({
           aria-label="How often this is asked, out of 100"
           className="h-1.5 min-w-0 flex-1 cursor-pointer appearance-none rounded-full bg-surface-3 accent-accent"
         />
-        <span className={cx("tnum w-9 shrink-0 text-right text-meta font-medium", scoreTone(score))}>
+        <span className={cx("tnum w-9 shrink-0 text-right text-[12px] font-medium", scoreTone(score))}>
           {score}
         </span>
       </div>

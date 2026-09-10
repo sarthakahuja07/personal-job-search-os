@@ -29,7 +29,7 @@ export function AddByLink({ companies }: { companies: CompanyChoice[] }) {
       <button
         type="button"
         onClick={() => setOpen(true)}
-        className="mb-4 rounded-control border border-line bg-surface-2 px-2.5 py-1.5 text-body text-ink-dim transition hover:border-line-strong hover:text-ink"
+        className="mb-4 rounded-md border border-line bg-surface-2 px-2.5 py-1.5 text-[13px] text-ink-dim transition hover:border-line-strong hover:text-ink"
       >
         + Add a job by link
       </button>
@@ -40,8 +40,8 @@ export function AddByLink({ companies }: { companies: CompanyChoice[] }) {
     <Card className="mb-4 px-4 py-3.5">
       <div className="mb-2 flex items-start justify-between gap-4">
         <div>
-          <p className="text-body font-medium text-ink">Add a job by link</p>
-          <p className="mt-0.5 text-label text-ink-faint">
+          <p className="text-[13px] font-medium text-ink">Add a job by link</p>
+          <p className="mt-0.5 text-[11px] text-ink-faint">
             For roles the crawler did not find. It joins the board, the job list and the
             reminders like any other.
           </p>
@@ -49,7 +49,7 @@ export function AddByLink({ companies }: { companies: CompanyChoice[] }) {
         <button
           type="button"
           onClick={() => setOpen(false)}
-          className="text-section leading-none text-ink-faint transition hover:text-ink"
+          className="text-[16px] leading-none text-ink-faint transition hover:text-ink"
           aria-label="Close"
         >
           ×
@@ -109,7 +109,7 @@ export function AddByLink({ companies }: { companies: CompanyChoice[] }) {
               name="companyId"
               required
               defaultValue=""
-              className="rounded-control border border-line bg-canvas px-2.5 py-1.5 text-body text-ink outline-none focus:border-line-strong"
+              className="rounded border border-line bg-canvas px-2.5 py-1.5 text-[13px] text-ink outline-none focus:border-line-strong"
             >
               <option value="" disabled>
                 Company…
@@ -124,7 +124,7 @@ export function AddByLink({ companies }: { companies: CompanyChoice[] }) {
           <button
             type="button"
             onClick={() => setNewCompany((v) => !v)}
-            className="rounded-control px-1.5 text-label text-ink-faint transition hover:text-ink-dim"
+            className="rounded px-1.5 text-[11px] text-ink-faint transition hover:text-ink-dim"
           >
             {newCompany ? "pick existing" : "+ new company"}
           </button>
@@ -139,7 +139,7 @@ export function AddByLink({ companies }: { companies: CompanyChoice[] }) {
           <select
             name="stage"
             defaultValue="saved"
-            className="rounded-control border border-line bg-canvas px-2.5 py-1.5 text-body text-ink outline-none focus:border-line-strong"
+            className="rounded border border-line bg-canvas px-2.5 py-1.5 text-[13px] text-ink outline-none focus:border-line-strong"
           >
             {STAGES.map((s) => (
               <option key={s} value={s}>
@@ -153,9 +153,9 @@ export function AddByLink({ companies }: { companies: CompanyChoice[] }) {
           </Button>
         </div>
 
-        {error && <p className="text-meta text-danger">{error}</p>}
+        {error && <p className="text-[12px] text-danger">{error}</p>}
         {message && !error && (
-          <p className="text-meta text-fresh">{message}</p>
+          <p className="text-[12px] text-fresh">{message}</p>
         )}
       </form>
     </Card>

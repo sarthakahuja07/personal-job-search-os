@@ -70,9 +70,9 @@ export default async function PrepListPage({
 
   const chip = (active: boolean) =>
     cx(
-      "rounded-control border px-2 py-0.5 text-meta transition",
+      "rounded-md border px-2 py-0.5 text-[12px] transition",
       active
-        ? "border-line-strong bg-surface-3 text-ink"
+        ? "border-accent bg-accent-soft text-accent-ink"
         : "border-line bg-surface-2 text-ink-dim hover:border-line-strong hover:text-ink",
     );
 
@@ -98,7 +98,7 @@ export default async function PrepListPage({
           </>
         }
         actions={
-          <Link href="/prep" className="text-body text-ink-dim transition hover:text-ink">
+          <Link href="/prep" className="text-[13px] text-ink-dim transition hover:text-ink">
             ← All prep
           </Link>
         }
@@ -106,7 +106,7 @@ export default async function PrepListPage({
 
       <div className="mb-5 space-y-2.5">
         <div className="flex flex-wrap items-center gap-1.5">
-          <span className="mr-1 text-label uppercase tracking-wide text-ink-faint">Status</span>
+          <span className="mr-1 text-[11px] uppercase tracking-wide text-ink-faint">Status</span>
           {STATUS_ORDER.map((s) => (
             <Link
               key={s}
@@ -118,7 +118,7 @@ export default async function PrepListPage({
           ))}
           {meta.hasDifficulty && (
             <>
-              <span className="ml-3 mr-1 text-label uppercase tracking-wide text-ink-faint">
+              <span className="ml-3 mr-1 text-[11px] uppercase tracking-wide text-ink-faint">
                 Difficulty
               </span>
               {DIFFICULTY_ORDER.map((d) => (
@@ -135,7 +135,7 @@ export default async function PrepListPage({
           {anyFilter && (
             <Link
               href={"/prep/" + segment}
-              className="ml-2 text-meta text-ink-faint transition hover:text-ink-dim"
+              className="ml-2 text-[12px] text-ink-faint transition hover:text-ink-dim"
             >
               Clear
             </Link>
@@ -144,7 +144,7 @@ export default async function PrepListPage({
 
         {topics.length > 0 && (
           <div className="flex flex-wrap items-center gap-1.5">
-            <span className="mr-1 text-label uppercase tracking-wide text-ink-faint">Topic</span>
+            <span className="mr-1 text-[11px] uppercase tracking-wide text-ink-faint">Topic</span>
             {topics.map((t) => (
               <Link
                 key={t.topic}
@@ -174,7 +174,7 @@ export default async function PrepListPage({
               >
                 <div className="min-w-0">
                   <div className="flex flex-wrap items-center gap-2">
-                    <span className="text-section font-medium text-ink">{item.title}</span>
+                    <span className="text-[15px] font-medium text-ink">{item.title}</span>
                     {item.difficulty && (
                       <Badge tone={DIFFICULTY_TONE[item.difficulty]}>{item.difficulty}</Badge>
                     )}
@@ -183,11 +183,11 @@ export default async function PrepListPage({
                     )}
                   </div>
                   {item.prompt && (
-                    <p className="mt-1 line-clamp-1 text-body text-ink-dim">{item.prompt}</p>
+                    <p className="mt-1 line-clamp-1 text-[13px] text-ink-dim">{item.prompt}</p>
                   )}
                   <div className="mt-1.5 flex flex-wrap gap-2">
                     {item.topics.slice(0, 5).map((t) => (
-                      <span key={t} className="text-label text-ink-faint">
+                      <span key={t} className="text-[11px] text-ink-faint">
                         #{t}
                       </span>
                     ))}
@@ -209,7 +209,7 @@ export default async function PrepListPage({
                     ))}
                   </div>
                   {item.companies.length > 0 && (
-                    <div className="mt-1.5 max-w-[150px] truncate text-label text-ink-faint">
+                    <div className="mt-1.5 max-w-[150px] truncate text-[11px] text-ink-faint">
                       {item.companies.join(", ")}
                     </div>
                   )}

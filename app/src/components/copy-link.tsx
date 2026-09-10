@@ -51,7 +51,7 @@ export function CopyLink({
         title={title}
         aria-label={label}
         className={cx(
-          "shrink-0 rounded-control px-1 text-label transition",
+          "shrink-0 rounded px-1 text-[11px] transition",
           state === "copied"
             ? "text-fresh"
             : state === "failed"
@@ -70,7 +70,7 @@ export function CopyLink({
       onClick={copy}
       title={title}
       className={cx(
-        "inline-flex items-center gap-1 rounded-control border px-2 py-1 text-label font-medium transition",
+        "inline-flex items-center gap-1 rounded border px-2 py-1 text-[11px] font-medium transition",
         state === "copied"
           ? "border-fresh/40 bg-fresh-soft text-fresh"
           : state === "failed"
