@@ -3,17 +3,17 @@
 /*
  * Design tokens.
  *
- * Dark, but deliberately not black. The canvas sits around #14161b -- a soft slate rather than
- * pure #000 -- because this is a tool Sarthak reads for long stretches, and true black with
- * bright text produces halation that gets tiring fast. Surfaces step up in small increments so
- * depth reads as layering rather than as heavy outlines.
+ * The canvas is a near-black neutral, #0d0e10, rather than pure #000: still dark enough to
+ * read as black, but a couple of points off it, because true black behind bright text produces
+ * halation that gets tiring over a long session. Surfaces step up in small increments so depth
+ * reads as layering rather than as heavy outlines.
  *
  * Semantic names, not colour names: `surface` and `border-strong` survive a palette change,
  * `slate-800` does not.
  */
 @theme {
   /* Canvas and surfaces, lightest step last */
-  --color-canvas: #14161b;
+  --color-canvas: #0d0e10;
   --color-surface: #1a1d24;
   --color-surface-2: #21252e;
   --color-surface-3: #282d38;
