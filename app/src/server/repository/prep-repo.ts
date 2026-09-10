@@ -201,3 +201,24 @@ export async function updateBody(db: Db, id: string, body: string | null) {
     .set({ body, updatedAt: new Date() })
     .where(eq(prepItems.id, id));
 }
+
+/**
+ * Every prep page, flat, for the navigation tree.
+ *
+ * One query rather than a walk per level: the whole of prep is a few dozen rows, and the
+ * sidebar renders on every page load, so the cost that matters is round trips rather than rows.
+ * The nesting is rebuilt in memory by the caller.
+ */
+export async function navTree(db: Db) {
+  return db
+    .select({
+      id: prepItems.id,
+      kind: prepItems.kind,
+      slug: prepItems.slug,
+      title: prepItems.title,
+      parentId: prepItems.parentId,
+      position: prepItems.position,
+    })
+    .from(prepItems)
+    .orderBy(prepItems.position, prepItems.title);
+}

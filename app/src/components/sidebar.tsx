@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
+import { NavTree, type NavNode } from "./nav-tree";
 import { cx } from "./ui";
 
 /**
@@ -23,7 +24,7 @@ type Item = {
   count?: number;
 };
 
-type Group = { title: string; items: Item[] };
+type Group = { title: string; items: Item[]; tree?: boolean };
 
 export type NavCounts = {
   relevantJobs?: number;
@@ -56,12 +57,10 @@ function groups(counts: NavCounts): Group[] {
     },
     {
       title: "Preparation",
-      items: [
-        { href: "/prep", label: "Overview" },
-        { href: "/prep/dsa", label: "DSA", count: counts.dsaRemaining },
-        { href: "/prep/system-design", label: "System Design" },
-        { href: "/prep/behavioral", label: "Behavioral" },
-      ],
+      // Just the overview; the disciplines and their pages render as a tree below, because a
+      // flat list cannot show that RDBMS sits inside HLD inside System Design.
+      items: [{ href: "/prep", label: "Overview" }],
+      tree: true,
     },
     {
       title: "Workspace",
@@ -75,7 +74,13 @@ function isActive(pathname: string, href: string): boolean {
   return pathname === href || pathname.startsWith(href + "/");
 }
 
-export function Sidebar({ counts }: { counts: NavCounts }) {
+export function Sidebar({
+  counts,
+  prepTree = [],
+}: {
+  counts: NavCounts;
+  prepTree?: NavNode[];
+}) {
   const pathname = usePathname();
 
   return (
@@ -129,6 +134,11 @@ export function Sidebar({ counts }: { counts: NavCounts }) {
                 );
               })}
             </ul>
+            {group.tree && prepTree.length > 0 && (
+              <div className="mt-1">
+                <NavTree nodes={prepTree} />
+              </div>
+            )}
           </div>
         ))}
       </nav>

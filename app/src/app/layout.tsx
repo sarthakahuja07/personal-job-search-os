@@ -14,6 +14,9 @@ import {
   reminderDismissalMap,
 } from "@/server/repository/jobs-repo";
 import { linkedinCounts } from "@/server/repository/linkedin-repo";
+import { navTree } from "@/server/repository/prep-repo";
+import { KINDS } from "@/server/domain/prep";
+import type { NavNode } from "@/components/nav-tree";
 
 import "./globals.css";
 
@@ -28,6 +31,7 @@ export default async function RootLayout({
   // Nav badges are live, so a broken crawler is visible from any page rather than only from
   // the dashboard. If the query fails the shell must still render -- navigation is how you
   // reach the page that would tell you what went wrong.
+  let prepTree: NavNode[] = [];
   let counts = {
     relevantJobs: 0,
     pendingNotifications: 0,
@@ -49,6 +53,31 @@ export default async function RootLayout({
       reminderDismissalMap(db),
       linkedinCounts(db),
     ]);
+
+    // One flat query, nested here. Each discipline becomes a branch whose children are its
+    // top-level pages, so the sidebar mirrors the directory rather than restating it.
+    const prepRows = await navTree(db);
+    const childrenOfId = new Map<string | null, typeof prepRows>();
+    for (const r of prepRows) {
+      const key = r.parentId;
+      childrenOfId.set(key, [...(childrenOfId.get(key) ?? []), r]);
+    }
+    const build = (parentId: string | null, kind: string, base: string): NavNode[] =>
+      (childrenOfId.get(parentId) ?? [])
+        .filter((r) => r.kind === kind)
+        .map((r) => ({
+          slug: r.slug,
+          title: r.title,
+          href: `${base}/${r.slug}`,
+          children: build(r.id, kind, `${base}/${r.slug}`),
+        }));
+
+    prepTree = KINDS.map((k) => ({
+      slug: k.segment,
+      title: k.title,
+      href: `/prep/${k.segment}`,
+      children: build(null, k.kind, `/prep/${k.segment}`),
+    }));
     counts = {
       ...base,
       // Unreviewed LinkedIn jobs plus companies waiting on a decision: both are things the
@@ -69,7 +98,7 @@ export default async function RootLayout({
     <html lang="en">
       <body className="min-h-dvh bg-canvas text-ink">
         <div className="flex min-h-dvh">
-          <Sidebar counts={counts} />
+          <Sidebar counts={counts} prepTree={prepTree} />
           <div className="flex min-w-0 flex-1 flex-col">
             <MobileNav counts={counts} />
             <main className="mx-auto w-full max-w-[1100px] px-5 py-8 md:px-8">

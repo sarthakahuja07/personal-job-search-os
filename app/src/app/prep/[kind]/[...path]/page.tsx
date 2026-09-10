@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { revalidatePath } from "next/cache";
 
 import { Markdown } from "@/components/markdown";
+import { PageEditor } from "@/components/page-editor";
 import { Badge, Button, Card, PageHeader, SectionTitle, cx, inputStyles } from "@/components/ui";
 import { getDb } from "@/db";
 import type { PrepStatus } from "@/db/schema";
@@ -12,7 +13,6 @@ import {
   ancestorsOf,
   childrenOf,
   resolvePath,
-  updateBody,
   updateProgress,
 } from "@/server/repository/prep-repo";
 
@@ -53,16 +53,6 @@ async function save(formData: FormData) {
   revalidateTree(segment, path);
 }
 
-async function saveBody(formData: FormData) {
-  "use server";
-  const id = String(formData.get("id"));
-  const segment = String(formData.get("segment"));
-  const path = String(formData.get("path") ?? "").split("/").filter(Boolean);
-
-  await updateBody(getDb(), id, String(formData.get("body") ?? "").trim() || null);
-  revalidateTree(segment, path);
-}
-
 /**
  * One page of the prep tree.
  *
@@ -77,13 +67,10 @@ async function saveBody(formData: FormData) {
  */
 export default async function PrepPage({
   params,
-  searchParams,
 }: {
   params: Promise<{ kind: string; path: string[] }>;
-  searchParams: Promise<{ edit?: string }>;
 }) {
   const { kind: segment, path } = await params;
-  const { edit } = await searchParams;
   const meta = kindBySegment(segment);
   if (!meta) notFound();
 
@@ -98,7 +85,6 @@ export default async function PrepPage({
 
   const content = item.content ?? {};
   const isFolder = kids.length > 0;
-  const editing = edit === "1";
   const here = path.join("/");
   const hrefFor = (slug: string) => `/prep/${segment}/${[...path, slug].join("/")}`;
 
@@ -126,10 +112,10 @@ export default async function PrepPage({
         subtitle={item.prompt ?? undefined}
         actions={
           <Link
-            href={editing ? `/prep/${segment}/${here}` : `/prep/${segment}/${here}?edit=1`}
+            href={"/prep/" + segment}
             className="text-[13px] text-ink-dim transition hover:text-ink"
           >
-            {editing ? "Done editing" : "Edit page"}
+            ← {meta.title}
           </Link>
         }
       />
@@ -148,45 +134,13 @@ export default async function PrepPage({
         </div>
       )}
 
-      {/* The document. Rendered by default and edited on request, because these pages are read
-          far more often than they are written. */}
-      {editing ? (
-        <form action={saveBody} className="mb-6">
-          <input type="hidden" name="id" value={item.id} />
-          <input type="hidden" name="segment" value={segment} />
-          <input type="hidden" name="path" value={here} />
-          <Card className="space-y-3 px-5 py-5">
-            <SectionTitle>Page</SectionTitle>
-            <p className="-mt-2 text-xs text-ink-faint">
-              Markdown. Headings, lists, tables and code fences all render.
-            </p>
-            <textarea
-              name="body"
-              rows={24}
-              defaultValue={item.body ?? ""}
-              placeholder="# Heading&#10;&#10;Write the page here."
-              className={cx(inputStyles, "resize-y font-mono text-[12.5px] leading-relaxed")}
-            />
-            <Button type="submit" variant="primary">
-              Save page
-            </Button>
-          </Card>
-        </form>
-      ) : item.body ? (
-        <div className="mb-6">
-          <Markdown>{item.body}</Markdown>
-        </div>
-      ) : (
-        <Card className="mb-6 px-5 py-6 text-center">
-          <p className="text-[13px] text-ink-faint">This page is empty.</p>
-          <Link
-            href={`/prep/${segment}/${here}?edit=1`}
-            className="mt-1 inline-block text-[13px] text-accent-ink hover:underline"
-          >
-            Write something
-          </Link>
-        </Card>
-      )}
+      {/* The document. Click it to edit -- see components/page-editor.tsx for why there is no
+          edit mode to enter. */}
+      <div className="mb-6">
+        <PageEditor id={item.id} path={`/prep/${segment}/${here}`} initialBody={item.body ?? ""}>
+          <Markdown>{item.body ?? ""}</Markdown>
+        </PageEditor>
+      </div>
 
       {isFolder && (
         <section className="mb-6">
