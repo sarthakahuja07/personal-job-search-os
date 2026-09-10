@@ -25,12 +25,16 @@ type DropZone = "before" | "after" | "inside";
 const STORE_KEY = "prep-nav-open";
 
 /**
- * Which branches are open, kept in localStorage.
+ * Which branches you have opened or closed, kept in localStorage.
+ *
+ * A map rather than a set of open hrefs, because there are three states and not two: opened by
+ * hand, closed by hand, and never touched. Only the third should fall back to "open if it is
+ * on the current path" -- storing a set collapsed the first and third together, so a folder
+ * containing the page you were reading forced itself open and its collapse button did nothing.
  *
  * Read through useSyncExternalStore rather than an effect that calls setState: the server has
  * no localStorage, so the value has to differ between the server render and the first client
- * one, and this is the API built for exactly that. Doing it with an effect works but renders
- * twice and trips react-hooks for good reason.
+ * one, and this is the API built for exactly that.
  */
 const listeners = new Set<() => void>();
 
@@ -51,7 +55,7 @@ function subscribe(cb: () => void) {
   };
 }
 
-function writeOpen(next: string[]) {
+function writeOpen(next: Record<string, boolean>) {
   try {
     window.localStorage.setItem(STORE_KEY, JSON.stringify(next));
   } catch {
@@ -97,17 +101,22 @@ export function NavTree({ nodes }: { nodes: NavNode[] }) {
   const open = useMemo(() => {
     try {
       const parsed: unknown = JSON.parse(raw);
-      return new Set<string>(Array.isArray(parsed) ? (parsed as string[]) : []);
+      // Older builds stored an array of open hrefs. Read it as "all of these were opened"
+      // rather than discarding it, so nobody's tree collapses on upgrade.
+      if (Array.isArray(parsed)) {
+        return Object.fromEntries((parsed as string[]).map((h) => [h, true]));
+      }
+      if (parsed && typeof parsed === "object") return parsed as Record<string, boolean>;
+      return {};
     } catch {
-      return new Set<string>();
+      return {};
     }
   }, [raw]);
 
-  const toggle = (href: string) => {
-    const next = new Set(open);
-    if (next.has(href)) next.delete(href);
-    else next.add(href);
-    writeOpen([...next]);
+  // `wasOpen` is what the row is showing right now, which is what the click is reacting to --
+  // including when that came from the row being on the current path.
+  const toggle = (href: string, wasOpen: boolean) => {
+    writeOpen({ ...open, [href]: !wasOpen });
   };
 
   return (
@@ -149,8 +158,8 @@ function TreeRow({
   siblings: NavNode[];
   depth: number;
   pathname: string;
-  open: Set<string>;
-  toggle: (href: string) => void;
+  open: Record<string, boolean>;
+  toggle: (href: string, wasOpen: boolean) => void;
   dragging: string | null;
   setDragging: (id: string | null) => void;
   over: { id: string; zone: DropZone } | null;
@@ -160,9 +169,10 @@ function TreeRow({
   const onPath = pathname === node.href || pathname.startsWith(node.href + "/");
   const active = pathname === node.href;
   const hasKids = node.children.length > 0;
-  // On the current path it is always open: you should never have to re-expand your way back to
-  // where you already are.
-  const expanded = hasKids && (open.has(node.href) || onPath);
+  // An explicit choice always wins. Absent one, a folder holding the page you are reading opens
+  // itself, so you never have to expand your way back to where you already are.
+  const explicit = open[node.href];
+  const expanded = hasKids && (explicit ?? onPath);
   const zone = over?.id === node.id ? over.zone : null;
 
   // The top and bottom quarters reorder; the middle nests. Same convention as Notion, and it
@@ -220,7 +230,7 @@ function TreeRow({
         {hasKids ? (
           <button
             type="button"
-            onClick={() => toggle(node.href)}
+            onClick={() => toggle(node.href, expanded)}
             aria-label={expanded ? `Collapse ${node.title}` : `Expand ${node.title}`}
             aria-expanded={expanded}
             className="grid size-5 shrink-0 place-items-center rounded text-ink-faint transition hover:bg-surface-3 hover:text-ink"

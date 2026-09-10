@@ -1,12 +1,11 @@
-import { Card, EmptyState } from "./ui";
+import { Card } from "./ui";
 
 /**
  * A page that is a book.
  *
- * Rendered in <object> rather than pdf.js: every browser this runs in has a competent PDF
- * reader with search, zoom and a page index, and shipping one would add about a megabyte to
- * reproduce it slightly worse. The fallback inside <object> is what shows when the file is
- * missing -- the browser's own broken-plugin box explains nothing.
+ * Handed to the browser's own PDF viewer rather than pdf.js: every browser this runs in has a
+ * competent reader with search, zoom and a page index, and shipping one would add about a
+ * megabyte to reproduce it slightly worse.
  */
 export function BookReader({ file, title }: { file: string; title: string }) {
   return (
@@ -34,26 +33,28 @@ export function BookReader({ file, title }: { file: string; title: string }) {
         </div>
       </div>
 
-      <object
-        data={file}
-        type="application/pdf"
+      {/*
+        An <iframe> rather than an <object>. Both ask Chrome's built-in viewer to render the
+        file, but <object> is the fussier of the two -- it silently swaps in its fallback on
+        anything it dislikes about the response, which looks identical to the file being
+        absent and tells you nothing about which it was. An iframe either shows the PDF or
+        shows an error the browser wrote, and the escape hatch above covers the rest.
+      */}
+      <iframe
+        src={file}
+        title={title}
         className="h-[calc(100dvh-15rem)] min-h-[30rem] w-full rounded-card border border-line bg-surface-2"
-        aria-label={title}
-      >
-        <div className="p-6">
-          <EmptyState
-            title="The PDF is not here"
-            body="This page renders a file you provide; it is not bundled with the app."
-          />
-          <Card className="mx-auto mt-4 max-w-lg px-4 py-3 text-[12.5px] leading-relaxed text-ink-dim">
-            Save your copy as{" "}
-            <code className="rounded border border-line bg-surface-2 px-1 py-0.5 font-mono text-[11.5px] text-ink">
-              app/public{file}
-            </code>{" "}
-            and redeploy.
-          </Card>
-        </div>
-      </object>
+      />
+
+      <Card className="mt-2 px-4 py-2.5 text-[12px] leading-relaxed text-ink-faint">
+        Blank? Open it in a new tab with the button above — some browsers refuse to render a
+        PDF inside a frame, and it will always work as its own page. If the new tab also fails,
+        the file is missing: save your copy as{" "}
+        <code className="rounded border border-line bg-surface-2 px-1 py-0.5 font-mono text-[11.5px] text-ink">
+          app/public{file}
+        </code>{" "}
+        and redeploy.
+      </Card>
     </div>
   );
 }
