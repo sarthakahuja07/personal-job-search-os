@@ -99,6 +99,14 @@ export type CompanyMatchOverrides = {
   levelTitles: string[];
   /** Score awarded when a level title matches. Defaults to the strongest include score. */
   score?: number;
+  /**
+   * Other names this employer posts under, for sources that do not use the board's spelling.
+   *
+   * A LinkedIn alert says "Amazon Web Services (AWS)" where the board says "Amazon"; normalising
+   * cannot bridge that, because nothing about the strings says they are one employer -- only
+   * knowing the company does. So it is data, and adding one is a row edit rather than a deploy.
+   */
+  aliases?: string[];
 };
 
 /**

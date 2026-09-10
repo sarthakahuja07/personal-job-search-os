@@ -49,3 +49,8 @@ jobsyn*.txt
 cheq*.txt
 dejobs*.txt
 apple_*.txt
+
+# Raw email samples. LinkedIn alert mail is personal correspondence -- it carries Sarthak's
+# name, tracking ids tied to his account, and whatever else LinkedIn chose to put in it.
+# Test fixtures are scrubbed copies under crawler/tests/, never the original.
+*.eml

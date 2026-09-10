@@ -33,7 +33,12 @@ export type LinkedInPosting = {
   feed: LinkedinFeed;
 };
 
-export type KnownCompany = { id: string; name: string };
+export type KnownCompany = {
+  id: string;
+  name: string;
+  /** Other spellings this employer posts under, from `companies.match_overrides`. */
+  aliases?: string[];
+};
 
 export type ExistingJob = {
   id: string;
@@ -160,11 +165,19 @@ export function resolveLinkedInPostings(input: {
   const { companies, existingJobs } = input;
 
   const byCompanyKey = new Map<string, KnownCompany>();
-  for (const c of companies) {
-    // First spelling wins. Two board companies normalising to one key is a data problem to
-    // surface, not something to silently pick a winner for on every crawl.
-    const key = companyKey(c.name);
-    if (key && !byCompanyKey.has(key)) byCompanyKey.set(key, c);
+  // Two board rows can normalise to one key -- "Confluent" and "Confluent (IBM)" both reduce to
+  // "confluent", and an alert says only "Confluent". Something has to win, so let it be the
+  // plainest name rather than whichever row the query happened to return first: a merge that
+  // depends on row order is a bug that only shows up once the data changes.
+  const ordered = companies
+    .slice()
+    .sort((a, b) => a.name.length - b.name.length || (a.name < b.name ? -1 : 1));
+
+  for (const c of ordered) {
+    for (const spelling of [c.name, ...(c.aliases ?? [])]) {
+      const key = companyKey(spelling);
+      if (key && !byCompanyKey.has(key)) byCompanyKey.set(key, c);
+    }
   }
 
   // A posting arrives in several alerts and on several days; the board should not care.

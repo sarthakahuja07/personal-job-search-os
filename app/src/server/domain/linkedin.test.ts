@@ -180,6 +180,47 @@ describe("several identical openings at one employer", () => {
   });
 });
 
+describe("employers that post under another name", () => {
+  // Straight from a real alert: LinkedIn said "Amazon Web Services (AWS)" where the board says
+  // "Amazon". No amount of normalising bridges that -- only knowing the company does.
+  const amazon = [{ id: "amazon", name: "Amazon", aliases: ["Amazon Web Services"] }];
+
+  it("matches the alias to the board company", () => {
+    const r = resolve(
+      [posting({ companyName: "Amazon Web Services (AWS)", title: "SDE2 - Just Walk Out" })],
+      amazon,
+    );
+    expect(r.leads).toHaveLength(0);
+    expect(r.inserts[0].companyId).toBe("amazon");
+  });
+
+  it("leaves it a lead when no alias is configured", () => {
+    const r = resolve([posting({ companyName: "Amazon Web Services (AWS)" })], AMAZON);
+    expect(r.leads).toHaveLength(1);
+  });
+
+  it("still matches the company's own name", () => {
+    expect(resolve([posting({ companyName: "Amazon" })], amazon).inserts).toHaveLength(1);
+  });
+});
+
+describe("two board rows that normalise alike", () => {
+  // Real: the board carries both "Confluent" and "Confluent (IBM)", and an alert says only
+  // "Confluent". Whichever wins, it must not depend on the order rows came back in.
+  const rows = [
+    { id: "ibm", name: "Confluent (IBM)" },
+    { id: "plain", name: "Confluent" },
+  ];
+
+  it.each([
+    ["as returned", rows],
+    ["reversed", rows.slice().reverse()],
+  ])("picks the plainest name (%s)", (_label, companies) => {
+    const r = resolve([posting({ companyName: "Confluent" })], companies);
+    expect(r.inserts[0].companyId).toBe("plain");
+  });
+});
+
 describe("shape", () => {
   it("is empty for an empty inbox", () => {
     expect(resolve([])).toEqual({ merges: [], inserts: [], leads: [] });
