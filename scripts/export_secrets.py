@@ -33,6 +33,7 @@ from __future__ import annotations
 import argparse
 import io
 import os
+import json
 import subprocess
 import sys
 import zipfile
@@ -58,22 +59,34 @@ def key_names(path: str) -> list[str]:
     return out
 
 
-def listed(cmd: list[str]) -> list[str]:
-    """Secret *names* from a CLI, never values. Missing CLI is not an error."""
+def gh_secret_names() -> list[str]:
+    """GitHub Actions secret names. Values are not retrievable, by design."""
     try:
-        r = subprocess.run(cmd, capture_output=True, text=True, timeout=90, cwd=ROOT)
+        r = subprocess.run(
+            ["gh", "secret", "list", "--json", "name"],
+            capture_output=True, text=True, timeout=90, cwd=ROOT, shell=(os.name == "nt"),
+        )
         if r.returncode != 0:
             return []
-        names = []
-        for line in r.stdout.splitlines():
-            line = line.strip()
-            if not line or line.startswith(("[", "]", "{", "}")):
-                continue
-            if '"name"' in line:
-                names.append(line.split('"')[3])
-            elif line and not line.startswith("-"):
-                names.append(line.split()[0])
-        return names
+        return [item["name"] for item in json.loads(r.stdout)]
+    except Exception:
+        return []
+
+
+def worker_secret_names() -> list[str]:
+    """Cloudflare Worker secret names. Must run from app/, where wrangler.jsonc lives."""
+    try:
+        r = subprocess.run(
+            ["npx", "wrangler", "secret", "list"],
+            capture_output=True, text=True, timeout=180,
+            cwd=os.path.join(ROOT, "app"), shell=(os.name == "nt"),
+        )
+        if r.returncode != 0:
+            return []
+        start = r.stdout.find("[")
+        if start == -1:
+            return []
+        return [item["name"] for item in json.loads(r.stdout[start:])]
     except Exception:
         return []
 
@@ -90,8 +103,12 @@ def main() -> int:
 
     env_keys = key_names(os.path.join(ROOT, ".env"))
     dev_keys = key_names(os.path.join(ROOT, "app", ".dev.vars"))
-    gh_keys = listed(["gh", "secret", "list", "--json", "name"])
-    cf_keys = listed(["npx", "wrangler", "secret", "list"])
+    gh_keys = gh_secret_names()
+    cf_keys = worker_secret_names()
+    # Say so rather than printing an empty section that looks like "nothing is set".
+    unreachable = [
+        name for name, keys in (("GitHub", gh_keys), ("Cloudflare", cf_keys)) if not keys
+    ]
 
     local = set(env_keys) | set(dev_keys)
     orphans = [k for k in cf_keys + gh_keys if k not in local]
@@ -112,6 +129,10 @@ def main() -> int:
         "REMOTE SECRETS (names only — these cannot be read back from GitHub or Cloudflare)",
         *[f"  github        {k}" for k in gh_keys],
         *[f"  worker        {k}" for k in cf_keys],
+        *[
+            f"  !! could not reach the {n} CLI, so its secrets are unlisted here"
+            for n in unreachable
+        ],
         "",
     ]
 
