@@ -3,10 +3,15 @@
 /*
  * Design tokens.
  *
- * The canvas is a near-black neutral, #0d0e10, rather than pure #000: still dark enough to
- * read as black, but a couple of points off it, because true black behind bright text produces
- * halation that gets tiring over a long session. Surfaces step up in small increments so depth
- * reads as layering rather than as heavy outlines.
+ * Neutral and dark. The canvas is #0d0e10 rather than pure #000 -- dark enough to read as
+ * black, but a couple of points off it, because true black behind bright text haloes over a
+ * long session.
+ *
+ * Every grey is genuinely neutral. They used to carry blue (#1a1d24, #272c36, #99a1b0), which
+ * is what made the whole interface read cool rather than simply dark: a tint repeated across
+ * every surface, line and secondary label adds up even though no single value looks blue on
+ * its own. Surfaces still step up in small increments so depth reads as layering rather than
+ * as heavy outlines.
  *
  * Semantic names, not colour names: `surface` and `border-strong` survive a palette change,
  * `slate-800` does not.
@@ -14,18 +19,18 @@
 @theme {
   /* Canvas and surfaces, lightest step last */
   --color-canvas: #0d0e10;
-  --color-surface: #1a1d24;
-  --color-surface-2: #21252e;
-  --color-surface-3: #282d38;
+  --color-surface: #141518;
+  --color-surface-2: #1a1c20;
+  --color-surface-3: #22252a;
 
   /* Lines */
-  --color-line: #272c36;
-  --color-line-strong: #363d4b;
+  --color-line: #212327;
+  --color-line-strong: #33373d;
 
   /* Text, from primary to faint */
-  --color-ink: #e7eaf0;
-  --color-ink-dim: #99a1b0;
-  --color-ink-faint: #6b7383;
+  --color-ink: #f0f1f3;
+  --color-ink-dim: #9aa0a8;
+  --color-ink-faint: #6a7078;
 
   /* Accent: a calm periwinkle. Used for focus, links and the current nav item -- never for
      decoration, so that when something is accented it means "act here". */
