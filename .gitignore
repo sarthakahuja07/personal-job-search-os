@@ -59,3 +59,6 @@ apple_*.txt
 
 # Book PDFs. Paid copies belong to whoever bought them, not in a repository.
 app/public/books/*.pdf
+
+# Secret bundles from scripts/export_secrets.py, in case one is ever written into the repo.
+job-search-os-secrets-*.zip
