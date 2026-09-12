@@ -12,27 +12,42 @@ import remarkGfm from "remark-gfm";
  * Styles are written out per element rather than pulled from a typography plugin: the app has a
  * small design-token vocabulary and one more dependency to restate it in would be a poor trade.
  */
+
+/**
+ * Drop react-markdown's `node` before the props reach the DOM.
+ *
+ * Every override below spreads its props onto a real element, and react-markdown hands each one
+ * the mdast `node` it came from. React 19 does not warn about an unknown prop -- it renders it --
+ * so every heading, paragraph, list item and link in a rendered page carried a literal
+ * `node="[object Object]"` attribute. Invalid HTML, and needless weight on pages that are mostly
+ * prose.
+ */
+function dom<T extends { node?: unknown }>(props: T): Omit<T, "node"> {
+  const { node, ...rest } = props;
+  return rest;
+}
+
 export function Markdown({ children }: { children: string }) {
   return (
     <div className="text-[13.5px] leading-relaxed text-ink-dim">
       <ReactMarkdown
         remarkPlugins={[remarkGfm]}
         components={{
-          h1: (p) => <h1 className="mb-3 mt-6 text-[19px] font-semibold text-ink" {...p} />,
-          h2: (p) => <h2 className="mb-2 mt-6 text-[16px] font-semibold text-ink" {...p} />,
-          h3: (p) => <h3 className="mb-1.5 mt-5 text-[14px] font-semibold text-ink" {...p} />,
-          h4: (p) => <h4 className="mb-1.5 mt-4 text-[13px] font-semibold text-ink" {...p} />,
-          p: (p) => <p className="my-2.5" {...p} />,
-          ul: (p) => <ul className="my-2.5 list-disc space-y-1 pl-5" {...p} />,
-          ol: (p) => <ol className="my-2.5 list-decimal space-y-1 pl-5" {...p} />,
-          li: (p) => <li className="pl-0.5" {...p} />,
-          strong: (p) => <strong className="font-semibold text-ink" {...p} />,
-          em: (p) => <em className="italic" {...p} />,
+          h1: (p) => <h1 className="mb-3 mt-6 text-[19px] font-semibold text-ink" {...dom(p)} />,
+          h2: (p) => <h2 className="mb-2 mt-6 text-[16px] font-semibold text-ink" {...dom(p)} />,
+          h3: (p) => <h3 className="mb-1.5 mt-5 text-[14px] font-semibold text-ink" {...dom(p)} />,
+          h4: (p) => <h4 className="mb-1.5 mt-4 text-[13px] font-semibold text-ink" {...dom(p)} />,
+          p: (p) => <p className="my-2.5" {...dom(p)} />,
+          ul: (p) => <ul className="my-2.5 list-disc space-y-1 pl-5" {...dom(p)} />,
+          ol: (p) => <ol className="my-2.5 list-decimal space-y-1 pl-5" {...dom(p)} />,
+          li: (p) => <li className="pl-0.5" {...dom(p)} />,
+          strong: (p) => <strong className="font-semibold text-ink" {...dom(p)} />,
+          em: (p) => <em className="italic" {...dom(p)} />,
           hr: () => <hr className="my-6 border-line" />,
           blockquote: (p) => (
             <blockquote
               className="my-3 border-l-2 border-line-strong pl-3.5 text-ink-faint"
-              {...p}
+              {...dom(p)}
             />
           ),
           a: (p) => (
@@ -40,10 +55,10 @@ export function Markdown({ children }: { children: string }) {
               className="text-accent-ink underline-offset-2 hover:underline"
               target="_blank"
               rel="noopener noreferrer"
-              {...p}
+              {...dom(p)}
             />
           ),
-          code: ({ className, children, ...rest }) => {
+          code: ({ className, children, node, ...rest }) => {
             // react-markdown gives fenced blocks a language class and inline code none, which is
             // the only reliable way to tell them apart here.
             const fenced = /language-/.test(className ?? "");
@@ -70,25 +85,25 @@ export function Markdown({ children }: { children: string }) {
             // Wide code scrolls inside its own box; the page itself must never scroll sideways.
             <pre
               className="my-3 overflow-x-auto rounded-card border border-line bg-surface-2 px-3.5 py-3"
-              {...p}
+              {...dom(p)}
             />
           ),
           table: (p) => (
             <div className="my-3 overflow-x-auto rounded-card border border-line">
-              <table className="w-full border-collapse text-[12.5px]" {...p} />
+              <table className="w-full border-collapse text-[12.5px]" {...dom(p)} />
             </div>
           ),
-          thead: (p) => <thead className="bg-surface-2" {...p} />,
+          thead: (p) => <thead className="bg-surface-2" {...dom(p)} />,
           th: (p) => (
             <th
               className="border-b border-line px-3 py-2 text-left font-medium text-ink"
-              {...p}
+              {...dom(p)}
             />
           ),
-          td: (p) => <td className="border-b border-line px-3 py-2 align-top" {...p} />,
+          td: (p) => <td className="border-b border-line px-3 py-2 align-top" {...dom(p)} />,
           img: (p) => (
             // eslint-disable-next-line @next/next/no-img-element
-            <img className="my-3 max-w-full rounded-card border border-line" alt="" {...p} />
+            <img className="my-3 max-w-full rounded-card border border-line" alt="" {...dom(p)} />
           ),
         }}
       >

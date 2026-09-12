@@ -42,6 +42,8 @@ export function Board({ cards }: { cards: BoardCard[] }) {
   const [dragging, setDragging] = useState<string | null>(null);
   const [over, setOver] = useState<ApplicationStatus | null>(null);
   const rootRef = useRef<HTMLDivElement>(null);
+  /** -1, 0 or 1: which way the board should be auto-scrolling during a drag. */
+  const edge = useRef(0);
   /**
    * A press that has not moved far enough to count as a drag yet.
    *
@@ -91,6 +93,16 @@ export function Board({ cards }: { cards: BoardCard[] }) {
 
       e.preventDefault();
       setOver(stageAt(e.clientX, e.clientY));
+
+      // Seven stages no longer fit on one screen, so the column you are aiming at may not be
+      // visible when the drag starts. Near either edge, hand the direction to the scroll loop.
+      const el = rootRef.current;
+      if (el) {
+        const r = el.getBoundingClientRect();
+        const EDGE_PX = 72;
+        edge.current =
+          e.clientX > r.right - EDGE_PX ? 1 : e.clientX < r.left + EDGE_PX ? -1 : 0;
+      }
     };
 
     const onUp = (e: PointerEvent) => {
@@ -101,6 +113,7 @@ export function Board({ cards }: { cards: BoardCard[] }) {
       const card = visible.find((c) => c.id === p.id);
       const target = stageAt(e.clientX, e.clientY);
       justDragged.current = true;
+      edge.current = 0;
       setDragging(null);
       setOver(null);
       if (card && target) move(card, target);
@@ -108,6 +121,7 @@ export function Board({ cards }: { cards: BoardCard[] }) {
 
     const onCancel = () => {
       press.current = null;
+      edge.current = 0;
       setDragging(null);
       setOver(null);
     };
@@ -134,24 +148,56 @@ export function Board({ cards }: { cards: BoardCard[] }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [visible]);
 
+  /**
+   * Keep scrolling while the pointer rests near an edge.
+   *
+   * Doing this in `pointermove` alone would only scroll while the finger keeps moving, which is
+   * the opposite of what a drag at the edge of the screen wants -- there is nowhere left to move.
+   */
+  useEffect(() => {
+    if (!dragging) return;
+    let frame = requestAnimationFrame(function step() {
+      const el = rootRef.current;
+      if (el && edge.current) el.scrollLeft += edge.current * 14;
+      frame = requestAnimationFrame(step);
+    });
+    return () => cancelAnimationFrame(frame);
+  }, [dragging]);
+
   return (
+    /*
+      A kanban scrolls sideways; it does not reflow.
+
+      This used to be `sm:grid-cols-2 md:grid-cols-4 xl:grid-cols-7`, which had two problems.
+      Seven stages in four columns wrap onto a second row, so the pipeline stopped reading
+      left-to-right in the order work actually moves. And at full width inside a 1100px page,
+      seven columns are about 135px each -- narrower than the card's own footer, so the stage
+      menu and Remove button spilled out of the column, which is the overflow you could see.
+
+      Fixed-width columns and a horizontal scroll fix both, and give phones the interaction they
+      expect: one column at a time, swiped. The negative margins let the board scroll edge to
+      edge through the page gutter rather than stopping short of it.
+    */
     <div
       ref={rootRef}
       className={cx(
-        "grid gap-3 sm:grid-cols-2 md:grid-cols-4 xl:grid-cols-7",
+        "-mx-5 overflow-x-auto overscroll-x-contain px-5 pb-3 md:-mx-8 md:px-8",
         pending && "opacity-95",
         // While a drag is in flight, stop the page itself from selecting text under the finger.
         dragging && "select-none",
       )}
     >
-      {STAGES.map((stage) => {
+      <div className="flex snap-x snap-proximity gap-3">
+        {STAGES.map((stage) => {
         const inStage = visible.filter((c) => stageOf(c) === stage);
         return (
           <section
             key={stage}
             data-stage={stage}
             className={cx(
-              "flex min-h-[160px] flex-col rounded-card border transition",
+              // Wide enough for the card footer (stage menu, copy, Remove) to sit on one line,
+              // which is what it could not do in a grid cell.
+              "flex w-68 min-h-40 shrink-0 snap-start flex-col rounded-card border transition",
               // The two outcomes sit quieter than the five active stages: they are where work
               // stops, so they should not compete for attention with the columns that need it.
               isTerminal(stage) ? "bg-surface/30" : "bg-surface/60",
@@ -271,9 +317,10 @@ export function Board({ cards }: { cards: BoardCard[] }) {
                 </li>
               )}
             </ul>
-          </section>
-        );
-      })}
+            </section>
+          );
+        })}
+      </div>
     </div>
   );
 }
