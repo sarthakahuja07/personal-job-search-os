@@ -3,7 +3,7 @@
 The durable state of this project. Updated whenever something meaningful lands, so no context is
 lost between sessions (PRD §73). Picking this up cold: read `CLAUDE.md` first, then this file.
 
-**Last updated:** 2026-09-07
+**Last updated:** 2026-09-12
 
 ---
 
@@ -274,6 +274,74 @@ Deliberately conservative (`crawler/http/client.py`):
   run. All 14 automated sources report `healthy`.
 
 ---
+
+## Books and notes: two silent failures in prep
+
+Both were invisible from the code and obvious from the running app.
+
+**Every book 404'd in production.** The PDFs live under `app/public/books/` and are gitignored
+on purpose -- they are paid books. So a deploy from GitHub Actions, which checks out a tree
+without them, shipped an assets directory without them. The books only ever worked when a deploy
+happened to run from the laptop holding the files, and the next CI deploy undid it without a
+word. They now live in Google Drive and are streamed through `/api/books/<page id>`.
+
+Drive's own `/preview` iframe would have been one line, and was rejected: it puts the file id in
+the page, replaces the browser's PDF reader with Google's, and makes a third party's uptime a
+page dependency -- the same class of problem as the notes below. Proxying keeps the reader, the
+Range header (so a 97 MB book seeks instead of downloading whole), and Access in front of it.
+
+The cost is real and worth writing down: Drive will not serve a private file to an anonymous
+fetch, so each book is shared *anyone with the link*. Anyone who learns a file id can read it.
+That is wider than a file that existed only inside this deployment. The id is therefore resolved
+server-side and never rendered. Volume 2 settles the argument anyway -- at 97 MB it exceeds the
+25 MiB Workers asset limit and could never have been served from `public/` at all.
+
+**The notes pages spent most of their life rate limited.** Anonymous GitHub allows 60 API calls
+an hour *per egress IP*, and a Worker has no IP of its own -- it shares Cloudflare's with
+everything else running there, so the real budget is an unknowable fraction of 60 and usually
+already spent. The `next: { revalidate: 3600 }` on those fetches did nothing whatsoever: this
+deployment configures no incremental cache (`open-next.config.ts`), so there was nowhere to put
+the response and every single render went back out to the network.
+
+The cache is ours now, in D1 (`github_notes_cache`). Three things about it matter more than the
+caching itself:
+
+- **A stale row is served when the refresh fails.** A day-old chapter beats an apology about
+  rate limiting, and the UI labels it "cached copy" rather than pretending it is current.
+- **The default-branch call is gone from the hot path.** It was a second API call on every view,
+  doubling the cost of the request most likely to be throttled, to re-answer a question that
+  never changes. It is stored with the tree.
+- **A cache failure cannot break a page.** Reads and writes both swallow their errors, so the
+  window between deploying this and applying its migration costs a slower render, not a 500.
+
+## The board, and two things that were never rendered right
+
+**The kanban did not fit its own columns.** It was a responsive grid --
+`sm:grid-cols-2 md:grid-cols-4 xl:grid-cols-7` -- which fails a seven-stage pipeline twice over.
+At four columns the stages wrap onto a second row, so the board stops reading left to right in
+the order work actually moves through it. And at seven columns inside a 1100px page each column
+is about 135px, which is narrower than a card's own footer: the stage menu and Remove button
+spilled out past the column edge.
+
+It is now what a kanban is: fixed 272px columns in a horizontally scrolling row, snapping, with
+the negative margins needed to scroll edge to edge through the page gutter. A phone gets one
+column at a time by swipe, which is the interaction that surface already expected.
+
+Drag needed one addition. With every stage on screen, a drop target was always visible; now it
+may not be, so a drag near either edge auto-scrolls the board. That runs on an animation frame
+rather than on `pointermove`, because at the edge of the screen there is nowhere left to move the
+finger and a move-driven scroll would simply stop.
+
+**Every rendered Markdown element carried `node="[object Object]"`.** Each override in
+`components/markdown.tsx` spreads its props onto a real DOM element, and react-markdown hands
+each one the mdast node it came from. React 19 does not warn about an unknown prop, it renders
+it, so the attribute landed on every heading, paragraph, list item and link on the page. Dropping
+it took a chapter page from 149 KB to 97 KB -- 35% of that page was an invalid attribute
+repeated a few thousand times.
+
+**Known limit.** `<main>` is capped at `max-w-[1100px]`, which suits the reading-shaped pages but
+means a very wide monitor shows about four of the seven columns and scrolls for the rest. Raising
+that cap is a design decision about every page, not just this one, so it has not been taken here.
 
 ## Known gaps
 

@@ -2,6 +2,7 @@ import Link from "next/link";
 
 import { Markdown } from "./markdown";
 import { Card, SectionTitle } from "./ui";
+import { getDb } from "@/db";
 import { repoFile, repoTree } from "@/server/service/github-notes";
 
 /**
@@ -21,7 +22,8 @@ export async function GithubNotes({
   basePath: string;
   open?: string;
 }) {
-  const tree = await repoTree(repo);
+  const db = getDb();
+  const tree = await repoTree(db, repo);
 
   if (tree.error) {
     return (
@@ -39,7 +41,7 @@ export async function GithubNotes({
     );
   }
 
-  const file = open ? await repoFile(repo, tree.defaultBranch, open) : null;
+  const file = open ? await repoFile(db, repo, tree.defaultBranch, open) : null;
   const total = tree.groups.reduce((n, g) => n + g.files.length, 0);
 
   return (
@@ -56,11 +58,21 @@ export async function GithubNotes({
             {repo}
           </a>
         </p>
-        {open && (
-          <Link href={basePath} className="text-[12px] text-ink-dim transition hover:text-ink">
-            ← All chapters
-          </Link>
-        )}
+        <div className="flex items-center gap-3">
+          {(tree.stale || file?.stale) && (
+            <span
+              className="text-[11.5px] text-ink-faint"
+              title="GitHub could not be reached, so this came from the last copy stored here."
+            >
+              cached copy
+            </span>
+          )}
+          {open && (
+            <Link href={basePath} className="text-[12px] text-ink-dim transition hover:text-ink">
+              ← All chapters
+            </Link>
+          )}
+        </div>
       </div>
 
       {file?.markdown ? (

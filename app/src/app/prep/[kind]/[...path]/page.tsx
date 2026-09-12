@@ -102,7 +102,7 @@ export default async function PrepPage({
   ]);
 
   const content = item.content ?? {};
-  const isReader = Boolean(content.pdf || content.github || content.embed);
+  const isReader = Boolean(content.pdf || content.drive || content.github || content.embed);
   const hasChildren = kids.length > 0;
   // Two different questions that used to share one flag. `hasChildren` decides whether to list
   // pages inside; `isPractisable` decides whether progress and answer fields belong. A reader
@@ -197,7 +197,9 @@ export default async function PrepPage({
       {/* A page is a document unless its content says otherwise. Readers replace the editor
           rather than sitting beside it: there is nothing to write on a book. */}
       <div className="mb-6">
-        {content.pdf ? (
+        {content.drive ? (
+          <BookReader file={`/api/books/${item.id}`} title={item.title} hosted="drive" />
+        ) : content.pdf ? (
           <BookReader file={String(content.pdf)} title={item.title} />
         ) : content.github ? (
           <GithubNotes

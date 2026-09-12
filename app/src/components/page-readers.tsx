@@ -7,12 +7,23 @@ import { Card } from "./ui";
  * competent reader with search, zoom and a page index, and shipping one would add about a
  * megabyte to reproduce it slightly worse.
  */
-export function BookReader({ file, title }: { file: string; title: string }) {
+export function BookReader({
+  file,
+  title,
+  hosted = "public",
+}: {
+  file: string;
+  title: string;
+  /** Where the bytes come from, which decides what the "it's blank" note should tell you. */
+  hosted?: "public" | "drive";
+}) {
   return (
     <div>
       <div className="mb-2 flex flex-wrap items-center justify-between gap-2">
         <p className="text-[11.5px] text-ink-faint">
-          Your own copy, served only from this deployment.
+          {hosted === "drive"
+            ? "Your own copy, held in Drive and served through this deployment."
+            : "Your own copy, served only from this deployment."}
         </p>
         <div className="flex items-center gap-2">
           <a
@@ -48,12 +59,22 @@ export function BookReader({ file, title }: { file: string; title: string }) {
 
       <Card className="mt-2 px-4 py-2.5 text-[12px] leading-relaxed text-ink-faint">
         Blank? Open it in a new tab with the button above — some browsers refuse to render a
-        PDF inside a frame, and it will always work as its own page. If the new tab also fails,
-        the file is missing: save your copy as{" "}
-        <code className="rounded border border-line bg-surface-2 px-1 py-0.5 font-mono text-[11.5px] text-ink">
-          app/public{file}
-        </code>{" "}
-        and redeploy.
+        PDF inside a frame, and it will always work as its own page.{" "}
+        {hosted === "drive" ? (
+          <>
+            If the new tab shows an error instead, it will say what Drive objected to — almost
+            always that the file is not shared with{" "}
+            <span className="text-ink">anyone with the link</span>.
+          </>
+        ) : (
+          <>
+            If the new tab also fails, the file is missing: save your copy as{" "}
+            <code className="rounded border border-line bg-surface-2 px-1 py-0.5 font-mono text-[11.5px] text-ink">
+              app/public{file}
+            </code>{" "}
+            and redeploy.
+          </>
+        )}
       </Card>
     </div>
   );

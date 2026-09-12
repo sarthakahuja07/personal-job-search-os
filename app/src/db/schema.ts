@@ -622,6 +622,14 @@ export type PrepContent = {
    */
   /** A PDF under app/public, e.g. "/books/system-design-interview-vol-1.pdf". */
   pdf?: string;
+  /**
+   * A Google Drive share link or file id, streamed through `/api/books/[id]`.
+   *
+   * Preferred over `pdf` for anything large. A gitignored file under `public/` only exists on
+   * the machine that put it there, so a deploy from CI ships without it and the book 404s;
+   * Drive is reachable from wherever the deploy runs.
+   */
+  drive?: string;
   /** A site to embed. Only works where the site does not forbid framing. */
   embed?: string;
   /** "owner/repo" whose Markdown is fetched and rendered in place. */
@@ -803,3 +811,31 @@ export const prepResources = sqliteTable(
 
 export type PrepResource = typeof prepResources.$inferSelect;
 export type NewPrepResource = typeof prepResources.$inferInsert;
+
+/**
+ * Somebody else's notes, kept so the page does not depend on GitHub being in a good mood.
+ *
+ * The notes pages used to fetch from GitHub on every single view. Two API calls per view --
+ * one for the default branch, one for the recursive tree -- against an anonymous budget of 60
+ * per hour *per egress IP*, and a Worker's egress IP belongs to Cloudflare and is shared with
+ * everything else running there. `next: { revalidate }` did not help: this deployment runs
+ * with no incremental cache (see `open-next.config.ts`), so the hint had nowhere to store
+ * anything and every render went back out to the network. Hence a cache we actually own.
+ *
+ * One row per fetched thing: the tree of a repository, or the body of one file. `fetchedAt`
+ * drives the TTL, and a stale row is still served if the refresh fails -- notes that are a day
+ * old beat an error page.
+ */
+export const githubNotesCache = sqliteTable("github_notes_cache", {
+  /** "<owner>/<repo>" for a tree, "<owner>/<repo>:<path>" for a file body. */
+  key: text("key").primaryKey(),
+  /** JSON for a tree, raw Markdown for a file. */
+  payload: text("payload").notNull(),
+  /** Recorded alongside the tree so a file fetch does not have to ask GitHub for it again. */
+  branch: text("branch"),
+  fetchedAt: integer("fetched_at", { mode: "timestamp" })
+    .notNull()
+    .$defaultFn(() => new Date()),
+});
+
+export type GithubNotesCacheRow = typeof githubNotesCache.$inferSelect;

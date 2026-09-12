@@ -329,3 +329,14 @@ export async function movePage(
   }
   return { ok: true as const };
 }
+
+/**
+ * One page by its id.
+ *
+ * The book proxy needs the Drive reference held in `content`, and it is reached by id from a
+ * URL rather than by walking a path, so `resolvePath` cannot serve it.
+ */
+export async function getById(db: Db, id: string) {
+  const rows = await db.select().from(prepItems).where(eq(prepItems.id, id)).limit(1);
+  return rows[0] ?? null;
+}
