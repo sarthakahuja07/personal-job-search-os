@@ -12,19 +12,19 @@ look first, then write, and for company work, scaffold before either.
 
 Three disciplines, each a tree of pages.
 
-| Discipline | `kind` | Holds |
-|---|---|---|
-| DSA | `dsa` | One page per problem. Flat — no sections |
-| System Design | `system_design` | Nested. `hld` and `lld` are its two sections |
-| Companies | `company` | One folder per company, five pages each |
+| Discipline | Holds |
+|---|---|
+| DSA | One page per problem. Flat — no sections |
+| System Design | Split into HLD and LLD |
+| Behavioral | Your stories |
+| Companies | One folder per company, five pages each |
 
-**Low-level design is not its own kind.** It is `kind: "system_design"` published under
-`parent_path: "lld"`. High-level design is the same, under `hld`. Getting this wrong is the
-single most common mistake; there is no `kind: "lld"`.
+You do not need to know how any of that is stored. Each publishing tool files its own pages, so
+choosing the right tool is the only placement decision there is.
 
 ---
 
-## The seven tools
+## The tools
 
 ### Look before you write
 
@@ -32,15 +32,31 @@ single most common mistake; there is no `kind: "lld"`.
 once at the start of a session. It is the only way to know what `parent_path` values exist; do
 not guess them.
 
-**`prep_search`** — does this page already exist? **Call this before every `prep_publish`.**
-Without it you will create "Consistent Hashing" next to "Consistent hashing" next to "Design:
-consistent hashing", and the board becomes unusable. If a close match comes back, use
-`prep_append` instead.
+**`prep_search`** — does this page already exist? **Call this before publishing.** Without it
+you will create "Consistent Hashing" next to "Consistent hashing" next to "Design: consistent
+hashing", and the board becomes unusable. If a close match comes back, use `prep_append`
+instead.
 
-### Write a page
+### Write a page — one tool per discipline
 
-**`prep_publish`** — a new study page: the note, its reference links, and the metadata that
-makes it findable later.
+**Pick the tool that matches what the conversation was about.** The tool decides where the page
+is filed, so choosing the right one is the whole of getting it in the right place. None of them
+takes a `kind` or a section — there is nothing to get wrong once the tool is chosen.
+
+| Tool | Use when the conversation was about |
+|---|---|
+| `publish_dsa_question` | A coding problem — arrays, trees, graphs, DP, two pointers, complexity |
+| `publish_hld_design` | Architecture *between services* — scale, sharding, replication, caching, queues, CAP, or designing a named product |
+| `publish_lld_design` | Object-oriented design *within one service* — classes, interfaces, design patterns, SOLID, state machines, parking lot / elevator / chess |
+| `publish_behavioral_story` | Your own experience — conflict, failure, a project you led, "tell me about a time when" |
+| `publish_page` | None of the above. Takes an explicit `kind` and `parent_path`. Prefer the others |
+
+**If the conversation covered more than one discipline, or which one is unclear, ask rather than
+guessing.** A page filed under the wrong discipline is worse than a question: the company index
+that should link it will never find it there.
+
+`publish_hld_design` takes a `section`: `question` (default) for a "design X" problem, `concept`
+for a building block studied on its own — caching, CDNs, consistent hashing, CAP.
 
 Fill in everything the session actually established. A page with only a title cannot be revised
 from, and with `frequency` unset it sorts last and is effectively invisible. These are things
@@ -54,11 +70,10 @@ you know at the end of a session and a human would never type by hand:
 | `topics` | Tags like `["caching", "distributed-systems"]` |
 | `companies` | Who is known to ask it |
 | `resources` | Videos and articles — see below |
-| `parent_path` | Where it goes. From `prep_tree` |
 
-Discipline fields go in alongside: `pattern` / `complexity` / `approach` for DSA,
-`requirements` / `architecture` / `tradeoffs` for system design, `situation` / `action` /
-`outcome` for behavioral.
+Each tool carries only its own discipline's fields: `pattern` / `complexity` / `approach` on
+the DSA tool, `requirements` / `architecture` / `tradeoffs` on both design tools,
+`situation` / `action` / `outcome` on the behavioural one.
 
 **Resources:** pass `[{url, title}]`. YouTube links are detected and stored as videos with the
 id extracted automatically. **Always give a video a title** — a YouTube URL has nothing readable
@@ -70,9 +85,11 @@ do. That is deliberate: silently overwriting loses work, silently duplicating ru
 Choose `on_conflict: "merge"` (fill only empty fields, add resources) or `"replace"` (overwrite)
 knowingly.
 
-**`prep_append`** — add to a page that exists without overwriting it. Resources are always
-added; every other field fills only where the page is currently empty. A note written by hand
-survives your second pass over the same topic.
+**`prep_append`** — add to a page that exists without overwriting it. Take `kind` and
+`parent_path` from the `prep_search` result rather than working them out: its `path` is the
+page's full section path, and everything before the last segment is `parent_path`. Resources are
+always added; every other field fills only where the page is currently empty, so a note written
+by hand survives your second pass over the same topic.
 
 ---
 
@@ -129,7 +146,7 @@ next. Offer to write those pages.
 **Studying a topic:**
 
 1. `prep_search` for the topic
-2. `prep_publish` if new, `prep_append` if it exists
+2. The publishing tool for that discipline if new, `prep_append` if it exists
 3. Include the video or article you learned from
 
 **Recording what a company asks:**
@@ -139,15 +156,17 @@ next. Offer to write those pages.
 3. `company_question_index` per discipline you have questions for
 4. Report what came back `unlinked` — those are the gaps
 
-**A question that came up while studying a company:** publish the page first with
-`prep_publish`, then add it to the company. The next `company_question_index` call will link it
+**A question that came up while studying a company:** publish the page first with its
+discipline's tool, then add it to the company. The next `company_question_index` call will link it
 automatically, because every write re-resolves every link.
 
 ---
 
 ## Two things that are easy to get wrong
 
-**LLD is `system_design` + `parent_path: "lld"`.** Not a kind of its own.
+**HLD and LLD are different tools, and the distinction is services versus classes.** "Design
+Instagram" is HLD. "Design a parking lot" is LLD. If a session covered both — designing a system
+and then drilling into one class — publish two pages, or ask which was meant.
 
 **Set `frequency`.** It defaults to 0, which sorts a page to the bottom of every list. You
 almost always know roughly how often something is asked; a rough number beats none.

@@ -12,8 +12,20 @@ Four tools, and the split between them is the point:
 
     prep_tree       where pages can go, and which fields each discipline wants
     prep_search     does this page already exist
-    prep_publish    write it
     prep_append     add resources or fill gaps on a page that already exists
+
+One publishing tool per discipline, rather than one with a `kind` argument:
+
+    publish_dsa_question       coding problems
+    publish_hld_design         distributed system architecture
+    publish_lld_design         object-oriented design within one service
+    publish_behavioral_story   experience questions
+    publish_page               an explicit kind and section; the escape hatch
+
+The split exists because the generic tool asked the model to get two things right at once --
+`kind`, and a `parent_path` that does not follow from it. Low-level design exposes it: there is
+no `kind: "lld"`, it is `system_design` filed under `lld`, so the commonest mistake was the one
+a description could not prevent, the tool having already been chosen before it was read.
 
 Plus three for company preparation, where the pages are generated rather than written:
 
@@ -147,87 +159,262 @@ async def prep_search(query: str, kind: str | None = None) -> dict[str, Any]:
     return await _request("GET", "/api/prep/pages", params=params)
 
 
+ASK_IF_UNSURE = (
+    "If the conversation has not clearly been about this one discipline -- or it has covered "
+    "more than one -- ask which to publish to rather than guessing."
+)
+
+CONTENT_KEYS = (
+    "pattern", "complexity", "approach",
+    "requirements", "architecture", "tradeoffs",
+    "situation", "action", "outcome",
+)
+
+
+async def _publish(kind: str, parent_path: str, args: dict[str, Any]) -> dict[str, Any]:
+    """Common body for the per-discipline tools. Only `kind` and the section differ."""
+    return await _request(
+        "POST",
+        "/api/prep/pages",
+        json={
+            "kind": kind,
+            "parent_path": parent_path,
+            "title": args.get("title"),
+            "prompt": args.get("prompt"),
+            "difficulty": args.get("difficulty"),
+            "frequency": args.get("frequency") or 0,
+            "topics": args.get("topics") or [],
+            "companies": args.get("companies") or [],
+            "body": args.get("body"),
+            "resources": args.get("resources") or [],
+            "source_url": args.get("source_url"),
+            "on_conflict": args.get("on_conflict") or "error",
+            "content": {k: args.get(k) for k in CONTENT_KEYS},
+        },
+    )
+
+
 @server.tool()
-async def prep_publish(
-    kind: Literal["dsa", "system_design", "behavioral", "concept", "company"],
+async def publish_dsa_question(
     title: str,
     body: str | None = None,
     prompt: str | None = None,
-    parent_path: str = "",
+    pattern: str | None = None,
+    complexity: str | None = None,
+    approach: str | None = None,
     difficulty: Literal["easy", "medium", "hard"] | None = None,
     frequency: int = 0,
     topics: list[str] | None = None,
     companies: list[str] | None = None,
     resources: list[dict[str, str]] | None = None,
-    pattern: str | None = None,
-    complexity: str | None = None,
-    approach: str | None = None,
-    requirements: str | None = None,
-    architecture: str | None = None,
-    tradeoffs: str | None = None,
-    situation: str | None = None,
-    action: str | None = None,
-    outcome: str | None = None,
     source_url: str | None = None,
     on_conflict: Literal["error", "merge", "replace"] = "error",
 ) -> dict[str, Any]:
     """
-    Publish a study page into the prep tree, with its notes and reference links.
+    Publish a data structures and algorithms question.
 
-    Fill in as much as the session actually established. A page with only a title cannot be
-    revised from and will sort last; difficulty, frequency and topics are the fields that make
-    it findable later, and they are things you know at the end of a session that a human would
-    never type by hand.
+    Use this when the conversation has been about a coding problem: arrays, strings, trees,
+    graphs, dynamic programming, two pointers, sliding window, heaps, tries, complexity
+    analysis, or anything you would solve on LeetCode.
+
+    If the conversation has not clearly been about this one discipline -- or it has covered
+    more than one -- ask which to publish to rather than guessing.
 
     Args:
-        kind: Discipline. Low-level design is `system_design` published under parent_path "lld".
-        title: The page name, e.g. "Design a Rate Limiter".
-        body: The note itself, as Markdown. This is the main content.
-        prompt: The question or brief, shown under the title.
-        parent_path: Folder path within the kind, e.g. "hld" or "hld/questions". From prep_tree.
+        title: The page name, e.g. "Sliding Window Maximum".
+        body: The note itself, as Markdown. The main content.
+        prompt: The question statement.
+        pattern: The recognisable shape of the solution, e.g. "Monotonic deque".
+        complexity: Time and space, and why.
+        approach: How the solution is reached.
         difficulty: easy, medium or hard.
-        frequency: The "ask score", 1-5 -- how often this comes up in interviews. Drives sort
-            order, so 0 makes the page effectively invisible. Set it.
-        topics: Tags such as ["caching", "distributed-systems"].
+        frequency: Ask score 1-5. Drives the sort, so 0 puts it at the bottom. Set it.
+        topics: Tags for filtering.
         companies: Companies known to ask this.
-        resources: Reference links, as [{"url": "...", "title": "..."}]. YouTube links are
-            detected and stored as videos with their id extracted automatically. Always give a
-            video a title -- a YouTube URL has nothing readable in its path, so an omitted one
-            derives the literal word "Watch". For articles the title and publisher are derived
-            from the URL well enough to omit.
-        pattern, complexity, approach: DSA fields.
-        requirements, architecture, tradeoffs: System design fields.
-        situation, action, outcome: Behavioral fields.
+        resources: [{"url": ..., "title": ...}]. Always title a video; a bare YouTube URL
+            derives the literal word "Watch".
         source_url: Where this was studied from.
-        on_conflict: What to do if the page exists. "error" (default) refuses, "merge" fills
-            only empty fields and adds resources, "replace" overwrites.
+        on_conflict: "error" (default) refuses an existing page, "merge" fills gaps,
+            "replace" overwrites.
     """
-    payload: dict[str, Any] = {
-        "kind": kind,
-        "title": title,
-        "prompt": prompt,
-        "parent_path": parent_path,
-        "difficulty": difficulty,
-        "frequency": frequency,
-        "topics": topics or [],
-        "companies": companies or [],
-        "body": body,
-        "resources": resources or [],
-        "source_url": source_url,
-        "on_conflict": on_conflict,
-        "content": {
-            "pattern": pattern,
-            "complexity": complexity,
-            "approach": approach,
-            "requirements": requirements,
-            "architecture": architecture,
-            "tradeoffs": tradeoffs,
-            "situation": situation,
-            "action": action,
-            "outcome": outcome,
-        },
-    }
-    return await _request("POST", "/api/prep/pages", json=payload)
+    return await _publish("dsa", "", locals())
+
+
+@server.tool()
+async def publish_hld_design(
+    title: str,
+    body: str | None = None,
+    prompt: str | None = None,
+    section: Literal["question", "concept"] = "question",
+    requirements: str | None = None,
+    architecture: str | None = None,
+    tradeoffs: str | None = None,
+    difficulty: Literal["easy", "medium", "hard"] | None = None,
+    frequency: int = 0,
+    topics: list[str] | None = None,
+    companies: list[str] | None = None,
+    resources: list[dict[str, str]] | None = None,
+    source_url: str | None = None,
+    on_conflict: Literal["error", "merge", "replace"] = "error",
+) -> dict[str, Any]:
+    """
+    Publish a HIGH-level system design page (HLD).
+
+    Use this when the conversation has been about designing a whole distributed system or the
+    concepts behind one: scale, throughput, sharding, replication, caching, queues, load
+    balancing, CAP, consistency, or designing a named product end to end. This is architecture
+    between services, not classes within one.
+
+    If the conversation has not clearly been about this one discipline -- or it has covered
+    more than one -- ask which to publish to rather than guessing.
+
+    Args:
+        title: The page name, e.g. "Design Instagram".
+        body: The note itself, as Markdown.
+        prompt: The question or brief.
+        section: "question" (default) for a "design X" problem; "concept" for a building block
+            studied on its own -- caching, CDNs, consistent hashing, CAP.
+        requirements: Functional and non-functional.
+        architecture: Components and data flow.
+        tradeoffs: What was given up, and why.
+        difficulty: easy, medium or hard.
+        frequency: Ask score 1-5. Set it.
+        topics: Tags for filtering.
+        companies: Companies known to ask this.
+        resources: [{"url": ..., "title": ...}]. Always title a video.
+        source_url: Where this was studied from.
+        on_conflict: "error" (default), "merge" or "replace".
+    """
+    return await _publish(
+        "system_design", "hld" if section == "concept" else "hld/questions", locals()
+    )
+
+
+@server.tool()
+async def publish_lld_design(
+    title: str,
+    body: str | None = None,
+    prompt: str | None = None,
+    requirements: str | None = None,
+    architecture: str | None = None,
+    tradeoffs: str | None = None,
+    difficulty: Literal["easy", "medium", "hard"] | None = None,
+    frequency: int = 0,
+    topics: list[str] | None = None,
+    companies: list[str] | None = None,
+    resources: list[dict[str, str]] | None = None,
+    source_url: str | None = None,
+    on_conflict: Literal["error", "merge", "replace"] = "error",
+) -> dict[str, Any]:
+    """
+    Publish a LOW-level design page (LLD).
+
+    Use this when the conversation has been about object-oriented design inside a single
+    service: classes, interfaces, inheritance, design patterns, SOLID, state machines,
+    concurrency within a process, or modelling something like a parking lot, elevator, vending
+    machine, chess game or card deck. This is classes and their relationships, not services and
+    their traffic.
+
+    If the conversation has not clearly been about this one discipline -- or it has covered
+    more than one -- ask which to publish to rather than guessing.
+
+    Args:
+        title: The page name, e.g. "Design a Parking Lot".
+        body: The note itself, as Markdown.
+        prompt: The question or brief.
+        requirements: What the design must do.
+        architecture: Classes, their relationships and the patterns used.
+        tradeoffs: What was given up, and why.
+        difficulty: easy, medium or hard.
+        frequency: Ask score 1-5. Set it.
+        topics: Tags for filtering.
+        companies: Companies known to ask this.
+        resources: [{"url": ..., "title": ...}]. Always title a video.
+        source_url: Where this was studied from.
+        on_conflict: "error" (default), "merge" or "replace".
+    """
+    return await _publish("system_design", "lld", locals())
+
+
+@server.tool()
+async def publish_behavioral_story(
+    title: str,
+    body: str | None = None,
+    prompt: str | None = None,
+    situation: str | None = None,
+    action: str | None = None,
+    outcome: str | None = None,
+    frequency: int = 0,
+    topics: list[str] | None = None,
+    companies: list[str] | None = None,
+    resources: list[dict[str, str]] | None = None,
+    source_url: str | None = None,
+    on_conflict: Literal["error", "merge", "replace"] = "error",
+) -> dict[str, Any]:
+    """
+    Publish a behavioural interview answer.
+
+    Use this when the conversation has been about your own experience rather than a technical
+    problem: conflict with a colleague, a failure, a project you led, leadership principles,
+    "tell me about a time when".
+
+    If the conversation has not clearly been about this one discipline -- or it has covered
+    more than one -- ask which to publish to rather than guessing.
+
+    Args:
+        title: The page name, e.g. "A production incident you handled".
+        body: The note itself, as Markdown.
+        prompt: The interview question this answers.
+        situation: Context, briefly.
+        action: What you specifically did.
+        outcome: Result, and what you learned.
+        frequency: Ask score 1-5. Set it.
+        topics: Tags for filtering.
+        companies: Companies known to ask this.
+        resources: [{"url": ..., "title": ...}].
+        source_url: Where this came from.
+        on_conflict: "error" (default), "merge" or "replace".
+    """
+    return await _publish("behavioral", "", locals())
+
+
+@server.tool()
+async def publish_page(
+    kind: Literal["dsa", "system_design", "behavioral", "concept", "company"],
+    title: str,
+    parent_path: str = "",
+    body: str | None = None,
+    prompt: str | None = None,
+    frequency: int = 0,
+    topics: list[str] | None = None,
+    companies: list[str] | None = None,
+    resources: list[dict[str, str]] | None = None,
+    source_url: str | None = None,
+    on_conflict: Literal["error", "merge", "replace"] = "error",
+) -> dict[str, Any]:
+    """
+    Publish to an explicit kind and section. Advanced; prefer the discipline-specific tools.
+
+    publish_dsa_question, publish_hld_design, publish_lld_design and publish_behavioral_story
+    file a page correctly without being told where. Use this only for something none of them
+    covers, such as a company's Notes page (kind "company", parent_path the company slug).
+
+    There is no "lld" kind: low-level design is kind "system_design" under parent_path "lld".
+
+    Args:
+        kind: Which tree the page belongs to.
+        title: The page name.
+        parent_path: Section within the kind, e.g. "hld/questions". Call prep_tree for valid ones.
+        body: The note, as Markdown.
+        prompt: The question or brief.
+        frequency: Ask score 1-5.
+        topics: Tags for filtering.
+        companies: Companies known to ask this.
+        resources: [{"url": ..., "title": ...}].
+        source_url: Where this came from.
+        on_conflict: "error" (default), "merge" or "replace".
+    """
+    return await _publish(kind, parent_path, locals())
 
 
 @server.tool()

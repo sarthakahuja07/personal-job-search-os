@@ -35,11 +35,23 @@ every tool call.
 |---|---|
 | `prep_tree` | Where pages can go, and which fields each discipline wants |
 | `prep_search` | Does this page already exist |
-| `prep_publish` | Write a new page |
+| `publish_dsa_question` | A coding problem |
+| `publish_hld_design` | Architecture between services |
+| `publish_lld_design` | Object-oriented design within one service |
+| `publish_behavioral_story` | An experience question |
+| `publish_page` | Explicit kind and section; the escape hatch |
 | `prep_append` | Add to a page that exists, without overwriting it |
 | `company_scaffold` | Create a company folder and its five pages |
 | `company_question_bank` | The table of what a company asks, and how often |
 | `company_question_index` | A DSA/HLD/LLD list, linked to the real pages |
+
+**One publishing tool per discipline, not one with a `kind` argument.** The generic tool asked
+the model to get two things right at once: `kind`, and a `parent_path` that does not follow from
+it. Low-level design exposes the problem -- there is no `kind: "lld"`, it is `system_design`
+filed under `lld` -- so the commonest mistake was the one a description could not prevent, since
+the tool had already been chosen before it was read. Splitting moves the routing into the tool
+name, where the model is choosing anyway, and each schema then carries only its own discipline's
+fields.
 
 Search is not a convenience. A write-only tool would have been half the code and would fill the
 tree with near-duplicates — "Consistent Hashing", "Consistent hashing", "Design: consistent

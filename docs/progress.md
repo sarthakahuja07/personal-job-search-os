@@ -494,6 +494,36 @@ than duplicating.
 `docs/mcp-guide.md` is the document handed to an assistant so "publish this" is a sufficient
 instruction.
 
+## One publishing tool per discipline
+
+The MCP servers had a single `prep_publish` taking a `kind`. That asked the model to get two
+things right at once -- `kind`, and a `parent_path` that does not follow from it -- and low-level
+design exposed it: there is no `kind: "lld"`, it is `system_design` filed under `lld`. So the
+commonest mistake was also the one a description could not prevent, because the tool had already
+been chosen before its description was read.
+
+Publishing is now `publish_dsa_question`, `publish_hld_design`, `publish_lld_design`,
+`publish_behavioral_story`, plus `publish_page` as an explicit escape hatch. The routing moved
+out of the arguments and into the tool name, where the model is choosing anyway. **The four
+discipline tools expose no `kind` and no `parent_path` at all** -- there is nothing left to get
+wrong once the tool is picked -- and each schema carries only its own discipline's fields, so the
+shape of the call is itself a statement about what kind of work it is.
+
+Ambiguity is handled where the model is actually reading: the rule to *ask rather than guess*
+when a session covered more than one discipline sits on every tool description, not only in the
+server instructions. A page filed under the wrong discipline is worse than a question, because
+the company index that should link it will never find it there.
+
+HLD keeps one argument, `section`: a "design X" problem goes to `hld/questions`, a building block
+studied on its own to `hld`. That is a distinction within one discipline rather than a routing
+decision between two, which is why it stayed an argument instead of becoming a fifth tool.
+
+No server change was needed -- the API already took `kind` and `parent_path`, and the tools now
+fill them in. Verified by calling each tool with no placement argument: LLD landed in
+`system-design/lld`, an HLD question in `hld/questions`, an HLD concept in `hld`, DSA and
+behavioral at their roots, and every page returned 200. Both servers were checked, and the
+remote one's schemas confirmed to expose neither `kind` nor `parent_path`.
+
 ## Known gaps
 
 - **Google is not crawled**, by choice: its `robots.txt` disallows the job results path. It shows
