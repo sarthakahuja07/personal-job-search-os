@@ -524,6 +524,34 @@ fill them in. Verified by calling each tool with no placement argument: LLD land
 behavioral at their roots, and every page returned 200. Both servers were checked, and the
 remote one's schemas confirmed to expose neither `kind` nor `parent_path`.
 
+## Tables rendered as a wall of text, and were one click from being destroyed
+
+A published question bank displayed as `QuestionAskedLast seen` followed by every row run
+together. The Markdown in the database was a perfectly good GFM table; the page was rendering it
+in the **rich editor**, which is built on tiptap StarterKit and has no table node, so
+`tiptap-markdown` parsed the table into loose text.
+
+The display was the visible half. The dangerous half is that the editor saves `toMarkdown()` on
+blur -- so clicking anywhere in that page, which is the natural thing to do while reading it,
+would have written the flattened text back and destroyed the table permanently.
+
+Two kinds of page are now rendered rather than edited:
+
+- **Generated pages** -- a company question bank or discipline index -- carry the rows they were
+  built from in `content.rows`. They were never safe to hand-edit anyway: the next publish
+  re-renders from those rows and would discard the edit without saying so.
+- **Any page containing a Markdown table**, detected by a header row followed by a `| --- |`
+  delimiter. Not being able to hand-edit a table is a real limitation. Shredding it on blur is a
+  bug, and between the two the limitation is obviously the better outcome.
+
+Everything else keeps the editor, which was checked rather than assumed: an ordinary DSA page and
+an empty company Notes page both still get it.
+
+**Not fixed, deliberately:** a table typed or pasted into an ordinary note still cannot be edited
+in place -- it will be shown read-only instead. Giving the editor real table support means adding
+four tiptap extensions plus a Markdown round-trip that has to survive serialisation, and a
+half-working round-trip would corrupt more than the current limitation does.
+
 ## Known gaps
 
 - **Google is not crawled**, by choice: its `robots.txt` disallows the job results path. It shows

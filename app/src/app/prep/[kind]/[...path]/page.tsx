@@ -11,7 +11,13 @@ import { Badge, Button, Card, PageHeader, SectionTitle, cx, inputStyles } from "
 import { getDb } from "@/db";
 import type { PrepStatus } from "@/db/schema";
 import { PREP_STATUSES } from "@/db/schema";
-import { STATUS_LABEL, STATUS_ORDER, kindBySegment } from "@/server/domain/prep";
+import { Markdown } from "@/components/markdown";
+import {
+  STATUS_LABEL,
+  STATUS_ORDER,
+  containsMarkdownTable,
+  kindBySegment,
+} from "@/server/domain/prep";
 import {
   ancestorsOf,
   childrenOf,
@@ -109,6 +115,21 @@ export default async function PrepPage({
   // is not practised and a folder is not either, but only a folder has a list -- conflating
   // them rendered an empty "0 pages" section on every book.
   const isPractisable = !hasChildren && !isReader;
+
+  /*
+    Some pages are rendered, not edited.
+
+    A generated page -- a company question bank or discipline index -- carries the rows it was
+    built from in `content.rows`, and the next publish re-renders it from those. Editing it by
+    hand would look like it worked and be discarded on the next call.
+
+    A page containing a Markdown table is read-only for a harder reason: the editor is built on
+    StarterKit, which has no table node, so it flattens a table into text *and saves that back
+    on blur*. One click into the page would destroy the table. Read-only is a limitation;
+    shredding the content is a bug.
+  */
+  const isGenerated = Array.isArray(content.rows);
+  const isRendered = !isReader && (isGenerated || containsMarkdownTable(item.body));
   const here = path.join("/");
   const hrefFor = (slug: string) => `/prep/${segment}/${[...path, slug].join("/")}`;
 
@@ -209,6 +230,17 @@ export default async function PrepPage({
           />
         ) : content.embed ? (
           <SiteEmbed url={String(content.embed)} title={item.title} />
+        ) : isRendered ? (
+          <div>
+            <article className="rounded-card border border-line bg-surface px-5 py-4">
+              <Markdown>{item.body ?? ""}</Markdown>
+            </article>
+            <p className="mt-2 text-[11.5px] text-ink-faint">
+              {isGenerated
+                ? "Generated from what was published to it. Publishing again updates it; edits made here would be replaced."
+                : "Shown as written. Pages containing a table are not editable here, because the editor cannot represent one."}
+            </p>
+          </div>
         ) : (
           <RichEditor
             id={item.id}

@@ -1,6 +1,8 @@
 import { describe, expect, it } from "vitest";
 
-import { KINDS, kindBySegment, kindOf, summarise, topicCounts } from "./prep";
+import { KINDS, kindBySegment, kindOf, summarise, topicCounts,
+  containsMarkdownTable,
+} from "./prep";
 
 describe("kind routing", () => {
   it.each([
@@ -110,5 +112,35 @@ describe("topicCounts", () => {
 
   it("handles items with no topics", () => {
     expect(topicCounts([{ topics: [] }])).toEqual([]);
+  });
+});
+
+describe("containsMarkdownTable", () => {
+  /*
+    This decides whether a page is editable. Getting it wrong in one direction makes a page
+    needlessly read-only; in the other it hands a table to an editor that flattens it and saves
+    the flattened text back on blur, destroying it.
+  */
+  it("finds a GFM table", () => {
+    expect(
+      containsMarkdownTable("# Bank\n\n| Question | Asked |\n| --- | --- |\n| Two Sum | 3/5 |"),
+    ).toBe(true);
+  });
+
+  it("accepts alignment colons and varying dash counts", () => {
+    expect(containsMarkdownTable("| A | B |\n|:---|---:|")).toBe(true);
+    expect(containsMarkdownTable("| A | B |\n| :-----: | -- |")).toBe(true);
+  });
+
+  it("does not mistake prose about pipes for a table", () => {
+    expect(containsMarkdownTable("Use `a | b` for a union.")).toBe(false);
+    // A row with no delimiter beneath it is not a table.
+    expect(containsMarkdownTable("| not | a table |\n| still | not |")).toBe(false);
+  });
+
+  it("is false for an empty or missing body", () => {
+    expect(containsMarkdownTable("")).toBe(false);
+    expect(containsMarkdownTable(null)).toBe(false);
+    expect(containsMarkdownTable(undefined)).toBe(false);
   });
 });

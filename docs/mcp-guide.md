@@ -135,6 +135,11 @@ month; you do not need to resend the first lot. A question reported again update
 keeps the *later* date. Use `mode: "replace"` only to rebuild a page from scratch — it discards
 everything already recorded.
 
+**Generated pages are read-only in the app.** The question bank and the three index pages are
+rendered from the rows you send, so publishing again is how they change; a person editing them by
+hand would have the edit replaced. That is also why the bank renders as a real table rather than
+as text.
+
 **`unlinked` in the response is the useful part.** Those are questions with no page yet. They
 render under "Not written yet" rather than being dropped, because that list is what to study
 next. Offer to write those pages.

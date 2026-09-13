@@ -100,6 +100,32 @@ export function buildPaths(
   return paths;
 }
 
+/**
+ * Does this page contain a Markdown table?
+ *
+ * The rich editor is built on StarterKit, which has no table node. `tiptap-markdown` therefore
+ * parses a GFM table into loose text and the page renders as "QuestionAskedLast seen" run
+ * together -- and, far worse, the editor saves that flattened text back on blur, so a single
+ * click into the page destroys the table permanently.
+ *
+ * A page with a table is shown read-only for that reason. Not being able to hand-edit one is a
+ * real limitation; silently shredding it is a bug.
+ *
+ * Looks for a header row followed by the `| --- |` delimiter, which is what makes a table a
+ * table in GFM. A line of pipes on its own is prose about pipes.
+ */
+export function containsMarkdownTable(body: string | null | undefined): boolean {
+  if (!body) return false;
+  const lines = body.split("\n");
+  for (let i = 0; i < lines.length - 1; i++) {
+    const header = lines[i].trim();
+    const delimiter = lines[i + 1].trim();
+    if (!header.startsWith("|") || !delimiter.startsWith("|")) continue;
+    if (/^\|(\s*:?-{2,}:?\s*\|)+$/.test(delimiter)) return true;
+  }
+  return false;
+}
+
 export function kindBySegment(segment: string): KindMeta | undefined {
   return KINDS.find((k) => k.segment === segment);
 }
