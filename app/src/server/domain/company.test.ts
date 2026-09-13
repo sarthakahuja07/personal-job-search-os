@@ -9,7 +9,12 @@
 
 import { describe, expect, it } from "vitest";
 
-import { renderQuestionBank, renderQuestionIndex, type BankEntry } from "./company";
+import {
+  mergeEntries,
+  renderQuestionBank,
+  renderQuestionIndex,
+  type BankEntry,
+} from "./company";
 
 const entry = (over: Partial<BankEntry> = {}): BankEntry => ({
   question: "Design a Rate Limiter",
@@ -98,5 +103,67 @@ describe("renderQuestionIndex", () => {
 
   it("says so when there are no questions", () => {
     expect(renderQuestionIndex("Amazon", "dsa", [])).toContain("_No questions recorded yet._");
+  });
+});
+
+describe("mergeEntries", () => {
+  /*
+    This is the function that makes a page appendable, and the one that would lose work if it
+    were wrong. Recording a company's HLD questions today and its LLD questions next week is the
+    normal way this gets used, and the later session has no copy of the earlier list -- so
+    anything that drops the first half fails silently and looks like it worked.
+  */
+  it("keeps what is already there when a later call adds a different discipline", () => {
+    const existing = [entry({ question: "Instagram", discipline: "hld" })];
+    const incoming = [entry({ question: "Parking Lot", discipline: "lld" })];
+
+    const merged = mergeEntries(existing, incoming);
+
+    expect(merged.map((e) => e.question).sort()).toEqual(["Instagram", "Parking Lot"]);
+  });
+
+  it("treats the same question written differently as one row", () => {
+    const merged = mergeEntries(
+      [entry({ question: "LRU Cache", discipline: "dsa" })],
+      [entry({ question: "lru cache.", discipline: "dsa", frequency: 5 })],
+    );
+
+    expect(merged).toHaveLength(1);
+    expect(merged[0].frequency).toBe(5);
+    // The tidy original spelling survives the careless re-report.
+    expect(merged[0].question).toBe("LRU Cache");
+  });
+
+  it("keeps the later sighting regardless of which call it arrived in", () => {
+    const older = [entry({ question: "Two Sum", lastAsked: "2026-09-01" })];
+    const newer = [entry({ question: "Two Sum", lastAsked: "2026-01-05" })];
+
+    // "Last asked" means the most recent one known, not the most recently mentioned.
+    expect(mergeEntries(older, newer)[0].lastAsked).toBe("2026-09-01");
+    expect(mergeEntries(newer, older)[0].lastAsked).toBe("2026-09-01");
+  });
+
+  it("does not blank a recorded rating when a later report omits one", () => {
+    const merged = mergeEntries(
+      [entry({ question: "Two Sum", frequency: 4 })],
+      // 0 is the schema default for frequency, so an unrated re-report arrives as 0.
+      [entry({ question: "Two Sum", frequency: 0, lastAsked: null })],
+    );
+
+    expect(merged[0].frequency).toBe(4);
+  });
+
+  it("keeps a date already recorded when the new report has none", () => {
+    const merged = mergeEntries(
+      [entry({ question: "Two Sum", lastAsked: "2026-07-15" })],
+      [entry({ question: "Two Sum", lastAsked: null })],
+    );
+
+    expect(merged[0].lastAsked).toBe("2026-07-15");
+  });
+
+  it("is a no-op against an empty page", () => {
+    const incoming = [entry({ question: "Instagram" })];
+    expect(mergeEntries([], incoming)).toEqual(incoming);
   });
 });

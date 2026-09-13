@@ -65,6 +65,7 @@ export async function POST(request: Request): Promise<Response> {
             frequency: e.frequency,
             lastAsked: e.last_asked ?? null,
           })),
+          parsed.data.mode,
         );
         return Response.json(result);
       }
@@ -84,6 +85,7 @@ export async function POST(request: Request): Promise<Response> {
             frequency: q.frequency,
             lastAsked: q.last_asked ?? null,
           })),
+          parsed.data.mode,
         );
         return Response.json(result);
       }

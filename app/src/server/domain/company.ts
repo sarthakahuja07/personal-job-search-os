@@ -139,6 +139,70 @@ export function renderQuestionIndex(
 }
 
 /**
+ * What a question is called, for the purpose of deciding it is the same question.
+ *
+ * Case and surrounding punctuation vary between sessions -- "LRU Cache", "lru cache", "LRU
+ * cache." are one question -- and treating them as three is how a bank accumulates the same
+ * row three times.
+ */
+const identity = (title: string) =>
+  title.toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
+
+/**
+ * Merge newly reported questions into what a page already holds.
+ *
+ * This is what makes a page appendable. Asking for a company's HLD questions today and its LLD
+ * questions next week has to add to the page rather than replace it, because the next session
+ * will not have the first one's list to resend -- and a tool that silently dropped the earlier
+ * half would look like it worked.
+ *
+ * When the same question is reported twice, the new report wins on anything it states and the
+ * old value survives anything it omits. Two exceptions:
+ *
+ *   the date     the *later* sighting wins regardless of which call it arrived in, because
+ *                "last asked" means the most recent one known, not the most recently mentioned.
+ *   the name     the first spelling wins. A re-report is often typed more carelessly than the
+ *                original -- "lru cache" for "LRU Cache" -- and letting it through would mean
+ *                the page's titles slowly degrade every time a question is mentioned again.
+ */
+export function mergeEntries<T extends { question: string; lastAsked?: string | null }>(
+  existing: T[],
+  incoming: T[],
+): T[] {
+  const merged = new Map<string, T>();
+  for (const entry of existing) merged.set(identity(entry.question), entry);
+
+  for (const entry of incoming) {
+    const key = identity(entry.question);
+    const previous = merged.get(key);
+    if (!previous) {
+      merged.set(key, entry);
+      continue;
+    }
+
+    const dates = [previous.lastAsked, entry.lastAsked].filter(Boolean) as string[];
+    merged.set(key, {
+      ...previous,
+      ...Object.fromEntries(
+        // A field the caller left out must not blank one that is already recorded. Zero counts
+        // as "not stated" here: it is the schema default for frequency, so a caller reporting a
+        // new sighting without a rating would otherwise wipe the rating already on the row.
+        Object.entries(entry).filter(
+          ([, v]) => v !== undefined && v !== null && !(typeof v === "number" && v === 0),
+        ),
+      ),
+      // ISO dates sort lexicographically, so max is the latest.
+      lastAsked: dates.length ? dates.sort().at(-1)! : null,
+      // Identity fields keep the spelling they were first recorded with.
+      question: previous.question,
+      ...("title" in previous ? { title: (previous as { title: unknown }).title } : {}),
+    } as T);
+  }
+
+  return [...merged.values()];
+}
+
+/**
  * Which tree a discipline's questions live in.
  *
  * HLD and LLD are both `system_design`; they are sections of it, not kinds. Encoding that here

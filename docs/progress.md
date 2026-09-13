@@ -470,8 +470,29 @@ guards on `fields.some(...)`, so none is a supported shape; the test now pins th
 *practised* disciplines keep their fields and that any kind declaring fields declares them
 completely.
 
+**The generated pages are appendable, which they were not at first.** The first cut replaced the
+page on every write, so recording a company's HLD questions today and its LLD questions next
+month would silently discard the first lot -- and the later session has no copy to resend. That
+is the normal way this gets used, so the default was wrong.
+
+The fix is to store the structured rows in `content` and render the Markdown from them. Parsing
+the table back out of the page would have been the alternative, and is exactly as fragile as it
+sounds. Keeping the rows has a second benefit: every write re-resolves every link, so a question
+that was "Not written yet" becomes a link the moment its page exists.
+
+Merging has two rules that are not obvious. The **later** date wins regardless of which call it
+arrived in, because "last asked" means the most recent sighting known, not the most recently
+mentioned. And the **first** spelling of a question wins, because a re-report is typically typed
+more carelessly than the original -- "lru cache" for "LRU Cache" -- and letting it through would
+degrade the page's titles a little every time a question was mentioned again.
+
 Verified end to end: scaffolding Amazon created all five pages, a five-question bank linked four
-and named the fifth, an HLD index linked two of three, and every generated link returns 200.
+and named the fifth, an HLD index linked two of three, every generated link returns 200, and
+three successive single-question calls accumulated 2 → 3 → 4 with a re-report updating rather
+than duplicating.
+
+`docs/mcp-guide.md` is the document handed to an assistant so "publish this" is a sufficient
+instruction.
 
 ## Known gaps
 

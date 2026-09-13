@@ -19,9 +19,19 @@ export const bankEntrySchema = z.object({
   last_asked: isoDate.nullish(),
 });
 
+/**
+ * Merge by default, never replace by default.
+ *
+ * A page is built up over several sessions -- HLD questions today, LLD next week -- and the
+ * later session does not have the earlier list to resend. Replacing by default would make the
+ * obvious usage silently destructive.
+ */
+const mode = z.enum(["merge", "replace"]).optional().default("merge");
+
 export const questionBankSchema = z.object({
   company: z.string().min(1).max(120),
   entries: z.array(bankEntrySchema).max(300),
+  mode,
 });
 
 export const questionIndexSchema = z.object({
@@ -36,4 +46,5 @@ export const questionIndexSchema = z.object({
       }),
     )
     .max(300),
+  mode,
 });

@@ -295,12 +295,16 @@ async def company_scaffold(name: str) -> dict[str, Any]:
 async def company_question_bank(
     company: str,
     entries: list[dict[str, Any]],
+    mode: Literal["merge", "replace"] = "merge",
 ) -> dict[str, Any]:
     """
-    Write a company's Question Bank: a table per discipline of what it asks.
+    Add questions to a company's Question Bank: a table per discipline of what it asks.
 
-    Questions that already have a page are linked automatically -- pass names, not URLs. This
-    *replaces* the page, so send the whole bank each time rather than only what is new.
+    Questions that already have a page are linked automatically -- pass names, not URLs.
+
+    Adds by default, so you can record this company's HLD questions now and its LLD or DSA
+    questions weeks later without resending the first lot. A question reported again keeps the
+    later "last asked" date and takes the newer rating.
 
     Args:
         company: The company, which must already have been scaffolded.
@@ -308,11 +312,13 @@ async def company_question_bank(
                    "frequency": 0-5, "last_asked": "YYYY-MM-DD"}].
             frequency is how often this company asks it and drives the sort; last_asked is when
             it was most recently seen.
+        mode: "merge" (default) adds to what is already recorded. "replace" discards every
+            existing question, so use it only to rebuild a bank from scratch.
     """
     return await _request(
         "POST",
         "/api/prep/company",
-        json={"op": "question_bank", "company": company, "entries": entries},
+        json={"op": "question_bank", "company": company, "entries": entries, "mode": mode},
     )
 
 
@@ -321,21 +327,23 @@ async def company_question_index(
     company: str,
     discipline: Literal["dsa", "hld", "lld"],
     questions: list[dict[str, Any]],
+    mode: Literal["merge", "replace"] = "merge",
 ) -> dict[str, Any]:
     """
-    Write one of a company's index pages: its DSA, HLD or LLD questions, linked to real pages.
+    Add questions to one of a company's index pages: DSA, HLD or LLD, linked to real pages.
 
     Titles are resolved against the actual tree server-side, so pass names rather than URLs --
     "Design a rate limiter" will find a page called "Rate Limiter". Questions with no page yet
     are kept under "Not written yet" and returned in `unlinked`; that list is what to study
     next, which is why they are never silently dropped.
 
-    This replaces the page, so send the full list each time.
+    Adds by default, so a later session need not resend what is already on the page.
 
     Args:
         company: The company, which must already have been scaffolded.
         discipline: Which index to write -- dsa, hld or lld.
         questions: [{"title": str, "frequency": 0-5, "last_asked": "YYYY-MM-DD"}].
+        mode: "merge" (default) adds to what is there. "replace" discards it.
     """
     return await _request(
         "POST",
@@ -345,6 +353,7 @@ async def company_question_index(
             "company": company,
             "discipline": discipline,
             "questions": questions,
+            "mode": mode,
         },
     )
 

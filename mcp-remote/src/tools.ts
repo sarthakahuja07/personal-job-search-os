@@ -271,15 +271,23 @@ export const TOOLS = [
     name: "company_question_bank",
     title: "Write a company's question bank",
     description:
-      "Replace a company's Question Bank page with a table per discipline: question, how often " +
-      "it is asked, and when it was last seen. Questions that already have a page are linked " +
-      "automatically. Send the whole bank each time -- this replaces the page rather than " +
-      "appending to it.",
-    annotations: { readOnlyHint: false, destructiveHint: true },
+      "Add questions to a company's Question Bank: a table per discipline of question, how " +
+      "often it is asked, and when it was last seen. Questions that already have a page are " +
+      "linked automatically -- pass names, not URLs. Adds by default, so you can record HLD " +
+      "questions now and LLD ones later without resending the first lot; a question reported " +
+      "again updates its rating and keeps the later date.",
+    annotations: { readOnlyHint: false, destructiveHint: false, idempotentHint: true },
     inputSchema: {
       type: "object",
       properties: {
         company: { type: "string" },
+        mode: {
+          type: "string",
+          enum: ["merge", "replace"],
+          description:
+            "merge (default) adds to what is there. replace discards every question already " +
+            "recorded, so only use it to rebuild a bank from scratch.",
+        },
         entries: { type: "array", items: {
             type: "object",
             properties: {
@@ -307,22 +315,29 @@ export const TOOLS = [
         op: "question_bank",
         company: args.company,
         entries: args.entries,
+        mode: args.mode ?? "merge",
       }),
   },
   {
     name: "company_question_index",
     title: "Write a company's DSA, HLD or LLD index",
     description:
-      "Replace one of a company's index pages with a list of questions, each linked to its real " +
-      "page in the DSA, HLD or LLD tree. Titles are resolved server-side, so pass names rather " +
-      "than URLs. Questions with no page yet are kept under 'Not written yet' and returned in " +
-      "`unlinked` -- that list is what to study next.",
-    annotations: { readOnlyHint: false, destructiveHint: true },
+      "Add questions to one of a company's index pages -- DSA, HLD or LLD -- each linked to its " +
+      "real page in that tree. Titles are resolved server-side, so pass names rather than URLs. " +
+      "Adds by default, so a later session need not resend what is already there. Questions " +
+      "with no page yet are kept under 'Not written yet' and returned in `unlinked`; that list " +
+      "is what to study next.",
+    annotations: { readOnlyHint: false, destructiveHint: false, idempotentHint: true },
     inputSchema: {
       type: "object",
       properties: {
         company: { type: "string" },
         discipline: { type: "string", enum: ["dsa", "hld", "lld"] },
+        mode: {
+          type: "string",
+          enum: ["merge", "replace"],
+          description: "merge (default) adds to what is there. replace discards it.",
+        },
         questions: { type: "array", items: {
             type: "object",
             properties: {
@@ -347,6 +362,7 @@ export const TOOLS = [
         company: args.company,
         discipline: args.discipline,
         questions: args.questions,
+        mode: args.mode ?? "merge",
       }),
   },
 ] as const;

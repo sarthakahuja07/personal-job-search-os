@@ -18,6 +18,7 @@ import {
   COMPANY_PAGES,
   DISCIPLINE_SOURCE,
   DISCIPLINE_TITLE,
+  mergeEntries,
   renderQuestionBank,
   renderQuestionIndex,
   type BankEntry,
@@ -98,17 +99,32 @@ async function requireCompany(db: Db, name: string) {
   return folder;
 }
 
-/** Overwrite one of a company's generated pages. */
+/**
+ * Write a generated page, keeping the structured rows it was rendered from.
+ *
+ * The Markdown is an artefact; `content` is the record. Storing only the rendered table would
+ * mean the next call had nothing to merge with -- appending LLD questions next week would have
+ * to parse the HLD table back out of the page, which is exactly as fragile as it sounds.
+ *
+ * Keeping the rows has a second benefit that matters more over time: every write re-resolves
+ * every link, so a question that was "Not written yet" becomes a link the moment its page
+ * exists, without anyone having to remember to refresh it.
+ */
 async function writeGenerated(
   db: Db,
   companyId: string,
   slug: string,
   title: string,
   body: string,
+  rows: unknown,
 ) {
   const existing = await pageBySlug(db, "company", companyId, slug);
   if (existing) {
-    await updatePage(db, existing.id, { body, title });
+    await updatePage(db, existing.id, {
+      body,
+      title,
+      content: { ...(existing.content ?? {}), rows },
+    });
     return { id: existing.id, created: false };
   }
   const page = await insertPage(db, {
@@ -118,9 +134,16 @@ async function writeGenerated(
     parentId: companyId,
     position: await nextPosition(db, companyId),
     body,
-    content: {},
+    content: { rows },
   });
   return { id: page.id, created: true };
+}
+
+/** The rows a generated page was last built from. */
+async function storedRows<T>(db: Db, companyId: string, slug: string): Promise<T[]> {
+  const page = await pageBySlug(db, "company", companyId, slug);
+  const rows = page?.content?.rows;
+  return Array.isArray(rows) ? (rows as T[]) : [];
 }
 
 /**
@@ -171,14 +194,30 @@ async function resolve(
 /** URL segment for a kind. Only the two that hold questions are reachable from here. */
 const segmentFor = (kind: PrepKind) => (kind === "system_design" ? "system-design" : kind);
 
-export async function publishQuestionBank(db: Db, company: string, entries: BankEntry[]) {
+export async function publishQuestionBank(
+  db: Db,
+  company: string,
+  entries: BankEntry[],
+  mode: "merge" | "replace" = "merge",
+) {
   const folder = await requireCompany(db, company);
+
+  // Merge by default. A later session asking to add LLD questions will not have the HLD list to
+  // resend, so replacing would silently discard it.
+  const previous = await storedRows<BankEntry>(db, folder.id, "question-bank");
+  const all =
+    mode === "replace"
+      ? entries
+      : mergeEntries(
+          previous.map((e) => ({ ...e, path: undefined })),
+          entries,
+        );
 
   // Bank rows are linked too, using the same resolution as the index pages, so the two views
   // of the same question can never point at different places.
   const resolved: BankEntry[] = [];
   for (const discipline of ["dsa", "hld", "lld"] as Discipline[]) {
-    const forKind = entries.filter((e) => e.discipline === discipline);
+    const forKind = all.filter((e) => e.discipline === discipline);
     if (forKind.length === 0) continue;
     const links = await resolve(
       db,
@@ -193,11 +232,22 @@ export async function publishQuestionBank(db: Db, company: string, entries: Bank
   }
 
   const body = renderQuestionBank(folder.title, resolved);
-  const result = await writeGenerated(db, folder.id, "question-bank", "Question Bank", body);
+  // Stored without the resolved paths: those are derived, and freezing them would leave a stale
+  // link behind the first time a page moved.
+  const result = await writeGenerated(
+    db,
+    folder.id,
+    "question-bank",
+    "Question Bank",
+    body,
+    resolved.map(({ path: _path, ...row }) => row),
+  );
 
   return {
     company: folder.title,
     url: `/prep/company/${folder.slug}/question-bank`,
+    mode,
+    added: resolved.length - previous.length > 0 ? resolved.length - previous.length : 0,
     entries: resolved.length,
     linked: resolved.filter((e) => e.path).length,
     unlinked: resolved.filter((e) => !e.path).map((e) => e.question),
@@ -210,9 +260,26 @@ export async function publishQuestionIndex(
   company: string,
   discipline: Discipline,
   questions: { title: string; frequency?: number; lastAsked?: string | null }[],
+  mode: "merge" | "replace" = "merge",
 ) {
   const folder = await requireCompany(db, company);
-  const links = await resolve(db, discipline, questions);
+
+  const previous = await storedRows<{
+    title: string;
+    frequency?: number;
+    lastAsked?: string | null;
+  }>(db, folder.id, discipline);
+
+  // mergeEntries keys on `question`; an index row calls the same thing `title`.
+  const all =
+    mode === "replace"
+      ? questions
+      : mergeEntries(
+          previous.map((q) => ({ ...q, question: q.title })),
+          questions.map((q) => ({ ...q, question: q.title })),
+        ).map(({ question: _question, ...q }) => q);
+
+  const links = await resolve(db, discipline, all);
   const body = renderQuestionIndex(folder.title, discipline, links);
   const result = await writeGenerated(
     db,
@@ -220,12 +287,15 @@ export async function publishQuestionIndex(
     discipline,
     DISCIPLINE_TITLE[discipline],
     body,
+    links.map(({ path: _path, ...row }) => row),
   );
 
   return {
     company: folder.title,
     discipline,
     url: `/prep/company/${folder.slug}/${discipline}`,
+    mode,
+    added: links.length - previous.length > 0 ? links.length - previous.length : 0,
     questions: links.length,
     linked: links.filter((q) => q.path).length,
     // Named, not counted. These are the questions with no page yet, which is the list of what
