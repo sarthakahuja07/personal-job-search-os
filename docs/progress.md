@@ -3,7 +3,7 @@
 The durable state of this project. Updated whenever something meaningful lands, so no context is
 lost between sessions (PRD §73). Picking this up cold: read `CLAUDE.md` first, then this file.
 
-**Last updated:** 2026-09-12
+**Last updated:** 2026-09-13
 
 ---
 
@@ -342,6 +342,51 @@ repeated a few thousand times.
 **Known limit.** `<main>` is capped at `max-w-[1100px]`, which suits the reading-shaped pages but
 means a very wide monitor shows about four of the seven columns and scrolls for the rest. Raising
 that cap is a design decision about every page, not just this one, so it has not been taken here.
+
+## Publishing study notes from an assistant
+
+Studying happens in a chat with an AI; the notes belonged in the prep tree and were being
+retyped. There is now an MCP server (`mcp/`) that publishes them directly — body, reference
+videos, difficulty, ask score, topics, filed under the right section.
+
+**It runs locally, over stdio, and that is the whole security design.** The app is behind
+Cloudflare Access, so a local server can hold the Access service token and the ingest bearer
+token exactly as the crawler does. A hosted MCP server or a ChatGPT Action would instead need a
+path-scoped Access bypass, turning a write endpoint into the only copy of this data into
+something reachable by anyone who guesses a token — to save a copy-paste. Rejected.
+
+The cost of that choice, stated plainly: this works with clients that launch a local process
+(Claude Code, Claude Desktop) and **not** with ChatGPT in a browser.
+
+**Four tools, not one.** `prep_tree`, `prep_search`, `prep_publish`, `prep_append`. A write-only
+tool would have been half the code and would have filled the tree with near-duplicates —
+"Consistent Hashing", "Consistent hashing", "Design: consistent hashing" — because a model with
+no way to look has no way to know. Search is what makes publish trustworthy.
+
+Three rules make it safe to leave unattended:
+
+- **A duplicate is refused by default.** `on_conflict` has to be set deliberately. An assistant
+  that silently overwrites is how a week of notes disappears.
+- **`merge` never replaces a body that already exists.** It fills empty fields and adds
+  resources, so a hand-written note survives a second pass over the same topic.
+- **Pages are placed by path, not id.** A model cannot know a UUID; asking for one guarantees
+  either a hallucination or everything landing at the root.
+
+**`prep_tree` took three attempts, and the wrong ones are the instructive part.** "Pages with
+children" is the obvious rule and it hides the one destination that matters — a section nobody
+has filled yet, which is exactly where the first page goes. LLD was invisible. "Also every
+top-level page" buries the seven real sections under 36 DSA and behavioral notes, because those
+disciplines are flat. "Also anything without a prompt or content" lets HLD's question pages
+through, because they keep their notes in `body`. The rule that holds is structural: a kind
+whose tree has depth has real sections at its top level; a flat kind has only notes there.
+
+Verified by running it: a page published into LLD with two YouTube links and an article came
+back with both video ids extracted and the publisher named, a second publish of the same title
+was refused with a message saying what to do instead, and `prep_append` added a third link while
+leaving the original body untouched.
+
+**Low-level design is not a new kind.** It is `system_design` under `parent_path: "lld"`. The
+unused `concept` kind in `PREP_KINDS` is still the slot if LLD ever earns its own fields.
 
 ## Known gaps
 

@@ -38,7 +38,7 @@ jobs:
           cache: pip
       - run: pip install -r crawler/requirements.txt
       - name: Lint
-        run: ruff check crawler scripts
+        run: ruff check crawler scripts mcp
       - name: Tests
         run: pytest crawler/tests -q
 

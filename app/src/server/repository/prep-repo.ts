@@ -12,6 +12,7 @@ import type { Db } from "@/db";
 import {
   prepItems,
   prepResources,
+  type NewPrepItem,
   type NewPrepResource,
   type PrepDifficulty,
   type PrepKind,
@@ -339,4 +340,101 @@ export async function movePage(
 export async function getById(db: Db, id: string) {
   const rows = await db.select().from(prepItems).where(eq(prepItems.id, id)).limit(1);
   return rows[0] ?? null;
+}
+
+/**
+ * A page with this slug already under this parent, if there is one.
+ *
+ * The unique index is (kind, coalesce(parent_id,''), slug), so this is the exact question the
+ * database would answer with a constraint violation -- asked first, so the caller can merge or
+ * refuse deliberately rather than catching an error and guessing what it meant.
+ */
+export async function pageBySlug(
+  db: Db,
+  kind: PrepKind,
+  parentId: string | null,
+  slug: string,
+) {
+  const rows = await db
+    .select()
+    .from(prepItems)
+    .where(
+      and(
+        eq(prepItems.kind, kind),
+        eq(prepItems.slug, slug),
+        parentId === null ? isNull(prepItems.parentId) : eq(prepItems.parentId, parentId),
+      ),
+    )
+    .limit(1);
+  return rows[0] ?? null;
+}
+
+/** Next free position among a parent's children, so an imported page lands at the end. */
+export async function nextPosition(db: Db, parentId: string | null): Promise<number> {
+  const rows = await db
+    .select({ max: sql<number | null>`MAX(${prepItems.position})` })
+    .from(prepItems)
+    .where(parentId === null ? isNull(prepItems.parentId) : eq(prepItems.parentId, parentId));
+  return (rows[0]?.max ?? -1) + 1;
+}
+
+export async function insertPage(db: Db, row: NewPrepItem) {
+  const created = await db.insert(prepItems).values(row).returning();
+  return created[0];
+}
+
+export async function updatePage(
+  db: Db,
+  id: string,
+  patch: Partial<NewPrepItem>,
+): Promise<void> {
+  await db
+    .update(prepItems)
+    .set({ ...patch, updatedAt: new Date() })
+    .where(eq(prepItems.id, id));
+}
+
+/**
+ * Pages matching free text, for answering "do I already have this?" before writing a new one.
+ *
+ * Title and prompt only. Searching bodies would match every page that merely *mentions*
+ * consistent hashing, which is the opposite of what a duplicate check wants.
+ */
+export async function searchPages(db: Db, query: string, kind?: PrepKind, limit = 20) {
+  const like = `%${query.trim().toLowerCase()}%`;
+  return db
+    .select({
+      id: prepItems.id,
+      kind: prepItems.kind,
+      slug: prepItems.slug,
+      title: prepItems.title,
+      parentId: prepItems.parentId,
+      difficulty: prepItems.difficulty,
+      frequency: prepItems.frequency,
+      status: prepItems.status,
+      topics: prepItems.topics,
+    })
+    .from(prepItems)
+    .where(
+      and(
+        kind ? eq(prepItems.kind, kind) : undefined,
+        sql`(lower(${prepItems.title}) LIKE ${like} OR lower(coalesce(${prepItems.prompt}, '')) LIKE ${like})`,
+      ),
+    )
+    .orderBy(desc(prepItems.frequency), asc(prepItems.title))
+    .limit(limit);
+}
+
+/** Every page, flat, for building slash paths without a query per level. */
+export async function allPagePaths(db: Db) {
+  return db
+    .select({
+      id: prepItems.id,
+      kind: prepItems.kind,
+      slug: prepItems.slug,
+      title: prepItems.title,
+      parentId: prepItems.parentId,
+    })
+    .from(prepItems)
+    .orderBy(asc(prepItems.kind), asc(prepItems.position), asc(prepItems.title));
 }

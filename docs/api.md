@@ -111,6 +111,54 @@ preview **without writing anything**. Used to prove an adapter works before a co
 
 ---
 
+## Prep (study notes)
+
+The write path from a study assistant into the prep tree, used by the local MCP server in
+`mcp/`. Same two-layer auth as ingest: Access in front, bearer token in the handler. Nothing
+here is publicly reachable — the MCP server runs on Sarthak's machine and holds both.
+
+### `GET /api/prep/tree`
+
+Where a page can be published, and what each discipline expects.
+
+Returns `kinds` (with each one's structured `content` fields) and `folders` — the sections a
+page can be filed under, as `parent_path` strings.
+
+`folders` is deliberately not every page. A destination is a page with children, plus the top
+level of any kind whose tree has depth. Two looser rules were tried and both made the list
+useless: "has children" hides a section nobody has filled yet (LLD), and "also every top-level
+page" buries the seven real sections under 36 flat DSA and behavioral notes.
+
+### `GET /api/prep/pages?q=<text>&kind=<kind>`
+
+Existing pages matching free text, so a duplicate can be found before it is written. Matches
+titles and prompts only — searching bodies would match every page that merely *mentions* the
+topic, which is the opposite of a duplicate check.
+
+### `POST /api/prep/pages`
+
+Publish one page with its resources. Body is `prepPageSchema` (`src/server/schemas/prep-import.ts`).
+
+| Field | Notes |
+|---|---|
+| `kind` | `dsa`, `system_design`, `behavioral`, `concept` |
+| `title` | Required. The slug is derived from it, and is the page's address |
+| `parent_path` | Slug path *within* the kind, e.g. `hld/questions`. Empty means top level |
+| `frequency` | The "ask score", 1–5. Drives the default sort, so 0 makes a page invisible |
+| `difficulty`, `topics`, `companies` | Filters the board is read by |
+| `body` | The note, as Markdown |
+| `content` | Discipline fields — `pattern`/`complexity` (DSA), `requirements`/`architecture`/`tradeoffs` (system design), `situation`/`action`/`outcome` (behavioral) |
+| `resources` | `[{url, title}]`. YouTube links are stored as videos with the id extracted, by the same code that classifies a pasted link |
+| `on_conflict` | `error` (default), `merge`, `replace` |
+
+Returns `201` on create, `200` on merge/replace, `404` if `parent_path` does not resolve, and
+`409` if the page exists and `on_conflict` is `error`.
+
+The conflict default is the important part. A study assistant runs unattended over notes that
+took weeks to write: silently overwriting loses work and silently duplicating makes the tree
+unusable, and both look like success from the caller's side. `merge` fills only empty fields and
+adds resources, so a hand-written body survives a second pass over the same topic.
+
 ## Notifications
 
 ### `GET /api/notifications/outbox`

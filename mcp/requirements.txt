@@ -1,0 +1,5 @@
+# The MCP server runs as its own process, launched by the MCP client, so it gets its own
+# virtualenv. Sharing the crawler's would drag the protocol SDK -- and its pydantic floor --
+# into the thing whose correctness the whole project depends on.
+mcp==2.2.0
+httpx==0.28.1
