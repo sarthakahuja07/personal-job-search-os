@@ -21,7 +21,7 @@ const entry = (over: Partial<BankEntry> = {}): BankEntry => ({
   discipline: "hld",
   frequency: 3,
   lastAsked: "2026-08-01",
-  path: null,
+  sourceUrl: null,
   ...over,
 });
 
@@ -41,15 +41,24 @@ describe("renderQuestionBank", () => {
     expect(md).not.toContain("## HLD");
   });
 
-  it("links a question that has a page and leaves one that does not as text", () => {
+  it("links the source it was found at, not our own page for the question", () => {
     const md = renderQuestionBank("Amazon", [
-      entry({ question: "Instagram", path: "system-design/hld/questions/instagram" }),
-      entry({ question: "Nothing written yet", path: null }),
+      entry({ question: "Instagram", sourceUrl: "https://leetcode.com/discuss/interview/123" }),
+      entry({ question: "Heard in a phone screen", sourceUrl: null }),
     ]);
 
-    expect(md).toContain("[Instagram](/prep/system-design/hld/questions/instagram)");
-    expect(md).toContain("| Nothing written yet |");
-    expect(md).not.toContain("[Nothing written yet]");
+    // Named by publisher rather than shown as a raw URL.
+    expect(md).toContain("[LeetCode](https://leetcode.com/discuss/interview/123)");
+    // The bank never links inward -- that is what the discipline indexes are for.
+    expect(md).not.toContain("/prep/");
+    expect(md).toContain("| Heard in a phone screen |");
+  });
+
+  it("falls back to the host when the publisher is not one it knows", () => {
+    const md = renderQuestionBank("Amazon", [
+      entry({ sourceUrl: "https://blog.someone.dev/a/post" }),
+    ]);
+    expect(md).toContain("[blog.someone.dev](https://blog.someone.dev/a/post)");
   });
 
   it("escapes a pipe in a title instead of breaking the table around it", () => {
@@ -59,7 +68,8 @@ describe("renderQuestionBank", () => {
     // Three columns means four *unescaped* delimiters. An unescaped pipe in the title would
     // make it five, and the table would silently gain a column.
     const row = md.split("\n").find((l) => l.includes("Producer"))!;
-    expect(row.match(/(?<!\\)\|/g)!.length).toBe(4);
+    // Four columns means five unescaped delimiters; an unescaped pipe in the title makes six.
+    expect(row.match(/(?<!\\)\|/g)!.length).toBe(5);
   });
 
   it("says so when there is nothing, rather than emitting an empty table", () => {

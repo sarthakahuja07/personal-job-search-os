@@ -205,52 +205,26 @@ export async function publishQuestionBank(
   // Merge by default. A later session asking to add LLD questions will not have the HLD list to
   // resend, so replacing would silently discard it.
   const previous = await storedRows<BankEntry>(db, folder.id, "question-bank");
-  const all =
-    mode === "replace"
-      ? entries
-      : mergeEntries(
-          previous.map((e) => ({ ...e, path: undefined })),
-          entries,
-        );
+  const all = mode === "replace" ? entries : mergeEntries(previous, entries);
 
-  // Bank rows are linked too, using the same resolution as the index pages, so the two views
-  // of the same question can never point at different places.
-  const resolved: BankEntry[] = [];
-  for (const discipline of ["dsa", "hld", "lld"] as Discipline[]) {
-    const forKind = all.filter((e) => e.discipline === discipline);
-    if (forKind.length === 0) continue;
-    const links = await resolve(
-      db,
-      discipline,
-      forKind.map((e) => ({
-        title: e.question,
-        frequency: e.frequency,
-        lastAsked: e.lastAsked,
-      })),
-    );
-    forKind.forEach((entry, i) => resolved.push({ ...entry, path: links[i].path }));
-  }
+  /*
+    No path resolution here, deliberately.
 
-  const body = renderQuestionBank(folder.title, resolved);
-  // Stored without the resolved paths: those are derived, and freezing them would leave a stale
-  // link behind the first time a page moved.
-  const result = await writeGenerated(
-    db,
-    folder.id,
-    "question-bank",
-    "Question Bank",
-    body,
-    resolved.map(({ path: _path, ...row }) => row),
-  );
+    The bank used to link each question to our own page for it, which duplicated what the
+    discipline indexes do and made the two drift apart the moment one was republished. The bank
+    answers a different question -- what does this company ask, and where was that learned --
+    so its link is the source the question came from, and the indexes own the links inward.
+  */
+  const body = renderQuestionBank(folder.title, all);
+  const result = await writeGenerated(db, folder.id, "question-bank", "Question Bank", body, all);
 
   return {
     company: folder.title,
     url: `/prep/company/${folder.slug}/question-bank`,
     mode,
-    added: resolved.length - previous.length > 0 ? resolved.length - previous.length : 0,
-    entries: resolved.length,
-    linked: resolved.filter((e) => e.path).length,
-    unlinked: resolved.filter((e) => !e.path).map((e) => e.question),
+    added: all.length - previous.length > 0 ? all.length - previous.length : 0,
+    entries: all.length,
+    withoutSource: all.filter((e) => !e.sourceUrl).map((e) => e.question),
     ...result,
   };
 }

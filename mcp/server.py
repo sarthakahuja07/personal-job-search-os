@@ -487,7 +487,13 @@ async def company_question_bank(
     """
     Add questions to a company's Question Bank: a table per discipline of what it asks.
 
-    Questions that already have a page are linked automatically -- pass names, not URLs.
+    Each row records the question, how often it is asked, when it was last seen, and WHERE IT
+    WAS FOUND. Give every entry a source_url when you have one -- the LeetCode problem, the
+    interview-experience post, the blog. That column is what makes the bank evidence rather
+    than a list.
+
+    The bank does not link to our own pages for these questions; company_question_index is the
+    tool that links inward to the answers.
 
     Adds by default, so you can record this company's HLD questions now and its LLD or DSA
     questions weeks later without resending the first lot. A question reported again keeps the
@@ -496,9 +502,9 @@ async def company_question_bank(
     Args:
         company: The company, which must already have been scaffolded.
         entries: [{"question": str, "discipline": "dsa"|"hld"|"lld",
-                   "frequency": 0-5, "last_asked": "YYYY-MM-DD"}].
+                   "frequency": 0-5, "last_asked": "YYYY-MM-DD", "source_url": str}].
             frequency is how often this company asks it and drives the sort; last_asked is when
-            it was most recently seen.
+            it was most recently seen; source_url is where the question was found.
         mode: "merge" (default) adds to what is already recorded. "replace" discards every
             existing question, so use it only to rebuild a bank from scratch.
     """

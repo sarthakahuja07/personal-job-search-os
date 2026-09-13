@@ -80,10 +80,16 @@ id extracted automatically. **Always give a video a title** — a YouTube URL ha
 in its path, so an omitted one becomes the literal word "Watch". Article titles and publishers
 are derived well enough to omit.
 
-**Duplicates are refused by default.** If the page exists you get a `409` telling you what to
-do. That is deliberate: silently overwriting loses work, silently duplicating ruins the tree.
-Choose `on_conflict: "merge"` (fill only empty fields, add resources) or `"replace"` (overwrite)
-knowingly.
+**Duplicates are refused by default, including differently-worded ones.** "Design a URL
+Shortener (TinyURL-style; hashing/uniqueness)" is refused when "Design a URL Shortener" already
+exists anywhere in that discipline — bracketed asides and anything after a colon or dash are
+stripped before comparing. The refusal names the existing page and its path.
+
+When that happens: add to the existing page with `prep_append`, or republish with
+`on_conflict: "merge"` (fill only empty fields, add resources) or `"replace"` (overwrite). If it
+really is a different question, give it a title that says how it differs — "Two Sum II" and
+"Design a Distributed Rate Limiter" both publish fine, because the check is exact-match after
+stripping rather than a fuzzy one.
 
 **`prep_append`** — add to a page that exists without overwriting it. Take `kind` and
 `parent_path` from the `prep_search` result rather than working them out: its `path` is the
@@ -110,10 +116,17 @@ sorted by frequency.
 
 ```
 entries: [
-  {question: "LRU Cache",     discipline: "dsa", frequency: 5, last_asked: "2026-09-01"},
-  {question: "Design Instagram", discipline: "hld", frequency: 4, last_asked: "2026-08-20"}
+  {question: "LRU Cache", discipline: "dsa", frequency: 5, last_asked: "2026-09-01",
+   source_url: "https://leetcode.com/problems/lru-cache/"},
+  {question: "Design Instagram", discipline: "hld", frequency: 4, last_asked: "2026-08-20",
+   source_url: "https://www.teamblind.com/post/..."}
 ]
 ```
+
+**`source_url` is where the question was *found*** — the LeetCode problem, the interview
+experience post, the blog. Give it whenever you have one; that column is what makes the bank
+evidence rather than a list. **The bank never links to our own pages for a question.** Linking
+inward is `company_question_index`'s job, and keeping them apart stops the two views drifting.
 
 ### `company_question_index`
 

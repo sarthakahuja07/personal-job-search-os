@@ -36,9 +36,39 @@ export type BankEntry = {
   frequency: number;
   /** ISO date (YYYY-MM-DD) it was last known to be asked, if known. */
   lastAsked?: string | null;
-  /** Where the answer lives, when there is one. */
-  path?: string | null;
+  /**
+   * Where this was reported -- the LeetCode problem, the interview-experience post, the blog.
+   *
+   * Deliberately *not* a link to our own page for the question. The bank is a record of what
+   * this company asks and where that was learned; the discipline indexes are the place that
+   * links into our answers. Keeping the two apart means the bank stays useful as evidence even
+   * for questions we have written nothing about.
+   */
+  sourceUrl?: string | null;
 };
+
+/** A readable label for an external link: the publisher, not the whole URL. */
+function sourceLabel(url: string): string {
+  try {
+    const host = new URL(url).hostname.replace(/^www\./, "").toLowerCase();
+    const named: [RegExp, string][] = [
+      [/^leetcode\.com$/, "LeetCode"],
+      [/^(www\.)?geeksforgeeks\.org$/, "GeeksforGeeks"],
+      [/^teamblind\.com$/, "Blind"],
+      [/^glassdoor\./, "Glassdoor"],
+      [/^interviewbit\.com$/, "InterviewBit"],
+      [/^hellointerview\.com$/, "Hello Interview"],
+      [/^bytebytego\.com$/, "ByteByteGo"],
+      [/(^|\.)youtube\.com$|^youtu\.be$/, "YouTube"],
+      [/(^|\.)reddit\.com$/, "Reddit"],
+      [/(^|\.)linkedin\.com$/, "LinkedIn"],
+    ];
+    for (const [pattern, name] of named) if (pattern.test(host)) return name;
+    return host;
+  } catch {
+    return "source";
+  }
+}
 
 /** Markdown table cells cannot contain a raw pipe without ending the cell. */
 const cell = (text: string) => text.replace(/\|/g, "\\|").replace(/\n+/g, " ").trim();
@@ -65,15 +95,17 @@ export function renderQuestionBank(company: string, entries: BankEntry[]): strin
     if (rows.length === 0) continue;
 
     lines.push(`## ${DISCIPLINE_TITLE[discipline]}`, "");
-    lines.push("| Question | Asked | Last seen |");
-    lines.push("| --- | --- | --- |");
+    lines.push("| Question | Asked | Last seen | Source |");
+    lines.push("| --- | --- | --- | --- |");
     for (const row of rows) {
-      // Linked where the answer exists, plain text where it does not. A bank entry with no
-      // page yet is still worth recording -- it is the list of what to write next.
-      const name = row.path
-        ? `[${cell(row.question)}](/prep/${row.path})`
-        : cell(row.question);
-      lines.push(`| ${name} | ${row.frequency}/5 | ${row.lastAsked ?? "—"} |`);
+      // The question itself is plain text here. Where the answer lives is the discipline
+      // index's job; this column records where the *question* was found.
+      const source = row.sourceUrl
+        ? `[${cell(sourceLabel(row.sourceUrl))}](${row.sourceUrl})`
+        : "—";
+      lines.push(
+        `| ${cell(row.question)} | ${row.frequency}/5 | ${row.lastAsked ?? "—"} | ${source} |`,
+      );
     }
     lines.push("");
   }

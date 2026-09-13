@@ -120,10 +120,12 @@ const LOOKUP_AND_COMPANY: ToolDef[] = [
     title: "Write a company's question bank",
     description:
       "Add questions to a company's Question Bank: a table per discipline of question, how " +
-      "often it is asked, and when it was last seen. Questions that already have a page are " +
-      "linked automatically -- pass names, not URLs. Adds by default, so you can record HLD " +
-      "questions now and LLD ones later without resending the first lot; a question reported " +
-      "again updates its rating and keeps the later date.",
+      "often it is asked, when it was last seen, and where it was found. Give each entry a " +
+      "source_url when you have one -- that column is the bank's whole point as evidence. The " +
+      "bank does NOT link to our own pages for these questions; company_question_index does " +
+      "that. Adds by default, so you can record HLD questions now and LLD ones later without " +
+      "resending the first lot; a question reported again updates its rating and keeps the " +
+      "later date.",
     annotations: { readOnlyHint: false, destructiveHint: false, idempotentHint: true },
     inputSchema: {
       type: "object",
@@ -150,6 +152,13 @@ const LOOKUP_AND_COMPANY: ToolDef[] = [
               last_asked: {
                 type: "string",
                 description: "ISO date (YYYY-MM-DD) it was last known to be asked.",
+              },
+              source_url: {
+                type: "string",
+                description:
+                  "Where the question was FOUND -- the LeetCode problem, the interview " +
+                  "experience post, the blog. Not a link to our own page for it; the bank " +
+                  "records evidence, the discipline indexes link inward to the answers.",
               },
             },
             required: ["question", "discipline"],

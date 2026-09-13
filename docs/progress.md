@@ -552,6 +552,35 @@ in place -- it will be shown read-only instead. Giving the editor real table sup
 four tiptap extensions plus a Markdown round-trip that has to survive serialisation, and a
 half-working round-trip would corrupt more than the current limitation does.
 
+## The bank cites, the indexes link, and neither creates a second copy of a question
+
+Three changes that belong together, because they are one distinction.
+
+**The question bank now records where a question was found** -- a `source_url` per entry,
+rendered as a fourth column labelled by publisher ("LeetCode", "Blind", else the host). It no
+longer links to our own page for the question at all. The bank answers "what does this company
+ask, and how do we know"; the discipline indexes answer "where is our answer". Having both link
+inward duplicated the indexes and made the two drift apart the moment one was republished. An
+entry with no source shows an em dash and is named in `withoutSource` on the response.
+
+**The indexes are unchanged** and still resolve titles to real pages, which is the half of this
+that was already right.
+
+**A differently-worded duplicate is now refused.** The slug check only ever caught an identical
+title, and an assistant phrases a question the way its source did -- so "Design a URL Shortener"
+and "Design a URL Shortener (TinyURL-style; hashing/uniqueness/high scalability)" became two
+pages, splitting the notes that should have accumulated on one. `titleIdentity` strips bracketed
+asides and anything after a colon or dash, then compares what is left, across the whole
+discipline rather than one section.
+
+Deliberately exact-match-after-stripping rather than a containment rule: "Two Sum" and "Two Sum
+II" are different problems, and a looser rule would refuse the second one. Both were checked, and
+both still publish. The refusal names the existing page, its path, and the three ways out
+(`prep_append`, `merge`, `replace`, or a title that says how it differs).
+
+Verified on the live board, and two duplicate pages created by that testing were removed
+afterwards -- exactly the mess the feature exists to prevent.
+
 ## Known gaps
 
 - **Google is not crawled**, by choice: its `robots.txt` disallows the job results path. It shows

@@ -11,6 +11,7 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 
 const repo = {
   resolvePath: vi.fn(),
+  allPagePaths: vi.fn(),
   pageBySlug: vi.fn(),
   nextPosition: vi.fn(),
   insertPage: vi.fn(),
@@ -20,6 +21,7 @@ const repo = {
 
 vi.mock("@/server/repository/prep-repo", () => ({
   resolvePath: (...a: unknown[]) => repo.resolvePath(...a),
+  allPagePaths: (...a: unknown[]) => repo.allPagePaths(...a),
   pageBySlug: (...a: unknown[]) => repo.pageBySlug(...a),
   nextPosition: (...a: unknown[]) => repo.nextPosition(...a),
   insertPage: (...a: unknown[]) => repo.insertPage(...a),
@@ -32,6 +34,7 @@ import {
   ParentNotFoundError,
   publishPrepPage,
   slugify,
+  titleIdentity,
 } from "./prep-import";
 import { prepPageSchema } from "@/server/schemas/prep-import";
 
@@ -46,6 +49,8 @@ beforeEach(() => {
   for (const fn of Object.values(repo)) fn.mockReset();
   repo.resolvePath.mockResolvedValue({ id: "parent-1" });
   repo.pageBySlug.mockResolvedValue(null);
+  // No other page in the tree, so the near-duplicate check finds nothing to object to.
+  repo.allPagePaths.mockResolvedValue([]);
   repo.nextPosition.mockResolvedValue(7);
   repo.insertPage.mockResolvedValue({ id: "new-1" });
 });
@@ -196,5 +201,87 @@ describe("publishPrepPage", () => {
     );
 
     expect(repo.insertPage.mock.calls[0][1].content).toEqual({ architecture: "token bucket" });
+  });
+});
+
+describe("titleIdentity", () => {
+  /*
+    An assistant phrases a question the way its source did, so the same problem arrives at
+    different lengths across sessions. Without this, "Design a URL Shortener" and "Design a URL
+    Shortener (TinyURL-style; hashing/uniqueness/high scalability)" become two pages, and the
+    notes that should have accumulated on one are split across both.
+  */
+  it("sees through a parenthetical qualifier", () => {
+    expect(titleIdentity("Design a URL Shortener (TinyURL-style; high scalability)")).toBe(
+      titleIdentity("Design a URL Shortener"),
+    );
+  });
+
+  it("sees through a trailing clause after a colon or dash", () => {
+    expect(titleIdentity("Design Kafka: partitions, ISR, retention")).toBe(
+      titleIdentity("Design Kafka"),
+    );
+    expect(titleIdentity("Design Kafka — a deep dive")).toBe(titleIdentity("Design Kafka"));
+  });
+
+  it("ignores case and punctuation", () => {
+    expect(titleIdentity("LRU Cache")).toBe(titleIdentity("  lru   cache!  "));
+  });
+
+  it("keeps genuinely different problems apart", () => {
+    // The reason this is exact-match-after-stripping rather than a containment rule.
+    expect(titleIdentity("Two Sum")).not.toBe(titleIdentity("Two Sum II"));
+    expect(titleIdentity("Design a Rate Limiter")).not.toBe(
+      titleIdentity("Design a Distributed Rate Limiter"),
+    );
+  });
+});
+
+describe("publishPrepPage — near duplicates", () => {
+  const tree = [
+    {
+      id: "existing-1",
+      kind: "system_design",
+      slug: "design-a-url-shortener",
+      title: "Design a URL Shortener",
+      parentId: null,
+    },
+  ];
+
+  it("refuses a longer phrasing of a question that already exists, and says where", async () => {
+    repo.allPagePaths.mockResolvedValue(tree);
+
+    const attempt = publishPrepPage(
+      db,
+      input({ title: "Design a URL Shortener (TinyURL-style; hashing/uniqueness)" }),
+      segmentOf,
+    );
+
+    await expect(attempt).rejects.toBeInstanceOf(PageExistsError);
+    await expect(attempt).rejects.toThrow(/already covers this/);
+    // Names the page and the route out, because the caller is a model that has to act on it.
+    await expect(attempt).rejects.toThrow(/design-a-url-shortener/);
+    await expect(attempt).rejects.toThrow(/prep_append/);
+    expect(repo.insertPage).not.toHaveBeenCalled();
+  });
+
+  it("does not look across disciplines, where the same name is a different question", async () => {
+    repo.allPagePaths.mockResolvedValue([{ ...tree[0], kind: "dsa" }]);
+
+    await publishPrepPage(db, input({ title: "Design a URL Shortener (short)" }), segmentOf);
+
+    expect(repo.insertPage).toHaveBeenCalled();
+  });
+
+  it("lets an explicit merge through without arguing about the title", async () => {
+    repo.allPagePaths.mockResolvedValue(tree);
+
+    await publishPrepPage(
+      db,
+      input({ title: "Design a URL Shortener (TinyURL-style)", on_conflict: "merge" }),
+      segmentOf,
+    );
+
+    expect(repo.insertPage).toHaveBeenCalled();
   });
 });

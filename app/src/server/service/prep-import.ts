@@ -17,8 +17,10 @@
 import type { Db } from "@/db";
 import type { NewPrepItem, PrepContent, PrepKind } from "@/db/schema";
 import { parseResource } from "@/server/domain/resources";
+import { buildPaths } from "@/server/domain/prep";
 import {
   addResource,
+  allPagePaths,
   insertPage,
   nextPosition,
   pageBySlug,
@@ -29,6 +31,30 @@ import type { PrepPageInput } from "@/server/schemas/prep-import";
 
 export class ParentNotFoundError extends Error {}
 export class PageExistsError extends Error {}
+
+/**
+ * A question's identity, with the decoration stripped off.
+ *
+ * An assistant writes the question the way it was phrased in the source, so the same problem
+ * arrives as "Design a URL Shortener" one week and "Design a URL Shortener (TinyURL-style;
+ * hashing/uniqueness/high scalability)" the next. Those are one question, and the slug check
+ * alone -- which compares whole titles -- happily creates both.
+ *
+ * So: drop bracketed asides and anything after a colon or dash, which is where that decoration
+ * always goes, then compare what is left. Conservative on purpose. Only an exact match after
+ * stripping counts, because "Two Sum" and "Two Sum II" are genuinely different problems and a
+ * looser rule would refuse the second one.
+ */
+export function titleIdentity(title: string): string {
+  return title
+    .toLowerCase()
+    .replace(/\([^)]*\)/g, " ")
+    .replace(/\[[^\]]*\]/g, " ")
+    // Everything after the first colon or dash-with-spaces is a qualifier, not the question.
+    .split(/\s[-\u2013\u2014]\s|:/)[0]
+    .replace(/[^a-z0-9]+/g, " ")
+    .trim();
+}
 
 /**
  * A URL-safe slug, matching the one the Notion import produces.
@@ -92,6 +118,32 @@ export async function publishPrepPage(
       `${input.title} already exists at ${[input.kind, ...segments].join("/")}. ` +
         `Publish with on_conflict "merge" to add to it, or "replace" to overwrite it.`,
     );
+  }
+
+  /*
+    The same question under a different phrasing.
+
+    The slug check above only catches an identical title. The commoner case is the same problem
+    written out at different lengths, which produces two pages that are hard to notice and
+    impossible to merge later -- and splits the notes that should have accumulated on one.
+
+    Checked across the whole discipline rather than the one section, because a duplicate filed
+    somewhere else in the tree is still a duplicate.
+  */
+  if (!existing && input.on_conflict === "error") {
+    const wanted = titleIdentity(input.title);
+    const all = await allPagePaths(db);
+    const paths = buildPaths(all);
+    const twin = all.find(
+      (row) => row.kind === input.kind && titleIdentity(row.title) === wanted,
+    );
+    if (twin) {
+      throw new PageExistsError(
+        `"${twin.title}" already covers this, at ${input.kind}/${paths.get(twin.id)}. ` +
+          `Add to it with prep_append, or republish with on_conflict "merge" or "replace". ` +
+          `If this really is a different question, give it a title that says how it differs.`,
+      );
+    }
   }
 
   const content = definedOnly(input.content);

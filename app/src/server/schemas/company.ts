@@ -17,6 +17,13 @@ export const bankEntrySchema = z.object({
   /** 1-5, how often this company asks it. Same scale as a prep page's own ask score. */
   frequency: z.number().int().min(0).max(5).optional().default(0),
   last_asked: isoDate.nullish(),
+  /**
+   * Where the question was found, not where our answer is.
+   *
+   * The discipline indexes link inward to our own pages; the bank records the evidence -- the
+   * LeetCode problem, the interview-experience post, the blog it was mentioned in.
+   */
+  source_url: z.string().url().nullish(),
 });
 
 /**
