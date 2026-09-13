@@ -15,7 +15,8 @@ guesses a token. That trade was considered and rejected; see `docs/decisions/`.
 
 The consequence worth knowing: this works with MCP clients that launch a local process
 (Claude Code, Claude Desktop). It does **not** work with ChatGPT in a browser, which can only
-reach a server over the public internet.
+reach a server over the public internet — that is what `mcp-remote/` exists for. Prefer this one
+where you can: it is reachable by nothing and nobody but this machine.
 
 ## Setup
 

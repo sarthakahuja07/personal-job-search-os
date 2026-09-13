@@ -388,6 +388,50 @@ leaving the original body untouched.
 **Low-level design is not a new kind.** It is `system_design` under `parent_path: "lld"`. The
 unused `concept` kind in `PREP_KINDS` is still the slot if LLD ever earns its own fields.
 
+## A second MCP server, because ChatGPT cannot launch a local process
+
+The local stdio server works with Claude and cannot be connected to ChatGPT at any price:
+ChatGPT only talks to a remote HTTPS server, and it authenticates with OAuth rather than a
+bearer token. `mcp-remote/` is what that requirement forces — a Cloudflare Worker at
+`job-search-mcp.sarthak-ahuja0007.workers.dev`, OAuth-guarded, speaking MCP over Streamable HTTP.
+
+Both servers call the same `/api/prep/*` endpoints, so there is one implementation of what a
+publish means and two ways to reach it.
+
+**The exposure is real and bounded three ways.** This Worker is reachable by anyone on the
+internet and can write to the prep tree:
+
+- **OAuth guards every tool call**, with a consent screen whose password is compared in constant
+  time and which fails closed when the secret is unset.
+- **The app stays entirely behind Access.** No policy was weakened. The Worker reaches the app
+  through a *service binding*, which dispatches to the Worker directly rather than through the
+  edge — Access is not bypassed, it is simply not in that path, and the app's own bearer check
+  still applies. That is the second layer of ADR 006 earning its place.
+- **It does not hold the crawler's token.** `MCP_TOKEN` is accepted on `/api/prep/*` only, so
+  compromising this Worker costs study notes rather than the job board.
+
+Preview URLs are disabled. On by default, they publish every version at its own public address,
+which multiplies the doors into the prep tree and leaves superseded versions reachable.
+
+**No Durable Object and no session state.** The protocol needs one only when the server must
+remember something between calls, and each of these four tools is a single request. That keeps
+it on request-scoped infrastructure and inside the free tier, alongside KV for OAuth state.
+
+**Cloudflare error 1042 shaped the design.** The obvious implementation — fetch the app over
+HTTPS — fails outright: a Worker may not make a subrequest to another Worker on the same
+`workers.dev` zone. Every tool returned `error code: 1042` on the first deploy. The service
+binding is the supported route and removed the need for an Access service token here entirely.
+
+Verified by walking the whole flow as ChatGPT would: dynamic client registration, a consent page
+that refuses a wrong password without redirecting, PKCE token exchange, `initialize` negotiating
+2025-06-18, all four tools listed with correct read-only hints, and a real DSA page published
+end to end with its pattern, complexity, ask score and a NeetCode video whose YouTube id was
+extracted on the way in.
+
+**Known limits.** Developer Mode is needed in ChatGPT (Plus and above, not free), write actions
+ask for confirmation per call, and ChatGPT freezes tool metadata at approval — so changing a
+tool's schema needs the connector re-reviewed before it takes effect.
+
 ## Known gaps
 
 - **Google is not crawled**, by choice: its `robots.txt` disallows the job results path. It shows

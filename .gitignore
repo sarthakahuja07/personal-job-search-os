@@ -66,3 +66,7 @@ job-search-os-secrets-*.zip
 # The MCP server gets its own virtualenv, so the protocol SDK and its pydantic floor stay
 # out of the crawler environment the crawl depends on.
 mcp/.venv/
+
+# The remote MCP worker builds like the app: node_modules is not committed.
+mcp-remote/node_modules/
+mcp-remote/.wrangler/

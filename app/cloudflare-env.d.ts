@@ -11,6 +11,14 @@ declare global {
     // Secrets are not part of wrangler.jsonc, so they are declared here.
     // Set locally in .dev.vars, in production via `wrangler secret put`.
     INGEST_TOKEN: string;
+    /**
+     * The remote MCP worker's own token, accepted on /api/prep/* only.
+     *
+     * Optional: the app runs fine without it, and does until that worker is deployed. Keeping
+     * it separate from INGEST_TOKEN is the point -- the MCP worker is internet-facing, so it
+     * must not hold the credential that writes jobs.
+     */
+    MCP_TOKEN?: string;
   }
 }
 

@@ -1,6 +1,6 @@
 import { getDb } from "@/db";
 import { PREP_KINDS, type PrepKind } from "@/db/schema";
-import { requireIngestToken } from "@/server/auth";
+import { requirePrepToken } from "@/server/auth";
 import { kindOf } from "@/server/domain/prep";
 import { searchPages } from "@/server/repository/prep-repo";
 import { prepPageSchema } from "@/server/schemas/prep-import";
@@ -26,7 +26,7 @@ const segmentOf = (kind: PrepKind) => kindOf(kind)?.segment ?? kind;
 
 /** GET /api/prep/pages?q=consistent+hashing&kind=system_design — "do I already have this?" */
 export async function GET(request: Request): Promise<Response> {
-  const auth = requireIngestToken(request);
+  const auth = requirePrepToken(request);
   if (!auth.ok) return auth.response;
 
   const url = new URL(request.url);
@@ -48,7 +48,7 @@ export async function GET(request: Request): Promise<Response> {
 
 /** POST /api/prep/pages — publish one page, with its resources. */
 export async function POST(request: Request): Promise<Response> {
-  const auth = requireIngestToken(request);
+  const auth = requirePrepToken(request);
   if (!auth.ok) return auth.response;
 
   let body: unknown;

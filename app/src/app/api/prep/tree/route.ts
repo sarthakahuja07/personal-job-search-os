@@ -1,5 +1,5 @@
 import { getDb } from "@/db";
-import { requireIngestToken } from "@/server/auth";
+import { requirePrepToken } from "@/server/auth";
 import { KINDS } from "@/server/domain/prep";
 import { allPagePaths } from "@/server/repository/prep-repo";
 
@@ -11,7 +11,7 @@ import { allPagePaths } from "@/server/repository/prep-repo";
  * to the root, which is how a tree stops being one.
  */
 export async function GET(request: Request): Promise<Response> {
-  const auth = requireIngestToken(request);
+  const auth = requirePrepToken(request);
   if (!auth.ok) return auth.response;
 
   const rows = await allPagePaths(getDb());

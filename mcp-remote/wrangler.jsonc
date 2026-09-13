@@ -1,0 +1,50 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "job-search-mcp",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-09-05",
+  "compatibility_flags": ["nodejs_compat"],
+
+  /*
+    One public hostname, not several.
+
+    Preview URLs are on by default and publish every version at its own <version>-job-search-mcp
+    address. For an ordinary Worker that is a convenience; for this one it multiplies the number
+    of internet-reachable doors to the prep tree, and an older version stays reachable after it
+    has been replaced. The account has exactly one of these, on purpose.
+  */
+  "workers_dev": true,
+  "preview_urls": false,
+
+  // OAuth tokens and authorization state. The library requires this exact binding name.
+  "kv_namespaces": [
+    {
+      "binding": "OAUTH_KV",
+      "id": "318ac547485b40ee863f6ea8b8ef4309"
+    }
+  ],
+
+  /*
+    The app, reached directly rather than over the internet.
+
+    A public fetch to job-search-os.<account>.workers.dev fails with Cloudflare error 1042 --
+    a Worker may not make a subrequest to another Worker on the same workers.dev zone. A
+    service binding is the supported way and is better regardless: no public round trip, and
+    no Access service token needed here, because a service binding invokes the Worker directly
+    rather than passing through the edge where Access is enforced.
+
+    The app's own bearer check still applies, which is the second layer of ADR 006 doing
+    exactly what it was put there for.
+  */
+  "services": [
+    {
+      "binding": "APP",
+      "service": "job-search-os"
+    }
+  ],
+
+  // Everything else is a secret: MCP_TOKEN and LOGIN_PASSWORD. See mcp-remote/README.md.
+  "observability": {
+    "enabled": true
+  }
+}
