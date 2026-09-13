@@ -303,7 +303,10 @@ export default async function PrepPage({
                 name="notes"
                 rows={8}
                 defaultValue={item.notes ?? ""}
-                placeholder={meta.fields.map((f) => f.hint).join(" · ")}
+                // A document kind declares no answer fields, so it has no hints to join.
+                placeholder={
+                  meta.fields.map((f) => f.hint).join(" · ") || "In your own words."
+                }
                 className={cx(inputStyles, "resize-y font-normal leading-relaxed")}
               />
             </div>

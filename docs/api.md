@@ -159,6 +159,33 @@ took weeks to write: silently overwriting loses work and silently duplicating ma
 unusable, and both look like success from the caller's side. `merge` fills only empty fields and
 adds resources, so a hand-written body survives a second pass over the same topic.
 
+### `POST /api/prep/company`
+
+The company folder and its generated pages. One route with an `op`, because all three share a
+company, an auth check and an error vocabulary.
+
+| `op` | Body | Does |
+|---|---|---|
+| `scaffold` | `name` | Creates the folder and its five pages (Notes, Question Bank, DSA, HLD, LLD). Idempotent — existing pages are left alone |
+| `question_bank` | `company`, `entries[]` | Replaces the Question Bank with a table per discipline |
+| `question_index` | `company`, `discipline`, `questions[]` | Replaces the DSA, HLD or LLD index with a linked list |
+
+`entries[]` is `{question, discipline: dsa|hld|lld, frequency: 0-5, last_asked: YYYY-MM-DD}`.
+`questions[]` is `{title, frequency, last_asked}`.
+
+**Titles are resolved server-side, never passed as URLs.** A caller knows a question's name;
+only the database knows whether a page exists and where. Resolution is exact-slug first, then a
+contains match on the title, and it is scoped to the right tree — an LLD question cannot resolve
+to an HLD page with a similar name. Both `question_bank` and `question_index` use the same
+resolution, so the two views of one question can never point at different places.
+
+Unresolved titles are **kept and returned in `unlinked`**, rendered under "Not written yet".
+Dropping them would make a list read as complete when it is the opposite: that list is what to
+study next.
+
+Both write operations **replace** the page rather than appending, so send the whole set each
+time. They are generated pages; merging would make them un-regenerable.
+
 ## Notifications
 
 ### `GET /api/notifications/outbox`

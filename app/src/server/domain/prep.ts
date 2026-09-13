@@ -56,7 +56,49 @@ export const KINDS: KindMeta[] = [
     ],
     hasDifficulty: false,
   },
+  {
+    kind: "company",
+    segment: "company",
+    title: "Companies",
+    tagline: "What this company actually asks, and where the answers already live.",
+    /*
+      No structured fields. A company page is a document -- notes, a question bank, a list of
+      links -- not an answer with a known shape. Giving it fields would put three empty boxes
+      on every page and imply a form nobody fills.
+    */
+    fields: [],
+    hasDifficulty: false,
+  },
 ];
+
+/**
+ * Full slash paths for every page, by id.
+ *
+ * A page's address is its chain of slugs, not its own -- "instagram" lives at
+ * `hld/questions/instagram`. Search returned the bare slug for a while, which produced links
+ * that 404'd for every page that was not top level, and that is precisely the set of pages a
+ * company page wants to link to.
+ *
+ * Depth-bounded rather than trusting the data: a cycle here would hang a request, and the tree
+ * is only ever a few levels deep.
+ */
+export function buildPaths(
+  rows: { id: string; slug: string; parentId: string | null }[],
+): Map<string, string> {
+  const byId = new Map(rows.map((r) => [r.id, r]));
+  const paths = new Map<string, string>();
+
+  for (const row of rows) {
+    const parts: string[] = [];
+    let cur: { id: string; slug: string; parentId: string | null } | undefined = row;
+    for (let depth = 0; cur && depth < 20; depth++) {
+      parts.unshift(cur.slug);
+      cur = cur.parentId ? byId.get(cur.parentId) : undefined;
+    }
+    paths.set(row.id, parts.join("/"));
+  }
+  return paths;
+}
 
 export function kindBySegment(segment: string): KindMeta | undefined {
   return KINDS.find((k) => k.segment === segment);

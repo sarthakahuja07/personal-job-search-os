@@ -62,6 +62,12 @@ Write actions require per-call confirmation in ChatGPT. Note also that ChatGPT f
 metadata at approval: changing a tool's schema here needs the connector re-reviewed before the
 change takes effect.
 
+## Tools
+
+`prep_tree`, `prep_search`, `prep_publish`, `prep_append`, plus `company_scaffold`,
+`company_question_bank` and `company_question_index`. Identical to the local server's — both
+call the same `/api/prep/*` endpoints, so publish semantics cannot drift between them.
+
 ## No sessions, no Durable Object
 
 The protocol only needs one when the server has something to remember between calls, and each

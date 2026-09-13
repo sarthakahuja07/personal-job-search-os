@@ -22,8 +22,30 @@ describe("kind routing", () => {
     }
   });
 
-  it("gives every kind at least one answer field, since the detail page renders them", () => {
-    for (const k of KINDS) expect(k.fields.length).toBeGreaterThan(0);
+  /*
+    Originally "every kind has at least one field, since the detail page renders them". That
+    stopped being true when companies arrived: a company page is a document -- notes, a question
+    bank, a list of links -- not an answer with a known shape, and giving it fields would put
+    three empty boxes on every page and imply a form nobody fills. The page already guards on
+    `fields.some(...)`, so none is a supported shape rather than a broken one.
+
+    What must still hold is that a kind declaring fields declares them properly, and that the
+    practised disciplines keep theirs -- losing those silently would empty the detail page.
+  */
+  it("gives every practised discipline its answer fields", () => {
+    for (const kind of ["dsa", "system_design", "behavioral"] as const) {
+      expect(kindOf(kind)!.fields.length).toBeGreaterThan(0);
+    }
+  });
+
+  it("declares every field it does have completely", () => {
+    for (const k of KINDS) {
+      for (const f of k.fields) {
+        expect(f.key).toMatch(/^[a-z][a-zA-Z]*$/);
+        expect(f.label.length).toBeGreaterThan(0);
+        expect(f.hint.length).toBeGreaterThan(0);
+      }
+    }
   });
 
   it("uses hyphenated segments and snake_case kinds", () => {

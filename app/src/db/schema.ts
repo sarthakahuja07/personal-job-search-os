@@ -587,7 +587,7 @@ export type NewCrawlRun = typeof crawlRuns.$inferInsert;
  * migration. And when Sarthak's Notion export arrives (PRD §39), importing it means mapping
  * fields into `content` rather than reshaping the schema around it.
  */
-export const PREP_KINDS = ["dsa", "system_design", "behavioral", "concept"] as const;
+export const PREP_KINDS = ["dsa", "system_design", "behavioral", "concept", "company"] as const;
 export type PrepKind = (typeof PREP_KINDS)[number];
 
 export const PREP_STATUSES = ["not_started", "in_progress", "done", "revisit"] as const;

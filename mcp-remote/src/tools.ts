@@ -101,7 +101,7 @@ export const TOOLS = [
         query: { type: "string", description: "Free text, matched against titles and prompts." },
         kind: {
           type: "string",
-          enum: ["dsa", "system_design", "behavioral", "concept"],
+          enum: ["dsa", "system_design", "behavioral", "concept", "company"],
           description: "Optionally narrow to one discipline.",
         },
       },
@@ -125,7 +125,7 @@ export const TOOLS = [
     inputSchema: {
       type: "object",
       properties: {
-        kind: { type: "string", enum: ["dsa", "system_design", "behavioral", "concept"] },
+        kind: { type: "string", enum: ["dsa", "system_design", "behavioral", "concept", "company"] },
         title: { type: "string", description: "The page name, e.g. 'Design a Rate Limiter'." },
         body: { type: "string", description: "The note itself, as Markdown. The main content." },
         prompt: { type: "string", description: "The question or brief, shown under the title." },
@@ -215,7 +215,7 @@ export const TOOLS = [
     inputSchema: {
       type: "object",
       properties: {
-        kind: { type: "string", enum: ["dsa", "system_design", "behavioral", "concept"] },
+        kind: { type: "string", enum: ["dsa", "system_design", "behavioral", "concept", "company"] },
         title: { type: "string", description: "The existing page's exact title." },
         parent_path: { type: "string", description: "The section it lives in." },
         body: { type: "string", description: "Used only if the page has no body yet." },
@@ -248,6 +248,105 @@ export const TOOLS = [
         difficulty: args.difficulty ?? null,
         frequency: args.frequency ?? 0,
         on_conflict: "merge",
+      }),
+  },
+  {
+    name: "company_scaffold",
+    title: "Create a company's prep folder",
+    description:
+      "Create a company folder with its five pages: Notes, Question Bank, DSA, HLD and LLD. " +
+      "Safe to call again -- existing pages are left alone. Call this before any other company " +
+      "tool.",
+    annotations: { readOnlyHint: false, destructiveHint: false, idempotentHint: true },
+    inputSchema: {
+      type: "object",
+      properties: { name: { type: "string", description: "e.g. 'Amazon'." } },
+      required: ["name"],
+      additionalProperties: false,
+    },
+    run: (env: Env, args: Json) =>
+      app(env, "POST", "/api/prep/company", { op: "scaffold", name: args.name }),
+  },
+  {
+    name: "company_question_bank",
+    title: "Write a company's question bank",
+    description:
+      "Replace a company's Question Bank page with a table per discipline: question, how often " +
+      "it is asked, and when it was last seen. Questions that already have a page are linked " +
+      "automatically. Send the whole bank each time -- this replaces the page rather than " +
+      "appending to it.",
+    annotations: { readOnlyHint: false, destructiveHint: true },
+    inputSchema: {
+      type: "object",
+      properties: {
+        company: { type: "string" },
+        entries: { type: "array", items: {
+            type: "object",
+            properties: {
+              question: { type: "string" },
+              discipline: { type: "string", enum: ["dsa", "hld", "lld"] },
+              frequency: {
+                type: "integer",
+                minimum: 0,
+                maximum: 5,
+                description: "How often this company asks it, 1-5. Drives the sort.",
+              },
+              last_asked: {
+                type: "string",
+                description: "ISO date (YYYY-MM-DD) it was last known to be asked.",
+              },
+            },
+            required: ["question", "discipline"],
+          } },
+      },
+      required: ["company", "entries"],
+      additionalProperties: false,
+    },
+    run: (env: Env, args: Json) =>
+      app(env, "POST", "/api/prep/company", {
+        op: "question_bank",
+        company: args.company,
+        entries: args.entries,
+      }),
+  },
+  {
+    name: "company_question_index",
+    title: "Write a company's DSA, HLD or LLD index",
+    description:
+      "Replace one of a company's index pages with a list of questions, each linked to its real " +
+      "page in the DSA, HLD or LLD tree. Titles are resolved server-side, so pass names rather " +
+      "than URLs. Questions with no page yet are kept under 'Not written yet' and returned in " +
+      "`unlinked` -- that list is what to study next.",
+    annotations: { readOnlyHint: false, destructiveHint: true },
+    inputSchema: {
+      type: "object",
+      properties: {
+        company: { type: "string" },
+        discipline: { type: "string", enum: ["dsa", "hld", "lld"] },
+        questions: { type: "array", items: {
+            type: "object",
+            properties: {
+              title: {
+                type: "string",
+                description:
+                  "The question's name. Matched against real pages -- close is good enough, " +
+                  "'Design a rate limiter' finds a page called 'Rate Limiter'.",
+              },
+              frequency: { type: "integer", minimum: 0, maximum: 5 },
+              last_asked: { type: "string", description: "ISO date (YYYY-MM-DD)." },
+            },
+            required: ["title"],
+          } },
+      },
+      required: ["company", "discipline", "questions"],
+      additionalProperties: false,
+    },
+    run: (env: Env, args: Json) =>
+      app(env, "POST", "/api/prep/company", {
+        op: "question_index",
+        company: args.company,
+        discipline: args.discipline,
+        questions: args.questions,
       }),
   },
 ] as const;

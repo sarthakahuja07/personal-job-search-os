@@ -37,6 +37,9 @@ every tool call.
 | `prep_search` | Does this page already exist |
 | `prep_publish` | Write a new page |
 | `prep_append` | Add to a page that exists, without overwriting it |
+| `company_scaffold` | Create a company folder and its five pages |
+| `company_question_bank` | The table of what a company asks, and how often |
+| `company_question_index` | A DSA/HLD/LLD list, linked to the real pages |
 
 Search is not a convenience. A write-only tool would have been half the code and would fill the
 tree with near-duplicates — "Consistent Hashing", "Consistent hashing", "Design: consistent
@@ -51,6 +54,14 @@ hashing" — because a model with no way to look has no way to know.
 - **Resources are always additive**, and de-duplicated by URL, so re-publishing is idempotent.
 - **Pages are placed by path, not id** — `parent_path: "lld"` — because a model cannot know a
   UUID, and asking for one guarantees either a hallucination or everything landing at the root.
+
+## Company pages
+
+A company folder holds Notes, Question Bank, DSA, HLD and LLD. The last three are *generated*:
+pass question **titles**, not URLs, and the server resolves them against the real tree — scoped
+so an LLD question cannot resolve to a similarly named HLD page. Titles with no page yet are
+kept under "Not written yet" and returned in `unlinked`, which is the list of what to write
+next. Both write tools replace the page, so send the whole set each time.
 
 ## Where things go
 

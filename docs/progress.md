@@ -432,6 +432,47 @@ extracted on the way in.
 ask for confirmation per call, and ChatGPT freezes tool metadata at approval — so changing a
 tool's schema needs the connector re-reviewed before it takes effect.
 
+## Company preparation
+
+A third top-level discipline next to DSA and System Design: `company`. One entry in `KINDS` and
+one string in `PREP_KINDS` — no migration, because `kind` was always plain text. That is the
+invariant in CLAUDE.md §9 paying for itself.
+
+Each company folder holds the same five pages, so every company reads alike and an assistant
+never invents a layout: **Notes** (a dump), **Question Bank** (a table per discipline of
+question, how often it is asked, when it was last seen) and **DSA / HLD / LLD** indexes that
+link to the real pages in those trees.
+
+Three of the five are *generated* rather than written. A question bank typed as prose drifts out
+of date in a week, and a list of links typed by hand contains URLs that were correct when they
+were typed.
+
+**Titles in, links out.** An assistant knows a question's name; only the database knows whether
+a page exists and where it sits. So the tools take titles and resolve them server-side — exact
+slug first, then a contains match, scoped to the right tree so an LLD question cannot resolve to
+a similarly named HLD page. "Design a rate limiter" correctly found the HLD starter question
+rather than the DSA hit-counter page.
+
+**Unresolved titles are kept, not dropped.** They render under "Not written yet" and come back
+in `unlinked`. That list is the most useful output of the call — it is what to study next — and
+silently omitting it would make the page read as complete when it is exactly the opposite.
+
+**A bug this feature found first.** `GET /api/prep/pages` returned `/prep/system-design/instagram`
+for a page that actually lives at `/prep/system-design/hld/questions/instagram` — the bare slug
+rather than the chain of slugs. Every link to a non-top-level page would have 404'd, which is
+most of them and precisely the ones a company index points at. The path builder is now shared
+between search and the tree route instead of being written inline in one of them.
+
+**One existing invariant had to change.** A test asserted every kind has at least one answer
+field "since the detail page renders them". A company page is a document, not an answer with a
+known shape, and giving it fields would put three empty boxes on every page. The page already
+guards on `fields.some(...)`, so none is a supported shape; the test now pins that the three
+*practised* disciplines keep their fields and that any kind declaring fields declares them
+completely.
+
+Verified end to end: scaffolding Amazon created all five pages, a five-question bank linked four
+and named the fifth, an HLD index linked two of three, and every generated link returns 200.
+
 ## Known gaps
 
 - **Google is not crawled**, by choice: its `robots.txt` disallows the job results path. It shows

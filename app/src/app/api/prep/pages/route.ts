@@ -1,8 +1,8 @@
 import { getDb } from "@/db";
 import { PREP_KINDS, type PrepKind } from "@/db/schema";
 import { requirePrepToken } from "@/server/auth";
-import { kindOf } from "@/server/domain/prep";
-import { searchPages } from "@/server/repository/prep-repo";
+import { buildPaths, kindOf } from "@/server/domain/prep";
+import { allPagePaths, searchPages } from "@/server/repository/prep-repo";
 import { prepPageSchema } from "@/server/schemas/prep-import";
 import {
   PageExistsError,
@@ -38,11 +38,25 @@ export async function GET(request: Request): Promise<Response> {
     return errorResponse("invalid_kind", `kind must be one of ${PREP_KINDS.join(", ")}`, 400);
   }
 
-  const rows = await searchPages(getDb(), q, (kindParam as PrepKind) ?? undefined);
+  const db = getDb();
+  const [rows, all] = await Promise.all([
+    searchPages(db, q, (kindParam as PrepKind) ?? undefined),
+    allPagePaths(db),
+  ]);
+
+  // A page's address is its chain of slugs. Returning the bare slug produced links that 404'd
+  // for every page below the top level -- which is most of them, and precisely the ones a
+  // company index wants to link to.
+  const paths = buildPaths(all);
+
   return Response.json({
     query: q,
     count: rows.length,
-    pages: rows.map((r) => ({ ...r, url: `/prep/${segmentOf(r.kind)}/${r.slug}` })),
+    pages: rows.map((r) => ({
+      ...r,
+      path: paths.get(r.id) ?? r.slug,
+      url: `/prep/${segmentOf(r.kind)}/${paths.get(r.id) ?? r.slug}`,
+    })),
   });
 }
 

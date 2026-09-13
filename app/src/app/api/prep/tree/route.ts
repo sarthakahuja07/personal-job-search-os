@@ -1,6 +1,6 @@
 import { getDb } from "@/db";
 import { requirePrepToken } from "@/server/auth";
-import { KINDS } from "@/server/domain/prep";
+import { buildPaths, KINDS } from "@/server/domain/prep";
 import { allPagePaths } from "@/server/repository/prep-repo";
 
 /**
@@ -15,21 +15,12 @@ export async function GET(request: Request): Promise<Response> {
   if (!auth.ok) return auth.response;
 
   const rows = await allPagePaths(getDb());
-  const byId = new Map(rows.map((r) => [r.id, r]));
+  const paths = buildPaths(rows);
   const hasChildren = new Set(rows.map((r) => r.parentId).filter(Boolean) as string[]);
   /** Kinds whose tree has depth, so their top level is sections rather than notes. */
   const nested = new Set(rows.filter((r) => r.parentId !== null).map((r) => r.kind));
 
-  const pathOf = (id: string): string => {
-    const parts: string[] = [];
-    let cur = byId.get(id);
-    // Depth-bounded: a cycle here would hang the request, and the tree is only ever a few deep.
-    for (let i = 0; cur && i < 20; i++) {
-      parts.unshift(cur.slug);
-      cur = cur.parentId ? byId.get(cur.parentId) : undefined;
-    }
-    return parts.join("/");
-  };
+  const pathOf = (id: string) => paths.get(id) ?? "";
 
   return Response.json({
     kinds: KINDS.map((k) => ({

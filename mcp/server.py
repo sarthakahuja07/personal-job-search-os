@@ -15,6 +15,12 @@ Four tools, and the split between them is the point:
     prep_publish    write it
     prep_append     add resources or fill gaps on a page that already exists
 
+Plus three for company preparation, where the pages are generated rather than written:
+
+    company_scaffold        create a company folder and its five pages
+    company_question_bank   the table of what this company asks, and how often
+    company_question_index  a DSA/HLD/LLD list, linked to the real pages
+
 A write-only tool would have been half the code and would quietly fill the tree with near
 duplicates -- "Consistent Hashing", "Consistent hashing", "Design: consistent hashing" -- because
 a model with no way to look has no way to know. Search is what makes publish trustworthy.
@@ -143,7 +149,7 @@ async def prep_search(query: str, kind: str | None = None) -> dict[str, Any]:
 
 @server.tool()
 async def prep_publish(
-    kind: Literal["dsa", "system_design", "behavioral", "concept"],
+    kind: Literal["dsa", "system_design", "behavioral", "concept", "company"],
     title: str,
     body: str | None = None,
     prompt: str | None = None,
@@ -226,7 +232,7 @@ async def prep_publish(
 
 @server.tool()
 async def prep_append(
-    kind: Literal["dsa", "system_design", "behavioral", "concept"],
+    kind: Literal["dsa", "system_design", "behavioral", "concept", "company"],
     title: str,
     parent_path: str = "",
     body: str | None = None,
@@ -268,6 +274,79 @@ async def prep_append(
         "on_conflict": "merge",
     }
     return await _request("POST", "/api/prep/pages", json=payload)
+
+
+@server.tool()
+async def company_scaffold(name: str) -> dict[str, Any]:
+    """
+    Create a company's prep folder and its five pages.
+
+    The pages are always Notes, Question Bank, DSA, HLD and LLD, so every company reads the
+    same way. Safe to call again -- pages that already exist are left untouched. Call this
+    before any other company tool.
+
+    Args:
+        name: The company, e.g. "Amazon".
+    """
+    return await _request("POST", "/api/prep/company", json={"op": "scaffold", "name": name})
+
+
+@server.tool()
+async def company_question_bank(
+    company: str,
+    entries: list[dict[str, Any]],
+) -> dict[str, Any]:
+    """
+    Write a company's Question Bank: a table per discipline of what it asks.
+
+    Questions that already have a page are linked automatically -- pass names, not URLs. This
+    *replaces* the page, so send the whole bank each time rather than only what is new.
+
+    Args:
+        company: The company, which must already have been scaffolded.
+        entries: [{"question": str, "discipline": "dsa"|"hld"|"lld",
+                   "frequency": 0-5, "last_asked": "YYYY-MM-DD"}].
+            frequency is how often this company asks it and drives the sort; last_asked is when
+            it was most recently seen.
+    """
+    return await _request(
+        "POST",
+        "/api/prep/company",
+        json={"op": "question_bank", "company": company, "entries": entries},
+    )
+
+
+@server.tool()
+async def company_question_index(
+    company: str,
+    discipline: Literal["dsa", "hld", "lld"],
+    questions: list[dict[str, Any]],
+) -> dict[str, Any]:
+    """
+    Write one of a company's index pages: its DSA, HLD or LLD questions, linked to real pages.
+
+    Titles are resolved against the actual tree server-side, so pass names rather than URLs --
+    "Design a rate limiter" will find a page called "Rate Limiter". Questions with no page yet
+    are kept under "Not written yet" and returned in `unlinked`; that list is what to study
+    next, which is why they are never silently dropped.
+
+    This replaces the page, so send the full list each time.
+
+    Args:
+        company: The company, which must already have been scaffolded.
+        discipline: Which index to write -- dsa, hld or lld.
+        questions: [{"title": str, "frequency": 0-5, "last_asked": "YYYY-MM-DD"}].
+    """
+    return await _request(
+        "POST",
+        "/api/prep/company",
+        json={
+            "op": "question_index",
+            "company": company,
+            "discipline": discipline,
+            "questions": questions,
+        },
+    )
 
 
 if __name__ == "__main__":
