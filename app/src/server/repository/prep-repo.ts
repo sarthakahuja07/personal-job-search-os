@@ -10,8 +10,10 @@ import { and, asc, desc, eq, inArray, isNull, sql } from "drizzle-orm";
 
 import type { Db } from "@/db";
 import {
+  prepCodeFiles,
   prepItems,
   prepResources,
+  type NewPrepCodeFile,
   type NewPrepItem,
   type NewPrepResource,
   type PrepDifficulty,
@@ -259,6 +261,83 @@ export async function addResource(db: Db, row: NewPrepResource) {
 
 export async function removeResource(db: Db, id: string) {
   await db.delete(prepResources).where(eq(prepResources.id, id));
+}
+
+// ---------------------------------------------------------------------------
+// Code workspace
+// ---------------------------------------------------------------------------
+
+/**
+ * Every source file attached to a question, ordered the way the explorer draws them.
+ *
+ * Ordered by path rather than by `position` so the list arrives already grouped by folder --
+ * the tree is built from these strings, and feeding it siblings out of order would make the
+ * folders appear in insertion order instead of alphabetically.
+ */
+export async function codeFilesFor(db: Db, prepItemId: string) {
+  return db
+    .select()
+    .from(prepCodeFiles)
+    .where(eq(prepCodeFiles.prepItemId, prepItemId))
+    .orderBy(prepCodeFiles.path);
+}
+
+/**
+ * Add a file, or replace the one already at that path.
+ *
+ * Replace rather than ignore: re-adding a path is how you correct a file you pasted wrongly,
+ * and silently keeping the old content would look like the save simply failed.
+ */
+export async function addCodeFile(db: Db, row: NewPrepCodeFile) {
+  await db
+    .insert(prepCodeFiles)
+    .values(row)
+    .onConflictDoUpdate({
+      target: [prepCodeFiles.prepItemId, prepCodeFiles.path],
+      set: {
+        content: row.content,
+        language: row.language ?? null,
+        updatedAt: new Date(),
+      },
+    });
+}
+
+export async function removeCodeFile(db: Db, id: string) {
+  await db.delete(prepCodeFiles).where(eq(prepCodeFiles.id, id));
+}
+
+/**
+ * Swap a page's whole code workspace for a new set of files.
+ *
+ * Delete-then-insert rather than a per-file upsert, because a republished solution is a new
+ * tree, not an edit: files get renamed and packages split, and an upsert would leave the old
+ * names behind as orphans that look like part of the answer.
+ *
+ * Inserted in chunks rather than one statement. D1 caps how large a single query may be, and a
+ * dozen source files pasted into one INSERT is exactly the payload that finds the cap -- in
+ * production, on the largest and most valuable page.
+ */
+export async function replaceCodeFiles(
+  db: Db,
+  prepItemId: string,
+  rows: NewPrepCodeFile[],
+): Promise<number> {
+  await db.delete(prepCodeFiles).where(eq(prepCodeFiles.prepItemId, prepItemId));
+  if (rows.length === 0) return 0;
+
+  // Two files at one path would break the unique index and fail the whole publish. The later
+  // one wins, which is what a caller who listed a path twice almost certainly meant.
+  const byPath = new Map<string, NewPrepCodeFile>();
+  for (const row of rows) {
+    if (row.path) byPath.set(row.path, row);
+  }
+  const unique = [...byPath.values()];
+
+  const CHUNK = 8;
+  for (let i = 0; i < unique.length; i += CHUNK) {
+    await db.insert(prepCodeFiles).values(unique.slice(i, i + CHUNK));
+  }
+  return unique.length;
 }
 
 /** Difficulty and asked-frequency. Written independently of progress and of the document. */

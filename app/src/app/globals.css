@@ -216,3 +216,85 @@ body {
   pointer-events: none;
   color: var(--color-ink-faint);
 }
+
+/*
+ * Syntax highlighting for the code workspace.
+ *
+ * Written against the tokens above rather than importing one of highlight.js's stock themes.
+ * Every shipped theme brings its own palette -- a different background, its own idea of a
+ * comment grey -- and pasting one into a five-colour interface makes the code pane look like a
+ * screenshot from another application. These are the accent, fresh, warn and danger hues the
+ * rest of the app already uses, assigned to the token classes highlight.js emits.
+ *
+ * The container sets no background: the pane it sits in already has one, and hljs themes
+ * painting their own is what makes an embedded block look pasted-in.
+ */
+.hljs-code .hljs-comment,
+.hljs-code .hljs-quote {
+  color: var(--color-ink-faint);
+  font-style: italic;
+}
+
+.hljs-code .hljs-keyword,
+.hljs-code .hljs-selector-tag,
+.hljs-code .hljs-tag,
+.hljs-code .hljs-name,
+.hljs-code .hljs-operator {
+  color: var(--color-accent);
+}
+
+.hljs-code .hljs-string,
+.hljs-code .hljs-doctag,
+.hljs-code .hljs-regexp {
+  color: var(--color-fresh);
+}
+
+.hljs-code .hljs-number,
+.hljs-code .hljs-literal,
+.hljs-code .hljs-symbol {
+  color: var(--color-warn);
+}
+
+.hljs-code .hljs-title,
+.hljs-code .hljs-title.class_,
+.hljs-code .hljs-title.function_,
+.hljs-code .hljs-section {
+  color: var(--color-accent-ink);
+}
+
+.hljs-code .hljs-type,
+.hljs-code .hljs-built_in,
+.hljs-code .hljs-class .hljs-title {
+  color: #7fd4c1;
+}
+
+.hljs-code .hljs-attr,
+.hljs-code .hljs-attribute,
+.hljs-code .hljs-property,
+.hljs-code .hljs-variable,
+.hljs-code .hljs-template-variable,
+.hljs-code .hljs-params {
+  color: var(--color-ink-dim);
+}
+
+.hljs-code .hljs-meta,
+.hljs-code .hljs-meta .hljs-keyword,
+.hljs-code .hljs-punctuation {
+  color: var(--color-ink-faint);
+}
+
+.hljs-code .hljs-deletion {
+  color: var(--color-danger);
+}
+
+.hljs-code .hljs-addition {
+  color: var(--color-fresh);
+}
+
+.hljs-code .hljs-emphasis {
+  font-style: italic;
+}
+
+.hljs-code .hljs-strong {
+  font-weight: 600;
+}

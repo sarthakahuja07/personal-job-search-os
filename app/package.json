@@ -23,6 +23,8 @@
     "@tiptap/react": "^3.31.3",
     "@tiptap/starter-kit": "^3.31.3",
     "drizzle-orm": "^0.45.2",
+    "highlight.js": "^11.12.0",
+    "mermaid": "^12.0.0",
     "next": "16.3.4",
     "react": "19.2.8",
     "react-dom": "19.2.8",

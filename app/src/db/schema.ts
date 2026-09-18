@@ -813,6 +813,47 @@ export type PrepResource = typeof prepResources.$inferSelect;
 export type NewPrepResource = typeof prepResources.$inferInsert;
 
 /**
+ * The production code for a design question, as a small file tree.
+ *
+ * A table rather than an array in `content`, for the same reason `prep_resources` is one: files
+ * are added and removed one at a time, so a JSON column would mean read-modify-write on every
+ * change and would lose an edit whenever two landed close together. It also keeps whole source
+ * files out of the row that every tree and listing query already reads.
+ *
+ * `path` is the full path inside the workspace ("src/model/Vehicle.java"). The folder tree the
+ * UI draws is derived from those strings rather than stored, so there is no second structure
+ * that can disagree with the files themselves -- moving a file is rewriting one string, and an
+ * empty folder simply cannot exist.
+ */
+export const prepCodeFiles = sqliteTable(
+  "prep_code_files",
+  {
+    id: text("id").primaryKey().$defaultFn(uuid),
+    prepItemId: text("prep_item_id")
+      .notNull()
+      .references(() => prepItems.id, { onDelete: "cascade" }),
+
+    /** Full path inside the workspace, e.g. "src/model/Vehicle.java". No leading slash. */
+    path: text("path").notNull(),
+    /** highlight.js language id. Derived from the extension when not supplied. */
+    language: text("language"),
+    content: text("content").notNull(),
+
+    position: integer("position").notNull().default(0),
+    createdAt: createdAt(),
+    updatedAt: updatedAt(),
+  },
+  (t) => [
+    // One row per path per question: adding the same path twice is a correction, not a copy.
+    uniqueIndex("prep_code_file_item_path_unique").on(t.prepItemId, t.path),
+    index("prep_code_file_item_idx").on(t.prepItemId),
+  ],
+);
+
+export type PrepCodeFile = typeof prepCodeFiles.$inferSelect;
+export type NewPrepCodeFile = typeof prepCodeFiles.$inferInsert;
+
+/**
  * Somebody else's notes, kept so the page does not depend on GitHub being in a good mood.
  *
  * The notes pages used to fetch from GitHub on every single view. Two API calls per view --

@@ -6,6 +6,7 @@ import { RichEditor } from "@/components/rich-editor";
 import { GithubNotes } from "@/components/github-notes";
 import { PageGrading } from "@/components/page-grading";
 import { BookReader, SiteEmbed } from "@/components/page-readers";
+import { CodeWorkspace } from "@/components/code-workspace";
 import { PageResources } from "@/components/page-resources";
 import { Badge, Button, Card, PageHeader, SectionTitle, cx, inputStyles } from "@/components/ui";
 import { getDb } from "@/db";
@@ -21,6 +22,7 @@ import {
 import {
   ancestorsOf,
   childrenOf,
+  codeFilesFor,
   resolvePath,
   resourcesFor,
   updateProgress,
@@ -101,10 +103,11 @@ export default async function PrepPage({
   const item = await resolvePath(db, meta.kind, path);
   if (!item) notFound();
 
-  const [kids, chain, resources] = await Promise.all([
+  const [kids, chain, resources, codeFiles] = await Promise.all([
     childrenOf(db, item.id),
     ancestorsOf(db, item.id),
     resourcesFor(db, item.id),
+    codeFilesFor(db, item.id),
   ]);
 
   const content = item.content ?? {};
@@ -115,6 +118,16 @@ export default async function PrepPage({
   // is not practised and a folder is not either, but only a folder has a list -- conflating
   // them rendered an empty "0 pages" section on every book.
   const isPractisable = !hasChildren && !isReader;
+  /*
+    Code belongs on a question you answer *in code*.
+
+    Gated on the kind rather than on the LLD folder's path: LLD is one folder among several that
+    want a worked implementation -- a DSA question does too -- and keying a feature to a
+    particular path would make it a thing about that folder rather than about the kind of
+    question, which is exactly what the `kind` discriminator exists to avoid. A behavioural
+    story has no code, and a folder or a book is not answered at all.
+  */
+  const showsCode = isPractisable && meta.kind !== "behavioral";
 
   /*
     Some pages are rendered, not edited.
@@ -214,6 +227,14 @@ export default async function PrepPage({
         path={`/prep/${segment}/${here}`}
         resources={resources}
       />
+
+      {showsCode && (
+        <CodeWorkspace
+          prepItemId={item.id}
+          path={`/prep/${segment}/${here}`}
+          files={codeFiles}
+        />
+      )}
 
       {/* A page is a document unless its content says otherwise. Readers replace the editor
           rather than sitting beside it: there is nothing to write on a book. */}
