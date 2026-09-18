@@ -16,6 +16,8 @@
 
 import type { Db } from "@/db";
 import type { NewPrepItem, PrepContent, PrepKind } from "@/db/schema";
+import { composeLldBody } from "@/server/domain/lld";
+import { languageFor, normalizeCodePath } from "@/server/domain/code";
 import { parseResource } from "@/server/domain/resources";
 import { buildPaths } from "@/server/domain/prep";
 import {
@@ -24,6 +26,7 @@ import {
   insertPage,
   nextPosition,
   pageBySlug,
+  replaceCodeFiles,
   resolvePath,
   updatePage,
 } from "@/server/repository/prep-repo";
@@ -93,6 +96,7 @@ export type PublishResult = {
   url: string;
   created: boolean;
   resources: number;
+  codeFiles: number;
 };
 
 export async function publishPrepPage(
@@ -147,6 +151,17 @@ export async function publishPrepPage(
   }
 
   const content = definedOnly(input.content);
+
+  /*
+    Structured sections win over a hand-written body.
+
+    A caller that sends both has told us the same thing twice, and the composed version is the
+    one with guaranteed headings in a guaranteed order -- which is the entire reason the
+    structured form exists. Sending only `body` still works, for the disciplines that have no
+    fixed shape.
+  */
+  const composed = composeLldBody(input.solution ?? {});
+
   const fields = {
     title: input.title,
     prompt: input.prompt ?? null,
@@ -154,7 +169,7 @@ export async function publishPrepPage(
     frequency: input.frequency,
     topics: input.topics,
     companies: input.companies,
-    body: input.body ?? null,
+    body: composed ?? input.body ?? null,
     status: input.status,
     sourceUrl: input.source_url ?? null,
   };
@@ -174,7 +189,10 @@ export async function publishPrepPage(
       frequency: existing.frequency || fields.frequency,
       topics: [...new Set([...(existing.topics ?? []), ...fields.topics])],
       companies: [...new Set([...(existing.companies ?? []), ...fields.companies])],
-      body: existing.body ?? fields.body,
+      // A freshly composed solution replaces the body even in merge mode: merge exists to
+      // protect notes you wrote, and a structured solution is not a note -- it is the answer,
+      // republished because it changed.
+      body: composed ?? existing.body ?? fields.body,
       sourceUrl: existing.sourceUrl ?? fields.sourceUrl,
       content: { ...(existing.content ?? {}), ...content },
     });
@@ -212,6 +230,31 @@ export async function publishPrepPage(
     });
   }
 
+  /*
+    Code is replaced, not merged.
+
+    A solution is rewritten as a unit: files get renamed, packages split, a Java answer becomes a
+    Go one. Merging would leave the previous version's files beside the new ones -- a tree that
+    looks complete and does not compile. Sending no files leaves whatever is already there
+    untouched, so publishing a prose correction does not wipe the implementation.
+  */
+  if (input.code_files.length > 0) {
+    await replaceCodeFiles(
+      db,
+      id,
+      input.code_files.map((file, index) => {
+        const filePath = normalizeCodePath(file.path);
+        return {
+          prepItemId: id,
+          path: filePath,
+          language: file.language ?? languageFor(filePath),
+          content: file.content,
+          position: index,
+        };
+      }),
+    );
+  }
+
   const path = [...segments, slug].join("/");
   return {
     id,
@@ -222,5 +265,6 @@ export async function publishPrepPage(
     url: `/prep/${segmentOf(input.kind)}/${path}`,
     created,
     resources: input.resources.length,
+    codeFiles: input.code_files.length,
   };
 }

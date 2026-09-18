@@ -3,7 +3,7 @@
 The durable state of this project. Updated whenever something meaningful lands, so no context is
 lost between sessions (PRD §73). Picking this up cold: read `CLAUDE.md` first, then this file.
 
-**Last updated:** 2026-09-13
+**Last updated:** 2026-09-18
 
 ---
 
@@ -45,6 +45,10 @@ are loaded and reachable only from behind Access.
 | Behavioral | done — 8 seeded themes with situation / action / outcome |
 | Progress tracking | done — four states, `revisit` deliberately not counted as done |
 | Notion import | not started — schema shaped to absorb it (PRD §39) |
+| LLD question set | done — 17 pages under System Design → LLD, each with videos and articles, no solutions yet |
+| Code workspace | done — read-only VS Code-style viewer on question pages (`prep_code_files`) |
+| Worked LLD publishing | done — `publish_lld_solution` MCP tool: seven fixed sections composed server-side, a structured design-choices table, Mermaid diagrams, and the code published as files into the Code panel. See `docs/lld-solution-pages.md` |
+| Mermaid diagrams | done — ```mermaid fences render as diagrams in any prep page body, lazily loaded |
 
 ---
 
@@ -55,7 +59,13 @@ is optional and additive:
 
 1. **Notion import** — bring Sarthak's existing prep content into `prep_items`. The schema was
    shaped to absorb it; this is a field mapping, not a redesign.
-2. **CHEQ** — the only remaining source that would need a headless browser *at runtime*. One
+2. **Fill the remaining LLD code workspaces** — 1 of 17 done. **All LLD code is Go.** Parking
+   Lot carries a worked 12-file Go module (`model` / `pricing` / `lot` / `cmd`, with a
+   `pricing.Strategy` seam and an injected clock), gofmt-clean and passing `go vet` and
+   `go test -race` with 10 tests. The other 16 pages carry resources but no code. Each page has a
+   Code section that takes files at a path (`model/spot.go`); the tree and the highlighting are
+   derived from those paths, so pasting a file is the whole interaction.
+3. **CHEQ** — the only remaining source that would need a headless browser *at runtime*. One
    company does not justify shipping Chromium into the crawl (PRD §13).
 
 See `docs/source-catalogue.md` for every company, its technique, and the evidence behind each

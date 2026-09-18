@@ -3,6 +3,10 @@
 Lets an assistant write finished study pages straight into the prep tree: notes, reference
 videos, difficulty and ask score, filed under the right section.
 
+For a *solved* low-level design question there is `publish_lld_solution`, which additionally
+takes the implementation as files and puts it in the page's Code panel — see
+[docs/lld-solution-pages.md](../docs/lld-solution-pages.md).
+
 ## Why it runs locally
 
 The app is behind Cloudflare Access. A *local* stdio server can hold the Access service token

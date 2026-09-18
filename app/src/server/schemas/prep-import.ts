@@ -60,6 +60,48 @@ const content = z
   })
   .partial();
 
+/**
+ * One source file for the page's code workspace.
+ *
+ * `path` carries the structure -- "model/spot.go" puts the file in a folder -- because the tree
+ * the UI draws is derived from these strings. Sending a folder list as well would be a second
+ * structure that can disagree with the files.
+ *
+ * `language` is optional and normally omitted: it is derived from the extension, and a caller
+ * guessing a highlight.js grammar id is more likely to be wrong than the extension is.
+ */
+const codeFile = z.object({
+  path: z.string().min(1).max(300),
+  content: z.string().max(200_000),
+  language: z.string().max(40).nullish(),
+});
+
+/** One row of the design-choices table. Structured, so the table cannot arrive malformed. */
+const designChoice = z.object({
+  component: z.string().min(1).max(200),
+  choice: z.string().min(1).max(2000),
+  principle: z.string().max(200).nullish(),
+  why: z.string().max(2000).nullish(),
+});
+
+/**
+ * The sections of a low-level design answer.
+ *
+ * Named fields rather than a pre-formatted body, so the server decides the headings and their
+ * order and every LLD page comes out the same shape. See server/domain/lld.ts.
+ */
+const lldSolution = z
+  .object({
+    problem_statement: z.string().max(20_000).nullish(),
+    requirements: z.string().max(20_000).nullish(),
+    entities: z.string().max(20_000).nullish(),
+    relationships: z.string().max(20_000).nullish(),
+    interfaces: z.string().max(20_000).nullish(),
+    design_choices: z.array(designChoice).max(40).nullish(),
+    edge_cases: z.string().max(20_000).nullish(),
+  })
+  .partial();
+
 export const prepPageSchema = z.object({
   kind: z.enum(PREP_KINDS),
   title: z.string().min(1).max(300),
@@ -84,6 +126,21 @@ export const prepPageSchema = z.object({
 
   /** Reference videos and articles. */
   resources: z.array(resource).max(30).optional().default([]),
+
+  /**
+   * The worked implementation, as files, for the page's Code section.
+   *
+   * Replaced wholesale rather than merged when any file is sent: a solution is rewritten as a
+   * unit -- renamed files, split packages -- and merging would leave the previous version's
+   * orphans sitting in the tree beside the new one, compiling against nothing.
+   */
+  code_files: z.array(codeFile).max(60).optional().default([]),
+
+  /**
+   * Structured LLD sections. When present the server composes the body from them and ignores
+   * `body`, so every low-level design page carries the same headings in the same order.
+   */
+  solution: lldSolution.optional().default({}),
 
   status: z.enum(PREP_STATUSES).optional().default("not_started"),
   source_url: z.string().url().nullish(),

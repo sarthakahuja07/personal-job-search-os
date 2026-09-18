@@ -19,8 +19,17 @@ One publishing tool per discipline, rather than one with a `kind` argument:
     publish_dsa_question       coding problems
     publish_hld_design         distributed system architecture
     publish_lld_design         object-oriented design within one service
+    publish_lld_solution       a *worked* LLD answer: sections plus the code, as files
     publish_behavioral_story   experience questions
     publish_page               an explicit kind and section; the escape hatch
+
+`publish_lld_design` and `publish_lld_solution` file to the same place and differ in what you
+have. The first takes free prose and is right for a page of notes. The second takes named
+sections -- problem, requirements, entities, relationships, interfaces, design choices, edge
+cases -- and the implementation as real files, and is right after actually working a question
+through. The server composes the Markdown from those sections, so every worked page comes out
+with the same headings in the same order, and the files land in the page's Code panel
+where they are browsed like an editor rather than scrolled past as one long fence.
 
 The split exists because the generic tool asked the model to get two things right at once --
 `kind`, and a `parent_path` that does not follow from it. Low-level design exposes it: there is
@@ -334,6 +343,122 @@ async def publish_lld_design(
         on_conflict: "error" (default), "merge" or "replace".
     """
     return await _publish("system_design", "lld", locals())
+
+
+@server.tool()
+async def publish_lld_solution(
+    title: str,
+    problem_statement: str | None = None,
+    requirements: str | None = None,
+    entities: str | None = None,
+    relationships: str | None = None,
+    interfaces: str | None = None,
+    design_choices: list[dict[str, str]] | None = None,
+    edge_cases: str | None = None,
+    code_files: list[dict[str, str]] | None = None,
+    prompt: str | None = None,
+    difficulty: Literal["easy", "medium", "hard"] | None = None,
+    frequency: int = 0,
+    topics: list[str] | None = None,
+    companies: list[str] | None = None,
+    resources: list[dict[str, str]] | None = None,
+    source_url: str | None = None,
+    on_conflict: Literal["error", "merge", "replace"] = "error",
+) -> dict[str, Any]:
+    """
+    Publish a WORKED low-level design answer: the reasoning as sections, the solution as files.
+
+    Use this after actually solving an LLD question -- you have the design *and* the code. Use
+    `publish_lld_design` instead when you only have prose notes and no implementation.
+
+    You do not write the page layout. Send the sections and the server composes the Markdown,
+    always with these headings in this order, skipping any you leave empty:
+
+        Problem statement -> Requirements -> Entities -> Relationships and diagrams ->
+        Interfaces -> Design choices and principles -> Cases handled and edge cases
+
+    The code does NOT go in a section. Send it as `code_files` and it lands in the page's Code
+    panel, which renders a folder tree and a syntax-highlighted pane, openable full screen. A
+    twelve-file module pasted into Markdown is a wall nobody reads.
+
+    **Write the code in Go.** Every worked LLD implementation in this tree is Go, and a page in
+    another language is the odd one out in a set meant to be revised as a whole. Write it as real
+    Go -- a struct with a size field rather than a transliterated class hierarchy, interfaces for
+    the seams that genuinely vary. Compile it and run its tests before publishing; do not publish
+    code you have not run.
+
+    Args:
+        title: The page name, e.g. "Design a Parking Lot". Say the problem, not "LLD solution".
+        problem_statement: What is being asked, as an interviewer would put it.
+        requirements: Functional and non-functional, ideally as a list.
+        entities: The things and what each one owns. Nouns, not classes-with-getters.
+        relationships: How they relate. Prefer a diagram: a ```mermaid fence is rendered as a
+            real diagram on the page, so a `classDiagram` block is usually the best answer here.
+            Anything Mermaid supports works; a fence that will not parse falls back to its
+            source, so check the syntax.
+        interfaces: The seams -- the interfaces or abstract types, and what each one exists to
+            let vary.
+        design_choices: The table. A list of rows, each
+            {"component": ..., "choice": ..., "principle": ..., "why": ...}. `principle` is the
+            SOLID principle or design pattern that row follows ("Strategy", "OCP"); `why` is the
+            reason. Send it structured like this -- do not hand-write a Markdown table, the
+            server builds it and escapes the cells.
+        edge_cases: What breaks at the edges, what is handled and what is deliberately not:
+            concurrency, double submits, clock skew, empty and full, failure part-way through.
+        code_files: The implementation, as
+            [{"path": "model/spot.go", "content": "..."}]. `path` carries the folder structure --
+            the tree is derived from it, so "cmd/parkinglot/main.go" nests three deep. Include
+            go.mod, the tests and a README. `language` is optional: it is derived from the
+            extension and you should normally omit it. Publishing any file REPLACES the whole
+            workspace, so always send the complete set; sending none leaves the existing files
+            untouched.
+        prompt: One-line brief, shown under the title.
+        difficulty: easy, medium or hard.
+        frequency: Ask score 1-5. Set it.
+        topics: Tags for filtering, e.g. ["strategy-pattern", "concurrency"].
+        companies: Companies known to ask this.
+        resources: [{"url": ..., "title": ...}]. Always title a video.
+        source_url: Where this was studied from.
+        on_conflict: "error" (default) refuses if the page exists; "merge" fills gaps but still
+            replaces the composed body and the code; "replace" overwrites the page.
+
+    Call `prep_search` first. If the question already has a page, publish to it with
+    on_conflict "replace" rather than creating a near-duplicate under a slightly different name.
+    """
+    return await _request(
+        "POST",
+        "/api/prep/pages",
+        json={
+            "kind": "system_design",
+            "parent_path": "lld",
+            "title": title,
+            "prompt": prompt,
+            "difficulty": difficulty,
+            "frequency": frequency or 0,
+            "topics": topics or [],
+            "companies": companies or [],
+            "resources": resources or [],
+            "source_url": source_url,
+            "on_conflict": on_conflict,
+            "solution": {
+                "problem_statement": problem_statement,
+                "requirements": requirements,
+                "entities": entities,
+                "relationships": relationships,
+                "interfaces": interfaces,
+                "design_choices": design_choices or [],
+                "edge_cases": edge_cases,
+            },
+            "code_files": code_files or [],
+            # The structured sections also fill the discipline fields the page UI shows as
+            # "Starting points", so the page is useful in both places without asking twice.
+            "content": {
+                "requirements": requirements,
+                "architecture": relationships,
+                "tradeoffs": edge_cases,
+            },
+        },
+    )
 
 
 @server.tool()

@@ -48,6 +48,7 @@ takes a `kind` or a section — there is nothing to get wrong once the tool is c
 | `publish_dsa_question` | A coding problem — arrays, trees, graphs, DP, two pointers, complexity |
 | `publish_hld_design` | Architecture *between services* — scale, sharding, replication, caching, queues, CAP, or designing a named product |
 | `publish_lld_design` | Object-oriented design *within one service* — classes, interfaces, design patterns, SOLID, state machines, parking lot / elevator / chess |
+| `publish_lld_solution` | The same, but you **solved it** — you have the design *and* working code. See below |
 | `publish_behavioral_story` | Your own experience — conflict, failure, a project you led, "tell me about a time when" |
 | `publish_page` | None of the above. Takes an explicit `kind` and `parent_path`. Prefer the others |
 
@@ -57,6 +58,32 @@ that should link it will never find it there.
 
 `publish_hld_design` takes a `section`: `question` (default) for a "design X" problem, `concept`
 for a building block studied on its own — caching, CDNs, consistent hashing, CAP.
+
+### Worked LLD answers — `publish_lld_solution`
+
+When you have actually solved a low-level design question, this publishes the whole thing: the
+reasoning as named sections, and the implementation as real files into the page's Code panel,
+which renders a folder tree and a syntax-highlighted pane.
+
+You send sections, not a formatted body — the server composes the Markdown so every worked page
+has the same headings in the same order:
+
+    Problem statement → Requirements → Entities → Relationships and diagrams →
+    Interfaces → Design choices and principles → Cases handled and edge cases
+
+Four things to get right:
+
+- **Diagram section 4.** A ```mermaid fence renders as a real diagram; `classDiagram` is usually
+  what you want.
+- **`design_choices` is structured**, a list of `{component, choice, principle, why}`. Do not
+  hand-write the table; the server builds and escapes it.
+- **Code goes in `code_files`, never in a section** — `[{"path": "model/spot.go", "content": ...}]`.
+  The path carries the folder structure. Publishing any file replaces the whole workspace, so
+  send the complete set.
+- **The code is Go, and it must compile.** Run `gofmt -l .`, `go vet ./...` and
+  `go test -race ./...` first. Never publish code you have not run.
+
+Full contract, with a worked example: [lld-solution-pages.md](lld-solution-pages.md).
 
 Fill in everything the session actually established. A page with only a title cannot be revised
 from, and with `frequency` unset it sorts last and is effectively invisible. These are things
@@ -188,3 +215,7 @@ and then drilling into one class — publish two pages, or ask which was meant.
 
 **Set `frequency`.** It defaults to 0, which sorts a page to the bottom of every list. You
 almost always know roughly how often something is asked; a rough number beats none.
+
+**A solved LLD question wants `publish_lld_solution`, not `publish_lld_design`.** The prose tool
+cannot carry code, so the implementation ends up pasted into the body as one long fence — which
+is the thing the Code panel exists to avoid. If you have files, use the tool that takes files.

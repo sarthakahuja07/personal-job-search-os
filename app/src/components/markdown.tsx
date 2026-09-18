@@ -1,6 +1,8 @@
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 
+import { Mermaid } from "./mermaid";
+
 /**
  * A prep page's body, rendered.
  *
@@ -62,6 +64,18 @@ export function Markdown({ children }: { children: string }) {
             // react-markdown gives fenced blocks a language class and inline code none, which is
             // the only reliable way to tell them apart here.
             const fenced = /language-/.test(className ?? "");
+
+            /*
+              A ```mermaid fence is a diagram, not a code sample.
+
+              Intercepted here rather than by a remark plugin because the plugin would have to
+              replace the node before rendering, and `pre` would still wrap whatever came back --
+              putting a bordered code box around the diagram's own bordered box.
+            */
+            if (/language-mermaid/.test(className ?? "")) {
+              return <Mermaid chart={String(children).replace(/\n$/, "")} />;
+            }
+
             if (fenced) {
               return (
                 <code
@@ -81,13 +95,31 @@ export function Markdown({ children }: { children: string }) {
               </code>
             );
           },
-          pre: (p) => (
+          pre: ({ node, children, ...rest }) => {
+            /*
+              A mermaid fence has already become a diagram by the time `pre` sees it, and the
+              diagram brings its own frame. Wrapping it again draws a box inside a box, so the
+              wrapper is skipped for that one case and kept for real code.
+            */
+            const child = Array.isArray(children) ? children[0] : children;
+            const childClass =
+              child && typeof child === "object" && "props" in child
+                ? String((child as { props?: { className?: string } }).props?.className ?? "")
+                : "";
+            if (/language-mermaid/.test(childClass)) {
+              return <>{children}</>;
+            }
+
             // Wide code scrolls inside its own box; the page itself must never scroll sideways.
-            <pre
-              className="my-3 overflow-x-auto rounded-card border border-line bg-surface-2 px-3.5 py-3"
-              {...dom(p)}
-            />
-          ),
+            return (
+              <pre
+                className="my-3 overflow-x-auto rounded-card border border-line bg-surface-2 px-3.5 py-3"
+                {...rest}
+              >
+                {children}
+              </pre>
+            );
+          },
           table: (p) => (
             <div className="my-3 overflow-x-auto rounded-card border border-line">
               <table className="w-full border-collapse text-[12.5px]" {...dom(p)} />

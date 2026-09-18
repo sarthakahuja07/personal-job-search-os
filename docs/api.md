@@ -149,6 +149,8 @@ Publish one page with its resources. Body is `prepPageSchema` (`src/server/schem
 | `body` | The note, as Markdown |
 | `content` | Discipline fields — `pattern`/`complexity` (DSA), `requirements`/`architecture`/`tradeoffs` (system design), `situation`/`action`/`outcome` (behavioral) |
 | `resources` | `[{url, title}]`. YouTube links are stored as videos with the id extracted, by the same code that classifies a pasted link |
+| `solution` | Structured LLD sections — `problem_statement`, `requirements`, `entities`, `relationships`, `interfaces`, `design_choices[]`, `edge_cases`. When present the server composes `body` from them and ignores any `body` sent |
+| `code_files` | `[{path, content, language?}]` for the page's Code panel. `path` carries the folder structure; `language` is derived from the extension |
 | `on_conflict` | `error` (default), `merge`, `replace` |
 
 Returns `201` on create, `200` on merge/replace, `404` if `parent_path` does not resolve, and
@@ -158,6 +160,21 @@ The conflict default is the important part. A study assistant runs unattended ov
 took weeks to write: silently overwriting loses work and silently duplicating makes the tree
 unusable, and both look like success from the caller's side. `merge` fills only empty fields and
 adds resources, so a hand-written body survives a second pass over the same topic.
+
+**`solution` and `code_files` are the worked-answer path**, used by the `publish_lld_solution` MCP
+tool and available to any direct caller. Composing the body on the server rather than accepting a
+formatted one is deliberate: the layout of a study page is business logic, and leaving it to each
+assistant produces a set of pages with the same content under different headings in a different
+order — which is a set you cannot skim, and therefore cannot revise from.
+
+Two exceptions to the conflict rules above apply to them. A composed `solution` replaces the body
+even under `merge`, because a structured solution is not a hand-written note — it is the answer,
+republished because it changed. And `code_files` replaces the whole workspace rather than merging,
+because a rewritten solution renames files and splits packages; merging would leave the previous
+version's orphans sitting beside the new ones, looking like part of the answer. Sending no
+`code_files` leaves the existing workspace untouched.
+
+Contract and worked example: [lld-solution-pages.md](lld-solution-pages.md).
 
 ### `POST /api/prep/company`
 
