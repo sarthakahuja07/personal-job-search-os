@@ -1,7 +1,14 @@
 import { describe, expect, it } from "vitest";
 
-import { KINDS, kindBySegment, kindOf, summarise, topicCounts,
+import {
+  KINDS,
   containsMarkdownTable,
+  containsMermaidDiagram,
+  isRenderOnlyBody,
+  kindBySegment,
+  kindOf,
+  summarise,
+  topicCounts,
 } from "./prep";
 
 describe("kind routing", () => {
@@ -142,5 +149,41 @@ describe("containsMarkdownTable", () => {
     expect(containsMarkdownTable("")).toBe(false);
     expect(containsMarkdownTable(null)).toBe(false);
     expect(containsMarkdownTable(undefined)).toBe(false);
+  });
+});
+
+describe("containsMermaidDiagram", () => {
+  it("finds a fenced mermaid block", () => {
+    expect(containsMermaidDiagram("intro\n\n```mermaid\nclassDiagram\n  A --> B\n```\n")).toBe(true);
+  });
+
+  it("finds one whatever diagram grammar it uses", () => {
+    expect(containsMermaidDiagram("```mermaid\nstateDiagram-v2\n  [*] --> a\n```")).toBe(true);
+    expect(containsMermaidDiagram("```mermaid\nsequenceDiagram\n  A->>B: hi\n```")).toBe(true);
+  });
+
+  it("ignores other fenced languages", () => {
+    expect(containsMermaidDiagram("```go\nfunc main() {}\n```")).toBe(false);
+    expect(containsMermaidDiagram("```\nmermaid\n```")).toBe(false);
+  });
+
+  it("does not match the word in prose", () => {
+    expect(containsMermaidDiagram("We render mermaid diagrams on this page.")).toBe(false);
+  });
+
+  it("is false for an empty body", () => {
+    expect(containsMermaidDiagram(null)).toBe(false);
+    expect(containsMermaidDiagram("")).toBe(false);
+  });
+});
+
+describe("isRenderOnlyBody", () => {
+  it("is true for either a table or a diagram", () => {
+    expect(isRenderOnlyBody("| a | b |\n| --- | --- |\n| 1 | 2 |")).toBe(true);
+    expect(isRenderOnlyBody("```mermaid\nclassDiagram\n```")).toBe(true);
+  });
+
+  it("is false for ordinary prose, which stays editable", () => {
+    expect(isRenderOnlyBody("# Notes\n\nSome prose and a `code` span.")).toBe(false);
   });
 });

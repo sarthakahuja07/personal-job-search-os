@@ -16,7 +16,7 @@ import { Markdown } from "@/components/markdown";
 import {
   STATUS_LABEL,
   STATUS_ORDER,
-  containsMarkdownTable,
+  isRenderOnlyBody,
   kindBySegment,
 } from "@/server/domain/prep";
 import {
@@ -142,7 +142,7 @@ export default async function PrepPage({
     shredding the content is a bug.
   */
   const isGenerated = Array.isArray(content.rows);
-  const isRendered = !isReader && (isGenerated || containsMarkdownTable(item.body));
+  const isRendered = !isReader && (isGenerated || isRenderOnlyBody(item.body));
   const here = path.join("/");
   const hrefFor = (slug: string) => `/prep/${segment}/${[...path, slug].join("/")}`;
 
@@ -259,7 +259,7 @@ export default async function PrepPage({
             <p className="mt-2 text-[11.5px] text-ink-faint">
               {isGenerated
                 ? "Generated from what was published to it. Publishing again updates it; edits made here would be replaced."
-                : "Shown as written. Pages containing a table are not editable here, because the editor cannot represent one."}
+                : "Shown as written. Pages containing a table or a diagram are not editable here, because the editor cannot represent either."}
             </p>
           </div>
         ) : (

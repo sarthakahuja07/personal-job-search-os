@@ -126,6 +126,34 @@ export function containsMarkdownTable(body: string | null | undefined): boolean 
   return false;
 }
 
+/**
+ * A fenced ```mermaid block, which the page renders as a diagram.
+ *
+ * Detected for the same reason a table is: the editor is StarterKit, which has no node for
+ * either, so opening such a page flattens the fence into text *and saves that back on blur*.
+ * One click would turn a class diagram into a paragraph of arrows.
+ *
+ * Only an opening fence is looked for. An unclosed one is a typo in the note, and rendering it
+ * read-only is how you see the typo -- editing it is how you lose the rest of the block.
+ */
+export function containsMermaidDiagram(body: string | null | undefined): boolean {
+  if (!body) return false;
+  // Horizontal whitespace only: `\s` spans newlines, so a bare fence followed by the word
+  // "mermaid" on the next line matched, and that is a code block, not a diagram.
+  return /^[ \t]*```[ \t]*mermaid\b/m.test(body);
+}
+
+/**
+ * True when a page must be shown rather than edited.
+ *
+ * One question with two current answers, kept together so a third -- the next block the editor
+ * cannot represent -- is added in one place rather than found by someone whose diagram turned
+ * into prose.
+ */
+export function isRenderOnlyBody(body: string | null | undefined): boolean {
+  return containsMarkdownTable(body) || containsMermaidDiagram(body);
+}
+
 export function kindBySegment(segment: string): KindMeta | undefined {
   return KINDS.find((k) => k.segment === segment);
 }
