@@ -25,9 +25,9 @@ One publishing tool per discipline, rather than one with a `kind` argument:
 
 `publish_lld_design` and `publish_lld_solution` file to the same place and differ in what you
 have. The first takes free prose and is right for a page of notes. The second takes named
-sections -- problem, requirements, entities, relationships, interfaces, design choices, edge
-cases -- and the implementation as real files, and is right after actually working a question
-through. The server composes the Markdown from those sections, so every worked page comes out
+sections -- problem, requirements, entities and interfaces as tables, relationships, design
+choices, edge cases, talking points -- and the implementation as real files, and is right after
+actually working a question through. It is also where the one-hour scoping rule lives. The server composes the Markdown from those sections, so every worked page comes out
 with the same headings in the same order, and the files land in the page's Code panel
 where they are browsed like an editor rather than scrolled past as one long fence.
 
@@ -350,11 +350,12 @@ async def publish_lld_solution(
     title: str,
     problem_statement: str | None = None,
     requirements: str | None = None,
-    entities: str | None = None,
+    entities: list[dict[str, str]] | None = None,
+    interfaces: list[dict[str, str]] | None = None,
     relationships: str | None = None,
-    interfaces: str | None = None,
     design_choices: list[dict[str, str]] | None = None,
     edge_cases: str | None = None,
+    talking_points: str | None = None,
     code_files: list[dict[str, str]] | None = None,
     prompt: str | None = None,
     difficulty: Literal["easy", "medium", "hard"] | None = None,
@@ -371,47 +372,65 @@ async def publish_lld_solution(
     Use this after actually solving an LLD question -- you have the design *and* the code. Use
     `publish_lld_design` instead when you only have prose notes and no implementation.
 
+    ## Scope it to one hour
+
+    This is the constraint that matters most, and the one most solutions get wrong. The page must
+    describe an answer a candidate can **design, explain and code in a 60-minute interview**, not
+    a production system. Before publishing, check the question against how it is actually solved
+    elsewhere -- LeetCode discuss, awesome-low-level-design, Hello Interview -- and cut anything
+    those do not carry. Six to ten types is normal; twenty is over-scoped and will not be
+    finished in the room. Persistence, auth, retries and metrics are almost always out of scope,
+    and saying so explicitly is a better answer than building them.
+
+    ## The sections
+
     You do not write the page layout. Send the sections and the server composes the Markdown,
     always with these headings in this order, skipping any you leave empty:
 
-        Problem statement -> Requirements -> Entities -> Relationships and diagrams ->
-        Interfaces -> Design choices and principles -> Cases handled and edge cases
+        Problem statement -> Requirements -> Entities and interfaces ->
+        Relationships and diagrams -> Design choices and principles ->
+        Cases handled and edge cases -> Talking points
 
     The code does NOT go in a section. Send it as `code_files` and it lands in the page's Code
-    panel, which renders a folder tree and a syntax-highlighted pane, openable full screen. A
-    twelve-file module pasted into Markdown is a wall nobody reads.
+    panel, which renders a folder tree and a syntax-highlighted pane, openable full screen.
 
-    **Write the code in Go.** Every worked LLD implementation in this tree is Go, and a page in
-    another language is the odd one out in a set meant to be revised as a whole. Write it as real
-    Go -- a struct with a size field rather than a transliterated class hierarchy, interfaces for
-    the seams that genuinely vary. Compile it and run its tests before publishing; do not publish
-    code you have not run.
+    **Write the code in Go**, and make it a module that runs: the library package, its tests, a
+    `go.mod`, and a `cmd/demo/main.go` that exercises the design. Compile it and run
+    `gofmt -l .`, `go vet ./...`, `go test -race ./...` and `go run ./cmd/demo` before publishing.
+    Do not publish code you have not run.
 
     Args:
         title: The page name, e.g. "Design a Parking Lot". Say the problem, not "LLD solution".
         problem_statement: What is being asked, as an interviewer would put it.
-        requirements: Functional and non-functional, ideally as a list.
-        entities: The things and what each one owns. Nouns, not classes-with-getters.
-        relationships: How they relate. Prefer a diagram: a ```mermaid fence is rendered as a
-            real diagram on the page, so a `classDiagram` block is usually the best answer here.
-            Anything Mermaid supports works; a fence that will not parse falls back to its
-            source, so check the syntax.
-        interfaces: The seams -- the interfaces or abstract types, and what each one exists to
-            let vary.
-        design_choices: The table. A list of rows, each
-            {"component": ..., "choice": ..., "principle": ..., "why": ...}. `principle` is the
-            SOLID principle or design pattern that row follows ("Strategy", "OCP"); `why` is the
-            reason. Send it structured like this -- do not hand-write a Markdown table, the
-            server builds it and escapes the cells.
+        requirements: Functional and non-functional, as a list. State what is **out** of scope
+            too -- that is how the answer stays inside an hour.
+        entities: The types, as rows:
+            [{"name": "Spot", "fields": "id string, size Size, occupant *Vehicle",
+              "responsibility": "One bay and whether it is taken"}].
+            `fields` carries the actual fields with types -- this is the table a reader checks
+            when they cannot remember the model. Send rows, never a hand-written table.
+        interfaces: The seams, as rows:
+            [{"name": "PricingStrategy", "signature": "Price(units int) (float64, error)",
+              "purpose": "Rate schemes, which change constantly"}].
+            `signature` is the method set, rendered as code. If an interface has no answer for
+            `purpose`, it probably should not exist.
+        relationships: How they relate. Prefer a diagram: a ```mermaid fence renders as a real
+            diagram, so a `classDiagram` is usually the best answer, or `stateDiagram-v2` for a
+            lifecycle. Check the syntax -- a fence that will not parse falls back to its source.
+        design_choices: The table that carries the reasoning. Rows of
+            {"component": ..., "choice": ..., "principle": ..., "why": ...}, where `principle`
+            is the SOLID principle or pattern ("Strategy", "OCP") and `why` is the reason. One
+            row per decision that was genuinely a decision; "used a class" is noise.
         edge_cases: What breaks at the edges, what is handled and what is deliberately not:
-            concurrency, double submits, clock skew, empty and full, failure part-way through.
+            concurrency, double submits, empty and full, failure part-way through.
+        talking_points: What you would actually say in the room -- the two or three sentences
+            that open the answer, the trade-off you would volunteer, the extension you would
+            name when asked "how would you add X". Write it as a short list.
         code_files: The implementation, as
-            [{"path": "model/spot.go", "content": "..."}]. `path` carries the folder structure --
-            the tree is derived from it, so "cmd/parkinglot/main.go" nests three deep. Include
-            go.mod, the tests and a README. `language` is optional: it is derived from the
-            extension and you should normally omit it. Publishing any file REPLACES the whole
-            workspace, so always send the complete set; sending none leaves the existing files
-            untouched.
+            [{"path": "model/spot.go", "content": "..."}]. `path` carries the folder structure.
+            Include go.mod, the tests and cmd/demo/main.go. `language` is derived from the
+            extension, so omit it. Publishing any file REPLACES the whole workspace, so always
+            send the complete set; sending none leaves the existing files untouched.
         prompt: One-line brief, shown under the title.
         difficulty: easy, medium or hard.
         frequency: Ask score 1-5. Set it.
@@ -443,14 +462,15 @@ async def publish_lld_solution(
             "solution": {
                 "problem_statement": problem_statement,
                 "requirements": requirements,
-                "entities": entities,
+                "entities": entities or [],
+                "interfaces": interfaces or [],
                 "relationships": relationships,
-                "interfaces": interfaces,
                 "design_choices": design_choices or [],
                 "edge_cases": edge_cases,
+                "talking_points": talking_points,
             },
             "code_files": code_files or [],
-            # The structured sections also fill the discipline fields the page UI shows as
+            # The prose sections also fill the discipline fields the page UI shows as
             # "Starting points", so the page is useful in both places without asking twice.
             "content": {
                 "requirements": requirements,

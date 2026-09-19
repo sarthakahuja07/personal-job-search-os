@@ -84,21 +84,40 @@ const designChoice = z.object({
   why: z.string().max(2000).nullish(),
 });
 
+/** One entity: its fields, and the one thing it is responsible for. */
+const entity = z.object({
+  name: z.string().min(1).max(120),
+  fields: z.string().max(2000).nullish(),
+  responsibility: z.string().max(1000).nullish(),
+});
+
+/** One interface: its method set, and what it exists to let vary. */
+const interfaceSpec = z.object({
+  name: z.string().min(1).max(120),
+  signature: z.string().min(1).max(2000),
+  purpose: z.string().max(1000).nullish(),
+});
+
 /**
  * The sections of a low-level design answer.
  *
  * Named fields rather than a pre-formatted body, so the server decides the headings and their
  * order and every LLD page comes out the same shape. See server/domain/lld.ts.
+ *
+ * Entities, interfaces and design choices are structured rather than Markdown, because a
+ * hand-written table is the one thing that fails silently: a stray pipe in a cell shifts every
+ * column after it and the table still renders.
  */
 const lldSolution = z
   .object({
     problem_statement: z.string().max(20_000).nullish(),
     requirements: z.string().max(20_000).nullish(),
-    entities: z.string().max(20_000).nullish(),
+    entities: z.array(entity).max(40).nullish(),
+    interfaces: z.array(interfaceSpec).max(40).nullish(),
     relationships: z.string().max(20_000).nullish(),
-    interfaces: z.string().max(20_000).nullish(),
     design_choices: z.array(designChoice).max(40).nullish(),
     edge_cases: z.string().max(20_000).nullish(),
+    talking_points: z.string().max(20_000).nullish(),
   })
   .partial();
 

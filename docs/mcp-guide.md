@@ -68,20 +68,26 @@ which renders a folder tree and a syntax-highlighted pane.
 You send sections, not a formatted body — the server composes the Markdown so every worked page
 has the same headings in the same order:
 
-    Problem statement → Requirements → Entities → Relationships and diagrams →
-    Interfaces → Design choices and principles → Cases handled and edge cases
+    Problem statement → Requirements → Entities and interfaces →
+    Relationships and diagrams → Design choices and principles →
+    Cases handled and edge cases → Talking points
 
-Four things to get right:
+Five things to get right:
 
-- **Diagram section 4.** A ```mermaid fence renders as a real diagram; `classDiagram` is usually
-  what you want.
-- **`design_choices` is structured**, a list of `{component, choice, principle, why}`. Do not
-  hand-write the table; the server builds and escapes it.
-- **Code goes in `code_files`, never in a section** — `[{"path": "model/spot.go", "content": ...}]`.
-  The path carries the folder structure. Publishing any file replaces the whole workspace, so
-  send the complete set.
-- **The code is Go, and it must compile.** Run `gofmt -l .`, `go vet ./...` and
-  `go test -race ./...` first. Never publish code you have not run.
+- **Scope it to one hour.** The answer must be designable, explainable and codeable in a
+  60-minute interview. Check the question against how it is solved on LeetCode discuss,
+  awesome-low-level-design or Hello Interview, and cut what they do not carry. Six to ten types
+  is normal; twenty is over-scoped. Persistence, auth and retries are usually out of scope, and
+  saying so beats building them.
+- **Entities and interfaces are tables**, sent as rows — `{name, fields, responsibility}` and
+  `{name, signature, purpose}`. `fields` carries the real fields with types.
+- **`design_choices` is a table too**, rows of `{component, choice, principle, why}`. Never
+  hand-write a Markdown table; a stray pipe shifts every column and still renders.
+- **Diagram the relationships.** A ```mermaid fence renders as a real diagram; `classDiagram`
+  is usually what you want, `stateDiagram-v2` for a lifecycle.
+- **The code is Go, a module that runs.** Include `go.mod`, tests and `cmd/demo/main.go`, and
+  run `gofmt -l .`, `go vet ./...`, `go test -race ./...` and `go run ./cmd/demo` first. Never
+  publish code you have not run.
 
 Full contract, with a worked example: [lld-solution-pages.md](lld-solution-pages.md).
 

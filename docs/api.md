@@ -149,7 +149,7 @@ Publish one page with its resources. Body is `prepPageSchema` (`src/server/schem
 | `body` | The note, as Markdown |
 | `content` | Discipline fields — `pattern`/`complexity` (DSA), `requirements`/`architecture`/`tradeoffs` (system design), `situation`/`action`/`outcome` (behavioral) |
 | `resources` | `[{url, title}]`. YouTube links are stored as videos with the id extracted, by the same code that classifies a pasted link |
-| `solution` | Structured LLD sections — `problem_statement`, `requirements`, `entities`, `relationships`, `interfaces`, `design_choices[]`, `edge_cases`. When present the server composes `body` from them and ignores any `body` sent |
+| `solution` | Structured LLD sections — `problem_statement`, `requirements`, `entities[]`, `interfaces[]`, `relationships`, `design_choices[]`, `edge_cases`, `talking_points`. `entities`, `interfaces` and `design_choices` are arrays of rows and render as tables. When present the server composes `body` from them and ignores any `body` sent |
 | `code_files` | `[{path, content, language?}]` for the page's Code panel. `path` carries the folder structure; `language` is derived from the extension |
 | `on_conflict` | `error` (default), `merge`, `replace` |
 
