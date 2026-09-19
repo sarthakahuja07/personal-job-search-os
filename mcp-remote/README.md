@@ -64,9 +64,16 @@ change takes effect.
 
 ## Tools
 
-`prep_tree`, `prep_search`, `prep_publish`, `prep_append`, plus `company_scaffold`,
-`company_question_bank` and `company_question_index`. Identical to the local server's — both
-call the same `/api/prep/*` endpoints, so publish semantics cannot drift between them.
+`prep_tree`, `prep_search`, `prep_append`, the per-discipline publishers
+(`publish_dsa_question`, `publish_hld_design`, `publish_lld_design`, `publish_lld_solution`,
+`publish_behavioral_story`, `publish_page`), plus `company_scaffold`, `company_question_bank`
+and `company_question_index`. Both servers call the same `/api/prep/*` endpoints, so publish
+*semantics* cannot drift.
+
+The tool *list* can drift, and did: `publish_lld_solution` existed on the local server for a
+day before it was added here, and ChatGPT reported a board with no structured sections and no
+Code panel — correctly, because this server did not expose them. **When a tool is added to
+`mcp/server.py`, add it here and redeploy**, or the two AIs see different boards.
 
 ## No sessions, no Durable Object
 

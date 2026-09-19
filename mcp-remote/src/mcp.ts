@@ -54,7 +54,9 @@ async function handleOne(message: JsonRpcRequest, env: Env): Promise<Response> {
           "Pick the publishing tool that matches what the conversation was actually about: " +
           "publish_dsa_question for coding problems, publish_hld_design for distributed system " +
           "architecture, publish_lld_design for object-oriented design within one service, " +
-          "publish_behavioral_story for experience questions. The tool decides where the page " +
+          "publish_lld_solution when that LLD question was actually SOLVED and you have the " +
+          "code as well as the design, publish_behavioral_story for experience questions. " +
+          "The tool decides where the page " +
           "is filed, so choosing the right one is the whole of getting it in the right place.\n\n" +
           "If the conversation covered more than one discipline, or which one is unclear, ASK " +
           "rather than guessing. A page filed under the wrong discipline is worse than a " +

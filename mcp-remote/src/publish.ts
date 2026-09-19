@@ -152,7 +152,183 @@ const ASK_IF_UNSURE =
   " If the conversation has not clearly been about this one discipline -- or it has covered " +
   "more than one -- ask which to publish to rather than guessing.";
 
+/**
+ * The worked-answer fields.
+ *
+ * Structured rows rather than Markdown, for entities, interfaces and design choices. A
+ * hand-written table is the one thing that fails silently -- a stray `|` in a cell shifts every
+ * column after it and the table still renders -- so the server builds and escapes them, and the
+ * model is spared a formatting rule it cannot verify.
+ */
+const SOLUTION_FIELDS = {
+  problem_statement: {
+    type: "string",
+    description: "What is being asked, as an interviewer would put it.",
+  },
+  requirements: {
+    type: "string",
+    description:
+      "Functional and non-functional, as a list. State what is OUT of scope too -- that is how " +
+      "the answer stays inside an hour.",
+  },
+  entities: {
+    type: "array",
+    description:
+      "The types, as rows. `fields` must list the actual fields with types -- this is the " +
+      "table a reader checks when they cannot remember the model.",
+    items: {
+      type: "object",
+      properties: {
+        name: { type: "string", description: "The type name, e.g. 'Spot'." },
+        fields: {
+          type: "string",
+          description: "Its fields with types, e.g. 'id string, size Size, occupant *Vehicle'.",
+        },
+        responsibility: { type: "string", description: "The one thing it is responsible for." },
+      },
+      required: ["name"],
+    },
+  },
+  interfaces: {
+    type: "array",
+    description:
+      "The seams, as rows. An interface with no answer for `purpose` probably should not exist.",
+    items: {
+      type: "object",
+      properties: {
+        name: { type: "string", description: "e.g. 'PricingStrategy'." },
+        signature: {
+          type: "string",
+          description: "The method set, e.g. 'Price(units int) (float64, error)'.",
+        },
+        purpose: { type: "string", description: "What it exists to let vary." },
+      },
+      required: ["name", "signature"],
+    },
+  },
+  relationships: {
+    type: "string",
+    description:
+      "How they relate. Prefer a ```mermaid fence -- it renders as a real diagram, so a " +
+      "classDiagram is usually best, or stateDiagram-v2 for a lifecycle.",
+  },
+  design_choices: {
+    type: "array",
+    description:
+      "The table that carries the reasoning. One row per decision that was genuinely a " +
+      "decision; 'used a class' is noise.",
+    items: {
+      type: "object",
+      properties: {
+        component: { type: "string", description: "Which part of the design, e.g. 'Pricing'." },
+        choice: { type: "string", description: "What was decided." },
+        principle: {
+          type: "string",
+          description: "The SOLID principle or pattern it follows, e.g. 'Strategy', 'OCP'.",
+        },
+        why: { type: "string", description: "Why it was decided that way." },
+      },
+      required: ["component", "choice"],
+    },
+  },
+  edge_cases: {
+    type: "string",
+    description:
+      "What breaks at the edges, what is handled and what is deliberately not: concurrency, " +
+      "double submits, empty and full, failure part-way through.",
+  },
+  talking_points: {
+    type: "string",
+    description:
+      "What you would actually say in the room -- the sentences you open with, the trade-off " +
+      "you volunteer before being asked, the extension you name for 'how would you add X', " +
+      "and what you left out on purpose. A short list.",
+  },
+  code_files: {
+    type: "array",
+    description:
+      "The implementation, as files. Lands in the page's Code panel, which renders a folder " +
+      "tree and a syntax-highlighted pane -- NOT in the body. `path` carries the folder " +
+      "structure. Include go.mod, the tests and cmd/demo/main.go. Publishing any file REPLACES " +
+      "the whole workspace, so always send the complete set; sending none leaves the existing " +
+      "files untouched.",
+    items: {
+      type: "object",
+      properties: {
+        path: { type: "string", description: "e.g. 'model/spot.go', 'cmd/demo/main.go'." },
+        content: { type: "string", description: "The file's full contents." },
+      },
+      required: ["path", "content"],
+    },
+  },
+} as const;
+
+const LLD_SOLUTION_TOOL: ToolDef = {
+  name: "publish_lld_solution",
+  title: "Publish a worked LLD solution",
+  description:
+    "Publish a WORKED low-level design answer: the reasoning as sections, the solution as " +
+    "files. Use this after actually solving an LLD question -- you have the design AND the " +
+    "code. Use publish_lld_design instead when you only have prose notes.\n\n" +
+    "SCOPE IT TO ONE HOUR. The answer must be designable, explainable and codeable in a " +
+    "60-minute interview, not a production system. Check the question against how it is solved " +
+    "on LeetCode discuss, github.com/ashishps1/awesome-low-level-design and Hello Interview, " +
+    "and cut what they do not carry. Six to ten types is normal; twenty is over-scoped. Two or " +
+    "three interfaces, each with a real reason to vary. Persistence, auth, retries and metrics " +
+    "are almost always out of scope, and saying so in requirements beats building them.\n\n" +
+    "You do not write the page layout. Send the sections and the server composes the Markdown, " +
+    "always in this order: Problem statement, Requirements, Entities and interfaces, " +
+    "Relationships and diagrams, Design choices and principles, Cases handled and edge cases, " +
+    "Talking points. Empty sections are skipped.\n\n" +
+    "Write the code in Go, as a module that runs: the library package, its tests, a go.mod and " +
+    "a cmd/demo/main.go that exercises the design. Verify with gofmt -l . / go vet ./... / " +
+    "go test -race ./... / go run ./cmd/demo before publishing. If you cannot execute Go, say " +
+    "so and hand the module over to be run rather than publishing it unchecked.\n\n" +
+    "Call prep_search first. If the question already has a page, publish to it with " +
+    "on_conflict 'replace' rather than creating a near-duplicate.",
+  annotations: { readOnlyHint: false, destructiveHint: false },
+  inputSchema: {
+    type: "object",
+    properties: { ...common, ...SOLUTION_FIELDS },
+    required: ["title"],
+    additionalProperties: false,
+  },
+  run: (env: Env, args: Json) =>
+    app(env, "POST", "/api/prep/pages", {
+      kind: "system_design",
+      parent_path: "lld",
+      title: args.title,
+      prompt: args.prompt ?? null,
+      difficulty: args.difficulty ?? null,
+      frequency: args.frequency ?? 0,
+      topics: args.topics ?? [],
+      companies: args.companies ?? [],
+      resources: args.resources ?? [],
+      source_url: args.source_url ?? null,
+      on_conflict: args.on_conflict ?? "error",
+      solution: {
+        problem_statement: args.problem_statement ?? null,
+        requirements: args.requirements ?? null,
+        entities: args.entities ?? [],
+        interfaces: args.interfaces ?? [],
+        relationships: args.relationships ?? null,
+        design_choices: args.design_choices ?? [],
+        edge_cases: args.edge_cases ?? null,
+        talking_points: args.talking_points ?? null,
+      },
+      code_files: args.code_files ?? [],
+      // The prose sections also fill the discipline fields the page UI shows as
+      // "Starting points", so the page is useful in both places without asking twice.
+      content: {
+        requirements: args.requirements ?? null,
+        architecture: args.relationships ?? null,
+        tradeoffs: args.edge_cases ?? null,
+      },
+    }),
+};
+
 export const PUBLISH_TOOLS: ToolDef[] = [
+  LLD_SOLUTION_TOOL,
   publishTool({
     name: "publish_dsa_question",
     title: "Publish a DSA question",
