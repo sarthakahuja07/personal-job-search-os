@@ -14,10 +14,9 @@ const LOOKUP_AND_COMPANY: ToolDef[] = [
     name: "prep_tree",
     title: "List prep sections",
     description:
-      "List where a page can be published and what each discipline expects. Call this before " +
-      "publishing for the first time in a session: it returns the available `kind` values, the " +
-      "structured fields each one uses, and every section with the `parent_path` needed to " +
-      "publish into it.",
+      "Where a page can go, and which fields each discipline uses. Call once per session, " +
+      "before the first publish -- it returns every existing folder's `parent_path`; don't " +
+      "guess one.",
     annotations: { readOnlyHint: true },
     inputSchema: { type: "object", properties: {}, additionalProperties: false },
     run: (env: Env) => app(env, "GET", "/api/prep/tree"),
@@ -26,9 +25,8 @@ const LOOKUP_AND_COMPANY: ToolDef[] = [
     name: "prep_search",
     title: "Search existing prep pages",
     description:
-      "Find existing pages by title or prompt, to avoid creating a duplicate. Always call this " +
-      "before prep_publish. If a close match comes back, prefer prep_append over publishing a " +
-      "second page on the same topic.",
+      "Find existing pages by title or prompt. Call before publishing, to avoid a duplicate -- " +
+      "a close match means prep_append, not a second page.",
     annotations: { readOnlyHint: true },
     inputSchema: {
       type: "object",
@@ -53,12 +51,9 @@ const LOOKUP_AND_COMPANY: ToolDef[] = [
     name: "prep_append",
     title: "Add to an existing prep page",
     description:
-      "Add to a page that already exists, without overwriting it. Use this when prep_search " +
-      "finds the topic already covered. Take `kind` and `parent_path` from that search result " +
-      "rather than working them out -- its `path` is the page's full section path, and the part " +
-      "before the last segment is `parent_path`. Resources are always added; every other field " +
-      "is filled only where the page is currently empty, so a note written by hand is never " +
-      "replaced.",
+      "Add to a page that already exists, without overwriting it. Use once prep_search finds " +
+      "the topic covered -- take `kind`/`parent_path` from that result (`path` minus its last " +
+      "segment). Resources always add; every other field fills only if currently empty.",
     annotations: { readOnlyHint: false, destructiveHint: false },
     inputSchema: {
       type: "object",
@@ -102,9 +97,8 @@ const LOOKUP_AND_COMPANY: ToolDef[] = [
     name: "company_scaffold",
     title: "Create a company's prep folder",
     description:
-      "Create a company folder with its five pages: Notes, Question Bank, DSA, HLD and LLD. " +
-      "Safe to call again -- existing pages are left alone. Call this before any other company " +
-      "tool.",
+      "Create a company's prep folder + its five pages (Notes, Question Bank, DSA, HLD, LLD). " +
+      "Safe to call again -- existing pages are untouched. Call before any other company tool.",
     annotations: { readOnlyHint: false, destructiveHint: false, idempotentHint: true },
     inputSchema: {
       type: "object",
@@ -119,13 +113,8 @@ const LOOKUP_AND_COMPANY: ToolDef[] = [
     name: "company_question_bank",
     title: "Write a company's question bank",
     description:
-      "Add questions to a company's Question Bank: a table per discipline of question, how " +
-      "often it is asked, when it was last seen, and where it was found. Give each entry a " +
-      "source_url when you have one -- that column is the bank's whole point as evidence. The " +
-      "bank does NOT link to our own pages for these questions; company_question_index does " +
-      "that. Adds by default, so you can record HLD questions now and LLD ones later without " +
-      "resending the first lot; a question reported again updates its rating and keeps the " +
-      "later date.",
+      "Add rows to a company's Question Bank: what it asks, how often, and where you found " +
+      "that. Adds by default. A question reported again keeps the newer date and rating.",
     annotations: { readOnlyHint: false, destructiveHint: false, idempotentHint: true },
     inputSchema: {
       type: "object",
@@ -155,10 +144,7 @@ const LOOKUP_AND_COMPANY: ToolDef[] = [
               },
               source_url: {
                 type: "string",
-                description:
-                  "Where the question was FOUND -- the LeetCode problem, the interview " +
-                  "experience post, the blog. Not a link to our own page for it; the bank " +
-                  "records evidence, the discipline indexes link inward to the answers.",
+                description: "Where FOUND (LeetCode, an interview post) -- not a link to our own page.",
               },
             },
             required: ["question", "discipline"],
@@ -179,11 +165,9 @@ const LOOKUP_AND_COMPANY: ToolDef[] = [
     name: "company_question_index",
     title: "Write a company's DSA, HLD or LLD index",
     description:
-      "Add questions to one of a company's index pages -- DSA, HLD or LLD -- each linked to its " +
-      "real page in that tree. Titles are resolved server-side, so pass names rather than URLs. " +
-      "Adds by default, so a later session need not resend what is already there. Questions " +
-      "with no page yet are kept under 'Not written yet' and returned in `unlinked`; that list " +
-      "is what to study next.",
+      "Add questions to a company's DSA/HLD/LLD index, linked to the real pages. Pass names, " +
+      "not URLs -- titles resolve against the tree server-side. Unmatched questions come back " +
+      "in `unlinked` (what to write next); never silently dropped.",
     annotations: { readOnlyHint: false, destructiveHint: false, idempotentHint: true },
     inputSchema: {
       type: "object",
@@ -200,9 +184,7 @@ const LOOKUP_AND_COMPANY: ToolDef[] = [
             properties: {
               title: {
                 type: "string",
-                description:
-                  "The question's name. Matched against real pages -- close is good enough, " +
-                  "'Design a rate limiter' finds a page called 'Rate Limiter'.",
+                description: "Matched against real pages -- close is good enough.",
               },
               frequency: { type: "integer", minimum: 0, maximum: 5 },
               last_asked: { type: "string", description: "ISO date (YYYY-MM-DD)." },

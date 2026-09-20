@@ -50,19 +50,10 @@ async function handleOne(message: JsonRpcRequest, env: Env): Promise<Response> {
         capabilities: { tools: { listChanged: false } },
         serverInfo: { name: "prep-publisher", version: "0.1.0" },
         instructions:
-          "Publishes study notes into a personal interview-prep board.\n\n" +
-          "Pick the publishing tool that matches what the conversation was actually about: " +
-          "publish_dsa_question for coding problems, publish_hld_design for distributed system " +
-          "architecture, publish_lld_design for object-oriented design within one service, " +
-          "publish_lld_solution when that LLD question was actually SOLVED and you have the " +
-          "code as well as the design, publish_behavioral_story for experience questions. " +
-          "The tool decides where the page " +
-          "is filed, so choosing the right one is the whole of getting it in the right place.\n\n" +
-          "If the conversation covered more than one discipline, or which one is unclear, ASK " +
-          "rather than guessing. A page filed under the wrong discipline is worse than a " +
-          "question: the company index that should link it will never find it there.\n\n" +
-          "Call prep_search before publishing, to add to an existing page rather than creating " +
-          "a near-duplicate of it.",
+          "Publishes study notes into a personal interview-prep board. Pick the tool matching " +
+          "the discipline (each tool's own description says which); ask if unsure rather than " +
+          "guessing. Call prep_search before publishing, to extend an existing page instead of " +
+          "duplicating it.",
       });
     }
 

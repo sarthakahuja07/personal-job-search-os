@@ -23,14 +23,6 @@ One publishing tool per discipline, rather than one with a `kind` argument:
     publish_behavioral_story   experience questions
     publish_page               an explicit kind and section; the escape hatch
 
-`publish_lld_design` and `publish_lld_solution` file to the same place and differ in what you
-have. The first takes free prose and is right for a page of notes. The second takes named
-sections -- problem, requirements, entities and interfaces as tables, relationships, design
-choices, edge cases, talking points -- and the implementation as real files, and is right after
-actually working a question through. It is also where the one-hour scoping rule lives. The server composes the Markdown from those sections, so every worked page comes out
-with the same headings in the same order, and the files land in the page's Code panel
-where they are browsed like an editor rather than scrolled past as one long fence.
-
 The split exists because the generic tool asked the model to get two things right at once --
 `kind`, and a `parent_path` that does not follow from it. Low-level design exposes it: there is
 no `kind: "lld"`, it is `system_design` filed under `lld`, so the commonest mistake was the one
@@ -45,6 +37,21 @@ Plus three for company preparation, where the pages are generated rather than wr
 A write-only tool would have been half the code and would quietly fill the tree with near
 duplicates -- "Consistent Hashing", "Consistent hashing", "Design: consistent hashing" -- because
 a model with no way to look has no way to know. Search is what makes publish trustworthy.
+
+## Why every docstring below is short
+
+MCP sends every registered tool's full schema -- name, description, every parameter's own
+description -- to the model on *every single turn* of the conversation, whether or not that turn
+calls it. A verbose docstring is therefore not a one-time cost paid when the tool is used; it is
+rent, paid on every message for the life of the conversation, and it was the single largest
+token cost in an otherwise ordinary study session (see the incident that prompted this rewrite,
+noted in docs/mcp-guide.md).
+
+So every docstring here keeps only what changes what the model does if it's missing --
+required shapes, format traps, the one-hour scoping rule -- and cuts the rationale for why the
+tool is built the way it is. That rationale still exists; it just lives in the module docstring
+above (never sent to the model -- FastMCP transmits only the `@server.tool()`-decorated
+functions' own docstrings) and in docs/, for whoever is reading this file rather than calling it.
 """
 from __future__ import annotations
 
@@ -141,11 +148,8 @@ server = MCPServer("prep-publisher")
 @server.tool()
 async def prep_tree() -> dict[str, Any]:
     """
-    List where a page can be published and what each discipline expects.
-
-    Call this before publishing for the first time in a session. It returns the available
-    `kind` values, the structured `content` fields each one uses, and every existing folder
-    with the `parent_path` needed to publish into it.
+    Where a page can go, and which fields each discipline uses. Call once per session, before
+    the first publish -- it returns every existing folder's `parent_path`; don't guess one.
     """
     return await _request("GET", "/api/prep/tree")
 
@@ -153,25 +157,18 @@ async def prep_tree() -> dict[str, Any]:
 @server.tool()
 async def prep_search(query: str, kind: str | None = None) -> dict[str, Any]:
     """
-    Find existing pages by title or prompt, to avoid creating a duplicate.
-
-    Always call this before prep_publish. If a close match comes back, prefer prep_append over
-    publishing a second page on the same topic.
+    Find existing pages by title or prompt. Call before publishing, to avoid a duplicate -- a
+    close match means `prep_append`, not a second page.
 
     Args:
-        query: Free text, matched against page titles and prompts.
-        kind: Optionally narrow to one of dsa, system_design, behavioral, concept.
+        query: Free text, matched against titles and prompts.
+        kind: Narrow to dsa, system_design, behavioral or concept.
     """
     params: dict[str, str] = {"q": query}
     if kind:
         params["kind"] = kind
     return await _request("GET", "/api/prep/pages", params=params)
 
-
-ASK_IF_UNSURE = (
-    "If the conversation has not clearly been about this one discipline -- or it has covered "
-    "more than one -- ask which to publish to rather than guessing."
-)
 
 CONTENT_KEYS = (
     "pattern", "complexity", "approach",
@@ -220,31 +217,21 @@ async def publish_dsa_question(
     on_conflict: Literal["error", "merge", "replace"] = "error",
 ) -> dict[str, Any]:
     """
-    Publish a data structures and algorithms question.
-
-    Use this when the conversation has been about a coding problem: arrays, strings, trees,
-    graphs, dynamic programming, two pointers, sliding window, heaps, tries, complexity
-    analysis, or anything you would solve on LeetCode.
-
-    If the conversation has not clearly been about this one discipline -- or it has covered
-    more than one -- ask which to publish to rather than guessing.
+    Publish a DSA question: arrays, trees, graphs, DP, two pointers, sliding window, complexity.
 
     Args:
-        title: The page name, e.g. "Sliding Window Maximum".
-        body: The note itself, as Markdown. The main content.
+        title: e.g. "Sliding Window Maximum".
+        body: The note, as Markdown.
         prompt: The question statement.
-        pattern: The recognisable shape of the solution, e.g. "Monotonic deque".
+        pattern: The solution's recognisable shape, e.g. "Monotonic deque".
         complexity: Time and space, and why.
         approach: How the solution is reached.
         difficulty: easy, medium or hard.
-        frequency: Ask score 1-5. Drives the sort, so 0 puts it at the bottom. Set it.
-        topics: Tags for filtering.
-        companies: Companies known to ask this.
-        resources: [{"url": ..., "title": ...}]. Always title a video; a bare YouTube URL
-            derives the literal word "Watch".
-        source_url: Where this was studied from.
-        on_conflict: "error" (default) refuses an existing page, "merge" fills gaps,
-            "replace" overwrites.
+        frequency: Ask score 1-5 (0 sorts to the bottom -- set it).
+        topics, companies: Tags.
+        resources: [{"url", "title"}]. Title videos; an untitled YouTube URL becomes "Watch".
+        source_url: Where this was studied.
+        on_conflict: error (default) refuses an existing page, merge fills gaps, replace overwrites.
     """
     return await _publish("dsa", "", locals())
 
@@ -267,32 +254,25 @@ async def publish_hld_design(
     on_conflict: Literal["error", "merge", "replace"] = "error",
 ) -> dict[str, Any]:
     """
-    Publish a HIGH-level system design page (HLD).
-
-    Use this when the conversation has been about designing a whole distributed system or the
-    concepts behind one: scale, throughput, sharding, replication, caching, queues, load
-    balancing, CAP, consistency, or designing a named product end to end. This is architecture
-    between services, not classes within one.
-
-    If the conversation has not clearly been about this one discipline -- or it has covered
-    more than one -- ask which to publish to rather than guessing.
+    Publish a HIGH-level design page: architecture *between* services -- scale, sharding,
+    replication, caching, queues, CAP, or a named product end to end. Not classes within one
+    service; that's publish_lld_design.
 
     Args:
-        title: The page name, e.g. "Design Instagram".
-        body: The note itself, as Markdown.
+        title: e.g. "Design Instagram".
+        body: The note, as Markdown.
         prompt: The question or brief.
-        section: "question" (default) for a "design X" problem; "concept" for a building block
-            studied on its own -- caching, CDNs, consistent hashing, CAP.
+        section: "question" (default) for "design X"; "concept" for a building block studied
+            alone -- caching, CDNs, consistent hashing.
         requirements: Functional and non-functional.
         architecture: Components and data flow.
         tradeoffs: What was given up, and why.
         difficulty: easy, medium or hard.
         frequency: Ask score 1-5. Set it.
-        topics: Tags for filtering.
-        companies: Companies known to ask this.
-        resources: [{"url": ..., "title": ...}]. Always title a video.
-        source_url: Where this was studied from.
-        on_conflict: "error" (default), "merge" or "replace".
+        topics, companies: Tags.
+        resources: [{"url", "title"}]. Title videos.
+        source_url: Where this was studied.
+        on_conflict: error (default) | merge | replace.
     """
     return await _publish(
         "system_design", "hld" if section == "concept" else "hld/questions", locals()
@@ -316,31 +296,24 @@ async def publish_lld_design(
     on_conflict: Literal["error", "merge", "replace"] = "error",
 ) -> dict[str, Any]:
     """
-    Publish a LOW-level design page (LLD).
-
-    Use this when the conversation has been about object-oriented design inside a single
-    service: classes, interfaces, inheritance, design patterns, SOLID, state machines,
-    concurrency within a process, or modelling something like a parking lot, elevator, vending
-    machine, chess game or card deck. This is classes and their relationships, not services and
-    their traffic.
-
-    If the conversation has not clearly been about this one discipline -- or it has covered
-    more than one -- ask which to publish to rather than guessing.
+    Publish a LOW-level design page from PROSE NOTES ONLY (no code yet): classes, interfaces,
+    design patterns, SOLID, state machines -- a parking lot, elevator, vending machine, chess.
+    If you have working code too, use publish_lld_solution instead. Wrong discipline? Ask,
+    don't guess.
 
     Args:
-        title: The page name, e.g. "Design a Parking Lot".
-        body: The note itself, as Markdown.
+        title: e.g. "Design a Parking Lot".
+        body: The note, as Markdown.
         prompt: The question or brief.
         requirements: What the design must do.
-        architecture: Classes, their relationships and the patterns used.
+        architecture: Classes, their relationships, the patterns used.
         tradeoffs: What was given up, and why.
         difficulty: easy, medium or hard.
         frequency: Ask score 1-5. Set it.
-        topics: Tags for filtering.
-        companies: Companies known to ask this.
-        resources: [{"url": ..., "title": ...}]. Always title a video.
-        source_url: Where this was studied from.
-        on_conflict: "error" (default), "merge" or "replace".
+        topics, companies: Tags.
+        resources: [{"url", "title"}]. Title videos.
+        source_url: Where this was studied.
+        on_conflict: error (default) | merge | replace.
     """
     return await _publish("system_design", "lld", locals())
 
@@ -367,82 +340,46 @@ async def publish_lld_solution(
     on_conflict: Literal["error", "merge", "replace"] = "error",
 ) -> dict[str, Any]:
     """
-    Publish a WORKED low-level design answer: the reasoning as sections, the solution as files.
+    Publish a WORKED LLD answer: design + working code. (Notes only, no code? publish_lld_design.)
 
-    Use this after actually solving an LLD question -- you have the design *and* the code. Use
-    `publish_lld_design` instead when you only have prose notes and no implementation.
+    Scope to a 60-minute interview, not a production system: 6-10 types is normal, 20 is
+    over-scoped. Check the question against how it's actually solved (LeetCode discuss,
+    awesome-low-level-design, Hello Interview) and cut what those don't carry. State
+    persistence/auth/retries as out of scope rather than building them.
 
-    ## Scope it to one hour
+    The server composes the page from your sections (fixed order: problem, requirements,
+    entities/interfaces, relationships, design choices, edge cases, talking points) -- send
+    fields, not a formatted body.
 
-    This is the constraint that matters most, and the one most solutions get wrong. The page must
-    describe an answer a candidate can **design, explain and code in a 60-minute interview**, not
-    a production system. Before publishing, check the question against how it is actually solved
-    elsewhere -- LeetCode discuss, awesome-low-level-design, Hello Interview -- and cut anything
-    those do not carry. Six to ten types is normal; twenty is over-scoped and will not be
-    finished in the room. Persistence, auth, retries and metrics are almost always out of scope,
-    and saying so explicitly is a better answer than building them.
+    Code is Go, a runnable module (go.mod + tests + cmd/demo/main.go), and goes in `code_files`
+    ONLY -- never pasted into a text field. Run `gofmt -l .`, `go vet ./...`, `go test -race ./...`
+    and `go run ./cmd/demo` before publishing; don't publish code you haven't run.
 
-    ## The sections
-
-    You do not write the page layout. Send the sections and the server composes the Markdown,
-    always with these headings in this order, skipping any you leave empty:
-
-        Problem statement -> Requirements -> Entities and interfaces ->
-        Relationships and diagrams -> Design choices and principles ->
-        Cases handled and edge cases -> Talking points
-
-    The code does NOT go in a section. Send it as `code_files` and it lands in the page's Code
-    panel, which renders a folder tree and a syntax-highlighted pane, openable full screen.
-
-    **Write the code in Go**, and make it a module that runs: the library package, its tests, a
-    `go.mod`, and a `cmd/demo/main.go` that exercises the design. Compile it and run
-    `gofmt -l .`, `go vet ./...`, `go test -race ./...` and `go run ./cmd/demo` before publishing.
-    Do not publish code you have not run.
+    Call prep_search first; if the page exists, use on_conflict "replace".
 
     Args:
-        title: The page name, e.g. "Design a Parking Lot". Say the problem, not "LLD solution".
-        problem_statement: What is being asked, as an interviewer would put it.
-        requirements: Functional and non-functional, as a list. State what is **out** of scope
-            too -- that is how the answer stays inside an hour.
-        entities: The types, as rows:
-            [{"name": "Spot", "fields": "id string, size Size, occupant *Vehicle",
-              "responsibility": "One bay and whether it is taken"}].
-            `fields` carries the actual fields with types -- this is the table a reader checks
-            when they cannot remember the model. Send rows, never a hand-written table.
-        interfaces: The seams, as rows:
-            [{"name": "PricingStrategy", "signature": "Price(units int) (float64, error)",
-              "purpose": "Rate schemes, which change constantly"}].
-            `signature` is the method set, rendered as code. If an interface has no answer for
-            `purpose`, it probably should not exist.
-        relationships: How they relate. Prefer a diagram: a ```mermaid fence renders as a real
-            diagram, so a `classDiagram` is usually the best answer, or `stateDiagram-v2` for a
-            lifecycle. Check the syntax -- a fence that will not parse falls back to its source.
-        design_choices: The table that carries the reasoning. Rows of
-            {"component": ..., "choice": ..., "principle": ..., "why": ...}, where `principle`
-            is the SOLID principle or pattern ("Strategy", "OCP") and `why` is the reason. One
-            row per decision that was genuinely a decision; "used a class" is noise.
-        edge_cases: What breaks at the edges, what is handled and what is deliberately not:
-            concurrency, double submits, empty and full, failure part-way through.
-        talking_points: What you would actually say in the room -- the two or three sentences
-            that open the answer, the trade-off you would volunteer, the extension you would
-            name when asked "how would you add X". Write it as a short list.
-        code_files: The implementation, as
-            [{"path": "model/spot.go", "content": "..."}]. `path` carries the folder structure.
-            Include go.mod, the tests and cmd/demo/main.go. `language` is derived from the
-            extension, so omit it. Publishing any file REPLACES the whole workspace, so always
-            send the complete set; sending none leaves the existing files untouched.
-        prompt: One-line brief, shown under the title.
+        title: e.g. "Design a Parking Lot", not "LLD solution".
+        problem_statement: What's being asked.
+        requirements: Functional and non-functional; name what's OUT of scope too.
+        entities: Rows, not a hand-written table:
+            [{"name", "fields": "id string, size Size", "responsibility"}].
+        interfaces: Rows: [{"name", "signature": "Price(int) (float64, error)", "purpose"}].
+            No answer for `purpose` usually means the interface shouldn't exist.
+        relationships: A ```mermaid fence (classDiagram, or stateDiagram-v2 for a lifecycle)
+            renders as a real diagram.
+        design_choices: Rows: [{"component", "choice", "principle": "Strategy/OCP/...", "why"}].
+            One row per genuine decision.
+        edge_cases: What's handled at the edges, and what's deliberately not.
+        talking_points: What you'd say in the room -- opener, a trade-off, an extension. A short list.
+        code_files: [{"path": "model/spot.go", "content": "..."}]. Publishing any file REPLACES
+            the whole workspace -- always send the complete set; sending none leaves it untouched.
+        prompt: One-line brief.
         difficulty: easy, medium or hard.
         frequency: Ask score 1-5. Set it.
-        topics: Tags for filtering, e.g. ["strategy-pattern", "concurrency"].
-        companies: Companies known to ask this.
-        resources: [{"url": ..., "title": ...}]. Always title a video.
-        source_url: Where this was studied from.
-        on_conflict: "error" (default) refuses if the page exists; "merge" fills gaps but still
-            replaces the composed body and the code; "replace" overwrites the page.
-
-    Call `prep_search` first. If the question already has a page, publish to it with
-    on_conflict "replace" rather than creating a near-duplicate under a slightly different name.
+        topics, companies: Tags.
+        resources: [{"url", "title"}]. Title videos.
+        source_url: Where this was studied.
+        on_conflict: error (default) | merge (still replaces body + code) | replace.
     """
     return await _request(
         "POST",
@@ -497,28 +434,21 @@ async def publish_behavioral_story(
     on_conflict: Literal["error", "merge", "replace"] = "error",
 ) -> dict[str, Any]:
     """
-    Publish a behavioural interview answer.
-
-    Use this when the conversation has been about your own experience rather than a technical
-    problem: conflict with a colleague, a failure, a project you led, leadership principles,
-    "tell me about a time when".
-
-    If the conversation has not clearly been about this one discipline -- or it has covered
-    more than one -- ask which to publish to rather than guessing.
+    Publish a behavioural answer: your own experience, not a technical problem -- conflict, a
+    failure, a project you led, "tell me about a time when".
 
     Args:
-        title: The page name, e.g. "A production incident you handled".
-        body: The note itself, as Markdown.
+        title: e.g. "A production incident you handled".
+        body: The note, as Markdown.
         prompt: The interview question this answers.
         situation: Context, briefly.
         action: What you specifically did.
         outcome: Result, and what you learned.
         frequency: Ask score 1-5. Set it.
-        topics: Tags for filtering.
-        companies: Companies known to ask this.
-        resources: [{"url": ..., "title": ...}].
+        topics, companies: Tags.
+        resources: [{"url", "title"}].
         source_url: Where this came from.
-        on_conflict: "error" (default), "merge" or "replace".
+        on_conflict: error (default) | merge | replace.
     """
     return await _publish("behavioral", "", locals())
 
@@ -538,26 +468,21 @@ async def publish_page(
     on_conflict: Literal["error", "merge", "replace"] = "error",
 ) -> dict[str, Any]:
     """
-    Publish to an explicit kind and section. Advanced; prefer the discipline-specific tools.
-
-    publish_dsa_question, publish_hld_design, publish_lld_design and publish_behavioral_story
-    file a page correctly without being told where. Use this only for something none of them
-    covers, such as a company's Notes page (kind "company", parent_path the company slug).
-
-    There is no "lld" kind: low-level design is kind "system_design" under parent_path "lld".
+    Escape hatch: publish to an explicit kind + section. Prefer the discipline-specific tools;
+    use this only for what none of them covers (e.g. a company's Notes page, kind "company").
+    There is no "lld" kind -- it's "system_design" under parent_path "lld".
 
     Args:
         kind: Which tree the page belongs to.
         title: The page name.
-        parent_path: Section within the kind, e.g. "hld/questions". Call prep_tree for valid ones.
+        parent_path: Section within the kind, e.g. "hld/questions". prep_tree lists valid ones.
         body: The note, as Markdown.
         prompt: The question or brief.
         frequency: Ask score 1-5.
-        topics: Tags for filtering.
-        companies: Companies known to ask this.
-        resources: [{"url": ..., "title": ...}].
+        topics, companies: Tags.
+        resources: [{"url", "title"}].
         source_url: Where this came from.
-        on_conflict: "error" (default), "merge" or "replace".
+        on_conflict: error (default) | merge | replace.
     """
     return await _publish(kind, parent_path, locals())
 
@@ -575,21 +500,16 @@ async def prep_append(
     frequency: int = 0,
 ) -> dict[str, Any]:
     """
-    Add to a page that already exists, without overwriting what is there.
-
-    Use this when prep_search finds the topic already covered. Resources are always added;
-    every other field is filled only where the page is currently empty, so a note written by
-    hand is never replaced by a second pass over the same topic.
+    Add to a page that already exists, without overwriting it. Use once prep_search finds the
+    topic covered. Resources always add; every other field fills only if currently empty.
 
     Args:
         kind: Discipline of the existing page.
-        title: Its exact title -- this is what identifies the page, via its slug.
+        title: Its exact title (identifies it via slug).
         parent_path: The folder it lives in.
         body: Used only if the page has no body yet.
-        resources: Links to add, as [{"url": "...", "title": "..."}]. Duplicates of links
-            already present are ignored. Give videos a title; a YouTube URL derives "Watch".
-        topics: Merged with the existing tags.
-        companies: Merged with the existing list.
+        resources: [{"url", "title"}] to add. Existing links are skipped, not duplicated.
+        topics, companies: Merged with what's there.
         difficulty: Used only if unset.
         frequency: Used only if currently 0.
     """
@@ -611,11 +531,8 @@ async def prep_append(
 @server.tool()
 async def company_scaffold(name: str) -> dict[str, Any]:
     """
-    Create a company's prep folder and its five pages.
-
-    The pages are always Notes, Question Bank, DSA, HLD and LLD, so every company reads the
-    same way. Safe to call again -- pages that already exist are left untouched. Call this
-    before any other company tool.
+    Create a company's prep folder + its five pages (Notes, Question Bank, DSA, HLD, LLD).
+    Safe to call again -- existing pages are untouched. Call before any other company tool.
 
     Args:
         name: The company, e.g. "Amazon".
@@ -630,28 +547,16 @@ async def company_question_bank(
     mode: Literal["merge", "replace"] = "merge",
 ) -> dict[str, Any]:
     """
-    Add questions to a company's Question Bank: a table per discipline of what it asks.
-
-    Each row records the question, how often it is asked, when it was last seen, and WHERE IT
-    WAS FOUND. Give every entry a source_url when you have one -- the LeetCode problem, the
-    interview-experience post, the blog. That column is what makes the bank evidence rather
-    than a list.
-
-    The bank does not link to our own pages for these questions; company_question_index is the
-    tool that links inward to the answers.
-
-    Adds by default, so you can record this company's HLD questions now and its LLD or DSA
-    questions weeks later without resending the first lot. A question reported again keeps the
-    later "last asked" date and takes the newer rating.
+    Add rows to a company's Question Bank: what it asks, how often, and where you found that.
+    Adds by default -- record HLD questions now, LLD questions later, without resending the
+    first batch. A question reported again keeps the newer date and rating.
 
     Args:
-        company: The company, which must already have been scaffolded.
-        entries: [{"question": str, "discipline": "dsa"|"hld"|"lld",
-                   "frequency": 0-5, "last_asked": "YYYY-MM-DD", "source_url": str}].
-            frequency is how often this company asks it and drives the sort; last_asked is when
-            it was most recently seen; source_url is where the question was found.
-        mode: "merge" (default) adds to what is already recorded. "replace" discards every
-            existing question, so use it only to rebuild a bank from scratch.
+        company: Must already be scaffolded.
+        entries: [{"question", "discipline": "dsa"|"hld"|"lld", "frequency": 0-5,
+                   "last_asked": "YYYY-MM-DD", "source_url"}]. Always give a source_url -- that's
+            what makes this evidence, not a list.
+        mode: merge (default) adds. replace discards everything first -- rebuild only.
     """
     return await _request(
         "POST",
@@ -668,20 +573,15 @@ async def company_question_index(
     mode: Literal["merge", "replace"] = "merge",
 ) -> dict[str, Any]:
     """
-    Add questions to one of a company's index pages: DSA, HLD or LLD, linked to real pages.
-
-    Titles are resolved against the actual tree server-side, so pass names rather than URLs --
-    "Design a rate limiter" will find a page called "Rate Limiter". Questions with no page yet
-    are kept under "Not written yet" and returned in `unlinked`; that list is what to study
-    next, which is why they are never silently dropped.
-
-    Adds by default, so a later session need not resend what is already on the page.
+    Add questions to a company's DSA/HLD/LLD index, linked to the real pages. Pass names, not
+    URLs -- titles resolve against the tree server-side. Unmatched questions come back in
+    `unlinked` (what to write next); they are never silently dropped.
 
     Args:
-        company: The company, which must already have been scaffolded.
-        discipline: Which index to write -- dsa, hld or lld.
-        questions: [{"title": str, "frequency": 0-5, "last_asked": "YYYY-MM-DD"}].
-        mode: "merge" (default) adds to what is there. "replace" discards it.
+        company: Must already be scaffolded.
+        discipline: Which index to write.
+        questions: [{"title", "frequency": 0-5, "last_asked": "YYYY-MM-DD"}].
+        mode: merge (default) adds. replace discards what's there first.
     """
     return await _request(
         "POST",

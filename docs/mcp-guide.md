@@ -225,3 +225,21 @@ almost always know roughly how often something is asked; a rough number beats no
 **A solved LLD question wants `publish_lld_solution`, not `publish_lld_design`.** The prose tool
 cannot carry code, so the implementation ends up pasted into the body as one long fence — which
 is the thing the Code panel exists to avoid. If you have files, use the tool that takes files.
+
+---
+
+## Why the tool descriptions are terse
+
+MCP sends every registered tool's full schema — name, description, every field's own
+description — to the model on *every turn* of a conversation, whether or not that turn calls it.
+This was measured as the largest single token cost in an ordinary study session run through
+claude.ai: a long-running chat re-sends that fixed schema cost plus the entire prior transcript
+(including every previously published page's full body and code) on every new message, which
+compounds fast in one continuous thread.
+
+Two things followed from that measurement (2026-09): the tool descriptions here were cut by
+roughly 40% — keeping only what changes a call's correctness (required shapes, the one-hour
+scoping rule, format traps) and moving the rationale for *why* into code comments (never
+transmitted) and this file. And the standing advice for anyone studying through a chat UI: start
+a new conversation every question or two, rather than one long thread — that, not the schema
+size, is what actually exhausts a usage window fastest.
