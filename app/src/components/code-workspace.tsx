@@ -375,7 +375,7 @@ function FileTree({
  * a wheel gesture over the backdrop scrolls the article underneath, so closing the modal leaves
  * you somewhere you never navigated to.
  */
-function Modal({
+export function Modal({
   children,
   onClose,
   title,
@@ -507,7 +507,7 @@ export function CopyButton({ text }: { text: string }) {
   );
 }
 
-function ExpandIcon() {
+export function ExpandIcon() {
   return (
     <svg viewBox="0 0 16 16" className="size-3.5" aria-hidden fill="none" stroke="currentColor">
       <path
