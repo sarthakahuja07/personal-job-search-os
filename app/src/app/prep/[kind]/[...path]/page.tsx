@@ -37,6 +37,15 @@ const STATUS_TONE: Record<PrepStatus, "neutral" | "accent" | "fresh" | "warn"> =
   revisit: "warn",
 };
 
+/** Whether a DSA page's source link is the canonical LeetCode problem, for the header button's label. */
+function isLeetCodeUrl(url: string): boolean {
+  try {
+    return new URL(url).hostname.replace(/^www\./, "") === "leetcode.com";
+  } catch {
+    return false;
+  }
+}
+
 function revalidateTree(segment: string, path: string[]) {
   revalidatePath("/prep/" + segment + "/" + path.join("/"));
   revalidatePath("/prep/" + segment);
@@ -169,12 +178,24 @@ export default async function PrepPage({
         title={item.title}
         subtitle={item.prompt ?? undefined}
         actions={
-          <Link
-            href={"/prep/" + segment}
-            className="text-[13px] text-ink-dim transition hover:text-ink"
-          >
-            ← {meta.title}
-          </Link>
+          <>
+            {meta.kind === "dsa" && item.sourceUrl && (
+              <a
+                href={item.sourceUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="rounded-md border border-line bg-surface-2 px-3 py-1.5 text-[13px] text-ink-dim transition hover:border-line-strong hover:text-ink"
+              >
+                {isLeetCodeUrl(item.sourceUrl) ? "View on LeetCode" : "Source"} ↗
+              </a>
+            )}
+            <Link
+              href={"/prep/" + segment}
+              className="text-[13px] text-ink-dim transition hover:text-ink"
+            >
+              ← {meta.title}
+            </Link>
+          </>
         }
       />
 
@@ -233,6 +254,7 @@ export default async function PrepPage({
           prepItemId={item.id}
           path={`/prep/${segment}/${here}`}
           files={codeFiles}
+          defaultOpen={meta.kind === "dsa"}
         />
       )}
 

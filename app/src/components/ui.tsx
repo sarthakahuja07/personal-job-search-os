@@ -32,9 +32,9 @@ export function Card({
 
 // ---------------------------------------------------------------------------
 
-type Tone = "neutral" | "accent" | "fresh" | "warn" | "danger";
+export type Tone = "neutral" | "accent" | "fresh" | "warn" | "danger";
 
-const TONE: Record<Tone, string> = {
+export const TONE: Record<Tone, string> = {
   neutral: "bg-surface-3 text-ink-dim",
   accent: "bg-accent-soft text-accent-ink",
   fresh: "bg-fresh-soft text-fresh",

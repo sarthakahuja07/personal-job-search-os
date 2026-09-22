@@ -28,20 +28,25 @@ export type CodeFile = {
  * autosave, conflict, an accidental keystroke silently rewriting the answer you came to revise.
  * So: a file tree, a highlighted pane, and nothing that can change the text.
  *
- * Collapsed on arrival. A question page is read top-down -- prompt, then videos, then the
- * design -- and a few hundred lines of Java unfurled between them would push everything else
- * off the screen for the majority of visits that never open it.
+ * Collapsed on arrival by default. A question page is read top-down -- prompt, then videos,
+ * then the design -- and a few hundred lines of Java unfurled between them would push
+ * everything else off the screen for the majority of visits that never open it.
+ *
+ * DSA pages opt out via `defaultOpen`: a DSA answer's whole point is the code, so hiding it
+ * behind a click there would bury the one thing every visit is actually for.
  */
 export function CodeWorkspace({
   prepItemId,
   path,
   files,
+  defaultOpen = false,
 }: {
   prepItemId: string;
   path: string;
   files: CodeFile[];
+  defaultOpen?: boolean;
 }) {
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(defaultOpen);
   const [expanded, setExpanded] = useState(false);
 
   return (

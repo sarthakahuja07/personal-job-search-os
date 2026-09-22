@@ -3,7 +3,7 @@
 The durable state of this project. Updated whenever something meaningful lands, so no context is
 lost between sessions (PRD §73). Picking this up cold: read `CLAUDE.md` first, then this file.
 
-**Last updated:** 2026-09-18
+**Last updated:** 2026-09-22
 
 ---
 
@@ -40,7 +40,7 @@ are loaded and reachable only from behind Access.
 | Milestone | State |
 |---|---|
 | Schema (`prep_items`) | done — one table, `kind` discriminator, JSON `content` per discipline |
-| DSA | done — 20 seeded questions, filters, detail with notes and solution |
+| DSA | in progress — 20 seeded starter questions replaced (2026-09-22) with a 14-pattern nested folder taxonomy (100 pattern/subpattern folders, each with a Notes page). 29 Confluent-tagged solution pages published so far (all of Confluent's DSA question bank except one source-doesn't-name-a-problem entry), each with problem summary/examples/brute-force+optimized C++ (compiled and run, not just written)/complexity/video/company tags, linked from `/prep/company/confluent/dsa`. Sidebar shows an E/M/H difficulty badge for this folder instead of the ask-rate score, and the DSA code panel defaults to expanded with a LeetCode/source button in the header. |
 | System Design | done — 10 seeded problems with requirements / architecture / trade-offs |
 | Behavioral | done — 8 seeded themes with situation / action / outcome |
 | Progress tracking | done — four states, `revisit` deliberately not counted as done |

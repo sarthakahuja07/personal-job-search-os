@@ -5,19 +5,41 @@ import { usePathname } from "next/navigation";
 import { useMemo, useState, useSyncExternalStore, useTransition } from "react";
 
 import { movePrepPage } from "@/app/prep/actions";
+import type { PrepDifficulty, PrepKind } from "@/db/schema";
+import { DIFFICULTY_LETTER, DIFFICULTY_TONE } from "@/server/domain/prep";
 import { ScoreBadge } from "./score";
-import { cx } from "./ui";
+import { cx, TONE } from "./ui";
 
 export type NavNode = {
   id: string;
   parentId: string | null;
   slug: string;
   title: string;
+  kind: PrepKind;
   href: string;
   /** How often it is asked, 0-100. Shown beside the name so the tree itself ranks the work. */
   score: number;
+  /** DSA rows show this instead of the score -- a bank of patterns is worked by difficulty, not
+   *  by how often it comes up. Null for folders, which have no difficulty of their own. */
+  difficulty: PrepDifficulty | null;
   children: NavNode[];
 };
+
+/** The DSA tree is worked by difficulty, not by ask frequency, so it gets its own compact badge. */
+function DifficultyBadge({ difficulty }: { difficulty: PrepDifficulty | null }) {
+  if (!difficulty) return null;
+  return (
+    <span
+      className={cx(
+        "shrink-0 rounded px-1 text-[10px] font-semibold leading-3.75",
+        TONE[DIFFICULTY_TONE[difficulty]],
+      )}
+      title={`${difficulty[0].toUpperCase()}${difficulty.slice(1)}`}
+    >
+      {DIFFICULTY_LETTER[difficulty]}
+    </span>
+  );
+}
 
 /** Where a drop would land: above the row, below it, or inside it. */
 type DropZone = "before" | "after" | "inside";
@@ -262,7 +284,11 @@ function TreeRow({
           {node.title}
         </Link>
 
-        <ScoreBadge score={node.score} className="ml-1.5" />
+        {node.kind === "dsa" ? (
+          <DifficultyBadge difficulty={node.difficulty} />
+        ) : (
+          <ScoreBadge score={node.score} className="ml-1.5" />
+        )}
       </div>
 
       {expanded && (

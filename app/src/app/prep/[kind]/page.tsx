@@ -6,6 +6,7 @@ import { getDb } from "@/db";
 import type { PrepStatus } from "@/db/schema";
 import {
   DIFFICULTY_ORDER,
+  DIFFICULTY_TONE,
   STATUS_LABEL,
   STATUS_ORDER,
   kindBySegment,
@@ -15,12 +16,6 @@ import {
 import { listByKind } from "@/server/repository/prep-repo";
 
 export const dynamic = "force-dynamic";
-
-const DIFFICULTY_TONE = {
-  easy: "fresh",
-  medium: "warn",
-  hard: "danger",
-} as const;
 
 const STATUS_TONE: Record<PrepStatus, "neutral" | "accent" | "fresh" | "warn"> = {
   not_started: "neutral",

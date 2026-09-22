@@ -176,6 +176,20 @@ export const STATUS_ORDER: PrepStatus[] = ["not_started", "in_progress", "revisi
 
 export const DIFFICULTY_ORDER: PrepDifficulty[] = ["easy", "medium", "hard"];
 
+/** Shared everywhere a difficulty needs a colour: the prep list, the page header, the sidebar. */
+export const DIFFICULTY_TONE: Record<PrepDifficulty, "fresh" | "warn" | "danger"> = {
+  easy: "fresh",
+  medium: "warn",
+  hard: "danger",
+};
+
+/** The single-letter form used where a badge has to fit beside a tree row. */
+export const DIFFICULTY_LETTER: Record<PrepDifficulty, string> = {
+  easy: "E",
+  medium: "M",
+  hard: "H",
+};
+
 // ---------------------------------------------------------------------------
 
 export type ProgressSummary = {
