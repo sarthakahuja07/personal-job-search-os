@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 
 import { MobileNav, Sidebar } from "@/components/sidebar";
+import { PrepSearch } from "@/components/prep-search";
 import { getDb } from "@/db";
 import { settings } from "@/db/schema";
 import {
@@ -109,6 +110,7 @@ export default async function RootLayout({
   return (
     <html lang="en">
       <body className="min-h-dvh bg-canvas text-ink">
+        <PrepSearch />
         <div className="flex min-h-dvh">
           <Sidebar counts={counts} prepTree={prepTree} />
           <div className="flex min-w-0 flex-1 flex-col">

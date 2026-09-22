@@ -7,6 +7,7 @@ import {
   isRenderOnlyBody,
   kindBySegment,
   kindOf,
+  searchGroupLabel,
   summarise,
   topicCounts,
 } from "./prep";
@@ -185,5 +186,24 @@ describe("isRenderOnlyBody", () => {
 
   it("is false for ordinary prose, which stays editable", () => {
     expect(isRenderOnlyBody("# Notes\n\nSome prose and a `code` span.")).toBe(false);
+  });
+});
+
+describe("searchGroupLabel", () => {
+  it("splits system_design into HLD and LLD by path prefix", () => {
+    expect(searchGroupLabel("system_design", "hld/questions/instagram")).toBe("HLD");
+    expect(searchGroupLabel("system_design", "hld")).toBe("HLD");
+    expect(searchGroupLabel("system_design", "lld/parking-lot")).toBe("LLD");
+  });
+
+  it("falls back to System Design for a system_design page outside hld/lld", () => {
+    expect(searchGroupLabel("system_design", "consistent-hashing")).toBe("System Design");
+  });
+
+  it("labels the other kinds directly", () => {
+    expect(searchGroupLabel("dsa", "two-sum")).toBe("DSA");
+    expect(searchGroupLabel("behavioral", "leadership")).toBe("Behavioral");
+    expect(searchGroupLabel("concept", "caching")).toBe("Concepts");
+    expect(searchGroupLabel("company", "confluent/dsa")).toBe("Company");
   });
 });

@@ -7,11 +7,19 @@ import { PREP_DIFFICULTIES, type PrepDifficulty } from "@/db/schema";
 import { parseResource } from "@/server/domain/resources";
 import { languageFor, normalizeCodePath } from "@/server/domain/code";
 import {
+  buildPaths,
+  kindOf,
+  searchGroupLabel,
+  SEARCH_GROUP_ORDER,
+} from "@/server/domain/prep";
+import {
   addCodeFile,
   addResource,
+  allPagePaths,
   movePage,
   removeCodeFile,
   removeResource,
+  searchPages,
   setPrepGrading,
   updateBody,
 } from "@/server/repository/prep-repo";
@@ -129,4 +137,55 @@ export async function movePrepPage(id: string, newParentId: string | null, newIn
   const result = await movePage(getDb(), id, newParentId, newIndex);
   revalidatePath("/prep", "layout");
   return result;
+}
+
+export type PrepSearchResult = {
+  id: string;
+  title: string;
+  url: string;
+  difficulty: PrepDifficulty | null;
+};
+
+export type PrepSearchGroup = {
+  label: string;
+  results: PrepSearchResult[];
+};
+
+/**
+ * The global search: type a few characters, get back pages grouped the way the sidebar does --
+ * DSA, HLD, LLD, and so on -- rather than one flat list a company folder's "Notes" page and a
+ * DSA question with the same word both drown in.
+ *
+ * Title and prompt only, same as `searchPages` itself: matching page *bodies* would surface
+ * every page that merely mentions a term, which is not what typing a few letters into a search
+ * box is asking for.
+ */
+export async function searchPrep(query: string): Promise<PrepSearchGroup[]> {
+  const q = query.trim();
+  if (q.length < 2) return [];
+
+  const db = getDb();
+  const [rows, all] = await Promise.all([searchPages(db, q, undefined, 30), allPagePaths(db)]);
+  const paths = buildPaths(all);
+
+  const byLabel = new Map<string, PrepSearchResult[]>();
+  for (const r of rows) {
+    const path = paths.get(r.id) ?? r.slug;
+    const label = searchGroupLabel(r.kind, path);
+    const segment = kindOf(r.kind)?.segment ?? r.kind;
+    const list = byLabel.get(label) ?? [];
+    list.push({ id: r.id, title: r.title, url: `/prep/${segment}/${path}`, difficulty: r.difficulty });
+    byLabel.set(label, list);
+  }
+
+  const labels = [...byLabel.keys()].sort((a, b) => {
+    const ai = SEARCH_GROUP_ORDER.indexOf(a);
+    const bi = SEARCH_GROUP_ORDER.indexOf(b);
+    if (ai === -1 && bi === -1) return a.localeCompare(b);
+    if (ai === -1) return 1;
+    if (bi === -1) return -1;
+    return ai - bi;
+  });
+
+  return labels.map((label) => ({ label, results: byLabel.get(label)! }));
 }

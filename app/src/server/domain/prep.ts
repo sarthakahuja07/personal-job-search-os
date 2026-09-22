@@ -162,6 +162,37 @@ export function kindOf(kind: PrepKind): KindMeta | undefined {
   return KINDS.find((k) => k.kind === kind);
 }
 
+/**
+ * The heading a search result sorts under.
+ *
+ * `system_design` alone would lump HLD and LLD together, which is exactly the distinction
+ * someone searching is trying to make -- so it's split by the same `hld`/`lld` path prefix the
+ * company question index already keys off of (see `DISCIPLINE_SOURCE` in `domain/company.ts`).
+ */
+export function searchGroupLabel(kind: PrepKind, path: string): string {
+  if (kind === "dsa") return "DSA";
+  if (kind === "behavioral") return "Behavioral";
+  if (kind === "concept") return "Concepts";
+  if (kind === "company") return "Company";
+  if (kind === "system_design") {
+    if (path === "hld" || path.startsWith("hld/")) return "HLD";
+    if (path === "lld" || path.startsWith("lld/")) return "LLD";
+    return "System Design";
+  }
+  return kind;
+}
+
+/** Reading order for search groups. Anything not listed (a future kind) sorts after these. */
+export const SEARCH_GROUP_ORDER = [
+  "DSA",
+  "HLD",
+  "LLD",
+  "System Design",
+  "Behavioral",
+  "Concepts",
+  "Company",
+];
+
 // ---------------------------------------------------------------------------
 
 export const STATUS_LABEL: Record<PrepStatus, string> = {
