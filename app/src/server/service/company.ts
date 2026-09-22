@@ -187,6 +187,7 @@ async function resolve(
       path: loose ? `${segmentFor(loose.kind)}/${loose.path}` : null,
       frequency: entry.frequency,
       lastAsked: entry.lastAsked ?? null,
+      done: loose?.status === "done",
     };
   });
 }
@@ -261,7 +262,10 @@ export async function publishQuestionIndex(
     discipline,
     DISCIPLINE_TITLE[discipline],
     body,
-    links.map(({ path: _path, ...row }) => row),
+    // `path` and `done` are re-derived from the database on every publish, never stored --
+    // `done` in particular reflects the resolved page's *current* status, which drifts the
+    // moment someone marks a page done or reopens it, well before the next publish call.
+    links.map(({ path: _path, done: _done, ...row }) => row),
   );
 
   return {

@@ -123,6 +123,9 @@ export type QuestionLink = {
   path: string | null;
   frequency?: number;
   lastAsked?: string | null;
+  /** Whether the resolved page's own progress status is "done". Meaningless when path is null --
+   *  a question with no page yet cannot itself be marked done. */
+  done?: boolean;
 };
 
 /**
@@ -131,6 +134,11 @@ export type QuestionLink = {
  * Unresolved titles are kept and marked rather than dropped. A question this company asks that
  * has no page yet is the most useful line on the page -- it is the next thing to study -- and
  * silently omitting it would make the list look complete when it is exactly the opposite.
+ *
+ * A linked question renders as a GFM task-list item (`- [x]` / `- [ ]`) rather than a plain
+ * bullet, so a company's whole DSA/HLD/LLD list reads as a checklist -- how much of what this
+ * company actually asks is already prepared for, at a glance -- instead of requiring a click
+ * into every page to find out.
  */
 export function renderQuestionIndex(
   company: string,
@@ -152,12 +160,18 @@ export function renderQuestionIndex(
   const linked = sorted.filter((q) => q.path);
   const missing = sorted.filter((q) => !q.path);
 
+  if (linked.length > 0) {
+    const done = linked.filter((q) => q.done).length;
+    lines.push(`${done} / ${linked.length} done`, "");
+  }
+
   for (const q of linked) {
     const meta = [
       q.frequency ? `asked ${q.frequency}/5` : null,
       q.lastAsked ? `last seen ${q.lastAsked}` : null,
     ].filter(Boolean);
-    lines.push(`- [${q.title}](/prep/${q.path})${meta.length ? ` — ${meta.join(", ")}` : ""}`);
+    const box = q.done ? "[x]" : "[ ]";
+    lines.push(`- ${box} [${q.title}](/prep/${q.path})${meta.length ? ` — ${meta.join(", ")}` : ""}`);
   }
 
   if (missing.length > 0) {

@@ -505,7 +505,8 @@ export async function searchPages(db: Db, query: string, kind?: PrepKind, limit 
     .limit(limit);
 }
 
-/** Every page, flat, for building slash paths without a query per level. */
+/** Every page, flat, for building slash paths without a query per level. Carries `status` too,
+ *  so a company index can show a resolved question as done without a second query per row. */
 export async function allPagePaths(db: Db) {
   return db
     .select({
@@ -514,6 +515,7 @@ export async function allPagePaths(db: Db) {
       slug: prepItems.slug,
       title: prepItems.title,
       parentId: prepItems.parentId,
+      status: prepItems.status,
     })
     .from(prepItems)
     .orderBy(asc(prepItems.kind), asc(prepItems.position), asc(prepItems.title));

@@ -105,11 +105,29 @@ describe("renderQuestionIndex", () => {
       { title: "Design a Doorbell", path: null, frequency: 2 },
     ]);
 
-    expect(md).toContain("- [Instagram](/prep/system-design/hld/questions/instagram) — asked 4/5");
+    expect(md).toContain("- [ ] [Instagram](/prep/system-design/hld/questions/instagram) — asked 4/5");
     expect(md).toContain("## Not written yet");
     // Dropping it would make the list read as complete when it is the opposite: this is the
     // list of what to study next.
     expect(md).toContain("- Design a Doorbell — asked 2/5");
+  });
+
+  it("renders a resolved page's done status as a checked task, and counts done/total", () => {
+    const md = renderQuestionIndex("Amazon", "hld", [
+      { title: "Instagram", path: "system-design/hld/questions/instagram", frequency: 4, done: true },
+      { title: "Rate Limiter", path: "system-design/hld/rate-limiter", frequency: 3, done: false },
+    ]);
+
+    expect(md).toContain("- [x] [Instagram](/prep/system-design/hld/questions/instagram)");
+    expect(md).toContain("- [ ] [Rate Limiter](/prep/system-design/hld/rate-limiter)");
+    expect(md).toContain("1 / 2 done");
+  });
+
+  it("does not show a done count for the unwritten section, which has nothing to be done", () => {
+    const md = renderQuestionIndex("Amazon", "hld", [
+      { title: "Design a Doorbell", path: null, frequency: 2 },
+    ]);
+    expect(md).not.toContain("done");
   });
 
   it("omits the unwritten section entirely when everything resolved", () => {

@@ -2,6 +2,7 @@ import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 
 import { Mermaid } from "./mermaid";
+import { cx } from "./ui";
 
 /**
  * A prep page's body, rendered.
@@ -42,7 +43,24 @@ export function Markdown({ children }: { children: string }) {
           p: (p) => <p className="my-2.5" {...dom(p)} />,
           ul: (p) => <ul className="my-2.5 list-disc space-y-1 pl-5" {...dom(p)} />,
           ol: (p) => <ol className="my-2.5 list-decimal space-y-1 pl-5" {...dom(p)} />,
-          li: (p) => <li className="pl-0.5" {...dom(p)} />,
+          // A GFM task-list item (`- [x]`) is an <li> directly containing a checkbox <input>;
+          // :has() scopes the flex layout and dropped marker to just those items, so an
+          // ordinary bullet list (steps, notes, ...) is completely unaffected. remark-gfm
+          // already puts its own "task-list-item" class on `p.className` here, so it has to be
+          // merged in rather than spread after -- spreading `dom(p)` last would silently
+          // overwrite the classes set below with that one.
+          li: ({ className, ...p }) => (
+            <li
+              className={cx(
+                "pl-0.5 [&:has(>input)]:-ml-5 [&:has(>input)]:flex [&:has(>input)]:list-none [&:has(>input)]:items-start [&:has(>input)]:gap-2",
+                className,
+              )}
+              {...dom(p)}
+            />
+          ),
+          input: (p) => (
+            <input className="mt-0.75 size-3.5 shrink-0 accent-fresh" disabled {...dom(p)} />
+          ),
           strong: (p) => <strong className="font-semibold text-ink" {...dom(p)} />,
           em: (p) => <em className="italic" {...dom(p)} />,
           hr: () => <hr className="my-6 border-line" />,
