@@ -38,13 +38,15 @@ export type BankEntry = {
   lastAsked?: string | null;
   /**
    * Where this was reported -- the LeetCode problem, the interview-experience post, the blog.
+   * Often more than one report corroborates the same question, so this is every source found,
+   * not just the first.
    *
    * Deliberately *not* a link to our own page for the question. The bank is a record of what
    * this company asks and where that was learned; the discipline indexes are the place that
    * links into our answers. Keeping the two apart means the bank stays useful as evidence even
    * for questions we have written nothing about.
    */
-  sourceUrl?: string | null;
+  sourceUrls?: string[];
 };
 
 /** A readable label for an external link: the publisher, not the whole URL. */
@@ -99,9 +101,11 @@ export function renderQuestionBank(company: string, entries: BankEntry[]): strin
     lines.push("| --- | --- | --- | --- |");
     for (const row of rows) {
       // The question itself is plain text here. Where the answer lives is the discipline
-      // index's job; this column records where the *question* was found.
-      const source = row.sourceUrl
-        ? `[${cell(sourceLabel(row.sourceUrl))}](${row.sourceUrl})`
+      // index's job; this column records where the *question* was found. Multiple corroborating
+      // reports are joined rather than truncated to the first -- three reports of the same
+      // question is stronger evidence than one, and the point of this column is to show that.
+      const source = row.sourceUrls?.length
+        ? row.sourceUrls.map((u) => `[${cell(sourceLabel(u))}](${u})`).join(" · ")
         : "—";
       lines.push(
         `| ${cell(row.question)} | ${row.frequency}/5 | ${row.lastAsked ?? "—"} | ${source} |`,

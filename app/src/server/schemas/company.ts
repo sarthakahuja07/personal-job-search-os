@@ -18,12 +18,13 @@ export const bankEntrySchema = z.object({
   frequency: z.number().int().min(0).max(5).optional().default(0),
   last_asked: isoDate.nullish(),
   /**
-   * Where the question was found, not where our answer is.
+   * Where the question was found, not where our answer is. Every corroborating report, not
+   * just the first.
    *
    * The discipline indexes link inward to our own pages; the bank records the evidence -- the
    * LeetCode problem, the interview-experience post, the blog it was mentioned in.
    */
-  source_url: z.string().url().nullish(),
+  source_urls: z.array(z.string().url()).max(10).optional().default([]),
 });
 
 /**

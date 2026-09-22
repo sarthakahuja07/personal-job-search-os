@@ -21,7 +21,7 @@ const entry = (over: Partial<BankEntry> = {}): BankEntry => ({
   discipline: "hld",
   frequency: 3,
   lastAsked: "2026-08-01",
-  sourceUrl: null,
+  sourceUrls: [],
   ...over,
 });
 
@@ -43,8 +43,8 @@ describe("renderQuestionBank", () => {
 
   it("links the source it was found at, not our own page for the question", () => {
     const md = renderQuestionBank("Amazon", [
-      entry({ question: "Instagram", sourceUrl: "https://leetcode.com/discuss/interview/123" }),
-      entry({ question: "Heard in a phone screen", sourceUrl: null }),
+      entry({ question: "Instagram", sourceUrls: ["https://leetcode.com/discuss/interview/123"] }),
+      entry({ question: "Heard in a phone screen", sourceUrls: [] }),
     ]);
 
     // Named by publisher rather than shown as a raw URL.
@@ -56,9 +56,24 @@ describe("renderQuestionBank", () => {
 
   it("falls back to the host when the publisher is not one it knows", () => {
     const md = renderQuestionBank("Amazon", [
-      entry({ sourceUrl: "https://blog.someone.dev/a/post" }),
+      entry({ sourceUrls: ["https://blog.someone.dev/a/post"] }),
     ]);
     expect(md).toContain("[blog.someone.dev](https://blog.someone.dev/a/post)");
+  });
+
+  it("joins every corroborating source rather than keeping only the first", () => {
+    const md = renderQuestionBank("Amazon", [
+      entry({
+        question: "Two Sum",
+        sourceUrls: [
+          "https://leetcode.com/discuss/interview/1",
+          "https://blog.someone.dev/a/post",
+        ],
+      }),
+    ]);
+    expect(md).toContain(
+      "[LeetCode](https://leetcode.com/discuss/interview/1) · [blog.someone.dev](https://blog.someone.dev/a/post)",
+    );
   });
 
   it("escapes a pipe in a title instead of breaking the table around it", () => {

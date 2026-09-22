@@ -150,16 +150,17 @@ sorted by frequency.
 ```
 entries: [
   {question: "LRU Cache", discipline: "dsa", frequency: 5, last_asked: "2026-09-01",
-   source_url: "https://leetcode.com/problems/lru-cache/"},
+   source_urls: ["https://leetcode.com/problems/lru-cache/"]},
   {question: "Design Instagram", discipline: "hld", frequency: 4, last_asked: "2026-08-20",
-   source_url: "https://www.teamblind.com/post/..."}
+   source_urls: ["https://www.teamblind.com/post/...", "https://leetcode.com/discuss/..."]}
 ]
 ```
 
-**`source_url` is where the question was *found*** — the LeetCode problem, the interview
-experience post, the blog. Give it whenever you have one; that column is what makes the bank
-evidence rather than a list. **The bank never links to our own pages for a question.** Linking
-inward is `company_question_index`'s job, and keeping them apart stops the two views drifting.
+**`source_urls` is where the question was *found*** — the LeetCode problem, the interview
+experience post, the blog. Give every corroborating report, not just one; that column is what
+makes the bank evidence rather than a list. **The bank never links to our own pages for a
+question.** Linking inward is `company_question_index`'s job, and keeping them apart stops the
+two views drifting.
 
 ### `company_question_index`
 

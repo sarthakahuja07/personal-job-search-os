@@ -554,8 +554,9 @@ async def company_question_bank(
     Args:
         company: Must already be scaffolded.
         entries: [{"question", "discipline": "dsa"|"hld"|"lld", "frequency": 0-5,
-                   "last_asked": "YYYY-MM-DD", "source_url"}]. Always give a source_url -- that's
-            what makes this evidence, not a list.
+                   "last_asked": "YYYY-MM-DD", "source_urls": [...]}]. Always give source_urls --
+            that's what makes this evidence, not a list. Include every corroborating report, not
+            just one.
         mode: merge (default) adds. replace discards everything first -- rebuild only.
     """
     return await _request(

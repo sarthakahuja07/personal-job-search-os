@@ -224,7 +224,7 @@ export async function publishQuestionBank(
     mode,
     added: all.length - previous.length > 0 ? all.length - previous.length : 0,
     entries: all.length,
-    withoutSource: all.filter((e) => !e.sourceUrl).map((e) => e.question),
+    withoutSource: all.filter((e) => !e.sourceUrls?.length).map((e) => e.question),
     ...result,
   };
 }

@@ -142,9 +142,12 @@ const LOOKUP_AND_COMPANY: ToolDef[] = [
                 type: "string",
                 description: "ISO date (YYYY-MM-DD) it was last known to be asked.",
               },
-              source_url: {
-                type: "string",
-                description: "Where FOUND (LeetCode, an interview post) -- not a link to our own page.",
+              source_urls: {
+                type: "array",
+                items: { type: "string" },
+                description:
+                  "Every place FOUND (LeetCode, an interview post) -- not a link to our own " +
+                  "page. Include all corroborating reports, not just one.",
               },
             },
             required: ["question", "discipline"],

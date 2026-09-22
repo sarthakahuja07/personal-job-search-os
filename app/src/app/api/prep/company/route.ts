@@ -64,7 +64,7 @@ export async function POST(request: Request): Promise<Response> {
             discipline: e.discipline,
             frequency: e.frequency,
             lastAsked: e.last_asked ?? null,
-            sourceUrl: e.source_url ?? null,
+            sourceUrls: e.source_urls,
           })),
           parsed.data.mode,
         );
