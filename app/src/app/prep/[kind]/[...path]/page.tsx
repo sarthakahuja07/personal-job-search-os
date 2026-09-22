@@ -7,6 +7,7 @@ import { GithubNotes } from "@/components/github-notes";
 import { PageGrading } from "@/components/page-grading";
 import { BookReader, SiteEmbed } from "@/components/page-readers";
 import { CodeWorkspace } from "@/components/code-workspace";
+import { SolutionCode } from "@/components/solution-code";
 import { PageResources } from "@/components/page-resources";
 import { Badge, Button, Card, PageHeader, SectionTitle, cx, inputStyles } from "@/components/ui";
 import { getDb } from "@/db";
@@ -44,6 +45,18 @@ function isLeetCodeUrl(url: string): boolean {
   } catch {
     return false;
   }
+}
+
+/** A top-level section of a worked DSA answer -- deliberately bigger than the Markdown
+ *  renderer's own headings, so "Brute Force" and "Optimized" read as the page's real structure
+ *  rather than blend into whatever heading level the prose inside them happens to use. */
+function DsaHeading({ children }: { children: React.ReactNode }) {
+  return <h2 className="mb-3 mt-8 text-[20px] font-bold text-ink first:mt-0">{children}</h2>;
+}
+
+/** "Intuition" / "Working Steps" / "Time Complexity" / "Space Complexity" -- one level down. */
+function DsaSubheading({ children }: { children: React.ReactNode }) {
+  return <h3 className="mb-1.5 mt-4 text-[14px] font-semibold text-ink">{children}</h3>;
 }
 
 function revalidateTree(segment: string, path: string[]) {
@@ -128,6 +141,13 @@ export default async function PrepPage({
   // them rendered an empty "0 pages" section on every book.
   const isPractisable = !hasChildren && !isReader;
   /*
+    A fully worked DSA answer -- problem, brute force, optimized -- gets its own template
+    instead of the generic editor, because its code has to sit *between* a section's steps and
+    its complexity, not below everything in one shared panel. `problemSummary` is what marks a
+    page as this shape rather than a hand-written note.
+  */
+  const isDsaSolution = meta.kind === "dsa" && Boolean(content.problemSummary);
+  /*
     Code belongs on a question you answer *in code*.
 
     Gated on the kind rather than on the LLD folder's path: LLD is one folder among several that
@@ -135,8 +155,14 @@ export default async function PrepPage({
     particular path would make it a thing about that folder rather than about the kind of
     question, which is exactly what the `kind` discriminator exists to avoid. A behavioural
     story has no code, and a folder or a book is not answered at all.
+
+    A worked DSA answer is the one exception: its code renders inline, once per section, via
+    `SolutionCode` below -- the shared top-of-page workspace would just show the same two files
+    a second time.
   */
-  const showsCode = isPractisable && meta.kind !== "behavioral";
+  const showsCode = isPractisable && meta.kind !== "behavioral" && !isDsaSolution;
+  const bruteForceFile = codeFiles.find((f) => f.path === "brute_force.cpp");
+  const optimizedFile = codeFiles.find((f) => f.path === "optimized.cpp");
 
   /*
     Some pages are rendered, not edited.
@@ -258,8 +284,52 @@ export default async function PrepPage({
         />
       )}
 
+      {/* A worked DSA answer: problem, then brute force (wherever applicable) and optimized,
+          each with its own code sitting right after its steps -- not bundled into one panel a
+          scroll away from the explanation it belongs to. */}
+      {isDsaSolution && (
+        <div className="mb-6">
+          <DsaHeading>Problem Summary</DsaHeading>
+          <Markdown>{content.problemSummary ?? ""}</Markdown>
+
+          {content.examples && (
+            <>
+              <DsaHeading>Example</DsaHeading>
+              <Markdown>{content.examples}</Markdown>
+            </>
+          )}
+
+          {content.bruteForceIntuition && (
+            <>
+              <DsaHeading>Brute Force</DsaHeading>
+              <DsaSubheading>Intuition</DsaSubheading>
+              <Markdown>{content.bruteForceIntuition}</Markdown>
+              <DsaSubheading>Working Steps</DsaSubheading>
+              <Markdown>{content.bruteForceSteps ?? ""}</Markdown>
+              <SolutionCode file={bruteForceFile} />
+              <DsaSubheading>Time Complexity</DsaSubheading>
+              <Markdown>{content.bruteForceTimeComplexity ?? ""}</Markdown>
+              <DsaSubheading>Space Complexity</DsaSubheading>
+              <Markdown>{content.bruteForceSpaceComplexity ?? ""}</Markdown>
+            </>
+          )}
+
+          <DsaHeading>Optimized Solution</DsaHeading>
+          <DsaSubheading>Intuition</DsaSubheading>
+          <Markdown>{content.optimizedIntuition ?? ""}</Markdown>
+          <DsaSubheading>Working Steps</DsaSubheading>
+          <Markdown>{content.optimizedSteps ?? ""}</Markdown>
+          <SolutionCode file={optimizedFile} />
+          <DsaSubheading>Time Complexity</DsaSubheading>
+          <Markdown>{content.optimizedTimeComplexity ?? ""}</Markdown>
+          <DsaSubheading>Space Complexity</DsaSubheading>
+          <Markdown>{content.optimizedSpaceComplexity ?? ""}</Markdown>
+        </div>
+      )}
+
       {/* A page is a document unless its content says otherwise. Readers replace the editor
           rather than sitting beside it: there is nothing to write on a book. */}
+      {!isDsaSolution && (
       <div className="mb-6">
         {content.drive ? (
           <BookReader file={`/api/books/${item.id}`} title={item.title} hosted="drive" />
@@ -292,6 +362,7 @@ export default async function PrepPage({
           />
         )}
       </div>
+      )}
 
       {hasChildren && (
         <section className="mb-6">

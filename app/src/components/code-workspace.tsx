@@ -1,17 +1,11 @@
 "use client";
 
-import hljs from "highlight.js/lib/common";
-import scala from "highlight.js/lib/languages/scala";
 import { useCallback, useEffect, useMemo, useState, useTransition } from "react";
 
 import { addPageCodeFile, removePageCodeFile } from "@/app/prep/actions";
 import { allDirPaths, buildFileTree, type TreeNode } from "@/server/domain/code";
+import { highlightCode } from "./code-highlight";
 import { cx } from "./ui";
-
-// `lib/common` carries the thirty-odd languages most code is written in, which is every one
-// this app maps an extension to except Scala. Registering it here keeps `languageFor` honest:
-// a mapping that names a grammar nobody bundled would silently render as plain text.
-hljs.registerLanguage("scala", scala);
 
 export type CodeFile = {
   id: string;
@@ -264,8 +258,8 @@ function Workspace({
  * markup. Two columns sharing a line-height stay aligned without touching the highlighted HTML
  * at all, and the gutter sticks to the left so it survives a horizontal scroll.
  */
-function CodeView({ file }: { file: CodeFile }) {
-  const html = useMemo(() => highlight(file), [file]);
+export function CodeView({ file }: { file: CodeFile }) {
+  const html = useMemo(() => highlightCode(file.content, file.language), [file]);
   const lines = useMemo(() => file.content.split("\n").length, [file.content]);
 
   return (
@@ -286,27 +280,6 @@ function CodeView({ file }: { file: CodeFile }) {
       </pre>
     </div>
   );
-}
-
-function highlight(file: CodeFile): string {
-  const lang = file.language;
-  // Ask the registry rather than trusting the stored value: the column is free text, and a
-  // language that is not bundled must degrade to plain code, never throw in render.
-  if (lang && hljs.getLanguage(lang)) {
-    try {
-      return hljs.highlight(file.content, { language: lang, ignoreIllegals: true }).value;
-    } catch {
-      // Fall through to plain text -- a grammar that chokes is not worth an error boundary.
-    }
-  }
-  return escapeHtml(file.content);
-}
-
-function escapeHtml(s: string): string {
-  return s
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;");
 }
 
 // ---------------------------------------------------------------------------
@@ -512,7 +485,7 @@ function AddFileForm({
   );
 }
 
-function CopyButton({ text }: { text: string }) {
+export function CopyButton({ text }: { text: string }) {
   const [done, setDone] = useState(false);
 
   return (

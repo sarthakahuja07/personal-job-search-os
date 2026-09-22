@@ -598,10 +598,26 @@ export type PrepDifficulty = (typeof PREP_DIFFICULTIES)[number];
 
 /** Discipline-specific fields. Every key optional: a row only fills what its kind needs. */
 export type PrepContent = {
-  /** dsa */
+  /** dsa (freeform note pages) */
   approach?: string;
   complexity?: string;
   pattern?: string;
+  /**
+   * dsa (a fully worked question page, rendered by its own template instead of the generic
+   * editor). Split into fields rather than one Markdown body because the code for a section has
+   * to render *between* its steps and its complexity, not below everything in a separate panel --
+   * a single Markdown blob has no seam to embed a component into.
+   */
+  problemSummary?: string;
+  examples?: string;
+  bruteForceIntuition?: string;
+  bruteForceSteps?: string;
+  bruteForceTimeComplexity?: string;
+  bruteForceSpaceComplexity?: string;
+  optimizedIntuition?: string;
+  optimizedSteps?: string;
+  optimizedTimeComplexity?: string;
+  optimizedSpaceComplexity?: string;
   /** system_design */
   requirements?: string;
   architecture?: string;
