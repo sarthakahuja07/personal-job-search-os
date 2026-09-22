@@ -14,6 +14,7 @@ import { getDb } from "@/db";
 import type { PrepStatus } from "@/db/schema";
 import { PREP_STATUSES } from "@/db/schema";
 import { Markdown } from "@/components/markdown";
+import { DISCIPLINES, type Discipline } from "@/server/domain/company";
 import {
   STATUS_LABEL,
   STATUS_ORDER,
@@ -28,6 +29,7 @@ import {
   resourcesFor,
   updateProgress,
 } from "@/server/repository/prep-repo";
+import { liveIndexBody } from "@/server/service/company";
 
 export const dynamic = "force-dynamic";
 
@@ -180,6 +182,23 @@ export default async function PrepPage({
   const isRendered = !isReader && (isGenerated || isRenderOnlyBody(item.body));
   const here = path.join("/");
   const hrefFor = (slug: string) => `/prep/${segment}/${[...path, slug].join("/")}`;
+
+  /*
+    A company's DSA/HLD/LLD index is generated like the question bank, but "done" is not a fact
+    that a publish call learns about -- it changes on the linked page itself, any time, with no
+    publish involved. Its stored body would show whatever was done the day it was last published;
+    re-resolving live on every view is what keeps the checklist actually a checklist.
+  */
+  const isCompanyDisciplineIndex =
+    isGenerated && meta.kind === "company" && (DISCIPLINES as readonly string[]).includes(item.slug);
+  const displayBody = isCompanyDisciplineIndex
+    ? await liveIndexBody(
+        db,
+        chain[0]?.title ?? item.title,
+        item.slug as Discipline,
+        (content.rows as { title: string; frequency?: number; lastAsked?: string | null }[]) ?? [],
+      )
+    : item.body;
 
   return (
     <div className="max-w-3xl">
@@ -346,12 +365,14 @@ export default async function PrepPage({
         ) : isRendered ? (
           <div>
             <article className="rounded-card border border-line bg-surface px-5 py-4">
-              <Markdown>{item.body ?? ""}</Markdown>
+              <Markdown>{displayBody ?? ""}</Markdown>
             </article>
             <p className="mt-2 text-[11.5px] text-ink-faint">
-              {isGenerated
-                ? "Generated from what was published to it. Publishing again updates it; edits made here would be replaced."
-                : "Shown as written. Pages containing a table or a diagram are not editable here, because the editor cannot represent either."}
+              {isCompanyDisciplineIndex
+                ? "Generated live from what was published to it -- each question's done status always reflects its own page, not the day this was last published."
+                : isGenerated
+                  ? "Generated from what was published to it. Publishing again updates it; edits made here would be replaced."
+                  : "Shown as written. Pages containing a table or a diagram are not editable here, because the editor cannot represent either."}
             </p>
           </div>
         ) : (

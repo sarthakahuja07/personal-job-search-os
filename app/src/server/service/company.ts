@@ -195,6 +195,26 @@ async function resolve(
 /** URL segment for a kind. Only the two that hold questions are reachable from here. */
 const segmentFor = (kind: PrepKind) => (kind === "system_design" ? "system-design" : kind);
 
+/**
+ * Re-render a discipline index against the database's *current* state.
+ *
+ * A company index's markdown body is written once, at publish time -- but whether a linked
+ * question is "done" changes constantly, on its own page, with no publish call involved. A
+ * stored body would show whatever was done the day it was last published and nothing since,
+ * which defeats the reason the checklist exists. So the index page calls this on every view
+ * instead of reading its stored body, re-resolving titles to paths and pulling each one's
+ * current status fresh.
+ */
+export async function liveIndexBody(
+  db: Db,
+  companyTitle: string,
+  discipline: Discipline,
+  rows: { title: string; frequency?: number; lastAsked?: string | null }[],
+): Promise<string> {
+  const links = await resolve(db, discipline, rows);
+  return renderQuestionIndex(companyTitle, discipline, links);
+}
+
 export async function publishQuestionBank(
   db: Db,
   company: string,
