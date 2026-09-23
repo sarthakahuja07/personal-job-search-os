@@ -188,6 +188,7 @@ async function resolve(
       frequency: entry.frequency,
       lastAsked: entry.lastAsked ?? null,
       done: loose?.status === "done",
+      difficulty: loose?.difficulty ?? null,
     };
   });
 }

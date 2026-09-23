@@ -516,6 +516,7 @@ export async function allPagePaths(db: Db) {
       title: prepItems.title,
       parentId: prepItems.parentId,
       status: prepItems.status,
+      difficulty: prepItems.difficulty,
     })
     .from(prepItems)
     .orderBy(asc(prepItems.kind), asc(prepItems.position), asc(prepItems.title));

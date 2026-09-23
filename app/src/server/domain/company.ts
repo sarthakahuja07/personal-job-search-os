@@ -10,6 +10,9 @@
  * page happens in the service, because only the database knows what exists.
  */
 
+import type { PrepDifficulty } from "@/db/schema";
+import { DIFFICULTY_LETTER } from "./prep";
+
 /** The three rounds a company is prepared for. Notes and the bank are the other two pages. */
 export const DISCIPLINES = ["dsa", "hld", "lld"] as const;
 export type Discipline = (typeof DISCIPLINES)[number];
@@ -126,6 +129,9 @@ export type QuestionLink = {
   /** Whether the resolved page's own progress status is "done". Meaningless when path is null --
    *  a question with no page yet cannot itself be marked done. */
   done?: boolean;
+  /** The resolved page's own difficulty, e.g. for a dsa question. Null for kinds that don't set
+   *  one (hld/lld/behavioral), and when path is null (nothing to read it from). */
+  difficulty?: PrepDifficulty | null;
 };
 
 /**
@@ -171,7 +177,10 @@ export function renderQuestionIndex(
       q.lastAsked ? `last seen ${q.lastAsked}` : null,
     ].filter(Boolean);
     const box = q.done ? "[x]" : "[ ]";
-    lines.push(`- ${box} [${q.title}](/prep/${q.path})${meta.length ? ` — ${meta.join(", ")}` : ""}`);
+    const difficulty = q.difficulty ? ` \`${DIFFICULTY_LETTER[q.difficulty]}\`` : "";
+    lines.push(
+      `- ${box} [${q.title}](/prep/${q.path})${difficulty}${meta.length ? ` — ${meta.join(", ")}` : ""}`,
+    );
   }
 
   if (missing.length > 0) {
