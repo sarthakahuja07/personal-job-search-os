@@ -318,31 +318,67 @@ export default async function PrepPage({
             </>
           )}
 
-          {content.bruteForceIntuition && (
+          {content.approaches && content.approaches.length > 0 ? (
+            // A question whose real answer is "N genuinely different approaches" (e.g. four
+            // pivot strategies for Quicksort) rather than one brute force and one optimized
+            // solution -- each gets the same intuition/steps/code/complexity shape in turn.
+            content.approaches.map((approach, i) => (
+              <div key={i}>
+                <DsaHeading>{approach.title}</DsaHeading>
+                <DsaSubheading>Intuition</DsaSubheading>
+                <Markdown>{approach.intuition}</Markdown>
+                <DsaSubheading>Working Steps</DsaSubheading>
+                <Markdown>{approach.steps}</Markdown>
+                <SolutionCode file={codeFiles.find((f) => f.path === approach.codeFile)} />
+                <DsaSubheading>Time Complexity</DsaSubheading>
+                <Markdown>{approach.timeComplexity}</Markdown>
+                <DsaSubheading>Space Complexity</DsaSubheading>
+                <Markdown>{approach.spaceComplexity}</Markdown>
+              </div>
+            ))
+          ) : (
             <>
-              <DsaHeading>Brute Force</DsaHeading>
+              {content.bruteForceIntuition && (
+                <>
+                  <DsaHeading>Brute Force</DsaHeading>
+                  <DsaSubheading>Intuition</DsaSubheading>
+                  <Markdown>{content.bruteForceIntuition}</Markdown>
+                  <DsaSubheading>Working Steps</DsaSubheading>
+                  <Markdown>{content.bruteForceSteps ?? ""}</Markdown>
+                  <SolutionCode file={bruteForceFile} />
+                  <DsaSubheading>Time Complexity</DsaSubheading>
+                  <Markdown>{content.bruteForceTimeComplexity ?? ""}</Markdown>
+                  <DsaSubheading>Space Complexity</DsaSubheading>
+                  <Markdown>{content.bruteForceSpaceComplexity ?? ""}</Markdown>
+                </>
+              )}
+
+              <DsaHeading>Optimized Solution</DsaHeading>
               <DsaSubheading>Intuition</DsaSubheading>
-              <Markdown>{content.bruteForceIntuition}</Markdown>
+              <Markdown>{content.optimizedIntuition ?? ""}</Markdown>
               <DsaSubheading>Working Steps</DsaSubheading>
-              <Markdown>{content.bruteForceSteps ?? ""}</Markdown>
-              <SolutionCode file={bruteForceFile} />
+              <Markdown>{content.optimizedSteps ?? ""}</Markdown>
+              <SolutionCode file={optimizedFile} />
               <DsaSubheading>Time Complexity</DsaSubheading>
-              <Markdown>{content.bruteForceTimeComplexity ?? ""}</Markdown>
+              <Markdown>{content.optimizedTimeComplexity ?? ""}</Markdown>
               <DsaSubheading>Space Complexity</DsaSubheading>
-              <Markdown>{content.bruteForceSpaceComplexity ?? ""}</Markdown>
+              <Markdown>{content.optimizedSpaceComplexity ?? ""}</Markdown>
             </>
           )}
 
-          <DsaHeading>Optimized Solution</DsaHeading>
-          <DsaSubheading>Intuition</DsaSubheading>
-          <Markdown>{content.optimizedIntuition ?? ""}</Markdown>
-          <DsaSubheading>Working Steps</DsaSubheading>
-          <Markdown>{content.optimizedSteps ?? ""}</Markdown>
-          <SolutionCode file={optimizedFile} />
-          <DsaSubheading>Time Complexity</DsaSubheading>
-          <Markdown>{content.optimizedTimeComplexity ?? ""}</Markdown>
-          <DsaSubheading>Space Complexity</DsaSubheading>
-          <Markdown>{content.optimizedSpaceComplexity ?? ""}</Markdown>
+          {content.comparisonTable && (
+            <>
+              <DsaHeading>Comparison</DsaHeading>
+              <Markdown>{content.comparisonTable}</Markdown>
+            </>
+          )}
+
+          {content.interviewNotes && (
+            <>
+              <DsaHeading>What to Say in the Interview</DsaHeading>
+              <Markdown>{content.interviewNotes}</Markdown>
+            </>
+          )}
         </div>
       )}
 

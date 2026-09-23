@@ -618,6 +618,26 @@ export type PrepContent = {
   optimizedSteps?: string;
   optimizedTimeComplexity?: string;
   optimizedSpaceComplexity?: string;
+  /**
+   * dsa (alternate shape, for a question whose real answer is "N genuinely different
+   * approaches" rather than one brute force and one optimized solution -- e.g. four pivot
+   * strategies for Quicksort. Mutually exclusive with the brute/optimized fields above: a page
+   * uses one shape or the other, never both, since each approach here carries its own
+   * intuition/steps/complexity/code exactly like a brute-force-or-optimized section would.
+   */
+  approaches?: {
+    title: string;
+    /** Path into prep_code_files, e.g. "approach-1-last-element-pivot.cpp". */
+    codeFile: string;
+    intuition: string;
+    steps: string;
+    timeComplexity: string;
+    spaceComplexity: string;
+  }[];
+  /** dsa: an optional closing table comparing the approaches above (Markdown). */
+  comparisonTable?: string;
+  /** dsa: an optional closing "what to say in the interview" section (Markdown). */
+  interviewNotes?: string;
   /** system_design */
   requirements?: string;
   architecture?: string;
