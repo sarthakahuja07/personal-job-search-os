@@ -625,10 +625,47 @@ three DP approaches) by seeding local D1 from a remote export and screenshotting
 since the app is Cloudflare-Access-gated and there's no local content to render against
 otherwise.
 
-Deliberately unchanged: the underlying `problemSummary` / `intuition` / `steps` / complexity
-*text* on every existing page. Sarthak asked for the presentation to change, not the content --
-rewriting 29+ published pages' prose into a different structure is a separate, much larger piece
-of work he hasn't asked for yet.
+At this point deliberately unchanged: the underlying `problemSummary` / `intuition` / `steps` /
+complexity *text* on every existing page -- see the next entry for why that changed.
+
+## The redesign wasn't enough on its own: text was still dull, and some fields were still walls of prose
+
+Two rounds of follow-up feedback on the entry above, both from actually looking at the deployed
+result rather than the diff.
+
+**Round one: still dull, still small.** The eyebrow labels ("Intuition", "Working Steps") were
+11px and `ink-faint` -- the dimmest tone in the palette -- so they didn't register as headings at
+all next to the prose they introduced, and that prose itself used the same `text-ink-dim` every
+other page's body copy uses. Both were true contrast/size problems, not a matter of taste: fixed
+by giving `Markdown` two opt-in props, `size` ("sm", the untouched default, or "md" at 14.5px) and
+`tone` ("dim", the untouched default, or "ink" at full contrast) -- every other page in the app is
+unaffected, since both default to the old values. DSA intuition, steps, problem summary, examples
+and complexity explanations now render at `size="md" tone="ink"`; the eyebrow labels got an
+accent-colored rule and went from 11px/semibold/ink-faint to 13px/bold/full-contrast.
+
+**Round two: "in some questions the text is too much... add pointers for these big paragraphs."**
+This one *is* the content, not styling -- Sarthak explicitly OK'd changing structure/wording as
+long as the underlying solution doesn't change (PRD-adjacent instruction, not a decision made
+here). Scanning all 28 published `isDsaSolution` pages' intuition/steps fields for "long and no
+bullets" flagged 54 candidates -- but a first pass through them showed that heuristic alone is
+wrong more often than it's right: most of those fields already use bold inline labels
+(`**Why can this become O(N²)?**`, `**DP state:**`, `**1. HashMap**`) as their structure, and
+forcing bullets onto an already-labeled paragraph, or onto a single coherent explanatory thought,
+would have made those pages worse, not better -- choppy for no reason. Re-scanning for fields with
+*zero* structural anchoring (no bullets, at most one bold label, still long) cut the list to a
+defensible 8: three DP approaches on **Subset Sum** (run-on lists of state variables and
+sequential steps), **Function Signature Matching**'s Trie intuition (the example that started this
+round), and one genuinely unstructured field each on **Sudoku Solver**, **Dijkstra**, **Number of
+Atoms**, and **Time-Based Key-Value Store**. Every rewrite kept the exact variable names, numbers,
+worked examples and ASCII diagrams -- restructured into bullets and short bold sub-headers, never
+reworded for content. Applied as direct `UPDATE`s to `prep_items.content` in remote D1 (there is
+no publishing tool for these fields -- see the earlier "Page rendering" entry) after drafting and
+verifying each one locally first; a before/after key-diff against the original export confirmed no
+field was dropped across all six touched pages.
+
+Both rounds verified the same way as the original redesign: seed local D1 from a remote export
+(local D1 has no content of its own), screenshot with Playwright, since the deployed app is
+Cloudflare-Access-gated and unreachable directly.
 
 ## Known gaps
 
