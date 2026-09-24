@@ -30,9 +30,23 @@ function dom<T extends { node?: unknown }>(props: T): Omit<T, "node"> {
   return rest;
 }
 
-export function Markdown({ children }: { children: string }) {
+const SIZE_CLASS = { sm: "text-[13.5px]", md: "text-[14.5px]" } as const;
+const TONE_CLASS = { dim: "text-ink-dim", ink: "text-ink" } as const;
+
+export function Markdown({
+  children,
+  size = "sm",
+  tone = "dim",
+}: {
+  children: string;
+  /** "md" is a size up, for prose that has to carry a page on its own (a DSA answer's
+   *  intuition/steps) rather than sit as one field among many. */
+  size?: keyof typeof SIZE_CLASS;
+  /** "ink" is full contrast rather than the usual dimmed body copy -- for the same reason. */
+  tone?: keyof typeof TONE_CLASS;
+}) {
   return (
-    <div className="text-[13.5px] leading-relaxed text-ink-dim">
+    <div className={cx(SIZE_CLASS[size], "leading-relaxed", TONE_CLASS[tone])}>
       <ReactMarkdown
         remarkPlugins={[remarkGfm]}
         components={{

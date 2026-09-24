@@ -24,11 +24,12 @@ function DsaHeading({ children }: { children: React.ReactNode }) {
   );
 }
 
-/** "Intuition" / "Working Steps" -- an eyebrow label, deliberately styled nothing like a
- *  heading, so it can't be mistaken for a bolded sentence inside the prose it introduces. */
+/** "Intuition" / "Working Steps" -- a real sub-heading, not just a slightly bolder sentence: a
+ *  colored rule to anchor the eye plus enough size and contrast to actually register as a label
+ *  before the paragraph beneath it, deliberately still one step down from a chapter's DsaHeading. */
 function DsaEyebrow({ children }: { children: React.ReactNode }) {
   return (
-    <h3 className="mb-1.5 mt-4 text-[11px] font-semibold uppercase tracking-[0.08em] text-ink-faint first:mt-0">
+    <h3 className="mb-2 mt-5 border-l-2 border-accent pl-2.5 text-[13px] font-bold uppercase tracking-[0.04em] text-ink first:mt-0">
       {children}
     </h3>
   );
@@ -73,12 +74,10 @@ function ComplexityFact({ label, text }: { label: string; text: string }) {
   const headline = headlineComplexity(text);
   return (
     <div className="rounded-card border border-line bg-surface-2 px-3.5 py-3">
-      <p className="text-[10.5px] font-semibold uppercase tracking-[0.08em] text-ink-faint">
-        {label}
-      </p>
-      {headline && <p className="mt-1 font-mono text-[16px] font-bold text-ink">{headline}</p>}
-      <div className={cx(headline ? "mt-1.5" : "mt-1", "text-[12.5px] leading-relaxed text-ink-dim [&_p]:my-0")}>
-        <Markdown>{text}</Markdown>
+      <p className="text-[11px] font-bold uppercase tracking-[0.05em] text-ink-dim">{label}</p>
+      {headline && <p className="mt-1 font-mono text-[17px] font-bold text-ink">{headline}</p>}
+      <div className={cx(headline ? "mt-1.5" : "mt-1", "[&_p]:my-0")}>
+        <Markdown tone="ink">{text}</Markdown>
       </div>
     </div>
   );
@@ -154,10 +153,10 @@ function SolutionBlock({
       </div>
 
       <DsaEyebrow>Intuition</DsaEyebrow>
-      <Markdown>{intuition}</Markdown>
+      <Markdown size="md" tone="ink">{intuition}</Markdown>
 
       <DsaEyebrow>Working Steps</DsaEyebrow>
-      <Markdown>{steps}</Markdown>
+      <Markdown size="md" tone="ink">{steps}</Markdown>
 
       <div className="mt-3">
         <SolutionCode file={file} />
@@ -215,12 +214,12 @@ export function DsaSolution({
   return (
     <div className="mb-6">
       <DsaHeading>Problem Summary</DsaHeading>
-      <Markdown>{content.problemSummary ?? ""}</Markdown>
+      <Markdown size="md" tone="ink">{content.problemSummary ?? ""}</Markdown>
 
       {content.examples && (
         <>
           <DsaHeading>Example</DsaHeading>
-          <Markdown>{content.examples}</Markdown>
+          <Markdown size="md" tone="ink">{content.examples}</Markdown>
         </>
       )}
 
@@ -270,14 +269,14 @@ export function DsaSolution({
       {content.comparisonTable && (
         <>
           <DsaHeading>Comparison Notes</DsaHeading>
-          <Markdown>{content.comparisonTable}</Markdown>
+          <Markdown size="md" tone="ink">{content.comparisonTable}</Markdown>
         </>
       )}
 
       {content.interviewNotes && (
         <>
           <DsaHeading>What to Say in the Interview</DsaHeading>
-          <Markdown>{content.interviewNotes}</Markdown>
+          <Markdown size="md" tone="ink">{content.interviewNotes}</Markdown>
         </>
       )}
     </div>
