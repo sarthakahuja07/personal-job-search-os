@@ -27,6 +27,7 @@ import {
   type AnySQLiteColumn,
   index,
   integer,
+  real,
   sqliteTable,
   text,
   uniqueIndex,
@@ -916,3 +917,37 @@ export const githubNotesCache = sqliteTable("github_notes_cache", {
 });
 
 export type GithubNotesCacheRow = typeof githubNotesCache.$inferSelect;
+
+/**
+ * Spaced-repetition state for a prep page, one row per page that has ever been revised.
+ *
+ * Its own table rather than keys in `prep_items.content`, because every publish tool rewrites
+ * `content` wholesale -- republishing a DSA answer to fix a typo would otherwise wipe months of
+ * review history. It is also written once per card flip, which is exactly the read-modify-write
+ * pattern `prep_resources` moved out of `content` to avoid.
+ *
+ * A page with no row is a new card. The scheduling rules are in `server/domain/revision.ts`.
+ */
+export const prepReviews = sqliteTable(
+  "prep_reviews",
+  {
+    prepItemId: text("prep_item_id")
+      .primaryKey()
+      .references(() => prepItems.id, { onDelete: "cascade" }),
+    /** Multiplier applied to the interval on "good", Anki's ease factor. Starts at 2.5. */
+    ease: real("ease").notNull().default(2.5),
+    /** Days until the next review. 0 while the card is being (re)learned. */
+    intervalDays: integer("interval_days").notNull().default(0),
+    reps: integer("reps").notNull().default(0),
+    lapses: integer("lapses").notNull().default(0),
+    lastRating: text("last_rating").$type<ReviewRating>(),
+    dueAt: integer("due_at", { mode: "timestamp_ms" }).notNull(),
+    lastReviewedAt: integer("last_reviewed_at", { mode: "timestamp_ms" }).notNull(),
+  },
+  (t) => [index("prep_review_due_idx").on(t.dueAt)],
+);
+
+export const REVIEW_RATINGS = ["again", "hard", "good", "easy"] as const;
+export type ReviewRating = (typeof REVIEW_RATINGS)[number];
+
+export type PrepReview = typeof prepReviews.$inferSelect;

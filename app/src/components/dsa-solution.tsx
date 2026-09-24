@@ -177,9 +177,12 @@ function SolutionBlock({
 export function DsaSolution({
   content,
   codeFiles,
+  hideProblem = false,
 }: {
   content: PrepContent;
   codeFiles: CodeFile[];
+  /** Revision shows the problem on the card's front already; the back is only the answer. */
+  hideProblem?: boolean;
 }) {
   const bruteForceFile = codeFiles.find((f) => f.path === "brute_force.cpp");
   const optimizedFile = codeFiles.find((f) => f.path === "optimized.cpp");
@@ -215,13 +218,17 @@ export function DsaSolution({
 
   return (
     <div className="mb-6">
-      <DsaHeading>Problem Summary</DsaHeading>
-      <Markdown size="md" tone="ink">{content.problemSummary ?? ""}</Markdown>
-
-      {content.examples && (
+      {!hideProblem && (
         <>
-          <DsaHeading>Example</DsaHeading>
-          <Markdown size="md" tone="ink">{content.examples}</Markdown>
+          <DsaHeading>Problem Summary</DsaHeading>
+          <Markdown size="md" tone="ink">{content.problemSummary ?? ""}</Markdown>
+
+          {content.examples && (
+            <>
+              <DsaHeading>Example</DsaHeading>
+              <Markdown size="md" tone="ink">{content.examples}</Markdown>
+            </>
+          )}
         </>
       )}
 

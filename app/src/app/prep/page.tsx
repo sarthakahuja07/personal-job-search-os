@@ -62,6 +62,14 @@ export default async function PrepOverviewPage() {
             "Interview preparation, tracked alongside the roles it is for."
           )
         }
+        actions={
+          <Link
+            href="/prep/revise"
+            className="rounded-md bg-accent px-3 py-1.5 text-[13px] font-medium text-canvas transition hover:brightness-110"
+          >
+            Revise with flashcards
+          </Link>
+        }
       />
 
       <div className="grid gap-3 sm:grid-cols-3">
