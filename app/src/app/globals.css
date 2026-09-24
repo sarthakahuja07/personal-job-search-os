@@ -52,8 +52,10 @@
      borrows from its own inline-code convention: coloured text on a faint tint, no border. */
   --color-code: #d97757;
 
-  --font-sans: var(--font-inter), ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI",
-    Roboto, "Helvetica Neue", Arial, sans-serif;
+  /* -apple-system / BlinkMacSystemFont resolve to SF Pro on macOS and iOS -- listed first so
+     Apple devices get it directly rather than through the generic ui-sans-serif keyword. */
+  --font-sans: -apple-system, BlinkMacSystemFont, ui-sans-serif, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, sans-serif;
   --font-mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
 
   --radius-card: 0.625rem;
