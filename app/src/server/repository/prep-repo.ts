@@ -480,8 +480,24 @@ export async function updatePage(
  * Title and prompt only. Searching bodies would match every page that merely *mentions*
  * consistent hashing, which is the opposite of what a duplicate check wants.
  */
+/**
+ * Tokenized rather than a single substring: "queue implement" should find "Implement a Queue
+ * From Scratch with Random" even though the words appear in the opposite order and are split by
+ * others. Every token must appear *somewhere* in the title or prompt (AND across tokens, OR
+ * across the two fields per token) -- order and adjacency don't matter, all the words do.
+ *
+ * Ranked so a title match outranks a prompt-only match: a page whose title contains a searched
+ * word is what "search" means to someone skimming a sidebar, even before frequency is considered.
+ */
 export async function searchPages(db: Db, query: string, kind?: PrepKind, limit = 20) {
-  const like = `%${query.trim().toLowerCase()}%`;
+  const tokens = query.trim().toLowerCase().split(/\s+/).filter(Boolean);
+  if (tokens.length === 0) return [];
+
+  const titleHits = tokens.map(
+    (t) => sql`(CASE WHEN lower(${prepItems.title}) LIKE ${`%${t}%`} THEN 1 ELSE 0 END)`,
+  );
+  const titleScore = sql.join(titleHits, sql` + `);
+
   return db
     .select({
       id: prepItems.id,
@@ -498,10 +514,13 @@ export async function searchPages(db: Db, query: string, kind?: PrepKind, limit 
     .where(
       and(
         kind ? eq(prepItems.kind, kind) : undefined,
-        sql`(lower(${prepItems.title}) LIKE ${like} OR lower(coalesce(${prepItems.prompt}, '')) LIKE ${like})`,
+        ...tokens.map((t) => {
+          const like = `%${t}%`;
+          return sql`(lower(${prepItems.title}) LIKE ${like} OR lower(coalesce(${prepItems.prompt}, '')) LIKE ${like})`;
+        }),
       ),
     )
-    .orderBy(desc(prepItems.frequency), asc(prepItems.title))
+    .orderBy(desc(titleScore), desc(prepItems.frequency), asc(prepItems.title))
     .limit(limit);
 }
 
