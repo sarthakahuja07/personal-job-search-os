@@ -59,7 +59,10 @@ function groups(counts: NavCounts): Group[] {
       title: "Preparation",
       // Just the overview; the disciplines and their pages render as a tree below, because a
       // flat list cannot show that RDBMS sits inside HLD inside System Design.
-      items: [{ href: "/prep", label: "Overview" }],
+      items: [
+        { href: "/prep", label: "Overview" },
+        { href: "/prep/revise", label: "Revision" },
+      ],
       tree: true,
     },
     {
@@ -71,6 +74,8 @@ function groups(counts: NavCounts): Group[] {
 
 function isActive(pathname: string, href: string): boolean {
   if (href === "/") return pathname === "/";
+  // The overview sits above every prep page, including Revision; only highlight it on itself.
+  if (href === "/prep") return pathname === "/prep";
   return pathname === href || pathname.startsWith(href + "/");
 }
 

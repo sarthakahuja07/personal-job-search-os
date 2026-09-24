@@ -3,7 +3,7 @@
 The durable state of this project. Updated whenever something meaningful lands, so no context is
 lost between sessions (PRD §73). Picking this up cold: read `CLAUDE.md` first, then this file.
 
-**Last updated:** 2026-09-22
+**Last updated:** 2026-09-24
 
 ---
 
@@ -49,6 +49,7 @@ are loaded and reachable only from behind Access.
 | Code workspace | done — read-only VS Code-style viewer on question pages (`prep_code_files`) |
 | Worked LLD publishing | done — `publish_lld_solution` MCP tool: seven fixed sections composed server-side, a structured design-choices table, Mermaid diagrams, and the code published as files into the Code panel. See `docs/lld-solution-pages.md` |
 | Mermaid diagrams | done — ```mermaid fences render as diagrams in any prep page body, lazily loaded |
+| Revision (flashcards) | done — `/prep/revise`, Anki-style. Decks are derived, never stored: All, DSA (every DSA leaf except pattern `Notes` pages), HLD (`hld/questions/*`), LLD (`lld/questions/*`), and per company All/DSA/HLD/LLD from the rows on the company's generated DSA/HLD/LLD index pages (titles matched to question pages the same lenient way the index links them; unmatched titles are listed under the deck, not dropped). A session is the deck shuffled server-side, one card at a time: front = name + prompt + (DSA) problem summary and example; Show answer (space) reveals the rest — the full `DsaSolution` minus the problem, or the page body, answer fields, notes and code. Again/Hard/Good/Easy (keys 1–4) with Anki-style interval labels; Again requeues the card to the back of the session. Progress bar, done/left/coming-back counts, per-rating tally, card and session timers. Scheduling is a simplified SM-2 in `domain/revision.ts`, state in the new `prep_reviews` table — **migration 0021 must be applied remotely** (`npx wrangler d1 migrations apply job-search-os --remote`); until then decks still work but ratings are not saved and the deck page says so. |
 
 ---
 
