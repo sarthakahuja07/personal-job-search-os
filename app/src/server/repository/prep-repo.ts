@@ -20,6 +20,7 @@ import {
   type PrepKind,
   type PrepStatus,
 } from "@/db/schema";
+import type { QuestionSourceRow } from "@/server/domain/prep-questions";
 
 /**
  * The top level of a discipline.
@@ -233,6 +234,36 @@ export async function navTree(db: Db) {
     })
     .from(prepItems)
     .orderBy(prepItems.position, prepItems.title);
+}
+
+/**
+ * One discipline's pages, flat and in sidebar order, with just enough to decide which are
+ * questions and to list and search them. Bodies and `content` stay behind: a worked DSA page
+ * carries its whole solution in `content`, and only whether it is a reader is needed here.
+ */
+export async function questionRows(db: Db, kind: PrepKind): Promise<QuestionSourceRow[]> {
+  const rows = await db
+    .select({
+      id: prepItems.id,
+      parentId: prepItems.parentId,
+      kind: prepItems.kind,
+      slug: prepItems.slug,
+      title: prepItems.title,
+      prompt: prepItems.prompt,
+      topics: prepItems.topics,
+      companies: prepItems.companies,
+      difficulty: prepItems.difficulty,
+      status: prepItems.status,
+      frequency: prepItems.frequency,
+      isReader: sql<number>`(json_extract(${prepItems.content}, '$.pdf') IS NOT NULL
+        OR json_extract(${prepItems.content}, '$.drive') IS NOT NULL
+        OR json_extract(${prepItems.content}, '$.github') IS NOT NULL
+        OR json_extract(${prepItems.content}, '$.embed') IS NOT NULL)`,
+    })
+    .from(prepItems)
+    .where(eq(prepItems.kind, kind))
+    .orderBy(prepItems.position, prepItems.title);
+  return rows.map((r) => ({ ...r, isReader: Boolean(r.isReader) }));
 }
 
 export async function resourcesFor(db: Db, prepItemId: string) {
