@@ -2,7 +2,8 @@
 
 import { getDb } from "@/db";
 import { REVIEW_RATINGS, type ReviewRating } from "@/db/schema";
-import { cardDetail, rateCard } from "@/server/service/revision";
+import { findDeck } from "@/server/domain/revision";
+import { cardDetail, loadDecks, rateCard, resetDeckProgress } from "@/server/service/revision";
 
 /**
  * One card's content, fetched when it is about to be shown rather than with the deck.
@@ -24,4 +25,12 @@ export async function rateRevisionCard(id: string, rating: string) {
   }
   const next = await rateCard(getDb(), id, rating as ReviewRating);
   return { dueAt: next.dueAt.getTime(), intervalDays: next.intervalDays };
+}
+
+/** Forget every card in a deck (the "Everything" deck resets all progress). Cannot be undone. */
+export async function resetRevisionProgress(deckId: string[]) {
+  const db = getDb();
+  const deck = findDeck(await loadDecks(db), deckId);
+  if (!deck) throw new Error(`Unknown deck: ${deckId.join("/")}`);
+  await resetDeckProgress(db, deck);
 }

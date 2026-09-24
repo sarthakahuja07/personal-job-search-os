@@ -19,6 +19,8 @@ import { allPagePaths, codeFilesFor, getById } from "@/server/repository/prep-re
 import {
   allReviews,
   companyIndexPages,
+  deleteAllReviews,
+  deleteReviews,
   reviewFor,
   saveReview,
 } from "@/server/repository/revision-repo";
@@ -113,6 +115,23 @@ export async function rateCard(db: Db, id: string, rating: ReviewRating, now = n
     lastReviewedAt: now,
   });
   return next;
+}
+
+/**
+ * Forget every card in a deck: deletes their review state so they go back to "new".
+ *
+ * The "Everything" deck holds every card, so resetting it is how all progress gets reset -- no
+ * separate global-reset codepath to keep in sync with what counts as a card.
+ */
+export async function resetDeckProgress(db: Db, deck: Deck): Promise<void> {
+  if (deck.id.length === 1 && deck.id[0] === "all") {
+    await deleteAllReviews(db);
+    return;
+  }
+  await deleteReviews(
+    db,
+    deck.cards.map((c) => c.id),
+  );
 }
 
 /**

@@ -6,6 +6,8 @@ import type { PrepReview } from "@/db/schema";
 import type { Deck } from "@/server/domain/revision";
 import { deckStats, loadDecks, reviewMap, type DeckStats } from "@/server/service/revision";
 
+import { ResetDeckButton } from "./reset-deck-button";
+
 export const dynamic = "force-dynamic";
 
 function StatLine({ stats }: { stats: DeckStats }) {
@@ -30,7 +32,7 @@ function DeckCard({ deck, stats }: { deck: Deck; stats: DeckStats }) {
       <div className="mt-2.5">
         <StatLine stats={stats} />
       </div>
-      <div className="mt-auto flex flex-wrap gap-2 pt-4">
+      <div className="mt-auto flex flex-wrap items-center gap-2 pt-4">
         {empty ? (
           <span className="text-xs text-ink-faint">No questions in this deck yet.</span>
         ) : (
@@ -48,6 +50,11 @@ function DeckCard({ deck, stats }: { deck: Deck; stats: DeckStats }) {
               >
                 Due + new ({stats.due + stats.fresh})
               </Link>
+            )}
+            {stats.learned > 0 && (
+              <span className="ml-auto">
+                <ResetDeckButton deckId={deck.id} deckTitle={deck.title} />
+              </span>
             )}
           </>
         )}

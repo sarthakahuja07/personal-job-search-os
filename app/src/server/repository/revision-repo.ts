@@ -12,6 +12,15 @@ import { and, eq, inArray, isNotNull } from "drizzle-orm";
 import type { Db } from "@/db";
 import { prepItems, prepReviews, type ReviewRating } from "@/db/schema";
 
+/** D1 allows 100 bound parameters per query. */
+const ID_CHUNK = 90;
+
+function chunk<T>(items: T[], size: number): T[][] {
+  const out: T[][] = [];
+  for (let i = 0; i < items.length; i += size) out.push(items.slice(i, i + size));
+  return out;
+}
+
 export async function allReviews(db: Db) {
   return db.select().from(prepReviews);
 }
@@ -43,6 +52,18 @@ export async function saveReview(
     .insert(prepReviews)
     .values(row)
     .onConflictDoUpdate({ target: prepReviews.prepItemId, set: patch });
+}
+
+/** Wipe review state for a set of cards -- what a deck reset deletes. Chunked for the same reason reads are not. */
+export async function deleteReviews(db: Db, prepItemIds: string[]): Promise<void> {
+  for (const group of chunk(prepItemIds, ID_CHUNK)) {
+    await db.delete(prepReviews).where(inArray(prepReviews.prepItemId, group));
+  }
+}
+
+/** Wipe every card's review state. What "reset all progress" deletes. */
+export async function deleteAllReviews(db: Db): Promise<void> {
+  await db.delete(prepReviews);
 }
 
 /**
