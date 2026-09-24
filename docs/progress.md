@@ -40,7 +40,7 @@ are loaded and reachable only from behind Access.
 | Milestone | State |
 |---|---|
 | Schema (`prep_items`) | done — one table, `kind` discriminator, JSON `content` per discipline |
-| DSA | in progress — 20 seeded starter questions replaced (2026-09-22) with a 14-pattern nested folder taxonomy (100 pattern/subpattern folders, each with a Notes page). 29 Confluent-tagged solution pages published (all of Confluent's DSA question bank except one source-doesn't-name-a-problem entry), linked from `/prep/company/confluent/dsa`. A DSA question with `content.problemSummary` set now renders through its own template (`PrepPage`'s `isDsaSolution` branch) instead of the generic editor: Problem Summary / Example / Brute Force / Optimized Solution as explicit 20px headings, each with its own `SolutionCode` panel embedded between its steps and its complexity, both a Time and a Space complexity field with an explanation of *why*. Every "compute a value" LeetCode problem is wrapped in `class Solution` with the exact official method signature (no `ostream`/`void`-print solutions — even the two file-streaming questions return via a value or a callback, never write to `cout` from inside the algorithm); "design a data structure" problems keep their real LeetCode class name (`LRUCache`, `MyQueue`, `TimeMap`, ...). Sidebar shows an E/M/H difficulty badge for this folder instead of the ask-rate score, and the DSA code panel defaults to expanded with a LeetCode/source button in the header. |
+| DSA | in progress — 20 seeded starter questions replaced (2026-09-22) with a 14-pattern nested folder taxonomy (100 pattern/subpattern folders, each with a Notes page). 29 Confluent-tagged solution pages published (all of Confluent's DSA question bank except one source-doesn't-name-a-problem entry), linked from `/prep/company/confluent/dsa`. A DSA question with `content.problemSummary` set renders through its own component (`components/dsa-solution.tsx`, rendered from `PrepPage`'s `isDsaSolution` branch) instead of the generic editor: Problem Summary / Example / an auto-generated Complexity-at-a-Glance table / Brute Force / Optimized Solution (or N approaches), each solution self-contained in a tagged card with its own `SolutionCode` panel between its steps and its complexity, and Time/Space Complexity in their own fact boxes with a Big-O headline plus an explanation of *why* (see "A DSA solution page was structure with no hierarchy, and now is", below). Every "compute a value" LeetCode problem is wrapped in `class Solution` with the exact official method signature (no `ostream`/`void`-print solutions — even the two file-streaming questions return via a value or a callback, never write to `cout` from inside the algorithm); "design a data structure" problems keep their real LeetCode class name (`LRUCache`, `MyQueue`, `TimeMap`, ...). Sidebar shows an E/M/H difficulty badge for this folder instead of the ask-rate score, and the DSA code panel defaults to expanded with a LeetCode/source button in the header. |
 | System Design | done — 10 seeded problems with requirements / architecture / trade-offs |
 | Behavioral | done — 8 seeded themes with situation / action / outcome |
 | Progress tracking | done — four states, `revisit` deliberately not counted as done |
@@ -590,6 +590,45 @@ both still publish. The refusal names the existing page, its path, and the three
 
 Verified on the live board, and two duplicate pages created by that testing were removed
 afterwards -- exactly the mess the feature exists to prevent.
+
+## A DSA solution page was one long scroll of prose, and now has structure
+
+The `isDsaSolution` template rendered every field correctly, but flatly -- one `Markdown` call
+after another, so "Brute Force" and "Optimized" were distinguishable only by reading the heading
+text, and a Time Complexity explanation looked exactly like the paragraph above it. Sarthak's own
+description: "everything looks like a pile of text."
+
+Pulled the whole template out of the catch-all prep route into its own component,
+`components/dsa-solution.tsx`:
+
+- **Each solution is a card.** Brute Force / each N-approach is tagged with a neutral badge,
+  Optimized with the `fresh` (green) tone the rest of the app already uses for "the good state" --
+  so which answer is the one to remember is visible without reading either.
+- **Complexity got its own fact box**, not another paragraph: a large monospace Big-O headline
+  above the full explanation, extracted from the author's own text rather than hand-authored a
+  second time -- which is where the actual bug was.
+- **A naive "first `O(...)` in the text" regex is wrong about a third of the time.** Authors
+  routinely mention an incidental per-step cost before stating the real answer (`"...each does
+  O(1) work apart from its recursive calls. **Time: O(n x target)**."`) -- so "first occurrence"
+  picked the aside, not the answer, on Subset Sum's DP approaches. Fixed by preferring the first
+  **bolded** `O(...)` (what authors consistently use to mark the actual headline) and only
+  falling back to an unbolded match when nothing in the field is bolded at all. Caught by
+  actually reading the extracted output against the source text field-by-field, not by the code
+  looking reasonable.
+- **A "Complexity at a Glance" table is now generated on every worked answer** with two or more
+  approaches (brute force + optimized, or an `approaches[]` array) -- Approach / Time / Space,
+  same headline extraction -- with no per-page authoring needed and no change to
+  `publish_dsa_question` or the content schema.
+
+Verified against real published pages (`valid-sudoku`: brute force + optimized; `subset-sum`:
+three DP approaches) by seeding local D1 from a remote export and screenshotting with Playwright,
+since the app is Cloudflare-Access-gated and there's no local content to render against
+otherwise.
+
+Deliberately unchanged: the underlying `problemSummary` / `intuition` / `steps` / complexity
+*text* on every existing page. Sarthak asked for the presentation to change, not the content --
+rewriting 29+ published pages' prose into a different structure is a separate, much larger piece
+of work he hasn't asked for yet.
 
 ## Known gaps
 
