@@ -80,7 +80,7 @@ export function RichEditor({
       attributes: {
         class: cx(
           "prose-page min-h-[8rem] outline-none",
-          "text-[14.5px] leading-relaxed text-ink-dim",
+          "text-[14px] leading-relaxed text-ink-dim",
         ),
       },
     },

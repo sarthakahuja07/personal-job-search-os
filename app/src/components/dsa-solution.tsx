@@ -18,7 +18,7 @@ import type { PrepContent } from "@/db/schema";
  *  instead of one more heading buried in the prose beneath them. */
 function DsaHeading({ children }: { children: React.ReactNode }) {
   return (
-    <h2 className="mb-3 mt-10 border-b border-line pb-2 text-[21px] font-bold text-ink first:mt-0">
+    <h2 className="mb-3 mt-10 border-b border-line pb-2 text-[19.5px] font-bold text-ink first:mt-0">
       {children}
     </h2>
   );
@@ -29,7 +29,7 @@ function DsaHeading({ children }: { children: React.ReactNode }) {
  *  before the paragraph beneath it, deliberately still one step down from a chapter's DsaHeading. */
 function DsaEyebrow({ children }: { children: React.ReactNode }) {
   return (
-    <h3 className="mb-2 mt-5 border-l-2 border-accent pl-2.5 text-[13.5px] font-bold uppercase tracking-[0.04em] text-ink first:mt-0">
+    <h3 className="mb-2 mt-5 border-l-2 border-accent pl-2.5 text-[13px] font-bold uppercase tracking-[0.04em] text-ink first:mt-0">
       {children}
     </h3>
   );
@@ -74,8 +74,8 @@ function ComplexityFact({ label, text }: { label: string; text: string }) {
   const headline = headlineComplexity(text);
   return (
     <div className="rounded-card border border-line bg-surface-2 px-3.5 py-3">
-      <p className="text-[11.5px] font-bold uppercase tracking-[0.05em] text-ink-dim">{label}</p>
-      {headline && <p className="mt-1 font-mono text-[18px] font-bold text-ink">{headline}</p>}
+      <p className="text-[11px] font-bold uppercase tracking-[0.05em] text-ink-dim">{label}</p>
+      {headline && <p className="mt-1 font-mono text-[17px] font-bold text-ink">{headline}</p>}
       <div className={cx(headline ? "mt-1.5" : "mt-1", "[&_p]:my-0")}>
         <Markdown tone="ink">{text}</Markdown>
       </div>
@@ -94,7 +94,7 @@ function ComparisonTable({ rows }: { rows: ComparisonRow[] }) {
     <>
       <DsaHeading>Complexity at a Glance</DsaHeading>
       <div className="overflow-x-auto rounded-card border border-line">
-        <table className="w-full border-collapse text-left text-[13.5px]">
+        <table className="w-full border-collapse text-left text-[13px]">
           <thead className="bg-surface-2">
             <tr>
               <th className="px-3 py-2 font-medium text-ink">Approach</th>
@@ -108,10 +108,10 @@ function ComparisonTable({ rows }: { rows: ComparisonRow[] }) {
                 <td className="px-3 py-2.5 align-top">
                   <Badge tone={r.tone}>{r.label}</Badge>
                 </td>
-                <td className="px-3 py-2.5 align-top font-mono text-[14px] font-semibold text-ink">
+                <td className="px-3 py-2.5 align-top font-mono text-[13px] font-semibold text-ink">
                   {headlineComplexity(r.time) ?? "—"}
                 </td>
-                <td className="px-3 py-2.5 align-top font-mono text-[14px] font-semibold text-ink">
+                <td className="px-3 py-2.5 align-top font-mono text-[13px] font-semibold text-ink">
                   {headlineComplexity(r.space) ?? "—"}
                 </td>
               </tr>
@@ -149,7 +149,7 @@ function SolutionBlock({
     <Card className="mb-8 px-5 py-5">
       <div className="mb-4 flex flex-wrap items-center gap-2">
         {tag && <Badge tone={tone}>{tag}</Badge>}
-        <h2 className="text-[18px] font-bold text-ink">{title}</h2>
+        <h2 className="text-[17px] font-bold text-ink">{title}</h2>
       </div>
 
       <DsaEyebrow>Intuition</DsaEyebrow>
