@@ -219,6 +219,19 @@ body {
   margin: 0.75rem 0;
 }
 
+/*
+ * "Working Steps" content on a DSA solution mixes two kinds of paragraph: a step header
+ * authored as a fully-bold line ("**Step 1 — Insert every function**") and the plain-text lines
+ * explaining it underneath. Indenting only the latter is what makes a step read as a header with
+ * its own body rather than a run of same-weight paragraphs. Scoped to .step-list's own direct
+ * markdown children (not `> div > p`'s descendants) so a paragraph nested inside a bulleted
+ * "**Step 1:** ..." list -- the other convention some solutions use -- isn't double-indented on
+ * top of the list's own padding.
+ */
+.step-list > div > p:not(:has(> strong:only-child)) {
+  padding-left: 1rem;
+}
+
 /* The placeholder, shown only on a genuinely empty document. */
 .prose-page p.is-editor-empty:first-child::before {
   content: attr(data-placeholder);

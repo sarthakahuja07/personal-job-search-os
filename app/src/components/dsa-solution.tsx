@@ -156,7 +156,9 @@ function SolutionBlock({
       <Markdown size="md" tone="ink">{intuition}</Markdown>
 
       <DsaEyebrow>Working Steps</DsaEyebrow>
-      <Markdown size="md" tone="ink">{steps}</Markdown>
+      <div className="step-list">
+        <Markdown size="md" tone="ink">{steps}</Markdown>
+      </div>
 
       <div className="mt-3">
         <SolutionCode file={file} />
