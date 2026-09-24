@@ -120,7 +120,7 @@ export function Markdown({
             }
             return (
               <code
-                className="rounded border border-line bg-surface-2 px-1 py-0.5 font-mono text-[12px] text-ink"
+                className="rounded bg-code/12 px-1 py-0.5 font-mono text-[12px] text-code"
                 {...rest}
               >
                 {children}

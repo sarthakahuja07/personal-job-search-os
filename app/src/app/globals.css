@@ -47,6 +47,11 @@
   --color-danger: #f0808f;
   --color-danger-soft: #38202a;
 
+  /* Inline code's own colour -- kept apart from danger (pink-red) and warn (amber) so a
+     variable name reads as "code", never as an error or a warning. This is the one Notion
+     borrows from its own inline-code convention: coloured text on a faint tint, no border. */
+  --color-code: #d97757;
+
   --font-sans: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
     "Helvetica Neue", Arial, sans-serif;
   --font-mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
@@ -175,11 +180,10 @@ body {
 .prose-page :where(code) {
   font-family: var(--font-mono, ui-monospace, monospace);
   font-size: 12px;
-  background: var(--color-surface-2);
-  border: 1px solid var(--color-line);
+  background: color-mix(in srgb, var(--color-code) 14%, transparent);
   border-radius: 4px;
   padding: 0.05rem 0.25rem;
-  color: var(--color-ink);
+  color: var(--color-code);
 }
 .prose-page :where(pre) {
   background: var(--color-surface-2);
@@ -195,6 +199,7 @@ body {
   padding: 0;
   font-size: 12.5px;
   line-height: 1.6;
+  color: var(--color-ink-dim);
 }
 .prose-page :where(hr) {
   border: 0;
