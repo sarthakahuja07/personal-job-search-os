@@ -556,9 +556,10 @@ export async function searchPages(db: Db, query: string, kind?: PrepKind, limit 
 }
 
 /** Every page, flat, for building slash paths without a query per level. Carries `status` too,
- *  so a company index can show a resolved question as done without a second query per row. */
+ *  so a company index can show a resolved question as done without a second query per row.
+ *  Carries `isReader` too, so callers can apply `isQuestion` without a second query per row. */
 export async function allPagePaths(db: Db) {
-  return db
+  const rows = await db
     .select({
       id: prepItems.id,
       kind: prepItems.kind,
@@ -567,7 +568,12 @@ export async function allPagePaths(db: Db) {
       parentId: prepItems.parentId,
       status: prepItems.status,
       difficulty: prepItems.difficulty,
+      isReader: sql<number>`(json_extract(${prepItems.content}, '$.pdf') IS NOT NULL
+        OR json_extract(${prepItems.content}, '$.drive') IS NOT NULL
+        OR json_extract(${prepItems.content}, '$.github') IS NOT NULL
+        OR json_extract(${prepItems.content}, '$.embed') IS NOT NULL)`,
     })
     .from(prepItems)
     .orderBy(asc(prepItems.kind), asc(prepItems.position), asc(prepItems.title));
+  return rows.map((r) => ({ ...r, isReader: Boolean(r.isReader) }));
 }

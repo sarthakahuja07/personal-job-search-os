@@ -28,11 +28,13 @@ const rows: TreeRow[] = [
   { id: "hld-q", kind: "system_design", slug: "questions", title: "Questions", parentId: "hld" },
   { id: "insta", kind: "system_design", slug: "instagram", title: "Instagram", parentId: "hld-q" },
   { id: "rl", kind: "system_design", slug: "rate-limiter", title: "Rate Limiter", parentId: "hld-q" },
-  // LLD
+  // LLD: questions sit directly under the root, beside a "resources" folder of study notes --
+  // there is no "lld/questions" subfolder the way HLD has one.
   { id: "lld", kind: "system_design", slug: "lld", title: "LLD", parentId: null },
-  { id: "lld-q", kind: "system_design", slug: "questions", title: "Questions", parentId: "lld" },
-  { id: "parking", kind: "system_design", slug: "parking-lot", title: "Parking Lot", parentId: "lld-q" },
-  { id: "lld-rl", kind: "system_design", slug: "rate-limiter", title: "Rate Limiter", parentId: "lld-q" },
+  { id: "parking", kind: "system_design", slug: "parking-lot", title: "Parking Lot", parentId: "lld" },
+  { id: "lld-rl", kind: "system_design", slug: "rate-limiter", title: "Rate Limiter", parentId: "lld" },
+  { id: "lld-resources", kind: "system_design", slug: "resources", title: "Resources", parentId: "lld" },
+  { id: "solid", kind: "system_design", slug: "solid", title: "SOLID", parentId: "lld-resources" },
   // Not a question at all.
   { id: "story", kind: "behavioral", slug: "conflict", title: "Conflict", parentId: null },
 ];
@@ -44,8 +46,11 @@ describe("questionCards", () => {
     expect(cards.dsa.map((c) => c.id).sort()).toEqual(["3sum", "lru", "two-sum"]);
   });
 
-  it("takes only what is under hld/questions and lld/questions", () => {
+  it("takes only what is under hld/questions", () => {
     expect(cards.hld.map((c) => c.id).sort()).toEqual(["insta", "rl"]);
+  });
+
+  it("takes LLD questions beside resources, but not inside resources", () => {
     expect(cards.lld.map((c) => c.id).sort()).toEqual(["lld-rl", "parking"]);
   });
 

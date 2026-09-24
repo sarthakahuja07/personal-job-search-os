@@ -11,24 +11,12 @@
  */
 
 import type { PrepDifficulty, PrepKind, ReviewRating } from "@/db/schema";
+import { isQuestion } from "./prep-questions";
 import { DISCIPLINES, DISCIPLINE_TITLE, type Discipline } from "./company";
 
 // ---------------------------------------------------------------------------
 // Decks
 // ---------------------------------------------------------------------------
-
-/**
- * Where each discipline's questions live.
- *
- * Only these folders, not the whole discipline: DSA pattern folders each carry a "Notes" page,
- * and HLD keeps concept pages (caching, RDBMS) beside its questions. Neither is a question, and
- * a flashcard that says "Notes" on the front is noise.
- */
-export const QUESTION_ROOTS: Record<Discipline, { kind: PrepKind; prefix: string }> = {
-  dsa: { kind: "dsa", prefix: "" },
-  hld: { kind: "system_design", prefix: "hld/questions/" },
-  lld: { kind: "system_design", prefix: "lld/questions/" },
-};
 
 export type TreeRow = {
   id: string;
@@ -37,6 +25,7 @@ export type TreeRow = {
   title: string;
   parentId: string | null;
   difficulty?: PrepDifficulty | null;
+  isReader?: boolean;
 };
 
 export type Card = {
@@ -67,14 +56,14 @@ const SEGMENT: Record<PrepKind, string> = {
   company: "company",
 };
 
-/** Whether a DSA leaf is a question rather than a pattern folder's notes page. */
-const isNotesPage = (row: TreeRow) =>
-  row.slug === "notes" || row.title.trim().toLowerCase() === "notes";
-
 /**
  * Every question card, by discipline.
  *
- * A question is a *leaf*: a page with children is a folder, whatever it is called.
+ * "Is this a question" is `isQuestion` from `prep-questions.ts` -- the same rule the prep
+ * sidebar and search use, so a flashcard deck and the sidebar's question count never disagree.
+ * DSA nests directly under its pattern folders; HLD keeps questions under `hld/questions`; LLD's
+ * questions sit beside its `resources` folder rather than under a `lld/questions` folder of
+ * their own.
  */
 export function questionCards(
   rows: TreeRow[],
@@ -84,20 +73,25 @@ export function questionCards(
   const out: Record<Discipline, Card[]> = { dsa: [], hld: [], lld: [] };
 
   for (const row of rows) {
-    if (parents.has(row.id)) continue;
     const path = paths.get(row.id) ?? row.slug;
-    for (const discipline of DISCIPLINES) {
-      const root = QUESTION_ROOTS[discipline];
-      if (row.kind !== root.kind || !path.startsWith(root.prefix)) continue;
-      if (discipline === "dsa" && isNotesPage(row)) continue;
-      out[discipline].push({
-        id: row.id,
-        title: row.title,
-        discipline,
-        difficulty: row.difficulty ?? null,
-        href: `${SEGMENT[row.kind]}/${path}`,
-      });
+    const question = { ...row, difficulty: row.difficulty ?? null, isReader: row.isReader ?? false };
+    if (!isQuestion(question, path, parents.has(row.id))) continue;
+
+    let discipline: Discipline | undefined;
+    if (row.kind === "dsa") discipline = "dsa";
+    else if (row.kind === "system_design") {
+      if (path.startsWith("hld/")) discipline = "hld";
+      else if (path.startsWith("lld/")) discipline = "lld";
     }
+    if (!discipline) continue;
+
+    out[discipline].push({
+      id: row.id,
+      title: row.title,
+      discipline,
+      difficulty: row.difficulty ?? null,
+      href: `${SEGMENT[row.kind]}/${path}`,
+    });
   }
   for (const d of DISCIPLINES) out[d].sort((a, b) => a.title.localeCompare(b.title));
   return out;

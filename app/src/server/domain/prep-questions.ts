@@ -55,7 +55,11 @@ export type Question = {
  * `lld/resources` are notes *about* design, not designs to practise. Only `hld/questions` and
  * the pages beside LLD's resources are questions there.
  */
-export function isQuestion(row: QuestionSourceRow, path: string, hasChildren: boolean): boolean {
+export function isQuestion(
+  row: Pick<QuestionSourceRow, "slug" | "isReader" | "difficulty" | "kind">,
+  path: string,
+  hasChildren: boolean,
+): boolean {
   if (row.slug === "notes" || row.isReader) return false;
   if (hasChildren && !row.difficulty) return false;
   if (row.kind === "company" || row.kind === "concept") return false;
