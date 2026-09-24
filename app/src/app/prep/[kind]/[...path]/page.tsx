@@ -25,11 +25,14 @@ import {
   ancestorsOf,
   childrenOf,
   codeFilesFor,
+  questionRows,
   resolvePath,
   resourcesFor,
   updateProgress,
 } from "@/server/repository/prep-repo";
 import { liveIndexBody } from "@/server/service/company";
+import { collectQuestions } from "@/server/domain/prep-questions";
+import { QuestionBrowser } from "@/components/question-browser";
 
 export const dynamic = "force-dynamic";
 
@@ -104,10 +107,10 @@ export default async function PrepPage({
   searchParams,
 }: {
   params: Promise<{ kind: string; path: string[] }>;
-  searchParams: Promise<{ doc?: string }>;
+  searchParams: Promise<{ doc?: string; q?: string }>;
 }) {
   const { kind: segment, path } = await params;
-  const { doc } = await searchParams;
+  const { doc, q } = await searchParams;
   const meta = kindBySegment(segment);
   if (!meta) notFound();
 
@@ -130,6 +133,19 @@ export default async function PrepPage({
   // is not practised and a folder is not either, but only a folder has a list -- conflating
   // them rendered an empty "0 pages" section on every book.
   const isPractisable = !hasChildren && !isReader;
+
+  /*
+    A folder lists every question inside it at any depth, searchable -- HLD's questions sit a
+    level down in `hld/questions`, DSA's under sub-pattern folders. The direct-children list
+    below then shows only what is *not* a question (sub-folders, Notes, resources), so nothing
+    is listed twice. Company folders keep their plain listing: their contents are documents.
+  */
+  const folderQuestions =
+    hasChildren && meta.kind !== "company"
+      ? collectQuestions(await questionRows(db, meta.kind), segment, path.join("/"))
+      : [];
+  const questionIds = new Set(folderQuestions.map((fq) => fq.id));
+  const otherKids = kids.filter((k) => !questionIds.has(k.id));
   /*
     A fully worked DSA answer -- problem, brute force, optimized -- gets its own template
     instead of the generic editor, because its code has to sit *between* a section's steps and
@@ -229,6 +245,15 @@ export default async function PrepPage({
           </>
         }
       />
+
+      {/* A folder's questions come before its own notes: they are what the folder is for. */}
+      {folderQuestions.length > 0 && (
+        <QuestionBrowser
+          questions={folderQuestions}
+          initialQuery={q ?? ""}
+          hasDifficulty={meta.hasDifficulty}
+        />
+      )}
 
       {/* Progress first. It is the question you answer on arriving at a page and again on
           leaving it, and it used to sit below the notes where you had to scroll past your own
@@ -334,13 +359,15 @@ export default async function PrepPage({
       </div>
       )}
 
-      {hasChildren && (
+      {otherKids.length > 0 && (
         <section className="mb-6">
           <SectionTitle>
-            {kids.length} page{kids.length === 1 ? "" : "s"}
+            {folderQuestions.length > 0
+              ? "Also in this folder"
+              : `${otherKids.length} page${otherKids.length === 1 ? "" : "s"}`}
           </SectionTitle>
           <ul className="space-y-1.5">
-            {kids.map((k) => (
+            {otherKids.map((k) => (
               <li key={k.id}>
                 <Link
                   href={hrefFor(k.slug)}

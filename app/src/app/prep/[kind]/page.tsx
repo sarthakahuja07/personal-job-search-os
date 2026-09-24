@@ -13,7 +13,9 @@ import {
   summarise,
   topicCounts,
 } from "@/server/domain/prep";
-import { listByKind } from "@/server/repository/prep-repo";
+import { collectQuestions } from "@/server/domain/prep-questions";
+import { listByKind, questionRows } from "@/server/repository/prep-repo";
+import { QuestionBrowser } from "@/components/question-browser";
 
 export const dynamic = "force-dynamic";
 
@@ -36,6 +38,50 @@ export default async function PrepListPage({
   if (!meta) notFound();
 
   const filters = await searchParams;
+
+  /*
+    A discipline opens on every question in it, however deep it is filed -- DSA nests its
+    questions two and three folders down under patterns, and a list of fourteen pattern folders
+    is a table of contents, not a list of questions. Companies are the exception: their top
+    level *is* what you came for, one folder per company.
+  */
+  if (meta.kind !== "company") {
+    const questions = collectQuestions(await questionRows(getDb(), meta.kind), segment);
+    const progress = summarise(questions);
+    return (
+      <div>
+        <PageHeader
+          title={meta.title}
+          subtitle={
+            <>
+              {meta.tagline}
+              <span className="mt-1 block">
+                <span className="tnum text-ink">{progress.done}</span> of{" "}
+                <span className="tnum text-ink">{progress.total}</span> done
+                {progress.revisit > 0 && (
+                  <>
+                    {" · "}
+                    <span className="tnum text-warn">{progress.revisit}</span> to revisit
+                  </>
+                )}
+              </span>
+            </>
+          }
+          actions={
+            <Link href="/prep" className="text-[13px] text-ink-dim transition hover:text-ink">
+              ← All prep
+            </Link>
+          }
+        />
+        <QuestionBrowser
+          questions={questions}
+          initialQuery={filters.q ?? ""}
+          hasDifficulty={meta.hasDifficulty}
+        />
+      </div>
+    );
+  }
+
   const all = await listByKind(getDb(), meta.kind);
 
   // Filtering happens here rather than in SQL: topics are a JSON array, and at a few dozen rows
