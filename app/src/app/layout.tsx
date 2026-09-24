@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Inter } from "next/font/google";
 
 import { MobileNav, Sidebar } from "@/components/sidebar";
 import { PrepSearch } from "@/components/prep-search";
@@ -20,6 +21,12 @@ import { KINDS } from "@/server/domain/prep";
 import type { NavNode } from "@/components/nav-tree";
 
 import "./globals.css";
+
+// System sans (San Francisco / Segoe UI / Roboto) renders noticeably thinner and tighter than
+// Notion's typeface at the sizes this app uses. Inter is a free, self-hosted (built at compile
+// time, no runtime request) drop-in that reads heavier and more open at the same weight, which is
+// most of what closes the gap without hand-tuning every font-weight and letter-spacing value.
+const inter = Inter({ subsets: ["latin"], variable: "--font-inter", display: "swap" });
 
 export const metadata: Metadata = {
   title: "Job Search OS",
@@ -108,7 +115,7 @@ export default async function RootLayout({
   }
 
   return (
-    <html lang="en">
+    <html lang="en" className={inter.variable}>
       <body className="min-h-dvh bg-canvas text-ink">
         <PrepSearch />
         <div className="flex min-h-dvh">

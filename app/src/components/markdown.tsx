@@ -30,7 +30,7 @@ function dom<T extends { node?: unknown }>(props: T): Omit<T, "node"> {
   return rest;
 }
 
-const SIZE_CLASS = { sm: "text-[13.5px]", md: "text-[14.5px]" } as const;
+const SIZE_CLASS = { sm: "text-[14.5px]", md: "text-[16px]" } as const;
 const TONE_CLASS = { dim: "text-ink-dim", ink: "text-ink" } as const;
 
 export function Markdown({
@@ -46,14 +46,14 @@ export function Markdown({
   tone?: keyof typeof TONE_CLASS;
 }) {
   return (
-    <div className={cx(SIZE_CLASS[size], "leading-relaxed", TONE_CLASS[tone])}>
+    <div className={cx(SIZE_CLASS[size], "leading-relaxed tracking-[0.005em]", TONE_CLASS[tone])}>
       <ReactMarkdown
         remarkPlugins={[remarkGfm]}
         components={{
-          h1: (p) => <h1 className="mb-3 mt-6 text-[19px] font-semibold text-ink" {...dom(p)} />,
-          h2: (p) => <h2 className="mb-2 mt-6 text-[16px] font-semibold text-ink" {...dom(p)} />,
-          h3: (p) => <h3 className="mb-1.5 mt-5 text-[14px] font-semibold text-ink" {...dom(p)} />,
-          h4: (p) => <h4 className="mb-1.5 mt-4 text-[13px] font-semibold text-ink" {...dom(p)} />,
+          h1: (p) => <h1 className="mb-3 mt-6 text-[21px] font-bold text-ink" {...dom(p)} />,
+          h2: (p) => <h2 className="mb-2 mt-6 text-[18px] font-bold text-ink" {...dom(p)} />,
+          h3: (p) => <h3 className="mb-1.5 mt-5 text-[15.5px] font-semibold text-ink" {...dom(p)} />,
+          h4: (p) => <h4 className="mb-1.5 mt-4 text-[14px] font-semibold text-ink" {...dom(p)} />,
           p: (p) => <p className="my-2.5" {...dom(p)} />,
           ul: (p) => <ul className="my-2.5 list-disc space-y-1 pl-5" {...dom(p)} />,
           ol: (p) => <ol className="my-2.5 list-decimal space-y-1 pl-5" {...dom(p)} />,
@@ -111,7 +111,7 @@ export function Markdown({
             if (fenced) {
               return (
                 <code
-                  className="block font-mono text-[12.5px] leading-relaxed text-ink-dim"
+                  className="block font-mono text-[13.5px] leading-relaxed text-ink-dim"
                   {...rest}
                 >
                   {children}
@@ -120,7 +120,7 @@ export function Markdown({
             }
             return (
               <code
-                className="rounded bg-code/12 px-1 py-0.5 font-mono text-[12px] text-code"
+                className="rounded bg-code/12 px-1 py-0.5 font-mono text-[13px] text-code"
                 {...rest}
               >
                 {children}
@@ -154,7 +154,7 @@ export function Markdown({
           },
           table: (p) => (
             <div className="my-3 overflow-x-auto rounded-card border border-line">
-              <table className="w-full border-collapse text-[12.5px]" {...dom(p)} />
+              <table className="w-full border-collapse text-[13.5px]" {...dom(p)} />
             </div>
           ),
           thead: (p) => <thead className="bg-surface-2" {...dom(p)} />,
