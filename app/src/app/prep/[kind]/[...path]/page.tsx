@@ -7,7 +7,7 @@ import { GithubNotes } from "@/components/github-notes";
 import { PageGrading } from "@/components/page-grading";
 import { BookReader, SiteEmbed } from "@/components/page-readers";
 import { CodeWorkspace } from "@/components/code-workspace";
-import { SolutionCode } from "@/components/solution-code";
+import { DsaSolution } from "@/components/dsa-solution";
 import { PageResources } from "@/components/page-resources";
 import { Badge, Button, Card, PageHeader, SectionTitle, cx, inputStyles } from "@/components/ui";
 import { getDb } from "@/db";
@@ -47,18 +47,6 @@ function isLeetCodeUrl(url: string): boolean {
   } catch {
     return false;
   }
-}
-
-/** A top-level section of a worked DSA answer -- deliberately bigger than the Markdown
- *  renderer's own headings, so "Brute Force" and "Optimized" read as the page's real structure
- *  rather than blend into whatever heading level the prose inside them happens to use. */
-function DsaHeading({ children }: { children: React.ReactNode }) {
-  return <h2 className="mb-3 mt-8 text-[20px] font-bold text-ink first:mt-0">{children}</h2>;
-}
-
-/** "Intuition" / "Working Steps" / "Time Complexity" / "Space Complexity" -- one level down. */
-function DsaSubheading({ children }: { children: React.ReactNode }) {
-  return <h3 className="mb-1.5 mt-4 text-[14px] font-semibold text-ink">{children}</h3>;
 }
 
 function revalidateTree(segment: string, path: string[]) {
@@ -163,8 +151,6 @@ export default async function PrepPage({
     a second time.
   */
   const showsCode = isPractisable && meta.kind !== "behavioral" && !isDsaSolution;
-  const bruteForceFile = codeFiles.find((f) => f.path === "brute_force.cpp");
-  const optimizedFile = codeFiles.find((f) => f.path === "optimized.cpp");
 
   /*
     Some pages are rendered, not edited.
@@ -303,84 +289,11 @@ export default async function PrepPage({
         />
       )}
 
-      {/* A worked DSA answer: problem, then brute force (wherever applicable) and optimized,
-          each with its own code sitting right after its steps -- not bundled into one panel a
-          scroll away from the explanation it belongs to. */}
-      {isDsaSolution && (
-        <div className="mb-6">
-          <DsaHeading>Problem Summary</DsaHeading>
-          <Markdown>{content.problemSummary ?? ""}</Markdown>
-
-          {content.examples && (
-            <>
-              <DsaHeading>Example</DsaHeading>
-              <Markdown>{content.examples}</Markdown>
-            </>
-          )}
-
-          {content.approaches && content.approaches.length > 0 ? (
-            // A question whose real answer is "N genuinely different approaches" (e.g. four
-            // pivot strategies for Quicksort) rather than one brute force and one optimized
-            // solution -- each gets the same intuition/steps/code/complexity shape in turn.
-            content.approaches.map((approach, i) => (
-              <div key={i}>
-                <DsaHeading>{approach.title}</DsaHeading>
-                <DsaSubheading>Intuition</DsaSubheading>
-                <Markdown>{approach.intuition}</Markdown>
-                <DsaSubheading>Working Steps</DsaSubheading>
-                <Markdown>{approach.steps}</Markdown>
-                <SolutionCode file={codeFiles.find((f) => f.path === approach.codeFile)} />
-                <DsaSubheading>Time Complexity</DsaSubheading>
-                <Markdown>{approach.timeComplexity}</Markdown>
-                <DsaSubheading>Space Complexity</DsaSubheading>
-                <Markdown>{approach.spaceComplexity}</Markdown>
-              </div>
-            ))
-          ) : (
-            <>
-              {content.bruteForceIntuition && (
-                <>
-                  <DsaHeading>Brute Force</DsaHeading>
-                  <DsaSubheading>Intuition</DsaSubheading>
-                  <Markdown>{content.bruteForceIntuition}</Markdown>
-                  <DsaSubheading>Working Steps</DsaSubheading>
-                  <Markdown>{content.bruteForceSteps ?? ""}</Markdown>
-                  <SolutionCode file={bruteForceFile} />
-                  <DsaSubheading>Time Complexity</DsaSubheading>
-                  <Markdown>{content.bruteForceTimeComplexity ?? ""}</Markdown>
-                  <DsaSubheading>Space Complexity</DsaSubheading>
-                  <Markdown>{content.bruteForceSpaceComplexity ?? ""}</Markdown>
-                </>
-              )}
-
-              <DsaHeading>Optimized Solution</DsaHeading>
-              <DsaSubheading>Intuition</DsaSubheading>
-              <Markdown>{content.optimizedIntuition ?? ""}</Markdown>
-              <DsaSubheading>Working Steps</DsaSubheading>
-              <Markdown>{content.optimizedSteps ?? ""}</Markdown>
-              <SolutionCode file={optimizedFile} />
-              <DsaSubheading>Time Complexity</DsaSubheading>
-              <Markdown>{content.optimizedTimeComplexity ?? ""}</Markdown>
-              <DsaSubheading>Space Complexity</DsaSubheading>
-              <Markdown>{content.optimizedSpaceComplexity ?? ""}</Markdown>
-            </>
-          )}
-
-          {content.comparisonTable && (
-            <>
-              <DsaHeading>Comparison</DsaHeading>
-              <Markdown>{content.comparisonTable}</Markdown>
-            </>
-          )}
-
-          {content.interviewNotes && (
-            <>
-              <DsaHeading>What to Say in the Interview</DsaHeading>
-              <Markdown>{content.interviewNotes}</Markdown>
-            </>
-          )}
-        </div>
-      )}
+      {/* A worked DSA answer: problem, a complexity comparison, then brute force (wherever
+          applicable) and optimized, each self-contained with its own code sitting right after
+          its steps -- not bundled into one panel a scroll away from the explanation it belongs
+          to. See DsaSolution for the actual template. */}
+      {isDsaSolution && <DsaSolution content={content} codeFiles={codeFiles} />}
 
       {/* A page is a document unless its content says otherwise. Readers replace the editor
           rather than sitting beside it: there is nothing to write on a book. */}
