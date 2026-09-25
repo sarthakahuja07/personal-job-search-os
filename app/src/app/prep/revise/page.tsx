@@ -4,7 +4,7 @@ import { Badge, Card, EmptyState, PageHeader, SectionTitle, cx } from "@/compone
 import { getDb } from "@/db";
 import type { PrepReview } from "@/db/schema";
 import type { Deck } from "@/server/domain/revision";
-import { deckStats, loadDecks, reviewMap, type DeckStats } from "@/server/service/revision";
+import { deckStats, loadDecks, reviewMapsByDeck, type DeckStats } from "@/server/service/revision";
 
 import { ResetDeckButton } from "./reset-deck-button";
 
@@ -70,15 +70,16 @@ export default async function RevisePage() {
   const db = getDb();
   const decks = await loadDecks(db);
 
-  // Review state is read defensively: until migration 0021 is applied the table does not exist,
-  // and the decks are still worth showing -- they just all read as new.
-  let reviews = new Map<string, PrepReview>();
+  // Review state is read defensively: until the prep_reviews migration is applied the table
+  // does not exist, and the decks are still worth showing -- they just all read as new.
+  let reviewsByDeck = new Map<string, Map<string, PrepReview>>();
   let migrationMissing = false;
   try {
-    reviews = await reviewMap(db);
+    reviewsByDeck = await reviewMapsByDeck(db);
   } catch {
     migrationMissing = true;
   }
+  const reviewsFor = (deck: Deck) => reviewsByDeck.get(deck.id.join("/")) ?? new Map();
 
   const now = new Date();
   const disciplineDecks = decks.filter((d) => d.group === "Discipline");
@@ -106,7 +107,7 @@ export default async function RevisePage() {
       <SectionTitle>By discipline</SectionTitle>
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
         {disciplineDecks.map((deck) => (
-          <DeckCard key={deck.id.join("/")} deck={deck} stats={deckStats(deck, reviews, now)} />
+          <DeckCard key={deck.id.join("/")} deck={deck} stats={deckStats(deck, reviewsFor(deck), now)} />
         ))}
       </div>
 
@@ -130,7 +131,7 @@ export default async function RevisePage() {
                       <DeckCard
                         key={deck.id.join("/")}
                         deck={{ ...deck, title: deck.title.replace(`${company} · `, "") }}
-                        stats={deckStats(deck, reviews, now)}
+                        stats={deckStats(deck, reviewsFor(deck), now)}
                       />
                     ))}
                   </div>

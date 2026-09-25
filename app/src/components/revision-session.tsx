@@ -165,10 +165,12 @@ function Back({ detail }: { detail: CardDetail }) {
 }
 
 export function RevisionSession({
+  deckId,
   deckTitle,
   mode,
   cards,
 }: {
+  deckId: string[];
   deckTitle: string;
   mode: "all" | "due";
   cards: DeckCard[];
@@ -206,12 +208,12 @@ export function RevisionSession({
     for (const id of [queue[pos], queue[pos + 1]]) {
       if (!id || details[id] || inFlight.current.has(id)) continue;
       inFlight.current.add(id);
-      loadRevisionCard(id)
+      loadRevisionCard(deckId, id)
         .then((d) => setDetails((prev) => ({ ...prev, [id]: d ?? "error" })))
         .catch(() => setDetails((prev) => ({ ...prev, [id]: "error" })))
         .finally(() => inFlight.current.delete(id));
     }
-  }, [queue, pos, details]);
+  }, [queue, pos, details, deckId]);
 
   const advance = useCallback(() => {
     setPos((p) => p + 1);
@@ -223,7 +225,7 @@ export function RevisionSession({
   const rate = useCallback(
     (rating: ReviewRating) => {
       if (!currentId || !revealed) return;
-      rateRevisionCard(currentId, rating).catch(() =>
+      rateRevisionCard(deckId, currentId, rating).catch(() =>
         setSaveError("A rating could not be saved. The session continues, but check your connection."),
       );
       setTally((t) => ({ ...t, [rating]: t[rating] + 1 }));
@@ -236,7 +238,7 @@ export function RevisionSession({
       }
       advance();
     },
-    [currentId, revealed, advance],
+    [currentId, revealed, advance, deckId],
   );
 
   /** Put the card at the back without rating it. */

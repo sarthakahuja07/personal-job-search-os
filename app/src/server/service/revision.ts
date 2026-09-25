@@ -19,11 +19,13 @@ import { allPagePaths, codeFilesFor, getById } from "@/server/repository/prep-re
 import {
   allReviews,
   companyIndexPages,
-  deleteAllReviews,
-  deleteReviews,
+  deleteDeckReviews,
   reviewFor,
+  reviewsForDeck,
   saveReview,
 } from "@/server/repository/revision-repo";
+
+const deckKey = (id: string[]) => id.join("/");
 
 /** Three queries whatever the deck count: the tree, the company lists, nothing per company. */
 export async function loadDecks(db: Db): Promise<Deck[]> {
@@ -67,17 +69,33 @@ export function deckStats(deck: Deck, reviews: Map<string, PrepReview>, now: Dat
   return { total: deck.cards.length, fresh, due, learned: deck.cards.length - fresh };
 }
 
-export async function reviewMap(db: Db): Promise<Map<string, PrepReview>> {
+/**
+ * Every deck's review state, grouped by deck.
+ *
+ * Decks overlap by design -- Everything is the union of every other deck -- and progress is
+ * tracked per (deck, card), not per card, so each deck needs its own map: a card "seen" in DSA
+ * is still "new" in Everything until Everything is revised on its own.
+ */
+export async function reviewMapsByDeck(db: Db): Promise<Map<string, Map<string, PrepReview>>> {
   const rows = await allReviews(db);
-  return new Map(rows.map((r) => [r.prepItemId, r]));
+  const byDeck = new Map<string, Map<string, PrepReview>>();
+  for (const row of rows) {
+    let deck = byDeck.get(row.deckId);
+    if (!deck) {
+      deck = new Map();
+      byDeck.set(row.deckId, deck);
+    }
+    deck.set(row.prepItemId, row);
+  }
+  return byDeck;
 }
 
 /** Everything a card needs to render both of its sides. Plain data: it crosses to the client. */
-export async function cardDetail(db: Db, id: string) {
+export async function cardDetail(db: Db, deckId: string[], id: string) {
   const [item, codeFiles, review] = await Promise.all([
     getById(db, id),
     codeFilesFor(db, id),
-    reviewFor(db, id),
+    reviewFor(db, deckKey(deckId), id),
   ]);
   if (!item) return null;
   return {
@@ -105,10 +123,18 @@ export async function cardDetail(db: Db, id: string) {
 
 export type CardDetail = NonNullable<Awaited<ReturnType<typeof cardDetail>>>;
 
-export async function rateCard(db: Db, id: string, rating: ReviewRating, now = new Date()) {
-  const previous = await reviewFor(db, id);
+export async function rateCard(
+  db: Db,
+  deckId: string[],
+  id: string,
+  rating: ReviewRating,
+  now = new Date(),
+) {
+  const key = deckKey(deckId);
+  const previous = await reviewFor(db, key, id);
   const next = schedule(previous, rating, now);
   await saveReview(db, {
+    deckId: key,
     prepItemId: id,
     ...next,
     lastRating: rating,
@@ -117,34 +143,25 @@ export async function rateCard(db: Db, id: string, rating: ReviewRating, now = n
   return next;
 }
 
-/**
- * Forget every card in a deck: deletes their review state so they go back to "new".
- *
- * The "Everything" deck holds every card, so resetting it is how all progress gets reset -- no
- * separate global-reset codepath to keep in sync with what counts as a card.
- */
+/** Forget every card in a deck: deletes its review state so every card in it goes back to "new".
+ *  Scoped to this deck's own rows -- a card that also appears in Everything or a company deck
+ *  keeps its standing there untouched, since each deck's progress is independent. */
 export async function resetDeckProgress(db: Db, deck: Deck): Promise<void> {
-  if (deck.id.length === 1 && deck.id[0] === "all") {
-    await deleteAllReviews(db);
-    return;
-  }
-  await deleteReviews(
-    db,
-    deck.cards.map((c) => c.id),
-  );
+  await deleteDeckReviews(db, deckKey(deck.id));
 }
 
 /**
  * The cards for one session, shuffled: the whole deck, or only what is due plus what is new.
  *
- * Review state is optional here: until migration 0021 is applied there is no table, nothing has
- * been reviewed, and every card counts as new.
+ * Review state is optional here: until the `prep_reviews` migration is applied there is no
+ * table, nothing has been reviewed, and every card counts as new.
  */
 export async function sessionCards(db: Db, deck: Deck, mode: "all" | "due", now = new Date()) {
   if (mode === "all") return shuffle(deck.cards);
   let reviews = new Map<string, PrepReview>();
   try {
-    reviews = await reviewMap(db);
+    const rows = await reviewsForDeck(db, deckKey(deck.id));
+    reviews = new Map(rows.map((r) => [r.prepItemId, r]));
   } catch {
     // See above: an unmigrated database means everything is new.
   }

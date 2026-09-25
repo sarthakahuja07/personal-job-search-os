@@ -30,6 +30,7 @@ export default async function ReviseDeckPage({
 
   return (
     <RevisionSession
+      deckId={deck.id}
       deckTitle={deck.title}
       mode={mode}
       cards={await sessionCards(db, deck, mode)}

@@ -1,10 +1,11 @@
 /**
- * Revision data access: review state per prep page, and the company question lists decks are
+ * Revision data access: review state per (deck, page), and the company question lists decks are
  * built from.
  *
- * Reads are whole-table. `prep_reviews` has at most one row per question -- a few hundred -- and
- * D1 caps bound parameters at 100, so an `IN (...)` over a large deck would fail where a full
- * scan of a tiny table cannot.
+ * Reads are whole-table (`allReviews`) or scoped to one deck (everything else). `prep_reviews`
+ * has at most a few hundred rows per deck, small enough that either shape is a single query with
+ * no D1 bound-parameter limit to worry about -- every write and delete here keys on `deckId`
+ * (and optionally `prepItemId`), never an `IN (...)` list of card ids.
  */
 
 import { and, eq, inArray, isNotNull } from "drizzle-orm";
@@ -12,24 +13,19 @@ import { and, eq, inArray, isNotNull } from "drizzle-orm";
 import type { Db } from "@/db";
 import { prepItems, prepReviews, type ReviewRating } from "@/db/schema";
 
-/** D1 allows 100 bound parameters per query. */
-const ID_CHUNK = 90;
-
-function chunk<T>(items: T[], size: number): T[][] {
-  const out: T[][] = [];
-  for (let i = 0; i < items.length; i += size) out.push(items.slice(i, i + size));
-  return out;
-}
-
 export async function allReviews(db: Db) {
   return db.select().from(prepReviews);
 }
 
-export async function reviewFor(db: Db, prepItemId: string) {
+export async function reviewsForDeck(db: Db, deckId: string) {
+  return db.select().from(prepReviews).where(eq(prepReviews.deckId, deckId));
+}
+
+export async function reviewFor(db: Db, deckId: string, prepItemId: string) {
   const rows = await db
     .select()
     .from(prepReviews)
-    .where(eq(prepReviews.prepItemId, prepItemId))
+    .where(and(eq(prepReviews.deckId, deckId), eq(prepReviews.prepItemId, prepItemId)))
     .limit(1);
   return rows[0] ?? null;
 }
@@ -37,6 +33,7 @@ export async function reviewFor(db: Db, prepItemId: string) {
 export async function saveReview(
   db: Db,
   row: {
+    deckId: string;
     prepItemId: string;
     ease: number;
     intervalDays: number;
@@ -47,23 +44,17 @@ export async function saveReview(
     lastReviewedAt: Date;
   },
 ) {
-  const { prepItemId: _id, ...patch } = row;
+  const { deckId: _d, prepItemId: _id, ...patch } = row;
   await db
     .insert(prepReviews)
     .values(row)
-    .onConflictDoUpdate({ target: prepReviews.prepItemId, set: patch });
+    .onConflictDoUpdate({ target: [prepReviews.deckId, prepReviews.prepItemId], set: patch });
 }
 
-/** Wipe review state for a set of cards -- what a deck reset deletes. Chunked for the same reason reads are not. */
-export async function deleteReviews(db: Db, prepItemIds: string[]): Promise<void> {
-  for (const group of chunk(prepItemIds, ID_CHUNK)) {
-    await db.delete(prepReviews).where(inArray(prepReviews.prepItemId, group));
-  }
-}
-
-/** Wipe every card's review state. What "reset all progress" deletes. */
-export async function deleteAllReviews(db: Db): Promise<void> {
-  await db.delete(prepReviews);
+/** Wipe one deck's review state -- what "Reset progress" deletes. Never touches other decks,
+ *  even ones (like "Everything") built from the same underlying questions. */
+export async function deleteDeckReviews(db: Db, deckId: string): Promise<void> {
+  await db.delete(prepReviews).where(eq(prepReviews.deckId, deckId));
 }
 
 /**

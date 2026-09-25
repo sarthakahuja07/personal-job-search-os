@@ -919,20 +919,32 @@ export const githubNotesCache = sqliteTable("github_notes_cache", {
 export type GithubNotesCacheRow = typeof githubNotesCache.$inferSelect;
 
 /**
- * Spaced-repetition state for a prep page, one row per page that has ever been revised.
+ * Spaced-repetition state for a prep page as revised through one specific deck, one row per
+ * (deck, page) that has ever been revised.
+ *
+ * Keyed by deck as well as page because decks overlap by design -- "Everything" is the union of
+ * every discipline deck, and a company's deck is built from the same question pages its
+ * discipline deck has. Progress is deliberately not shared across that overlap: resetting the
+ * DSA deck must not silently reset the same questions' standing inside Everything or a company
+ * deck, so each deck tracks its own relationship to a question rather than there being one
+ * global "do I know this" fact.
  *
  * Its own table rather than keys in `prep_items.content`, because every publish tool rewrites
  * `content` wholesale -- republishing a DSA answer to fix a typo would otherwise wipe months of
  * review history. It is also written once per card flip, which is exactly the read-modify-write
  * pattern `prep_resources` moved out of `content` to avoid.
  *
- * A page with no row is a new card. The scheduling rules are in `server/domain/revision.ts`.
+ * A (deck, page) pair with no row is a new card. The scheduling rules are in
+ * `server/domain/revision.ts`.
  */
 export const prepReviews = sqliteTable(
   "prep_reviews",
   {
+    id: text("id").primaryKey().$defaultFn(uuid),
+    /** A deck's URL segments joined with "/", e.g. "dsa" or "company/confluent/dsa". */
+    deckId: text("deck_id").notNull(),
     prepItemId: text("prep_item_id")
-      .primaryKey()
+      .notNull()
       .references(() => prepItems.id, { onDelete: "cascade" }),
     /** Multiplier applied to the interval on "good", Anki's ease factor. Starts at 2.5. */
     ease: real("ease").notNull().default(2.5),
@@ -944,7 +956,12 @@ export const prepReviews = sqliteTable(
     dueAt: integer("due_at", { mode: "timestamp_ms" }).notNull(),
     lastReviewedAt: integer("last_reviewed_at", { mode: "timestamp_ms" }).notNull(),
   },
-  (t) => [index("prep_review_due_idx").on(t.dueAt)],
+  (t) => [
+    uniqueIndex("prep_review_deck_item_unique").on(t.deckId, t.prepItemId),
+    index("prep_review_due_idx").on(t.dueAt),
+    /** Reset deletes every row for a deck in one indexed statement. */
+    index("prep_review_deck_idx").on(t.deckId),
+  ],
 );
 
 export const REVIEW_RATINGS = ["again", "hard", "good", "easy"] as const;
