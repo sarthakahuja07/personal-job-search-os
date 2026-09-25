@@ -41,7 +41,7 @@ export type Deck = {
   /** URL segments under /prep/revise, e.g. ["dsa"] or ["company", "confluent", "dsa"]. */
   id: string[];
   title: string;
-  group: "Discipline" | "Company";
+  group: "Discipline" | "Company" | "Custom";
   company?: string;
   cards: Card[];
   /** Company only: questions on the company's list with no page to revise from yet. */
@@ -194,6 +194,89 @@ export function buildDecks(
 export function findDeck(decks: Deck[], id: string[]): Deck | undefined {
   const key = id.join("/");
   return decks.find((d) => d.id.join("/") === key);
+}
+
+// ---------------------------------------------------------------------------
+// Custom decks
+// ---------------------------------------------------------------------------
+
+/** Every question, flattened across disciplines, tagged with the companies whose published list
+ *  includes it -- what a custom deck's filter form filters over. */
+export type CustomDeckCandidate = Card & { companySlugs: string[] };
+
+/**
+ * The full candidate pool for building a custom deck: every question, each carrying which
+ * companies list it.
+ *
+ * Company membership is computed the same way a company deck's cards are (`matchCard` against
+ * its titles) rather than duplicated data, so a question that resolves on a company's page is
+ * exactly the one this offers as belonging to that company.
+ */
+export function customDeckCandidates(
+  cards: Record<Discipline, Card[]>,
+  companies: CompanyIndex[],
+): CustomDeckCandidate[] {
+  const companySlugsByCard = new Map<string, Set<string>>();
+  for (const index of companies) {
+    for (const title of index.titles) {
+      const card = matchCard(cards[index.discipline], title);
+      if (!card) continue;
+      const slugs = companySlugsByCard.get(card.id) ?? new Set<string>();
+      slugs.add(index.slug);
+      companySlugsByCard.set(card.id, slugs);
+    }
+  }
+  return DISCIPLINES.flatMap((d) => cards[d]).map((card) => ({
+    ...card,
+    companySlugs: [...(companySlugsByCard.get(card.id) ?? [])],
+  }));
+}
+
+export type CustomDeckDef = {
+  id: string;
+  title: string;
+  mode: "filter" | "fixed";
+  companySlug: string | null;
+  discipline: Discipline | null;
+  difficulty: PrepDifficulty | null;
+  /** Only meaningful when `mode` is "fixed". */
+  questionIds: string[] | null;
+};
+
+/**
+ * A user-defined deck: either a live filter over `builtIn`'s decks, or a frozen list of specific
+ * questions.
+ *
+ * Filter mode is deliberately built by looking up the matching built-in deck (the company+
+ * discipline combination, or "all") and filtering by difficulty on top, rather than
+ * re-implementing company/discipline matching here -- a filtered custom deck can never disagree
+ * with the built-in deck it's a slice of. Fixed mode resolves each stored id against the full
+ * candidate pool and silently drops any that no longer exist (a question can be unpublished after
+ * being frozen into a deck).
+ */
+export function buildCustomDeck(
+  builtIn: Deck[],
+  candidates: CustomDeckCandidate[],
+  def: CustomDeckDef,
+): Deck {
+  let cards: Card[];
+  if (def.mode === "fixed") {
+    const byId = new Map(candidates.map((c) => [c.id, c]));
+    cards = (def.questionIds ?? [])
+      .map((id) => byId.get(id))
+      .filter((c): c is CustomDeckCandidate => Boolean(c));
+  } else {
+    const baseId = def.companySlug
+      ? def.discipline
+        ? ["company", def.companySlug, def.discipline]
+        : ["company", def.companySlug]
+      : def.discipline
+        ? [def.discipline]
+        : ["all"];
+    const base = findDeck(builtIn, baseId)?.cards ?? [];
+    cards = def.difficulty ? base.filter((c) => c.difficulty === def.difficulty) : base;
+  }
+  return { id: ["custom", def.id], title: def.title, group: "Custom", cards };
 }
 
 // ---------------------------------------------------------------------------

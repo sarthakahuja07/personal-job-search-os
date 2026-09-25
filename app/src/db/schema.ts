@@ -968,3 +968,36 @@ export const REVIEW_RATINGS = ["again", "hard", "good", "easy"] as const;
 export type ReviewRating = (typeof REVIEW_RATINGS)[number];
 
 export type PrepReview = typeof prepReviews.$inferSelect;
+
+export const CUSTOM_DECK_MODES = ["filter", "fixed"] as const;
+export type CustomDeckMode = (typeof CUSTOM_DECK_MODES)[number];
+
+/**
+ * A user-defined revision deck: either a live filter (company/discipline/difficulty, each
+ * optional) that re-matches questions on every visit, or a frozen list of specific question ids
+ * captured once at creation time.
+ *
+ * `mode` decides which columns are load-bearing: `filter` decks are defined by
+ * `companySlug`/`discipline`/`difficulty` and `questionIds` is null; `fixed` decks are defined by
+ * `questionIds` and the filter columns are kept only as a record of what filters found them, not
+ * read back for membership. See `server/domain/revision.ts`'s `buildCustomDeck`.
+ *
+ * `discipline` is left as plain `text` rather than `.$type<Discipline>()` -- `Discipline` lives
+ * in `server/domain/company.ts`, which itself imports `PrepDifficulty` from this file, so typing
+ * it here would be a circular import. Cast at the read boundary instead.
+ */
+export const prepCustomDecks = sqliteTable("prep_custom_decks", {
+  id: text("id").primaryKey().$defaultFn(uuid),
+  title: text("title").notNull(),
+  mode: text("mode").$type<CustomDeckMode>().notNull(),
+  companySlug: text("company_slug"),
+  discipline: text("discipline"),
+  difficulty: text("difficulty").$type<PrepDifficulty>(),
+  /** Only set when `mode` is "fixed". */
+  questionIds: text("question_ids", { mode: "json" }).$type<string[]>(),
+  createdAt: integer("created_at", { mode: "timestamp_ms" })
+    .notNull()
+    .$defaultFn(() => new Date()),
+});
+
+export type PrepCustomDeck = typeof prepCustomDecks.$inferSelect;

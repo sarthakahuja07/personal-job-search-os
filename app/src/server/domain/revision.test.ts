@@ -4,7 +4,9 @@ import { buildPaths } from "./prep";
 import {
   NEW_CARD,
   RELEARN_MS,
+  buildCustomDeck,
   buildDecks,
+  customDeckCandidates,
   findDeck,
   formatInterval,
   intervalsFor,
@@ -12,6 +14,7 @@ import {
   questionCards,
   schedule,
   shuffle,
+  type CustomDeckDef,
   type TreeRow,
 } from "./revision";
 
@@ -21,7 +24,7 @@ const rows: TreeRow[] = [
   { id: "arr-notes", kind: "dsa", slug: "notes", title: "Notes", parentId: "arr" },
   { id: "two-sum", kind: "dsa", slug: "two-sum", title: "Two Sum", parentId: "arr", difficulty: "easy" },
   { id: "3sum", kind: "dsa", slug: "3sum", title: "3Sum", parentId: "arr" },
-  { id: "lru", kind: "dsa", slug: "lru-cache", title: "LRU Cache", parentId: null },
+  { id: "lru", kind: "dsa", slug: "lru-cache", title: "LRU Cache", parentId: null, difficulty: "hard" },
   // HLD: a concept beside the questions folder.
   { id: "hld", kind: "system_design", slug: "hld", title: "HLD", parentId: null },
   { id: "caching", kind: "system_design", slug: "caching", title: "Caching", parentId: "hld" },
@@ -106,6 +109,101 @@ describe("buildDecks", () => {
   it("adds a company-wide deck and omits disciplines with no list", () => {
     expect(findDeck(decks, ["company", "confluent"])?.cards).toHaveLength(3);
     expect(findDeck(decks, ["company", "confluent", "lld"])).toBeUndefined();
+  });
+});
+
+describe("customDeckCandidates", () => {
+  const companies = [
+    { company: "Confluent", slug: "confluent", discipline: "dsa" as const, titles: ["Two Sum", "LRU Cache"] },
+    { company: "Confluent", slug: "confluent", discipline: "hld" as const, titles: ["Design a Rate Limiter"] },
+    { company: "Uber", slug: "uber", discipline: "dsa" as const, titles: ["Two Sum"] },
+  ];
+  const candidates = customDeckCandidates(cards, companies);
+
+  it("tags a candidate with every company whose list includes it", () => {
+    expect(candidates.find((c) => c.id === "two-sum")?.companySlugs.sort()).toEqual([
+      "confluent",
+      "uber",
+    ]);
+    expect(candidates.find((c) => c.id === "rl")?.companySlugs).toEqual(["confluent"]);
+  });
+
+  it("leaves a question no company lists with an empty tag set", () => {
+    expect(candidates.find((c) => c.id === "3sum")?.companySlugs).toEqual([]);
+  });
+
+  it("covers every discipline's questions, not just dsa", () => {
+    expect(candidates.map((c) => c.id).sort()).toEqual(
+      ["3sum", "insta", "lld-rl", "lru", "parking", "rl", "two-sum"].sort(),
+    );
+  });
+});
+
+describe("buildCustomDeck", () => {
+  const companies = [
+    { company: "Confluent", slug: "confluent", discipline: "dsa" as const, titles: ["Two Sum", "LRU Cache"] },
+    { company: "Confluent", slug: "confluent", discipline: "hld" as const, titles: ["Design a Rate Limiter"] },
+  ];
+  const builtIn = buildDecks(cards, companies);
+  const candidates = customDeckCandidates(cards, companies);
+
+  const def = (patch: Partial<CustomDeckDef>): CustomDeckDef => ({
+    id: "custom-1",
+    title: "My deck",
+    mode: "filter",
+    companySlug: null,
+    discipline: null,
+    difficulty: null,
+    questionIds: null,
+    ...patch,
+  });
+
+  it("filter mode with no filters matches the Everything deck", () => {
+    const deck = buildCustomDeck(builtIn, candidates, def({}));
+    expect(deck.cards).toHaveLength(findDeck(builtIn, ["all"])!.cards.length);
+  });
+
+  it("filter mode narrows by company and discipline together, same as the company deck", () => {
+    const deck = buildCustomDeck(builtIn, candidates, def({ companySlug: "confluent", discipline: "dsa" }));
+    expect(deck.cards.map((c) => c.id).sort()).toEqual(["lru", "two-sum"]);
+  });
+
+  it("filter mode with only a company spans every discipline that company lists", () => {
+    const deck = buildCustomDeck(builtIn, candidates, def({ companySlug: "confluent" }));
+    expect(deck.cards.map((c) => c.id).sort()).toEqual(["lru", "rl", "two-sum"]);
+  });
+
+  it("filter mode layers difficulty on top of company/discipline", () => {
+    const deck = buildCustomDeck(
+      builtIn,
+      candidates,
+      def({ companySlug: "confluent", difficulty: "hard" }),
+    );
+    expect(deck.cards.map((c) => c.id)).toEqual(["lru"]);
+  });
+
+  it("fixed mode uses exactly the given ids and drops ones that no longer resolve", () => {
+    const deck = buildCustomDeck(
+      builtIn,
+      candidates,
+      def({ mode: "fixed", questionIds: ["two-sum", "lru", "deleted-question"] }),
+    );
+    expect(deck.cards.map((c) => c.id).sort()).toEqual(["lru", "two-sum"]);
+  });
+
+  it("fixed mode ignores filter columns entirely", () => {
+    const deck = buildCustomDeck(
+      builtIn,
+      candidates,
+      def({ mode: "fixed", questionIds: ["3sum"], companySlug: "confluent", difficulty: "hard" }),
+    );
+    expect(deck.cards.map((c) => c.id)).toEqual(["3sum"]);
+  });
+
+  it("gives the deck a custom/<id> deck id", () => {
+    const deck = buildCustomDeck(builtIn, candidates, def({ id: "abc123" }));
+    expect(deck.id).toEqual(["custom", "abc123"]);
+    expect(deck.group).toBe("Custom");
   });
 });
 

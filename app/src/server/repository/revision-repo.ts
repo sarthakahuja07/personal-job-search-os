@@ -11,7 +11,14 @@
 import { and, eq, inArray, isNotNull } from "drizzle-orm";
 
 import type { Db } from "@/db";
-import { prepItems, prepReviews, type ReviewRating } from "@/db/schema";
+import {
+  prepCustomDecks,
+  prepItems,
+  prepReviews,
+  type CustomDeckMode,
+  type PrepDifficulty,
+  type ReviewRating,
+} from "@/db/schema";
 
 export async function allReviews(db: Db) {
   return db.select().from(prepReviews);
@@ -55,6 +62,29 @@ export async function saveReview(
  *  even ones (like "Everything") built from the same underlying questions. */
 export async function deleteDeckReviews(db: Db, deckId: string): Promise<void> {
   await db.delete(prepReviews).where(eq(prepReviews.deckId, deckId));
+}
+
+export async function listCustomDecks(db: Db) {
+  return db.select().from(prepCustomDecks).orderBy(prepCustomDecks.createdAt);
+}
+
+export async function createCustomDeck(
+  db: Db,
+  input: {
+    title: string;
+    mode: CustomDeckMode;
+    companySlug: string | null;
+    discipline: string | null;
+    difficulty: PrepDifficulty | null;
+    questionIds: string[] | null;
+  },
+) {
+  const [row] = await db.insert(prepCustomDecks).values(input).returning();
+  return row;
+}
+
+export async function deleteCustomDeck(db: Db, id: string): Promise<void> {
+  await db.delete(prepCustomDecks).where(eq(prepCustomDecks.id, id));
 }
 
 /**

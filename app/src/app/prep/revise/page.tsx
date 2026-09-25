@@ -6,6 +6,7 @@ import type { PrepReview } from "@/db/schema";
 import type { Deck } from "@/server/domain/revision";
 import { deckStats, loadDecks, reviewMapsByDeck, type DeckStats } from "@/server/service/revision";
 
+import { DeleteCustomDeckButton } from "./delete-custom-deck-button";
 import { ResetDeckButton } from "./reset-deck-button";
 
 export const dynamic = "force-dynamic";
@@ -20,7 +21,16 @@ function StatLine({ stats }: { stats: DeckStats }) {
   );
 }
 
-function DeckCard({ deck, stats }: { deck: Deck; stats: DeckStats }) {
+function DeckCard({
+  deck,
+  stats,
+  customId,
+}: {
+  deck: Deck;
+  stats: DeckStats;
+  /** Set only for a user-created deck: renders the delete action alongside reset. */
+  customId?: string;
+}) {
   const href = `/prep/revise/${deck.id.join("/")}`;
   const empty = stats.total === 0;
   return (
@@ -58,6 +68,11 @@ function DeckCard({ deck, stats }: { deck: Deck; stats: DeckStats }) {
             )}
           </>
         )}
+        {customId && (
+          <span className={cx(stats.learned > 0 || empty ? "" : "ml-auto")}>
+            <DeleteCustomDeckButton id={customId} deckTitle={deck.title} />
+          </span>
+        )}
       </div>
     </Card>
   );
@@ -84,6 +99,7 @@ export default async function RevisePage() {
   const now = new Date();
   const disciplineDecks = decks.filter((d) => d.group === "Discipline");
   const companyDecks = decks.filter((d) => d.group === "Company");
+  const customDecks = decks.filter((d) => d.group === "Custom");
   const companies = [...new Set(companyDecks.map((d) => d.company!))];
 
   return (
@@ -143,6 +159,35 @@ export default async function RevisePage() {
                 </div>
               );
             })}
+          </div>
+        )}
+      </section>
+
+      <section className="mt-8">
+        <div className="mb-2 flex items-center justify-between gap-2">
+          <SectionTitle>Your decks</SectionTitle>
+          <Link
+            href="/prep/revise/new"
+            className="text-[13px] text-accent-ink transition hover:brightness-110"
+          >
+            + New deck
+          </Link>
+        </div>
+        {customDecks.length === 0 ? (
+          <EmptyState
+            title="No custom decks yet"
+            body="Filter by company, discipline and difficulty, or hand-pick specific questions, to build a deck of your own."
+          />
+        ) : (
+          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+            {customDecks.map((deck) => (
+              <DeckCard
+                key={deck.id.join("/")}
+                deck={deck}
+                stats={deckStats(deck, reviewsFor(deck), now)}
+                customId={deck.id[1]}
+              />
+            ))}
           </div>
         )}
       </section>

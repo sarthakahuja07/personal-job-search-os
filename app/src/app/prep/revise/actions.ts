@@ -1,11 +1,20 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
 
 import { getDb } from "@/db";
-import { REVIEW_RATINGS, type ReviewRating } from "@/db/schema";
+import { PREP_DIFFICULTIES, REVIEW_RATINGS, type PrepDifficulty, type ReviewRating } from "@/db/schema";
+import { DISCIPLINES, type Discipline } from "@/server/domain/company";
 import { findDeck } from "@/server/domain/revision";
-import { cardDetail, loadDecks, rateCard, resetDeckProgress } from "@/server/service/revision";
+import {
+  addCustomDeck,
+  cardDetail,
+  loadDecks,
+  rateCard,
+  removeCustomDeck,
+  resetDeckProgress,
+} from "@/server/service/revision";
 
 /**
  * One card's content, fetched when it is about to be shown rather than with the deck.
@@ -42,5 +51,45 @@ export async function resetRevisionProgress(deckId: string[]) {
   const deck = findDeck(await loadDecks(db), deckId);
   if (!deck) throw new Error(`Unknown deck: ${deckId.join("/")}`);
   await resetDeckProgress(db, deck);
+  revalidatePath("/prep/revise");
+}
+
+/**
+ * Create a custom deck. Checking off specific questions makes it "fixed" -- frozen to exactly
+ * those ids -- rather than "filter", where the company/discipline/difficulty stay live: a new
+ * question that later matches the same filters shows up on its own, but nothing is added to a
+ * fixed deck's explicit list without editing it.
+ */
+export async function createCustomDeckAction(formData: FormData) {
+  const title = String(formData.get("title") ?? "").trim();
+  if (!title) throw new Error("A title is required");
+
+  const companySlug = (formData.get("companySlug") as string) || null;
+  const disciplineRaw = (formData.get("discipline") as string) || null;
+  const difficultyRaw = (formData.get("difficulty") as string) || null;
+  const discipline =
+    disciplineRaw && (DISCIPLINES as readonly string[]).includes(disciplineRaw)
+      ? (disciplineRaw as Discipline)
+      : null;
+  const difficulty =
+    difficultyRaw && (PREP_DIFFICULTIES as readonly string[]).includes(difficultyRaw)
+      ? (difficultyRaw as PrepDifficulty)
+      : null;
+  const questionIds = formData.getAll("questionIds").map(String).filter(Boolean);
+
+  await addCustomDeck(getDb(), {
+    title,
+    mode: questionIds.length > 0 ? "fixed" : "filter",
+    companySlug,
+    discipline,
+    difficulty,
+    questionIds: questionIds.length > 0 ? questionIds : null,
+  });
+  revalidatePath("/prep/revise");
+  redirect("/prep/revise");
+}
+
+export async function deleteCustomDeckAction(id: string) {
+  await removeCustomDeck(getDb(), id);
   revalidatePath("/prep/revise");
 }

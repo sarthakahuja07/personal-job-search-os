@@ -3,23 +3,30 @@
  */
 
 import type { Db } from "@/db";
-import type { PrepReview, ReviewRating } from "@/db/schema";
+import type { CustomDeckMode, PrepDifficulty, PrepReview, ReviewRating } from "@/db/schema";
 import { DISCIPLINES, type Discipline } from "@/server/domain/company";
 import { buildPaths } from "@/server/domain/prep";
 import {
+  buildCustomDeck,
   buildDecks,
+  customDeckCandidates,
   intervalsFor,
   questionCards,
   schedule,
   shuffle,
+  type Card,
   type CompanyIndex,
+  type CustomDeckCandidate,
   type Deck,
 } from "@/server/domain/revision";
 import { allPagePaths, codeFilesFor, getById } from "@/server/repository/prep-repo";
 import {
   allReviews,
   companyIndexPages,
+  createCustomDeck,
+  deleteCustomDeck,
   deleteDeckReviews,
+  listCustomDecks,
   reviewFor,
   reviewsForDeck,
   saveReview,
@@ -27,8 +34,11 @@ import {
 
 const deckKey = (id: string[]) => id.join("/");
 
-/** Three queries whatever the deck count: the tree, the company lists, nothing per company. */
-export async function loadDecks(db: Db): Promise<Deck[]> {
+/** The tree flattened into question cards and company index rows -- the shared base every deck,
+ *  built-in or custom, is computed from. Two queries whatever the deck count. */
+async function loadCardsAndCompanies(
+  db: Db,
+): Promise<{ cards: Record<Discipline, Card[]>; companies: CompanyIndex[] }> {
   const [rows, indexPages] = await Promise.all([allPagePaths(db), companyIndexPages(db)]);
   const cards = questionCards(rows, buildPaths(rows));
 
@@ -53,7 +63,66 @@ export async function loadDecks(db: Db): Promise<Deck[]> {
     });
   }
 
-  return buildDecks(cards, companies);
+  return { cards, companies };
+}
+
+/** Every deck: built-in (Everything, each discipline, each company) plus every saved custom
+ *  deck. One extra query beyond the built-in set, whatever the custom deck count. */
+export async function loadDecks(db: Db): Promise<Deck[]> {
+  const { cards, companies } = await loadCardsAndCompanies(db);
+  const builtIn = buildDecks(cards, companies);
+  const defs = await listCustomDecks(db);
+  if (defs.length === 0) return builtIn;
+
+  const candidates = customDeckCandidates(cards, companies);
+  const custom = defs.map((row) =>
+    buildCustomDeck(builtIn, candidates, {
+      id: row.id,
+      title: row.title,
+      mode: row.mode,
+      companySlug: row.companySlug,
+      discipline: row.discipline as Discipline | null,
+      difficulty: row.difficulty,
+      questionIds: row.questionIds,
+    }),
+  );
+  return [...builtIn, ...custom];
+}
+
+/** The candidate pool for the "new custom deck" form: every question, tagged with the companies
+ *  that list it, plus the distinct companies worth offering as a filter. */
+export async function customDeckForm(
+  db: Db,
+): Promise<{ candidates: CustomDeckCandidate[]; companies: { slug: string; name: string }[] }> {
+  const { cards, companies } = await loadCardsAndCompanies(db);
+  const bySlug = new Map(companies.map((c) => [c.slug, c.company]));
+  return {
+    candidates: customDeckCandidates(cards, companies),
+    companies: [...bySlug.entries()]
+      .map(([slug, name]) => ({ slug, name }))
+      .sort((a, b) => a.name.localeCompare(b.name)),
+  };
+}
+
+export async function addCustomDeck(
+  db: Db,
+  input: {
+    title: string;
+    mode: CustomDeckMode;
+    companySlug: string | null;
+    discipline: Discipline | null;
+    difficulty: PrepDifficulty | null;
+    questionIds: string[] | null;
+  },
+): Promise<void> {
+  await createCustomDeck(db, input);
+}
+
+/** Deletes a custom deck and its progress. Nothing else references a custom deck's id, so this
+ *  is the only cleanup a delete needs. */
+export async function removeCustomDeck(db: Db, id: string): Promise<void> {
+  await deleteDeckReviews(db, deckKey(["custom", id]));
+  await deleteCustomDeck(db, id);
 }
 
 export type DeckStats = { total: number; fresh: number; due: number; learned: number };
