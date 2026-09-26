@@ -6,6 +6,7 @@ import { deleteCustomDeckAction } from "./actions";
 export function DeleteCustomDeckButton({ id, deckTitle }: { id: string; deckTitle: string }) {
   return (
     <ConfirmButton
+      title="Delete deck?"
       confirmMessage={`Delete the deck "${deckTitle}"? Its progress is deleted with it. This cannot be undone.`}
       action={() => deleteCustomDeckAction(id)}
       label="Delete deck"
