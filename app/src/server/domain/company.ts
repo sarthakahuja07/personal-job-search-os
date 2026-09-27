@@ -145,6 +145,11 @@ export type QuestionLink = {
  * bullet, so a company's whole DSA/HLD/LLD list reads as a checklist -- how much of what this
  * company actually asks is already prepared for, at a glance -- instead of requiring a click
  * into every page to find out.
+ *
+ * Unlike the question bank, this list is left in the order it arrived rather than sorted by
+ * frequency. The bank exists to answer "what should I do first", so it sorts itself; this index
+ * is a curated study sequence someone chose on purpose, and re-sorting it out from under them on
+ * every view would make manual ordering pointless.
  */
 export function renderQuestionIndex(
   company: string,
@@ -159,12 +164,8 @@ export function renderQuestionIndex(
     return lines.join("\n");
   }
 
-  const sorted = [...questions].sort(
-    (a, b) => (b.frequency ?? 0) - (a.frequency ?? 0) || a.title.localeCompare(b.title),
-  );
-
-  const linked = sorted.filter((q) => q.path);
-  const missing = sorted.filter((q) => !q.path);
+  const linked = questions.filter((q) => q.path);
+  const missing = questions.filter((q) => !q.path);
 
   if (linked.length > 0) {
     const done = linked.filter((q) => q.done).length;
