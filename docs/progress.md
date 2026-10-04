@@ -42,7 +42,7 @@ are loaded and reachable only from behind Access.
 | Schema (`prep_items`) | done — one table, `kind` discriminator, JSON `content` per discipline |
 | DSA | in progress — 20 seeded starter questions replaced (2026-09-22) with a 14-pattern nested folder taxonomy (100 pattern/subpattern folders, each with a Notes page). 29 Confluent-tagged solution pages published (all of Confluent's DSA question bank except one source-doesn't-name-a-problem entry), linked from `/prep/company/confluent/dsa`. A DSA question with `content.problemSummary` set renders through its own component (`components/dsa-solution.tsx`, rendered from `PrepPage`'s `isDsaSolution` branch) instead of the generic editor: Problem Summary / Example / an auto-generated Complexity-at-a-Glance table / Brute Force / Optimized Solution (or N approaches), each solution self-contained in a tagged card with its own `SolutionCode` panel between its steps and its complexity, and Time/Space Complexity in their own fact boxes with a Big-O headline plus an explanation of *why* (see "A DSA solution page was structure with no hierarchy, and now is", below). Every "compute a value" LeetCode problem is wrapped in `class Solution` with the exact official method signature (no `ostream`/`void`-print solutions — even the two file-streaming questions return via a value or a callback, never write to `cout` from inside the algorithm); "design a data structure" problems keep their real LeetCode class name (`LRUCache`, `MyQueue`, `TimeMap`, ...). Sidebar shows an E/M/H difficulty badge for this folder instead of the ask-rate score, and the DSA code panel defaults to expanded with a LeetCode/source button in the header. |
 | System Design | done — 10 seeded problems with requirements / architecture / trade-offs |
-| Behavioral | done (2026-10-04) — 4 projects (Uber lineage storage redesign; Blinkit layout fallback, source pricing, layout wireframing) and 27 questions (24 answered) in 8 theme folders. See "Behavioral: projects, themed questions and rehearsal" below |
+| Behavioral | done (2026-10-04) — 5 projects (Uber lineage storage redesign and metadata source-of-truth consolidation; Blinkit layout fallback, source pricing, layout wireframing) and 27 questions (24 answered) in 8 theme folders. See "Behavioral: projects, themed questions and rehearsal" below |
 | Progress tracking | done — four states, `revisit` deliberately not counted as done |
 | Notion import | not started — schema shaped to absorb it (PRD §39) |
 | LLD question set | done — 17 pages under System Design → LLD, each with videos and articles, no solutions yet |
@@ -712,8 +712,12 @@ A bug found on the way: a code fence with no language has no class, so the Markd
 styled every line of an ASCII diagram as an inline-code chip. The `pre` wrapper now resets its
 child.
 
-**Not imported:** `metadata-inconsistencies.txt` was byte-identical to `source-pricing.txt` — a
-copy, not the metadata-inconsistencies write-up — so there is no page for that project yet.
+A fifth project, **Metadata Source-of-Truth Consolidation** (Uber: HMS authoritative for schema,
+DLM for TTL, the catalogue an aggregation layer), was added the same day through
+`publish_behavioral_project`, ordered beside the lineage project, and linked from "Tell me about a
+time you introduced a bug" (that bug was in the TTL-to-DLM rollout). Its source document's Part II
+restated the lineage redesign and was truncated mid-sentence, so only Part I (36 sections) was
+published; the lineage project's own page carries the complete version.
 
 ## Known gaps
 
