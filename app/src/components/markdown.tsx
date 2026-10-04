@@ -1,5 +1,8 @@
+import { Children, isValidElement, type ReactNode } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
+
+import { slugger } from "@/server/domain/behavioral";
 
 import { Mermaid } from "./mermaid";
 import { cx } from "./ui";
@@ -30,6 +33,14 @@ function dom<T extends { node?: unknown }>(props: T): Omit<T, "node"> {
   return rest;
 }
 
+/** The visible text of a rendered heading -- what `tableOfContents` reads from the source. */
+function textOf(node: ReactNode): string {
+  if (typeof node === "string" || typeof node === "number") return String(node);
+  if (Array.isArray(node)) return node.map(textOf).join("");
+  if (isValidElement<{ children?: ReactNode }>(node)) return textOf(node.props.children);
+  return Children.toArray(node).map(textOf).join("");
+}
+
 const SIZE_CLASS = { sm: "text-[15px]", md: "text-[16px]" } as const;
 const TONE_CLASS = { dim: "text-ink-dim", ink: "text-ink" } as const;
 
@@ -37,23 +48,47 @@ export function Markdown({
   children,
   size = "sm",
   tone = "dim",
+  anchors = false,
 }: {
   children: string;
+  /**
+   * Give every heading an id, so a contents list can link into a long document. Ids come from
+   * the same `slugger` that `tableOfContents` uses, allocated in document order, so the two
+   * agree on which "Trade-offs" is `trade-offs-2`.
+   */
+  anchors?: boolean;
   /** "md" is a size up, for prose that has to carry a page on its own (a DSA answer's
    *  intuition/steps) rather than sit as one field among many. */
   size?: keyof typeof SIZE_CLASS;
   /** "ink" is full contrast rather than the usual dimmed body copy -- for the same reason. */
   tone?: keyof typeof TONE_CLASS;
 }) {
+  const next = slugger();
+  // scroll-mt clears the sticky mobile header when a contents link jumps here.
+  const anchor = (children: ReactNode) =>
+    anchors ? { id: next(textOf(children)), className: "scroll-mt-20" } : {};
+
   return (
     <div className={cx(SIZE_CLASS[size], "leading-relaxed tracking-[0.005em]", TONE_CLASS[tone])}>
       <ReactMarkdown
         remarkPlugins={[remarkGfm]}
         components={{
-          h1: (p) => <h1 className="mb-3 mt-6 text-[21px] font-bold text-ink" {...dom(p)} />,
-          h2: (p) => <h2 className="mb-2 mt-6 text-[18px] font-bold text-ink" {...dom(p)} />,
-          h3: (p) => <h3 className="mb-1.5 mt-5 text-[15.5px] font-semibold text-ink" {...dom(p)} />,
-          h4: (p) => <h4 className="mb-1.5 mt-4 text-[14.5px] font-semibold text-ink" {...dom(p)} />,
+          h1: (p) => {
+            const a = anchor(p.children);
+            return <h1 {...dom(p)} id={a.id} className={cx("mb-3 mt-6 text-[21px] font-bold text-ink", a.className)} />;
+          },
+          h2: (p) => {
+            const a = anchor(p.children);
+            return <h2 {...dom(p)} id={a.id} className={cx("mb-2 mt-6 text-[18px] font-bold text-ink", a.className)} />;
+          },
+          h3: (p) => {
+            const a = anchor(p.children);
+            return <h3 {...dom(p)} id={a.id} className={cx("mb-1.5 mt-5 text-[15.5px] font-semibold text-ink", a.className)} />;
+          },
+          h4: (p) => {
+            const a = anchor(p.children);
+            return <h4 {...dom(p)} id={a.id} className={cx("mb-1.5 mt-4 text-[14.5px] font-semibold text-ink", a.className)} />;
+          },
           p: (p) => <p className="my-2.5" {...dom(p)} />,
           ul: (p) => <ul className="my-2.5 list-disc space-y-1 pl-5" {...dom(p)} />,
           ol: (p) => <ol className="my-2.5 list-decimal space-y-1 pl-5" {...dom(p)} />,
@@ -143,9 +178,12 @@ export function Markdown({
             }
 
             // Wide code scrolls inside its own box; the page itself must never scroll sideways.
+            // The `[&>code]` resets cover a fence with no language: `code` above cannot tell it
+            // from inline code (neither has a class), so it arrives styled as an inline chip --
+            // one orange highlight per line of an ASCII diagram.
             return (
               <pre
-                className="my-3 overflow-x-auto rounded-card border border-line bg-surface-2 px-3.5 py-3"
+                className="my-3 overflow-x-auto rounded-card border border-line bg-surface-2 px-3.5 py-3 [&>code]:block [&>code]:rounded-none [&>code]:bg-transparent [&>code]:p-0 [&>code]:text-[14px] [&>code]:leading-relaxed [&>code]:text-ink-dim"
                 {...rest}
               >
                 {children}
