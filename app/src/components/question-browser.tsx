@@ -58,10 +58,13 @@ export function QuestionBrowser({
   questions,
   initialQuery = "",
   hasDifficulty = true,
+  placeholder,
 }: {
   questions: Question[];
   initialQuery?: string;
   hasDifficulty?: boolean;
+  /** What the search box suggests searching by; the default names DSA's vocabulary. */
+  placeholder?: string;
 }) {
   const [query, setQuery] = useState(initialQuery);
   const [difficulty, setDifficulty] = useState<PrepDifficulty | null>(null);
@@ -144,7 +147,9 @@ export function QuestionBrowser({
           onKeyDown={(e) => {
             if (e.key === "Escape") setQuery("");
           }}
-          placeholder={`Search ${questions.length} questions — title, topic, pattern, company…`}
+          placeholder={
+            placeholder ?? `Search ${questions.length} questions — title, topic, pattern, company…`
+          }
           aria-label="Search questions"
           className="w-full rounded-card border border-line bg-surface px-9 py-2.5 text-[14px] text-ink outline-none transition placeholder:text-ink-faint focus:border-accent"
         />

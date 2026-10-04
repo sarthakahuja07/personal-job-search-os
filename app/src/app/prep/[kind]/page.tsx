@@ -16,6 +16,9 @@ import {
 import { collectQuestions } from "@/server/domain/prep-questions";
 import { listByKind, questionRows } from "@/server/repository/prep-repo";
 import { QuestionBrowser } from "@/components/question-browser";
+import { ProjectGrid } from "@/components/behavioral";
+import { assembleBehavioral } from "@/server/domain/behavioral";
+import { behavioralRows } from "@/server/repository/prep-repo";
 
 export const dynamic = "force-dynamic";
 
@@ -38,6 +41,89 @@ export default async function PrepListPage({
   if (!meta) notFound();
 
   const filters = await searchParams;
+
+  /*
+    Behavioral opens on its two halves: the projects your stories come from, then the questions
+    they answer, grouped by theme. Listing the projects as four more "questions" would bury the
+    thing you prepare first under the things you prepare with it.
+  */
+  if (meta.kind === "behavioral") {
+    const { projects, questions } = assembleBehavioral(await behavioralRows(getDb()));
+    const progress = summarise([...projects, ...questions]);
+    const answered = questions.filter((q) => q.shape.kind !== "empty").length;
+    return (
+      <div>
+        <PageHeader
+          title={meta.title}
+          subtitle={
+            <>
+              {meta.tagline}
+              <span className="mt-1 block">
+                <span className="tnum text-ink">{projects.length}</span> projects ·{" "}
+                <span className="tnum text-ink">{answered}</span> answered questions ·{" "}
+                <span className="tnum text-ink">{progress.done}</span> of{" "}
+                <span className="tnum text-ink">{progress.total}</span> done
+                {progress.revisit > 0 && (
+                  <>
+                    {" · "}
+                    <span className="tnum text-warn">{progress.revisit}</span> to revisit
+                  </>
+                )}
+              </span>
+            </>
+          }
+          actions={
+            <>
+              <Link
+                href="/prep/revise/behavioral"
+                className="rounded-md bg-accent px-3 py-1.5 text-[13px] font-medium text-canvas transition hover:brightness-110"
+              >
+                Rehearse out loud
+              </Link>
+              <Link href="/prep" className="text-[13px] text-ink-dim transition hover:text-ink">
+                ← All prep
+              </Link>
+            </>
+          }
+        />
+
+        <section aria-labelledby="projects-heading" className="mb-9">
+          <div className="mb-3 flex flex-wrap items-baseline justify-between gap-2">
+            <h2 id="projects-heading" className="text-[16px] font-semibold text-ink">
+              Projects
+            </h2>
+            <p className="text-[12.5px] text-ink-faint">
+              The 90-second pitch first, then the deep dive for the follow-ups.
+            </p>
+          </div>
+          {projects.length === 0 ? (
+            <EmptyState
+              title="No projects yet"
+              body="Publish one with publish_behavioral_project and it will appear here."
+            />
+          ) : (
+            <ProjectGrid projects={projects} />
+          )}
+        </section>
+
+        <section aria-labelledby="questions-heading">
+          <div className="mb-3 flex flex-wrap items-baseline justify-between gap-2">
+            <h2 id="questions-heading" className="text-[16px] font-semibold text-ink">
+              Questions
+            </h2>
+            <p className="text-[12.5px] text-ink-faint">Grouped by what the interviewer is probing.</p>
+          </div>
+          <QuestionBrowser
+            // Only what the list renders: the answers themselves stay on the server.
+            questions={questions.map(({ shape, story, seconds, theme, ...q }) => q)}
+            initialQuery={filters.q ?? ""}
+            hasDifficulty={false}
+            placeholder={`Search ${questions.length} questions — question, theme, company…`}
+          />
+        </section>
+      </div>
+    );
+  }
 
   /*
     A discipline opens on every question in it, however deep it is filed -- DSA nests its

@@ -577,3 +577,42 @@ export async function allPagePaths(db: Db) {
     .orderBy(asc(prepItems.kind), asc(prepItems.position), asc(prepItems.title));
   return rows.map((r) => ({ ...r, isReader: Boolean(r.isReader) }));
 }
+
+/**
+ * Every behavioral page with its `content`, for the projects/questions views.
+ *
+ * Unlike `questionRows` this carries `content` -- an answer is its content -- but still not the
+ * body: a project's deep dive is tens of kilobytes and the cards need only its size and how
+ * many sections it has, both cheaper to count in SQL than to ship. Sections are `## ` lines,
+ * the level the deep dives' numbered sections are stored at.
+ */
+export async function behavioralRows(db: Db) {
+  const rows = await db
+    .select({
+      id: prepItems.id,
+      parentId: prepItems.parentId,
+      kind: prepItems.kind,
+      slug: prepItems.slug,
+      title: prepItems.title,
+      prompt: prepItems.prompt,
+      topics: prepItems.topics,
+      companies: prepItems.companies,
+      difficulty: prepItems.difficulty,
+      status: prepItems.status,
+      frequency: prepItems.frequency,
+      content: prepItems.content,
+      bodyLength: sql<number>`COALESCE(LENGTH(${prepItems.body}), 0)`,
+      // Prefixed with a newline so a body that opens on its first section counts it.
+      sections: sql<number>`(LENGTH(char(10) || COALESCE(${prepItems.body}, '')) - LENGTH(REPLACE(char(10) || COALESCE(${prepItems.body}, ''), char(10) || '## ', ''))) / 4`,
+    })
+    .from(prepItems)
+    .where(eq(prepItems.kind, "behavioral"))
+    .orderBy(prepItems.position, prepItems.title);
+  return rows.map((r) => ({
+    ...r,
+    isReader: false,
+    content: r.content ?? {},
+    bodyLength: Number(r.bodyLength ?? 0),
+    sections: Number(r.sections ?? 0),
+  }));
+}

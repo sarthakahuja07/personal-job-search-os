@@ -33,6 +33,21 @@ import {
 import { liveIndexBody } from "@/server/service/company";
 import { collectQuestions } from "@/server/domain/prep-questions";
 import { QuestionBrowser } from "@/components/question-browser";
+import {
+  AnswerBody,
+  PitchCard,
+  ProjectGrid,
+  SpokenTime,
+  StoryLinkCard,
+} from "@/components/behavioral";
+import { TableOfContents } from "@/components/table-of-contents";
+import {
+  assembleBehavioral,
+  isProjectContent,
+  readMinutes,
+  tableOfContents,
+} from "@/server/domain/behavioral";
+import { behavioralRows } from "@/server/repository/prep-repo";
 
 export const dynamic = "force-dynamic";
 
@@ -169,6 +184,25 @@ export default async function PrepPage({
   const showsCode = isPractisable && meta.kind !== "behavioral" && !isDsaSolution;
 
   /*
+    Behavioral pages are one of two shapes (see domain/behavioral.ts): a project, which carries
+    a 90-second pitch and a long deep dive, or a question, whose answer is STAR fields or prose.
+    Both are rendered from their fields rather than edited, like a worked DSA answer -- and both
+    need the cross-links between them, which only the whole behavioral tree can supply.
+  */
+  const isBehavioralLeaf = meta.kind === "behavioral" && isPractisable;
+  const isProject = isBehavioralLeaf && isProjectContent(content);
+  const isAnswer = isBehavioralLeaf && !isProject;
+  const isProjectsFolder = meta.kind === "behavioral" && path.join("/") === "projects";
+  const behavioral =
+    isBehavioralLeaf || isProjectsFolder ? assembleBehavioral(await behavioralRows(db)) : null;
+  const project = isProject ? behavioral?.projects.find((p) => p.id === item.id) : undefined;
+  const answerIndex = isAnswer ? (behavioral?.questions.findIndex((q) => q.id === item.id) ?? -1) : -1;
+  const answer = answerIndex >= 0 ? behavioral?.questions[answerIndex] : undefined;
+  const prevAnswer = answerIndex > 0 ? behavioral?.questions[answerIndex - 1] : undefined;
+  const nextAnswer = answerIndex >= 0 ? behavioral?.questions[answerIndex + 1] : undefined;
+  const toc = isProject ? tableOfContents(item.body ?? "") : [];
+
+  /*
     Some pages are rendered, not edited.
 
     A generated page -- a company question bank or discipline index -- carries the rows it was
@@ -203,7 +237,8 @@ export default async function PrepPage({
     : item.body;
 
   return (
-    <div className="max-w-3xl">
+    // A project's deep dive gets a contents rail beside it on wide screens, so it is wider.
+    <div id="top" className={isProject ? "max-w-[1060px]" : "max-w-3xl"}>
       <nav className="mb-3 flex flex-wrap items-center gap-1.5 text-[12px] text-ink-faint">
         <Link href={"/prep/" + segment} className="transition hover:text-ink">
           {meta.title}
@@ -223,7 +258,11 @@ export default async function PrepPage({
 
       <PageHeader
         title={item.title}
-        subtitle={item.prompt ?? undefined}
+        subtitle={
+          isProject
+            ? [content.org, content.summary].filter(Boolean).join(" · ") || undefined
+            : (item.prompt ?? undefined)
+        }
         actions={
           <>
             {meta.kind === "dsa" && item.sourceUrl && (
@@ -247,7 +286,13 @@ export default async function PrepPage({
       />
 
       {/* A folder's questions come before its own notes: they are what the folder is for. */}
-      {folderQuestions.length > 0 && (
+      {isProjectsFolder && behavioral && (
+        <div className="mb-6">
+          <ProjectGrid projects={behavioral.projects} />
+        </div>
+      )}
+
+      {folderQuestions.length > 0 && !isProjectsFolder && (
         <QuestionBrowser
           questions={folderQuestions}
           initialQuery={q ?? ""}
@@ -288,7 +333,8 @@ export default async function PrepPage({
         </form>
       )}
 
-      {isPractisable && (
+      {/* Difficulty and ask-rate grade a technical question; a story has neither. */}
+      {isPractisable && !isBehavioralLeaf && (
         <div className="mb-5">
           <PageGrading
             id={item.id}
@@ -299,11 +345,14 @@ export default async function PrepPage({
         </div>
       )}
 
-      <PageResources
-        prepItemId={item.id}
-        path={`/prep/${segment}/${here}`}
-        resources={resources}
-      />
+      {/* On a behavioral page the pitch or answer is what you came for; links come after it. */}
+      {!isBehavioralLeaf && (
+        <PageResources
+          prepItemId={item.id}
+          path={`/prep/${segment}/${here}`}
+          resources={resources}
+        />
+      )}
 
       {showsCode && (
         <CodeWorkspace
@@ -322,7 +371,119 @@ export default async function PrepPage({
 
       {/* A page is a document unless its content says otherwise. Readers replace the editor
           rather than sitting beside it: there is nothing to write on a book. */}
-      {!isDsaSolution && (
+      {isProject && (
+        <div className="mb-6 xl:grid xl:grid-cols-[minmax(0,1fr)_210px] xl:gap-10">
+          <div className="min-w-0">
+            <PitchCard
+              pitch={String(content.pitch)}
+              seconds={project?.pitchSeconds ?? 90}
+              action={
+                <Link
+                  href="/prep/revise/behavioral?focus=projects"
+                  className="text-[12px] text-accent-ink underline-offset-2 hover:underline"
+                >
+                  Rehearse
+                </Link>
+              }
+            />
+
+            {project && project.answers.length > 0 && (
+              <section className="mt-6">
+                <SectionTitle>Answers that use this project</SectionTitle>
+                <ul className="flex flex-wrap gap-1.5">
+                  {project.answers.map((a) => (
+                    <li key={a.url}>
+                      <Link
+                        href={a.url}
+                        className="block rounded-md border border-line bg-surface-2 px-2.5 py-1 text-[12.5px] text-ink-dim transition hover:border-line-strong hover:text-ink"
+                      >
+                        {a.title}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </section>
+            )}
+
+            {item.body && (
+              <section aria-labelledby="deep-dive-heading" className="mt-8">
+                <div className="mb-3 flex flex-wrap items-baseline justify-between gap-2">
+                  <h2 id="deep-dive-heading" className="text-[18px] font-semibold text-ink">
+                    Deep dive
+                  </h2>
+                  <span className="tnum text-[12px] text-ink-faint">
+                    {toc.length} sections · {readMinutes(item.body.length)} min read
+                  </span>
+                </div>
+                <TableOfContents entries={toc} variant="inline" />
+                <article className="rounded-card border border-line bg-surface px-5 py-2 sm:px-7 [&>div>h2:first-child]:mt-4">
+                  <Markdown size="md" anchors>
+                    {item.body}
+                  </Markdown>
+                </article>
+              </section>
+            )}
+          </div>
+          <TableOfContents entries={toc} variant="rail" />
+        </div>
+      )}
+
+      {isAnswer && answer && (
+        <div className="mb-6 space-y-4">
+          {answer.story && <StoryLinkCard story={answer.story} />}
+          <section
+            aria-labelledby="answer-heading"
+            className="rounded-card border border-line bg-surface px-5 py-5"
+          >
+            <div className="mb-4 flex flex-wrap items-baseline justify-between gap-2">
+              <h2
+                id="answer-heading"
+                className="text-[11px] font-semibold uppercase tracking-[0.08em] text-ink-faint"
+              >
+                {answer.shape.kind === "star" ? "Answer · STAR" : "Answer"}
+              </h2>
+              {answer.seconds > 0 && <SpokenTime seconds={answer.seconds} />}
+            </div>
+            <AnswerBody shape={answer.shape} />
+          </section>
+          {(prevAnswer || nextAnswer) && (
+            <nav aria-label="Other questions" className="grid gap-2 sm:grid-cols-2">
+              {prevAnswer ? (
+                <Link
+                  href={prevAnswer.url}
+                  className="rounded-card border border-line bg-surface px-4 py-2.5 transition hover:border-line-strong"
+                >
+                  <span className="block text-[11px] text-ink-faint">← Previous</span>
+                  <span className="block truncate text-[13px] text-ink">{prevAnswer.title}</span>
+                </Link>
+              ) : (
+                <span aria-hidden className="hidden sm:block" />
+              )}
+              {nextAnswer && (
+                <Link
+                  href={nextAnswer.url}
+                  className="rounded-card border border-line bg-surface px-4 py-2.5 text-right transition hover:border-line-strong"
+                >
+                  <span className="block text-[11px] text-ink-faint">Next →</span>
+                  <span className="block truncate text-[13px] text-ink">{nextAnswer.title}</span>
+                </Link>
+              )}
+            </nav>
+          )}
+        </div>
+      )}
+
+      {/* Behavioral folders (Projects, Questions, a theme) are pure containers: an empty
+          editor under their list reads as a form to fill in. */}
+      {isBehavioralLeaf && (
+        <PageResources
+          prepItemId={item.id}
+          path={`/prep/${segment}/${here}`}
+          resources={resources}
+        />
+      )}
+
+      {!isDsaSolution && !isBehavioralLeaf && !(meta.kind === "behavioral" && hasChildren && !item.body) && (
       <div className="mb-6">
         {content.drive ? (
           <BookReader file={`/api/books/${item.id}`} title={item.title} hosted="drive" />
@@ -408,7 +569,7 @@ export default async function PrepPage({
 
       {/* The seeded starting points for this discipline. Read-only: they are a prompt for your
           own answer below, not a substitute for it. */}
-      {isPractisable && meta.fields.some((f) => content[f.key]) && (
+      {isPractisable && !isBehavioralLeaf && meta.fields.some((f) => content[f.key]) && (
         <>
           <SectionTitle>Starting points</SectionTitle>
           <div className="mb-6 space-y-2">

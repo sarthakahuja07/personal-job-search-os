@@ -643,10 +643,26 @@ export type PrepContent = {
   requirements?: string;
   architecture?: string;
   tradeoffs?: string;
-  /** behavioral */
+  /**
+   * behavioral, a question: STAR fields, or `answer` as prose when the answer is not a story
+   * ("Why Confluent?"). `outcome` is the R. `story` names the project the answer draws on, by
+   * its slug under `projects/`. `hint` is guidance for a question not answered yet.
+   */
   situation?: string;
+  task?: string;
   action?: string;
   outcome?: string;
+  answer?: string;
+  story?: string;
+  hint?: string;
+  /**
+   * behavioral, a project: `pitch` is the 90-second version (Markdown) and marks the page as a
+   * project; the deep dive is the body. `org` is where it was done, `summary` the one line a
+   * project card shows.
+   */
+  pitch?: string;
+  org?: string;
+  summary?: string;
   /** shared */
   references?: { label: string; url: string }[];
 

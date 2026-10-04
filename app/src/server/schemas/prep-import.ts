@@ -57,6 +57,14 @@ const content = z
     situation: z.string().max(20000).nullish(),
     action: z.string().max(20000).nullish(),
     outcome: z.string().max(20000).nullish(),
+    task: z.string().max(20000).nullish(),
+    answer: z.string().max(20000).nullish(),
+    hint: z.string().max(2000).nullish(),
+    /** A behavioral answer's project, by its slug under `behavioral/projects`. */
+    story: z.string().max(120).regex(/^[a-z0-9-]*$/).nullish(),
+    pitch: z.string().max(20000).nullish(),
+    org: z.string().max(80).nullish(),
+    summary: z.string().max(400).nullish(),
   })
   .partial();
 

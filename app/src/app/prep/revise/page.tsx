@@ -127,6 +127,25 @@ export default async function RevisePage() {
         ))}
       </div>
 
+      {/* Not a deck: stories are rehearsed out loud against a clock, not graded Again/Good. */}
+      <section className="mt-8">
+        <SectionTitle>Behavioral</SectionTitle>
+        <Card className="flex flex-wrap items-center justify-between gap-3 px-4 py-4">
+          <div className="min-w-0">
+            <h3 className="text-[15px] font-medium text-ink">Rehearse out loud</h3>
+            <p className="mt-0.5 text-[13px] text-ink-dim">
+              Project pitches and behavioral questions, one at a time, against a speaking clock.
+            </p>
+          </div>
+          <Link
+            href="/prep/revise/behavioral"
+            className="rounded-md bg-accent px-3 py-1.5 text-[13px] font-medium text-canvas transition hover:brightness-110"
+          >
+            Start
+          </Link>
+        </Card>
+      </section>
+
       <section className="mt-8">
         <SectionTitle>By company</SectionTitle>
         {companies.length === 0 ? (
