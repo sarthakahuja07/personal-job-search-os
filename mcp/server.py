@@ -20,7 +20,8 @@ One publishing tool per discipline, rather than one with a `kind` argument:
     publish_hld_design         distributed system architecture
     publish_lld_design         object-oriented design within one service
     publish_lld_solution       a *worked* LLD answer: sections plus the code, as files
-    publish_behavioral_story   experience questions
+    publish_behavioral_story   experience questions, filed under a theme
+    publish_behavioral_project a project to walk through: 90-second pitch plus deep dive
     publish_page               an explicit kind and section; the escape hatch
 
 The split exists because the generic tool asked the model to get two things right at once --
@@ -173,8 +174,16 @@ async def prep_search(query: str, kind: str | None = None) -> dict[str, Any]:
 CONTENT_KEYS = (
     "pattern", "complexity", "approach",
     "requirements", "architecture", "tradeoffs",
-    "situation", "action", "outcome",
+    "situation", "task", "action", "outcome", "answer", "story",
+    "pitch", "org", "summary",
 )
+
+# Theme folders under behavioral/questions. The landing page lists questions from these only,
+# so a story published anywhere else would exist and never be shown.
+BEHAVIORAL_THEMES = Literal[
+    "introduction", "company-fit", "projects-impact", "ownership-initiative",
+    "conflict-influence", "failure-learning", "customer-focus", "strengths-collaboration",
+]
 
 
 async def _publish(kind: str, parent_path: str, args: dict[str, Any]) -> dict[str, Any]:
@@ -421,11 +430,15 @@ async def publish_lld_solution(
 @server.tool()
 async def publish_behavioral_story(
     title: str,
+    theme: BEHAVIORAL_THEMES,
     body: str | None = None,
     prompt: str | None = None,
     situation: str | None = None,
+    task: str | None = None,
     action: str | None = None,
     outcome: str | None = None,
+    answer: str | None = None,
+    story: str | None = None,
     frequency: int = 0,
     topics: list[str] | None = None,
     companies: list[str] | None = None,
@@ -435,22 +448,56 @@ async def publish_behavioral_story(
 ) -> dict[str, Any]:
     """
     Publish a behavioural answer: your own experience, not a technical problem -- conflict, a
-    failure, a project you led, "tell me about a time when".
+    failure, "tell me about a time when". A project to walk through end to end is
+    publish_behavioral_project instead.
 
     Args:
-        title: e.g. "A production incident you handled".
-        body: The note, as Markdown.
-        prompt: The interview question this answers.
-        situation: Context, briefly.
-        action: What you specifically did.
-        outcome: Result, and what you learned.
+        title: The question as asked, e.g. "Tell me about a time you took ownership".
+        theme: Which theme folder it belongs under.
+        body: Extra notes, as Markdown.
+        prompt: Optional one-line brief.
+        situation, task, action, outcome: STAR fields (outcome is the Result). Use these for a story.
+        answer: Prose answer (Markdown) when it isn't a STAR story, e.g. "Why Confluent?".
+        story: Slug of the project under behavioral/projects this answer draws on.
         frequency: Ask score 1-5. Set it.
         topics, companies: Tags.
         resources: [{"url", "title"}].
         source_url: Where this came from.
         on_conflict: error (default) | merge | replace.
     """
-    return await _publish("behavioral", "", locals())
+    return await _publish("behavioral", f"questions/{theme}", locals())
+
+
+@server.tool()
+async def publish_behavioral_project(
+    title: str,
+    pitch: str,
+    org: str | None = None,
+    summary: str | None = None,
+    body: str | None = None,
+    frequency: int = 0,
+    topics: list[str] | None = None,
+    resources: list[dict[str, str]] | None = None,
+    on_conflict: Literal["error", "merge", "replace"] = "error",
+) -> dict[str, Any]:
+    """
+    Publish a project you'd walk an interviewer through: the 90-second pitch, then a deep dive
+    for the follow-ups. Questions that draw on it link to it via their `story` (this page's slug).
+
+    Args:
+        title: The project, e.g. "Lineage Storage Redesign & Migration".
+        pitch: The ~90-second spoken version (~240 words), Markdown.
+        org: Where it was done, e.g. "Uber".
+        summary: One line for the project card.
+        body: The deep dive, Markdown. Sections as `## ` headings -- they become the contents list.
+        frequency: Ask score 1-5.
+        topics: Tags.
+        resources: [{"url", "title"}].
+        on_conflict: error (default) | merge | replace.
+    """
+    args = locals()
+    args["companies"] = [org] if org else []
+    return await _publish("behavioral", "projects", args)
 
 
 @server.tool()

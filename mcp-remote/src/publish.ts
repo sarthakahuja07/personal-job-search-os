@@ -77,6 +77,28 @@ const STORY_FIELDS = {
   outcome: { type: "string", description: "Result, and what you learned." },
 } as const;
 
+/**
+ * Theme folders under behavioral/questions. The behavioral landing page lists questions from
+ * these only, so a story filed anywhere else would exist and never be shown.
+ */
+const BEHAVIORAL_THEMES = [
+  "introduction",
+  "company-fit",
+  "projects-impact",
+  "ownership-initiative",
+  "conflict-influence",
+  "failure-learning",
+  "customer-focus",
+  "strengths-collaboration",
+] as const;
+
+const BEHAVIORAL_QUESTION_FIELDS = {
+  ...STORY_FIELDS,
+  task: { type: "string", description: "STAR task." },
+  answer: { type: "string", description: "Prose answer (Markdown) when it isn't a STAR story." },
+  story: { type: "string", description: "Slug of the behavioral/projects page it draws on." },
+} as const;
+
 /** Every content field, so a value that arrives is passed on whichever tool carried it. */
 const CONTENT_KEYS = [
   "pattern",
@@ -86,8 +108,14 @@ const CONTENT_KEYS = [
   "architecture",
   "tradeoffs",
   "situation",
+  "task",
   "action",
   "outcome",
+  "answer",
+  "story",
+  "pitch",
+  "org",
+  "summary",
 ] as const;
 
 function publishTool(spec: {
@@ -99,6 +127,8 @@ function publishTool(spec: {
   parentPath: string | ((args: Json) => string);
   fields: Record<string, unknown>;
   extraProperties?: Record<string, unknown>;
+  /** Defaults to just the title. */
+  required?: string[];
 }): ToolDef {
   return {
     name: spec.name,
@@ -108,7 +138,7 @@ function publishTool(spec: {
     inputSchema: {
       type: "object",
       properties: { ...common, ...spec.fields, ...(spec.extraProperties ?? {}) },
-      required: ["title"],
+      required: spec.required ?? ["title"],
       additionalProperties: false,
     },
     run: (env: Env, args: Json) =>
@@ -318,12 +348,56 @@ export const PUBLISH_TOOLS: ToolDef[] = [
     name: "publish_behavioral_story",
     title: "Publish a behavioural story",
     kind: "behavioral",
-    parentPath: "",
-    fields: STORY_FIELDS,
+    parentPath: (args) => `questions/${String(args.theme ?? "")}`,
+    fields: BEHAVIORAL_QUESTION_FIELDS,
+    required: ["title", "theme"],
+    extraProperties: {
+      theme: { type: "string", enum: BEHAVIORAL_THEMES, description: "Theme folder it belongs under." },
+    },
     description:
       "Publish a behavioural answer: your own experience, not a technical problem -- conflict, " +
-      "a failure, a project you led, 'tell me about a time when'." + ASK_IF_UNSURE,
+      "a failure, 'tell me about a time when'. Title = the question as asked. STAR fields for " +
+      "a story (outcome = Result), `answer` for prose. A project to walk through end to end is " +
+      "publish_behavioral_project." + ASK_IF_UNSURE,
   }),
+  {
+    name: "publish_behavioral_project",
+    title: "Publish a behavioural project",
+    description:
+      "Publish a project to walk an interviewer through: `pitch` is the ~90-second spoken " +
+      "version (~240 words), `body` the deep dive with `## ` section headings (they become the " +
+      "contents list). Questions link to it via their `story` = this page's slug.",
+    annotations: { readOnlyHint: false, destructiveHint: false },
+    inputSchema: {
+      type: "object",
+      properties: {
+        title: common.title,
+        pitch: { type: "string", description: "The 90-second version, Markdown." },
+        org: { type: "string", description: "Where it was done, e.g. 'Uber'." },
+        summary: { type: "string", description: "One line for the project card." },
+        body: { type: "string", description: "The deep dive, Markdown." },
+        frequency: common.frequency,
+        topics: common.topics,
+        resources: common.resources,
+        on_conflict: common.on_conflict,
+      },
+      required: ["title", "pitch"],
+      additionalProperties: false,
+    },
+    run: (env: Env, args: Json) =>
+      app(env, "POST", "/api/prep/pages", {
+        kind: "behavioral",
+        parent_path: "projects",
+        title: args.title,
+        frequency: args.frequency ?? 0,
+        topics: args.topics ?? [],
+        companies: args.org ? [args.org] : [],
+        body: args.body ?? null,
+        resources: args.resources ?? [],
+        on_conflict: args.on_conflict ?? "error",
+        content: { pitch: args.pitch, org: args.org ?? null, summary: args.summary ?? null },
+      }),
+  },
   {
     name: "publish_page",
     title: "Publish a page anywhere (advanced)",
@@ -347,7 +421,7 @@ export const PUBLISH_TOOLS: ToolDef[] = [
         ...common,
         ...DSA_FIELDS,
         ...DESIGN_FIELDS,
-        ...STORY_FIELDS,
+        ...BEHAVIORAL_QUESTION_FIELDS,
       },
       required: ["kind", "title"],
       additionalProperties: false,

@@ -42,7 +42,8 @@ every tool call.
 | `publish_dsa_question` | A coding problem |
 | `publish_hld_design` | Architecture between services |
 | `publish_lld_design` | Object-oriented design within one service |
-| `publish_behavioral_story` | An experience question |
+| `publish_behavioral_story` | An experience question, under a theme folder |
+| `publish_behavioral_project` | A project: 90-second pitch plus deep dive |
 | `publish_page` | Explicit kind and section; the escape hatch |
 | `prep_append` | Add to a page that exists, without overwriting it |
 | `company_scaffold` | Create a company folder and its five pages |

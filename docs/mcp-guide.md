@@ -49,7 +49,8 @@ takes a `kind` or a section — there is nothing to get wrong once the tool is c
 | `publish_hld_design` | Architecture *between services* — scale, sharding, replication, caching, queues, CAP, or designing a named product |
 | `publish_lld_design` | Object-oriented design *within one service* — classes, interfaces, design patterns, SOLID, state machines, parking lot / elevator / chess |
 | `publish_lld_solution` | The same, but you **solved it** — you have the design *and* working code. See below |
-| `publish_behavioral_story` | Your own experience — conflict, failure, a project you led, "tell me about a time when" |
+| `publish_behavioral_story` | Your own experience — conflict, failure, "tell me about a time when". Needs a `theme` |
+| `publish_behavioral_project` | A project to walk through: a ~90-second `pitch` plus the deep dive as `body` |
 | `publish_page` | None of the above. Takes an explicit `kind` and `parent_path`. Prefer the others |
 
 **If the conversation covered more than one discipline, or which one is unclear, ask rather than
@@ -106,7 +107,12 @@ you know at the end of a session and a human would never type by hand:
 
 Each tool carries only its own discipline's fields: `pattern` / `complexity` / `approach` on
 the DSA tool, `requirements` / `architecture` / `tradeoffs` on both design tools,
-`situation` / `action` / `outcome` on the behavioural one.
+`situation` / `task` / `action` / `outcome` (STAR, outcome = Result) or prose `answer` on the
+behavioural one, plus `theme` (which folder under `questions/` — `introduction`, `company-fit`,
+`projects-impact`, `ownership-initiative`, `conflict-influence`, `failure-learning`,
+`customer-focus`, `strengths-collaboration`) and `story` (the slug of the project it draws on).
+The project tool takes `pitch`, `org`, `summary`, and a `body` whose `## ` headings become the
+page's contents list.
 
 **Resources:** pass `[{url, title}]`. YouTube links are detected and stored as videos with the
 id extracted automatically. **Always give a video a title** — a YouTube URL has nothing readable

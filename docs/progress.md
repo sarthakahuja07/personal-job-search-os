@@ -3,7 +3,7 @@
 The durable state of this project. Updated whenever something meaningful lands, so no context is
 lost between sessions (PRD §73). Picking this up cold: read `CLAUDE.md` first, then this file.
 
-**Last updated:** 2026-09-24
+**Last updated:** 2026-10-04
 
 ---
 
@@ -42,7 +42,7 @@ are loaded and reachable only from behind Access.
 | Schema (`prep_items`) | done — one table, `kind` discriminator, JSON `content` per discipline |
 | DSA | in progress — 20 seeded starter questions replaced (2026-09-22) with a 14-pattern nested folder taxonomy (100 pattern/subpattern folders, each with a Notes page). 29 Confluent-tagged solution pages published (all of Confluent's DSA question bank except one source-doesn't-name-a-problem entry), linked from `/prep/company/confluent/dsa`. A DSA question with `content.problemSummary` set renders through its own component (`components/dsa-solution.tsx`, rendered from `PrepPage`'s `isDsaSolution` branch) instead of the generic editor: Problem Summary / Example / an auto-generated Complexity-at-a-Glance table / Brute Force / Optimized Solution (or N approaches), each solution self-contained in a tagged card with its own `SolutionCode` panel between its steps and its complexity, and Time/Space Complexity in their own fact boxes with a Big-O headline plus an explanation of *why* (see "A DSA solution page was structure with no hierarchy, and now is", below). Every "compute a value" LeetCode problem is wrapped in `class Solution` with the exact official method signature (no `ostream`/`void`-print solutions — even the two file-streaming questions return via a value or a callback, never write to `cout` from inside the algorithm); "design a data structure" problems keep their real LeetCode class name (`LRUCache`, `MyQueue`, `TimeMap`, ...). Sidebar shows an E/M/H difficulty badge for this folder instead of the ask-rate score, and the DSA code panel defaults to expanded with a LeetCode/source button in the header. |
 | System Design | done — 10 seeded problems with requirements / architecture / trade-offs |
-| Behavioral | done — 8 seeded themes with situation / action / outcome |
+| Behavioral | done (2026-10-04) — 4 projects (Uber lineage storage redesign; Blinkit layout fallback, source pricing, layout wireframing) and 27 questions (24 answered) in 8 theme folders. See "Behavioral: projects, themed questions and rehearsal" below |
 | Progress tracking | done — four states, `revisit` deliberately not counted as done |
 | Notion import | not started — schema shaped to absorb it (PRD §39) |
 | LLD question set | done — 17 pages under System Design → LLD, each with videos and articles, no solutions yet |
@@ -669,6 +669,51 @@ field was dropped across all six touched pages.
 Both rounds verified the same way as the original redesign: seed local D1 from a remote export
 (local D1 has no content of its own), screenshot with Playwright, since the deployed app is
 Cloudflare-Access-gated and unreachable directly.
+
+## Behavioral: projects, themed questions and rehearsal
+
+Sarthak's behavioral material came in two shapes, and the pages follow them. **Projects**
+(`behavioral/projects/*`) are things you walk an interviewer through: a ~90-second pitch in
+`content.pitch` and a 30–50 KB deep dive as the body. **Questions**
+(`behavioral/questions/<theme>/*`) are answered either as STAR fields
+(`situation`/`task`/`action`/`outcome`) or as prose in `content.answer`, and may name the
+project they draw on in `content.story`. Themes are folders, not a field, so the sidebar, folder
+pages and question search group by them with no code of their own. Shape detection and
+cross-linking are pure (`server/domain/behavioral.ts`, tested).
+
+- `/prep/behavioral` opens on project cards (org, summary, pitch time, section count, read time,
+  how many answers use it), then every question grouped by theme with the shared search.
+- A project page leads with the pitch, lists the answers that draw on it, and renders the deep
+  dive with a sticky scroll-spy contents rail (a collapsible list on narrow screens). Heading ids
+  come from one `slugger` used by both the renderer (`Markdown anchors`) and `tableOfContents`,
+  allocated across every heading level in order, so duplicate headings get the same `-2` on both
+  sides. All 205 contents links across the four projects were checked to resolve.
+- A question page renders STAR as a timeline or prose as written, with estimated speaking time
+  (160 wpm, the rate at which the ~250-word pitches come out at 90 seconds), a link to its
+  project, and previous/next through the set. Unanswered questions show their hint.
+- `/prep/revise/behavioral` is rehearsal, not a deck: one prompt at a time, a clock against the
+  answer's target length, the written answer held back until revealed. Filter by theme or
+  pitches, shuffle, keyboard (Space, ←/→, R). It is a static route beside `revise/[...deck]`
+  because decks are keyed by DSA/HLD/LLD throughout (company indexes, custom decks) and a story
+  is not graded Again/Good.
+
+The content was imported once from text files (since deleted) by a script that upserted with
+deterministic ids. Six of the nine original seeded placeholders were superseded by real answers
+and removed (none had notes, status, resources or reviews); three with no answer yet — Tell me
+about yourself, Influencing without authority, Working with an underperforming teammate — were
+kept in their themes with their advice as a `hint`.
+
+`publish_behavioral_story` now requires a `theme` and files into `questions/<theme>` (it used to
+publish at the root, which the new landing page would never list), and takes `task`, `answer`
+and `story`. `publish_behavioral_project` is new. Both MCP servers were updated and smoke-tested
+against production.
+
+A bug found on the way: a code fence with no language has no class, so the Markdown renderer
+styled every line of an ASCII diagram as an inline-code chip. The `pre` wrapper now resets its
+child.
+
+**Not imported:** `metadata-inconsistencies.txt` was byte-identical to `source-pricing.txt` — a
+copy, not the metadata-inconsistencies write-up — so there is no page for that project yet.
 
 ## Known gaps
 

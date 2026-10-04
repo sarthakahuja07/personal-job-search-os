@@ -66,7 +66,7 @@ change takes effect.
 
 `prep_tree`, `prep_search`, `prep_append`, the per-discipline publishers
 (`publish_dsa_question`, `publish_hld_design`, `publish_lld_design`, `publish_lld_solution`,
-`publish_behavioral_story`, `publish_page`), plus `company_scaffold`, `company_question_bank`
+`publish_behavioral_story`, `publish_behavioral_project`, `publish_page`), plus `company_scaffold`, `company_question_bank`
 and `company_question_index`. Both servers call the same `/api/prep/*` endpoints, so publish
 *semantics* cannot drift.
 
