@@ -184,7 +184,7 @@ export function planIngest(input: PlanInput): IngestPlan {
   const createdExternalIds: string[] = [];
   const notifications: PlannedNotification[] = [];
 
-  for (const job of jobs) {
+  for (const job of collapseRepeatedIds(jobs)) {
     const match = matchJob(
       { title: job.title, location: job.location, description: job.description },
       rules,
@@ -271,4 +271,31 @@ export function planIngest(input: PlanInput): IngestPlan {
     resetMissingJobIds,
     presenceTrackingSkipped: false,
   };
+}
+
+/**
+ * One job per external id, with the locations of any repeats merged into it.
+ *
+ * Some boards list a multi-city posting once per city under the same id -- ThoughtSpot's does,
+ * with the same id and URL each time. Upserting each repeat would count the job as created
+ * twice, and keeping only the first would let "Mountain View" hide a "Bengaluru" listed second
+ * from location matching.
+ */
+function collapseRepeatedIds(jobs: IncomingJob[]): IncomingJob[] {
+  const byId = new Map<string, IncomingJob>();
+  for (const job of jobs) {
+    const first = byId.get(job.externalJobId);
+    if (!first) {
+      byId.set(job.externalJobId, job);
+      continue;
+    }
+    const locations = [first.location, job.location]
+      .flatMap((l) => (l ? l.split("; ") : []))
+      .filter(Boolean);
+    byId.set(job.externalJobId, {
+      ...first,
+      location: [...new Set(locations)].join("; ") || first.location,
+    });
+  }
+  return [...byId.values()];
 }

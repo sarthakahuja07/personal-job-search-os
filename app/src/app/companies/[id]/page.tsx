@@ -23,6 +23,7 @@ const SOURCE_TYPES: SourceType[] = [
   "lever",
   "ashby",
   "smartrecruiters",
+  "mynexthire",
   "workday",
   "manual",
 ];
@@ -36,6 +37,7 @@ const CONFIG_FIELDS: Record<string, { key: string; label: string; hint: string }
   smartrecruiters: [
     { key: "companyId", label: "Company ID", hint: "careers.smartrecruiters.com/<id>" },
   ],
+  mynexthire: [{ key: "tenant", label: "Tenant", hint: "<tenant>.mynexthire.com" }],
   workday: [
     { key: "tenant", label: "Tenant", hint: "e.g. nvidia" },
     { key: "dataCenter", label: "Shard", hint: "e.g. wd5 — not guessable, read it off the URL" },

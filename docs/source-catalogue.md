@@ -7,9 +7,9 @@ The organising idea: **the stubborn companies were never individual problems, th
 handful of patterns.** Building for the pattern rather than the company is what turned all but
 one of them into configuration rather than code.
 
-**45 of 49 active companies now crawl automatically.**
+**58 of 64 active companies now crawl automatically.**
 
-The four that do not:
+The ones that do not:
 
 | Company | Why not |
 |---|---|
@@ -17,6 +17,7 @@ The four that do not:
 | **super.money** | The careers page renders "install the super.money app now", and they have no Instahyre profile (`jobs-at-super-money` 404s). There is no web board anywhere to read. |
 | **Deel** | Careers is marketing, `jobs.deel.com` redirects back into it, the only job-ish link is a template library, and nothing job-shaped loads after accepting consent. |
 | **Eightfold** | Their board is their own product at `app.eightfold.ai`, whose API returns 403 to every client. Unlike Qualcomm, no robots-permitted alternative endpoint exists. |
+| **Angel One** | Its own board (`angelone.in/careers`) ships its jobs server-side in the RSC payload as `"jobs":[...]`, and that array was **empty** when this was checked on 2026-10-06 — nothing on the page, nothing in the sitemaps. A field map cannot be verified against zero jobs, so it is manual rather than a guessed config. `angelone.darwinbox.in` is a real tenant but renders nothing, and Instahyre's employer pages sit behind a Turnstile challenge. When the board has openings, promote it: each job carries `job_id`, `title`, `slug`, `department`, linked at `/careers/{slug}`. |
 
 Three former members of this list were promoted once they were investigated properly rather than
 statically scanned — a static regex over the careers HTML found nothing for any of them, and a
@@ -54,6 +55,55 @@ The lesson is the one already recorded below for Qualcomm and Akamai, in a third
 negative result from a static scan is not evidence of absence.** Cohesity's own API answered the
 question by naming its Workday tenant in a field, and PhonePe was one wrong token away the whole
 time.
+
+---
+
+## Added 2026-10-06 (14 companies)
+
+Every source below was run end to end through its real adapter against the live board before
+the row was written, not merely probed. Meesho, Rubrik, Salesforce, Intuit and CRED were on the
+same list and were already crawled.
+
+| Company | Source | Identifier | Jobs at check | India |
+|---|---|---|---|---|
+| Glean | Greenhouse | `gleanwork` | 131 | 25 |
+| Airbnb | Greenhouse | `airbnb` | 151 | 6 |
+| Stripe | Greenhouse | `stripe` | 719 | 43 |
+| Coinbase | Greenhouse | `coinbase` | 226 | 9 |
+| Twitch | Greenhouse | `twitch` | 49 | 0 — no India office; tracked for completeness |
+| Twilio | Greenhouse | `twilio` | 133 | 15 |
+| Harness | Greenhouse | `harnessinc` | 66 | 12 |
+| InMobi | Greenhouse | `inmobi` | 71 | 37 |
+| Gojek | Lever | `GoToGroup` | 42 | 1 |
+| Broadcom | Workday | `broadcom.wd1/External_Career` | 366 | 69 |
+| PayPal | Workday | `paypal.wd1/jobs` | 300 | 11+ |
+| ThoughtSpot | `json_api` | `thoughtspot.com/api/getCareersListing` | 53 | 9 |
+| ShareChat | `mynexthire` (new) | `sharechat` | 6 | 6 |
+| Angel One | manual | — | 0 | see above |
+
+**Gojek** is the `GoToGroup` Lever board. `gojek.io/careers` is a filtered view of it (its job
+ids are Lever posting ids; Gojek is the `ODS - *` departments), so the whole board is crawled and
+also picks up GoTo Financial. GoTo's own HRIS API (`content.goinfra.co.id`) is `Disallow: /`.
+
+**PayPal** — `careers.pypl.com` is behind a Cloudflare Turnstile challenge, so the Workday tenant
+is the only door, and it is PayPal's own. Its India count reads low because multi-city postings
+show `locationsText: "2 Locations"` until the detail fetch.
+
+**ThoughtSpot** — the careers page calls its own `/api/getCareersListing` (robots permits it),
+which returns the whole board with stable Rippling ATS ids and links. It lists a multi-city job
+once per city under one id, which is why ingest now collapses repeated ids in a payload and
+merges their locations — otherwise "Mountain View" listed first would hide a "Bengaluru" listed
+second from location matching.
+
+**ShareChat** hires through **MyNextHire**, an Indian ATS, found by watching the careers page:
+its bundle links `sharechat.mynexthire.com`, whose widget lists the board with one POST to
+`/employer/careers/reqlist/get`. That got its own small tier-1 adapter rather than a `json_api`
+config because a MyNextHire job link is a **base64-encoded JSON object** carrying the
+requisition id, which the field-mapping language deliberately cannot express. Only the full
+object works — a minimal `{pageType, reqId}` renders "Oops! Something went wrong!" — so the
+exact link was verified in a browser and is pinned in `test_mynexthire_job_url.py`.
+`sharechat.com/api/careersList` serves the same jobs, but `sharechat.com/robots.txt` has
+`Disallow: /*?*`, and MyNextHire's host has no robots.txt at all.
 
 ---
 

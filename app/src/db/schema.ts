@@ -61,6 +61,7 @@ export type SourceType =
   | "lever"
   | "ashby"
   | "smartrecruiters"
+  | "mynexthire"
   | "workday"
   | "custom_json"
   | "jsonld"
@@ -82,7 +83,8 @@ export type SourceConfig = {
   slug?: string;
   /** smartrecruiters */
   companyId?: string;
-  /** workday: tenant, data-centre shard (wd1/wd3/wd5...), and site slug */
+  /** workday: tenant, data-centre shard (wd1/wd3/wd5...), and site slug.
+   *  mynexthire reuses `tenant` for the subdomain in <tenant>.mynexthire.com. */
   tenant?: string;
   dataCenter?: string;
   site?: string;

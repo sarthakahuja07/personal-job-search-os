@@ -125,7 +125,7 @@ export async function updateCompany(formData: FormData) {
 
 function sourceTierFor(sourceType: SourceType): number {
   if (sourceType === "workday") return 2;
-  if (["greenhouse", "lever", "ashby", "smartrecruiters"].includes(sourceType)) return 1;
+  if (["greenhouse", "lever", "ashby", "smartrecruiters", "mynexthire"].includes(sourceType)) return 1;
   if (sourceType === "custom_json") return 3;
   if (sourceType === "jsonld") return 4;
   if (sourceType === "html") return 5;

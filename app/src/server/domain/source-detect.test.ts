@@ -15,6 +15,11 @@ describe("detectSource", () => {
       "smartrecruiters",
       { companyId: "ServiceNow" },
     ],
+    [
+      "https://sharechat.mynexthire.com/employer/jobs?src=careers",
+      "mynexthire",
+      { tenant: "sharechat" },
+    ],
   ])("detects %s", (url, sourceType, config) => {
     const d = detectSource(url);
     expect(d?.sourceType).toBe(sourceType);

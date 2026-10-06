@@ -66,6 +66,13 @@ const MATCHERS: Matcher[] = [
     pattern: /careers\.smartrecruiters\.com\/([A-Za-z0-9_-]+)/,
     build: (m) => ({ companyId: m[1] }),
   },
+  {
+    sourceType: "mynexthire",
+    sourceTier: 1,
+    label: "MyNextHire",
+    pattern: /([a-z0-9-]+)\.mynexthire\.com/,
+    build: (m) => ({ tenant: m[1] }),
+  },
 ];
 
 export function detectSource(url: string): Detection | null {
@@ -96,6 +103,8 @@ export function describeConfig(sourceType: SourceType, config: SourceConfig): st
       return config.slug ?? "—";
     case "smartrecruiters":
       return config.companyId ?? "—";
+    case "mynexthire":
+      return config.tenant ?? "—";
     case "workday":
       return config.tenant && config.dataCenter && config.site
         ? `${config.tenant}.${config.dataCenter}/${config.site}`
@@ -122,6 +131,8 @@ export function validateConfig(sourceType: SourceType, config: SourceConfig): st
         return [need("slug", "the segment in jobs.ashbyhq.com/<slug>")];
       case "smartrecruiters":
         return [need("companyId", "the segment in careers.smartrecruiters.com/<id>")];
+      case "mynexthire":
+        return [need("tenant", "the subdomain in <tenant>.mynexthire.com")];
       case "workday":
         return [
           need("tenant", "the subdomain, e.g. nvidia"),

@@ -3,7 +3,7 @@
 The durable state of this project. Updated whenever something meaningful lands, so no context is
 lost between sessions (PRD §73). Picking this up cold: read `CLAUDE.md` first, then this file.
 
-**Last updated:** 2026-10-04
+**Last updated:** 2026-10-06
 
 ---
 
@@ -718,6 +718,22 @@ DLM for TTL, the catalogue an aggregation layer), was added the same day through
 time you introduced a bug" (that bug was in the TTL-to-DLM rollout). Its source document's Part II
 restated the lineage redesign and was truncated mid-sentence, so only Part I (36 sections) was
 published; the lineage project's own page carries the complete version.
+
+## Fourteen more companies, and a MyNextHire adapter (2026-10-06)
+
+Glean, Gojek, Broadcom, Airbnb, Stripe, ThoughtSpot, PayPal, Coinbase, Angel One, Twitch, InMobi,
+ShareChat, Twilio and Harness added; Meesho, Rubrik, Salesforce, Intuit and CRED from the same
+list were already crawled. 13 crawl automatically and every one was run through its real adapter
+against the live board before its row was written. Angel One is manual: its own board was empty
+at the time, so there was nothing to verify a config against. Sources and evidence are in
+`docs/source-catalogue.md`.
+
+- New tier-1 adapter `mynexthire` (ShareChat), with a cassette and a test pinning the job link,
+  which is a base64-encoded JSON object and works only in its full form. Recognised by
+  Companies → Add and editable on the company page.
+- Ingest now collapses repeated external ids within a payload and merges their locations.
+  ThoughtSpot lists a multi-city job once per city under one id; before this, each repeat was
+  counted as created, and the first city's location decided matching alone.
 
 ## Known gaps
 

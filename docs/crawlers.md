@@ -43,6 +43,7 @@ row so it is visible, and lower tiers get monitored harder.
 | 1 | Lever | `GET api.lever.co/v0/postings/{slug}?mode=json` | config only |
 | 1 | Ashby | `GET api.ashbyhq.com/posting-api/job-board/{name}` | config only |
 | 1 | SmartRecruiters | `GET api.smartrecruiters.com/v1/companies/{id}/postings` | config only |
+| 1 | MyNextHire | `POST {tenant}.mynexthire.com/employer/careers/reqlist/get` | config only |
 | 2 | Workday CXS | `POST {tenant}.wd{N}.myworkdayjobs.com/wday/cxs/{tenant}/{site}/jobs` | config only |
 | 3 | Bespoke JSON search (`json_api`) | the company's own search endpoint | config only |
 | 4 | Embedded hydration (`hydration`) | `__NEXT_DATA__` in the careers page | config only |

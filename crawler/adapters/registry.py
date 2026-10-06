@@ -16,6 +16,7 @@ from crawler.adapters.html_list import HtmlListAdapter
 from crawler.adapters.hydration import HydrationAdapter
 from crawler.adapters.json_api import JsonApiAdapter
 from crawler.adapters.lever import LeverAdapter
+from crawler.adapters.mynexthire import MyNextHireAdapter
 from crawler.adapters.smartrecruiters import SmartRecruitersAdapter
 from crawler.adapters.workday import WorkdayAdapter
 
@@ -26,6 +27,7 @@ ADAPTERS: dict[str, JobSourceAdapter] = {
         LeverAdapter(),
         AshbyAdapter(),
         SmartRecruitersAdapter(),
+        MyNextHireAdapter(),
         WorkdayAdapter(),
         JsonApiAdapter(),
         HydrationAdapter(),
@@ -34,7 +36,7 @@ ADAPTERS: dict[str, JobSourceAdapter] = {
 }
 
 # Most specific first: a Workday URL must not be claimed by a looser pattern.
-_DETECT_ORDER = ("workday", "greenhouse", "lever", "ashby", "smartrecruiters")
+_DETECT_ORDER = ("workday", "greenhouse", "lever", "ashby", "smartrecruiters", "mynexthire")
 
 
 def get_adapter(source_type: str) -> JobSourceAdapter | None:

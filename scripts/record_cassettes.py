@@ -120,6 +120,24 @@ async def record_smartrecruiters(client: httpx.AsyncClient) -> dict[str, Any]:
     }
 
 
+async def record_mynexthire(client: httpx.AsyncClient) -> dict[str, Any]:
+    url = "https://sharechat.mynexthire.com/employer/careers/reqlist/get"
+    r = await client.post(
+        url, json={"source": "careers", "code": "", "filterByBuId": -1}, timeout=45
+    )
+    r.raise_for_status()
+    page = r.json()
+    for job in page.get("reqDetailsBOList", []):
+        if isinstance(job.get("jdDisplay"), str) and len(job["jdDisplay"]) > MAX_TEXT:
+            job["jdDisplay"] = job["jdDisplay"][:MAX_TEXT] + "…[trimmed for fixture]"
+    return {
+        "config": {"tenant": "sharechat"},
+        "careers_url": "https://sharechat.mynexthire.com/employer/jobs?src=careers",
+        "list": [page],
+        "details": {},
+    }
+
+
 async def record_workday(client: httpx.AsyncClient) -> dict[str, Any]:
     config = {
         "tenant": "nvidia",
@@ -300,6 +318,7 @@ RECORDERS = {
     "lever": record_lever,
     "ashby": record_ashby,
     "smartrecruiters": record_smartrecruiters,
+    "mynexthire": record_mynexthire,
     "workday": record_workday,
     "json_api": record_json_api,
     "hydration": record_hydration,

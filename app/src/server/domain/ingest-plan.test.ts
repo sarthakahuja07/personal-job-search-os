@@ -56,6 +56,23 @@ describe("planIngest — creating jobs", () => {
     expect(p.notifications[0].dedupKey).toBe("new_job:R-1");
   });
 
+  it("collapses a job the board lists once per city into one job with every location", () => {
+    const p = planIngest(
+      input({
+        jobs: [
+          job({ location: "Mountain View, CA" }),
+          job({ location: "Bengaluru, India" }),
+          job({ location: "Mountain View, CA" }),
+        ],
+      }),
+    );
+    expect(p.createdExternalIds).toEqual(["R-1"]);
+    expect(p.upserts).toHaveLength(1);
+    expect(p.upserts[0].location).toBe("Mountain View, CA; Bengaluru, India");
+    // The India location listed second still counts.
+    expect(p.notifications).toHaveLength(1);
+  });
+
   it("creates a new irrelevant job WITHOUT queueing a notification", () => {
     const p = planIngest(
       input({ jobs: [job({ title: "Senior Software Engineer" })] }),

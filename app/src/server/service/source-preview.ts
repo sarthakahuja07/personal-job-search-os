@@ -108,6 +108,21 @@ async function probe(
     };
   }
 
+  if (sourceType === "mynexthire") {
+    const d = (await getJson(
+      `https://${c.tenant}.mynexthire.com/employer/careers/reqlist/get`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ source: "careers", code: "", filterByBuId: -1 }),
+      },
+    )) as { reqDetailsBOList?: { reqTitle?: unknown }[] };
+    const jobs = asArray(d.reqDetailsBOList).map((j) => ({
+      title: (j as { reqTitle?: unknown }).reqTitle,
+    }));
+    return { total: jobs.length, titles: jobs.map(titleOf).filter(Boolean) as string[] };
+  }
+
   if (sourceType === "workday") {
     const url =
       `https://${c.tenant}.${c.dataCenter}.myworkdayjobs.com/wday/cxs/` +
