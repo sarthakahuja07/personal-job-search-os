@@ -25,7 +25,7 @@ import structlog
 from crawler.adapters.base import ConfigError, SchemaDriftError
 from crawler.adapters.registry import get_adapter
 from crawler.client.api import ApiClient, Company
-from crawler.http.client import BudgetExceeded, CrawlBudget, HttpClient, RateLimited
+from crawler.http.client import BudgetExceeded, CrawlBudget, HttpClient, NotJson, RateLimited
 from crawler.matching import match_title
 from crawler.models.job import NormalizedJob
 
@@ -125,6 +125,13 @@ async def crawl_company(
         outcome.status = "failed"
         outcome.error = f"config error: {exc}"
         log.error("company.config_error", company=company.name, error=str(exc))
+    except NotJson as exc:
+        # Degraded, not failed: a JSON API serving a page is almost always the source's own
+        # maintenance or interstitial page, and it clears without any change on our side. It
+        # still counts as unhealthy, so a source that stays this way is not hidden.
+        outcome.status = "degraded"
+        outcome.error = f"non-JSON response: {exc}"[:400]
+        log.warning("company.not_json", company=company.name, error=str(exc)[:200])
     except RateLimited as exc:
         outcome.status = "degraded"
         outcome.error = f"rate limited: {exc}"

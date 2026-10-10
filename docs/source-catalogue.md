@@ -166,14 +166,13 @@ not a Python file.
 
 ## Crawled automatically (29)
 
-### Tier 1 — public ATS feed (10)
+### Tier 1 — public ATS feed (9)
 
 | Company | ATS | Identifier |
 |---|---|---|
 | Databricks | Greenhouse | `databricks` |
 | Roku | Greenhouse | `roku` |
 | Uber Freight | Greenhouse | `uberfreight` |
-| Postman | Greenhouse | `postman` |
 | DigitalOcean | Greenhouse | `digitalocean98` |
 | ServiceNow | SmartRecruiters | `servicenow` |
 | Swiggy | SmartRecruiters | `swiggy` |
@@ -181,7 +180,7 @@ not a Python file.
 | Confluent | Ashby | `confluent` |
 | Zeta Suite | Lever | `zeta` |
 
-### Tier 2 — Workday CXS (5)
+### Tier 2 — Workday CXS (6)
 
 | Company | Tenant | Shard | Site |
 |---|---|---|---|
@@ -190,6 +189,7 @@ not a Python file.
 | Salesforce | `salesforce` | `wd12` | `External_Career_Site` |
 | Visa | `visa` | `wd5` | `Visa` |
 | Adobe | `adobe` | `wd5` | `external_experienced` |
+| Postman | `postman` | `wd108` | `careers` |
 
 ### Tier 3 — bespoke JSON search (8)
 

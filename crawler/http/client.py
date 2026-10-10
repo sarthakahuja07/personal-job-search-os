@@ -49,6 +49,14 @@ class BudgetExceeded(RuntimeError):
     """Raised when a company exhausts its request or time budget."""
 
 
+class NotJson(RuntimeError):
+    """A JSON endpoint answered with something else -- typically an HTML maintenance page.
+
+    Workday serves one to every tenant at once during its weekly maintenance window, and a bare
+    JSONDecodeError made eight healthy boards look broken without saying what actually came back.
+    """
+
+
 class RateLimited(RuntimeError):
     """Raised when a host keeps returning 429 after backoff."""
 
@@ -198,9 +206,20 @@ class HttpClient:
     async def get_json(self, url: str, **kwargs: Any) -> tuple[Any, httpx.Response]:
         r = await self.request("GET", url, **kwargs)
         r.raise_for_status()
-        return r.json(), r
+        return _json(r), r
 
     async def post_json(self, url: str, **kwargs: Any) -> tuple[Any, httpx.Response]:
         r = await self.request("POST", url, **kwargs)
         r.raise_for_status()
-        return r.json(), r
+        return _json(r), r
+
+
+def _json(r: httpx.Response) -> Any:
+    try:
+        return r.json()
+    except ValueError as exc:
+        content_type = r.headers.get("content-type", "no content-type").split(";")[0]
+        snippet = " ".join(r.text[:120].split())
+        raise NotJson(
+            f"expected JSON, got {content_type} (HTTP {r.status_code}): {snippet!r}"
+        ) from exc

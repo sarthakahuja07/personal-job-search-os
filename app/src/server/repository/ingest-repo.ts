@@ -11,7 +11,7 @@
  * exceed the invocation limit forty times over.
  */
 
-import { and, eq, inArray, isNull, sql } from "drizzle-orm";
+import { and, eq, inArray, isNull, like, or, sql } from "drizzle-orm";
 
 import type { Db } from "@/db";
 import {
@@ -115,11 +115,28 @@ export async function recentMedianJobCount(
   const rows = await db
     .select({ jobsFound: crawlRuns.jobsFound })
     .from(crawlRuns)
-    // Successful runs only. A degraded or failed run is not a measurement of what this company
-    // normally returns, and letting one into the baseline lets an intermittent source erode its
-    // own alarm: Moveworks serves an empty board on some requests and a full one on others, and
-    // sampling those zeros would quietly redefine "normal" as nothing.
-    .where(and(eq(crawlRuns.companyId, companyId), eq(crawlRuns.status, "success")))
+    // Successful runs, plus runs degraded *only* by volume drift. A failed, suspicious (zero) or
+    // rate-limited run is not a measurement of what this company normally returns, and letting
+    // one into the baseline lets an intermittent source erode its own alarm: Moveworks serves an
+    // empty board on some requests and a full one on others, and sampling those zeros would
+    // quietly redefine "normal" as nothing.
+    //
+    // A drift run, though, is a complete measurement that happened to be low. Excluding it too
+    // meant a board that genuinely shrank could never re-baseline: Navi went from 9 openings to
+    // 4 and stayed "degraded" for weeks against a median frozen at 9. Counting them, a drop has
+    // to hold for most of the sample before it becomes the new normal.
+    .where(
+      and(
+        eq(crawlRuns.companyId, companyId),
+        or(
+          eq(crawlRuns.status, "success"),
+          and(
+            eq(crawlRuns.status, "degraded"),
+            like(crawlRuns.error, "job count % is below half the recent median %"),
+          ),
+        ),
+      ),
+    )
     .orderBy(sql`${crawlRuns.startedAt} DESC`)
     .limit(sampleSize);
   if (rows.length < 3) return null;

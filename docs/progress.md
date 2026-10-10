@@ -201,11 +201,11 @@ Full detail, and the evidence behind every decision, in
 
 | Tier | Adapter | Companies |
 |---|---|---|
-| 1 | Greenhouse | Databricks, Roku, Uber Freight, Postman, DigitalOcean |
+| 1 | Greenhouse | Databricks, Roku, Uber Freight, DigitalOcean |
 | 1 | SmartRecruiters | ServiceNow, Swiggy |
 | 1 | Ashby | Sarvam AI, Confluent |
 | 1 | Lever | Zeta Suite |
-| 2 | Workday | NVIDIA, Adobe, Salesforce, Target, Visa |
+| 2 | Workday | NVIDIA, Adobe, Salesforce, Target, Visa, Postman |
 | 3 | `json_api` | Amazon, Microsoft, Qualcomm, Atlassian, Akamai, Keychain AI, Rippling, Confluent (IBM) |
 | 4 | `hydration` | DE Shaw, CHEQ |
 | 5 | `html_list` | Intuit, Moveworks, Apple, Ringg |
@@ -734,6 +734,22 @@ at the time, so there was nothing to verify a config against. Sources and eviden
 - Ingest now collapses repeated external ids within a payload and merges their locations.
   ThoughtSpot lists a multi-city job once per city under one id; before this, each repeat was
   counted as created, and the first city's location decided matching alone.
+
+## Failing sources fixed (2026-10-10)
+
+- **Postman** had 404'd on every run since at least 2026-10-04: its Greenhouse board is gone and
+  its careers page now links to Workday (`postman.wd108`, site `careers`, 29 openings). Switched
+  in the database; its old Greenhouse jobs close through the normal missing-run path.
+- **Eight Workday boards** (Adobe, Broadcom, BrowserStack, Cohesity, NVIDIA, PayPal, Target,
+  Visa) all went `failing` in the same run with a bare `JSONDecodeError`, after succeeding on every
+  run before it, and the API answered normally again hours later -- the run fell inside Workday's
+  weekly maintenance window. The HTTP client now raises `NotJson` naming the content type and the
+  start of what came back, and the crawler records that as `degraded` rather than `failed`.
+- **Navi and Ringg** were stuck at `degraded` for weeks although both boards really had shrunk
+  (9 → 4, 5 → 2). The drift baseline sampled only `success` runs, so a genuine drop could never
+  become the new normal. Runs degraded *only* by volume drift now count toward the median, so a
+  drop that holds for three of the last five runs re-baselines; zero, failed and rate-limited
+  runs are still excluded.
 
 ## Known gaps
 
