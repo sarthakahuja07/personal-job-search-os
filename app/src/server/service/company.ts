@@ -164,16 +164,28 @@ async function resolve(
 
   // Only pages in the right tree are candidates. An LLD question must not resolve to an HLD
   // page with a similar name -- they are different answers to similarly worded prompts.
+  // A DSA pattern folder is never an answer either: "Sliding Window Maximum" contains the folder
+  // "Sliding Window", and linking a question to it would mark the question as written. A folder
+  // is a row with children and no difficulty -- a question page can have children of its own.
+  const parents = new Set(rows.map((r) => r.parentId).filter(Boolean));
+  const isPatternFolder = (r: (typeof rows)[number]) =>
+    r.kind === "dsa" && parents.has(r.id) && !r.difficulty;
   const candidates = rows
     .map((r) => ({ ...r, path: paths.get(r.id) ?? r.slug }))
     .filter((r) => {
       if (r.kind !== (source.kind as PrepKind)) return false;
+      if (isPatternFolder(r)) return false;
       return source.parentPath ? r.path.startsWith(`${source.parentPath}/`) : true;
     });
 
   return titles.map((entry) => {
     const wanted = slugify(entry.title);
-    const exact = candidates.find((c) => c.slug === wanted);
+    const title = entry.title.toLowerCase();
+    // An exact title beats a contains match: "LRU Cache" must not land on "LRU Cache with TTL"
+    // just because that page happens to come first.
+    const exact =
+      candidates.find((c) => c.slug === wanted) ??
+      candidates.find((c) => c.title.toLowerCase() === title);
     const loose =
       exact ??
       candidates.find((c) => {
