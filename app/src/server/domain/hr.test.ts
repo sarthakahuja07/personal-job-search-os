@@ -8,8 +8,8 @@ const daysAgo = (n: number) => new Date(NOW.getTime() - n * 86_400_000);
 function contact(over: Partial<HrContact> = {}): HrContact {
   return {
     id: "h1",
-    name: "Spoorthi",
-    phone: "+91 91106 88440",
+    name: "Priya",
+    phone: "+91 98765 43210",
     email: null,
     linkedinUrl: null,
     notes: null,
@@ -50,7 +50,7 @@ describe("buildHrList", () => {
   it("prompts a call for an opening when HR has never been called", () => {
     const [e] = buildHrList([company()], [opening()], NOW);
     expect(e.state).toBe("call");
-    expect(e.headline).toBe("Call Spoorthi");
+    expect(e.headline).toBe("Call Priya");
     expect(e.detail).toContain("have not called yet");
     expect(e.hot).toBe(true);
   });
@@ -79,7 +79,7 @@ describe("buildHrList", () => {
     const c = company({
       contacts: [
         contact({ id: "a", name: "CRED HR", lastCalledAt: null }),
-        contact({ id: "b", name: "Spoorthi", lastCalledAt: daysAgo(0.5) }),
+        contact({ id: "b", name: "Priya", lastCalledAt: daysAgo(0.5) }),
       ],
     });
     const [e] = buildHrList([c], [opening({ discoveredAt: daysAgo(2) })], NOW);
@@ -100,7 +100,7 @@ describe("buildHrList", () => {
   it("calls an uncrawled company out as untracked rather than quiet", () => {
     const [e] = buildHrList([company({ sourceType: "manual" })], [], NOW);
     expect(e.state).toBe("untracked");
-    expect(e.headline).toBe("Ask Spoorthi what is open");
+    expect(e.headline).toBe("Ask Priya what is open");
   });
 
   it("is quiet for a crawled company with nothing open", () => {

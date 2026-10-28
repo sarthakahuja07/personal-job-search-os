@@ -773,9 +773,9 @@ written. Sources and evidence are in `docs/source-catalogue.md`.
 ## HR contacts page, and fifteen more companies (2026-10-28)
 
 A contact now has a **role** — `referrer` (the default) or `hr` — and a `last_called_at`
-(migration 0024). Ten existing contacts were HR only by name ("Meesho HR", "Shikha (HR)"); the
+(migration 0024). Ten existing contacts were HR only by name ("Meesho HR", "Asha (HR)"); the
 migration backfills their role with a case-sensitive `GLOB` (a `LIKE '%hr%'` would have caught
-"Shrishti") and strips the "(HR)" suffix, since a template greeting "Hi Shikha (HR)" is not one.
+"Shruti") and strips the "(HR)" suffix, since a template greeting "Hi Asha (HR)" is not one.
 Sarthak's list added 29 more, so there are 39 HR contacts across 35 companies.
 
 **`/hr` — who to call, and why now.** Listed company-wise. The rule (`domain/hr.ts`, tested) is
@@ -792,7 +792,7 @@ it may not connect, and only "I spoke to them" should silence the prompt.
 
 The prompt also appears where it is needed without visiting the page: an **HR contacts** nav
 badge (the real rule, like the reminder badge), a **Call HR** section on the dashboard, and the
-**digest email**, which now prints "Call HR: Spoorthi (+91 …)" under each company that has one —
+**digest email**, which now prints "Call HR: Priya (+91 …)" under each company that has one —
 the outbox sends `hr_contacts` per job.
 
 Contact edit rows on the company page gained a Referrer / HR picker. `updateContact` used to

@@ -18,10 +18,10 @@ def _note(company: str, title: str, hr: list[dict] | None = None) -> dict:
 
 def test_names_the_hr_contact_under_its_company():
     _, text, html = build_digest(
-        [_note("CRED", "Software Engineer II", [{"name": "Spoorthi", "phone": "+91 91106 88440"}])]
+        [_note("CRED", "Software Engineer II", [{"name": "Priya", "phone": "+91 98765 43210"}])]
     )
-    assert "Call HR: Spoorthi (+91 91106 88440)" in text
-    assert "Call HR: Spoorthi (+91 91106 88440)" in html
+    assert "Call HR: Priya (+91 98765 43210)" in text
+    assert "Call HR: Priya (+91 98765 43210)" in html
 
 
 def test_says_nothing_when_the_company_has_no_hr_contact():

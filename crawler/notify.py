@@ -122,7 +122,7 @@ def _subject(count: int, company_names: list[str]) -> str:
 
 
 def _hr_line(items: list[dict[str, Any]]) -> str | None:
-    """Who to ring at this company, e.g. "Spoorthi (+91 91106 88440), CRED HR (...)".
+    """Who to ring at this company, e.g. "Priya (+91 98765 43210), CRED HR (...)".
 
     Every job of a company carries the same list, so the first one speaks for all of them.
     """
