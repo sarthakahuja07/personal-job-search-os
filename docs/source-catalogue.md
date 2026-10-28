@@ -7,7 +7,8 @@ The organising idea: **the stubborn companies were never individual problems, th
 handful of patterns.** Building for the pattern rather than the company is what turned all but
 one of them into configuration rather than code.
 
-**76 of 88 active companies now crawl automatically.**
+**79 of 88 active companies now crawl automatically.** The nine that do not are matched from
+LinkedIn job-alert emails instead, so an opening there still reaches the board and the HR page.
 
 The ones that do not:
 
@@ -15,11 +16,8 @@ The ones that do not:
 |---|---|
 | **Google** | `robots.txt` disallows `/about/careers/applications/jobs/results`. Worth being precise about *why*, because I twice reached the wrong conclusion here: the rule sits under a `User-agent: Yandex` line, which looks Yandex-specific — but it directly follows `User-agent: *`, and **consecutive user-agent lines form one group**, so the rules apply to both. A standard robots parser says `can_fetch` is false for our UA. Excluded, and not by oversight. |
 | **super.money** | The careers page renders "install the super.money app now", and they have no Instahyre profile (`jobs-at-super-money` 404s). There is no web board anywhere to read. |
-| **Deel** | Careers is marketing, `jobs.deel.com` redirects back into it, the only job-ish link is a template library, and nothing job-shaped loads after accepting consent. |
-| **Eightfold** | Their board is their own product at `app.eightfold.ai`, whose API returns 403 to every client. Unlike Qualcomm, no robots-permitted alternative endpoint exists. |
 | **Angel One** | Its own board (`angelone.in/careers`) ships its jobs server-side in the RSC payload as `"jobs":[...]`, and that array was **empty** when this was checked on 2026-10-06 — nothing on the page, nothing in the sitemaps. A field map cannot be verified against zero jobs, so it is manual rather than a guessed config. `angelone.darwinbox.in` is a real tenant but renders nothing, and Instahyre's employer pages sit behind a Turnstile challenge. When the board has openings, promote it: each job carries `job_id`, `title`, `slug`, `department`, linked at `/careers/{slug}`. |
 
-| **Arista Networks** | `arista.com/en/careers` answers a plain client with **406**. Its roles are mirrored on Accel's Getro portfolio board, but that board's `robots.txt` asks scrapers to buy Getro's API instead, so neither is used. |
 | **Zepto** | `zepto.com/careers` is behind an AWS WAF challenge (`token.awswaf.com` verify) before any content loads. |
 | **Cult.fit** | The board is a Zwayam careers site (`careers.cult.fit`, company id `15470`) whose search is a multipart POST to `public.zwayam.com/jobs/search`. That host drops the connection for a plain client and gave a real headless browser no response either, so there is nothing to verify a config against. |
 | **Zomato** | `zomato.com/careers` redirects to `eternal.com/careers`, which renders no openings and loads no job feed; Eternal hires largely through referrals. |
@@ -27,7 +25,7 @@ The ones that do not:
 | **Temple** | Deepinder Goyal's wearable startup. `temple.fit` is a parked domain and no public board was found; hiring so far has been through his posts on X. |
 | **Rakuten** | Rakuten's Workday tenant exposes `RakutenAmericas` (US) and `RakutenAsia` (Singapore and the region) — neither carries Rakuten India's Bangalore roles, and no India board was found. Crawling an Asia board that cannot match would only look like coverage. |
 
-These seven have HR contacts, so the HR page lists them as **"not crawled — ask what is open"**:
+These have HR contacts, so the HR page lists them as **"not crawled — ask what is open"**:
 for them, the call is the check.
 
 Three former members of this list were promoted once they were investigated properly rather than
@@ -199,6 +197,43 @@ apply form there shows "no job" for them — so `json_api` gained a generic `whe
 `joinus.juspay.in/?jobId=<job_id>`, the parameter the app itself reads. Juspay titles carry no
 level, so its `match_overrides.levelTitles` names its lateral hire,
 `software development engineer\s*-\s*lateral` (3+ years, Bangalore).
+
+---
+
+## Promoted 2026-10-28: Arista, Deel, Eightfold
+
+Three entries in the not-crawled table had a legitimate source all along; each was run through its
+real adapter with the production rules before its row changed.
+
+| Company | Source | Identifier | Jobs at check | India |
+|---|---|---|---|---|
+| Arista Networks | SmartRecruiters | `AristaNetworks` | 244 | 76 — Bangalore "Software Engineer" roles |
+| Deel | `hydration` (`rscMarker`, new) | `deel.com/careers/open-roles/` | 252 | a handful; Deel is remote-first |
+| Eightfold | `json_api` | `app.eightfold.ai/api/pcsx/search?domain=eightfold.ai` | 51 | 23 |
+
+**Arista**'s own site answers a plain client with 406, but its board is SmartRecruiters under
+`AristaNetworks` -- a tier-1 ATS feed, found by checking the slug rather than the site.
+
+**Deel**'s public Ashby board (`deel`) returns `jobs: []`, which is why it was manual. Its careers
+page is a Next.js App Router page with no `__NEXT_DATA__`; all 252 openings ship in the RSC flight
+data (`self.__next_f.push` chunks) as `"__component":"product.career-job-listing","jobs":[...]`,
+in the first response. The hydration adapter gained `rscMarker`: join and decode the chunks, find
+the marker, JSON-decode the value after it. Ids are Ashby's own `ashby_id` (the record's `job_id`
+repeats across postings), and `deel.com/careers/job/<ashby_id>/` opens the real job page.
+
+**Eightfold** -- the earlier 403 was `app.eightfold.ai`'s app API. The `pcsx` search API that
+already serves Microsoft and Qualcomm works for Eightfold's own domain too, and its robots.txt
+explicitly `Allow: /api/pcsx`.
+
+**Still not crawled, by rule rather than by effort:** Google (robots), Cult.fit (Zwayam's API never
+answers a plain client, nor a headless browser), Zepto (AWS WAF challenge), Angel One (board
+empty), Zomato, PharmEasy, Rakuten, Temple and super.money (no public board; Instahyre's employer
+pages are behind Turnstile, so its search API is not used to get round that). For these, LinkedIn
+job-alert emails are the source: postings are attached to a tracked company by exact normalised
+name, so the uncrawled ones carry the spellings LinkedIn uses in `match_overrides.aliases`
+(Zomato: Eternal; Cult.fit: Curefit, Cure.fit; Zepto: Kiranakart; Angel One: Angel Broking). An
+alert has to exist for that to work -- a LinkedIn job alert per company, delivered to the
+mailbox the crawler reads.
 
 ---
 

@@ -22,6 +22,11 @@ and honest about being neither.
 Where the blob sits in an attribute rather than a script, name the element instead:
 
     {"attributeSelector": "input#jobs", "attribute": "value", "jobsPath": "."}
+
+A Next.js App Router page has no __NEXT_DATA__; name the text just before the value in its RSC
+flight data instead:
+
+    {"rscMarker": "\"__component\":\"product.career-job-listing\",\"jobs\":", "jobsPath": "."}
 """
 
 from __future__ import annotations
@@ -109,6 +114,10 @@ class HydrationAdapter(JobSourceAdapter):
         all ten of its jobs in `<input id="jobs" value="[{&#34;Posting_Title&#34;...">`, which
         looks browser-rendered from the outside and is in fact in the first response.
         """
+        marker = config.get("rscMarker")
+        if marker:
+            return _extract_rsc(html, marker)
+
         selector = config.get("attributeSelector")
         if selector:
             attribute = config.get("attribute", "value")
@@ -175,6 +184,45 @@ class HydrationAdapter(JobSourceAdapter):
             posted_at=parse_date(mapped.get("posted_at")),
             raw_metadata={},
         )
+
+
+# Next.js App Router pages stream their server-component payload as string chunks:
+# self.__next_f.push([1,"..."]). The chunks are JSON string literals; joined, they are the
+# "flight" text, in which props appear as ordinary JSON.
+_FLIGHT_CHUNK = re.compile(r'self\.__next_f\.push\(\[1,("(?:[^"\\]|\\.)*")\]\)')
+
+
+def _extract_rsc(html: str, marker: str) -> Any:
+    """Read the JSON value that follows `marker` in a Next.js App Router page's flight data.
+
+    An App Router page has no __NEXT_DATA__; its data rides in the RSC stream instead. Deel ships
+    all of its 250-odd openings there as `"__component":"product.career-job-listing","jobs":[...]`
+    -- in the first response, with Ashby's own ids, while its public Ashby board returns none.
+    The marker is the literal text just before the value, so it pins one component rather than
+    the first `"jobs":` that happens to appear.
+    """
+    chunks = _FLIGHT_CHUNK.findall(html)
+    if not chunks:
+        raise SchemaDriftError(
+            "no Next.js flight data (self.__next_f) on the page; it is no longer an App Router "
+            "page, or it moved its data to a client-side fetch"
+        )
+    try:
+        flight = "".join(json.loads(c) for c in chunks)
+    except json.JSONDecodeError as exc:
+        raise SchemaDriftError(f"flight data chunk is not a JSON string: {exc}") from exc
+
+    at = flight.find(marker)
+    if at < 0:
+        raise SchemaDriftError(
+            f"rscMarker {marker!r} not found in the flight data; the component was renamed "
+            "or removed"
+        )
+    try:
+        value, _ = json.JSONDecoder().raw_decode(flight, at + len(marker))
+    except json.JSONDecodeError as exc:
+        raise SchemaDriftError(f"value after rscMarker is not JSON: {exc}") from exc
+    return value
 
 
 def _as_text(value: Any) -> str | None:

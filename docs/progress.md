@@ -804,6 +804,10 @@ Mastercard, Sprinklr, Gartner and Juspay crawl automatically; Arista, Zepto, Cul
 PharmEasy, Temple and Rakuten are manual, with the evidence in `docs/source-catalogue.md`.
 `json_api` gained a `where` filter for Juspay, whose endpoint returns closed roles too.
 
+**Later the same day:** Arista (SmartRecruiters), Deel (`hydration` with the new `rscMarker`,
+reading Next.js RSC flight data) and Eightfold (`pcsx` API, robots-allowed) promoted from manual
+-- 79 of 88 crawl. The rest get LinkedIn-alert aliases; see the catalogue.
+
 ## Known gaps
 
 - **Google is not crawled**, by choice: its `robots.txt` disallows the job results path. It shows
