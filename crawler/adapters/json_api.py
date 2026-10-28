@@ -13,6 +13,7 @@ Amazon is the first user. Others follow by adding a company row, not a Python fi
       "jobsPath": "jobs",          // "." when the response is itself the array
       "totalPath": "hits",
       "pageSize": 100,
+      "where": {"opening_status": true},   // optional: keep only records whose path equals this
       "fields": {
         "external_job_id": "id_icims",
         "title": "title",
@@ -76,6 +77,10 @@ class JsonApiAdapter(JobSourceAdapter):
         start_page = int(config.get("startPage", 0))
         method = str(config.get("method", "GET")).upper()
         headers = dict(config.get("headers") or {"Accept": "application/json"})
+        # Some endpoints return closed postings alongside open ones and leave the board to hide
+        # them -- Juspay's marks each record `opening_status: false` and its form refuses to
+        # apply. `where` keeps only records whose dot path equals the given value.
+        where: dict[str, Any] = config.get("where") or {}
 
         # Some boards issue a per-session CSRF token on the careers page and reject API calls
         # without it. Priming fetches that page first, lifts the token, and sends it as a header.
@@ -151,9 +156,13 @@ class JsonApiAdapter(JobSourceAdapter):
                 total = int(raw_total) if isinstance(raw_total, (int, float, str)) and str(raw_total).isdigit() else None
 
             for record in records:
+                if not _matches_where(record, where):
+                    continue
                 record["_config"] = config
                 out.append(RawJob(data=record, source_url=url))
 
+            # Pagination counts what the server sent, not what survived the filter, or a page
+            # of closed postings would look like the end of the board.
             offset += len(records)
             if not records or not paginated:
                 break
@@ -208,6 +217,10 @@ class JsonApiAdapter(JobSourceAdapter):
             posted_at=parse_date(mapped.get("posted_at")),
             raw_metadata={},
         )
+
+
+def _matches_where(record: dict[str, Any], where: dict[str, Any]) -> bool:
+    return all(resolve_path(record, path) == expected for path, expected in where.items())
 
 
 def _as_text(value: Any) -> str | None:

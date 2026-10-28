@@ -4,7 +4,13 @@ import { revalidatePath } from "next/cache";
 import { eq } from "drizzle-orm";
 
 import { getDb } from "@/db";
-import { companies, contacts, type SourceConfig, type SourceType } from "@/db/schema";
+import {
+  companies,
+  contacts,
+  type ContactRole,
+  type SourceConfig,
+  type SourceType,
+} from "@/db/schema";
 import type { CompanyMatchOverrides } from "@/server/domain/matching";
 import { detectSource, validateConfig } from "@/server/domain/source-detect";
 
@@ -12,6 +18,7 @@ function revalidateCompany(id?: string) {
   revalidatePath("/companies");
   if (id) revalidatePath(`/companies/${id}`);
   revalidatePath("/");
+  revalidatePath("/hr");
 }
 
 /**
@@ -144,6 +151,11 @@ export async function deleteCompany(formData: FormData) {
 // Contacts
 // ---------------------------------------------------------------------------
 
+/** Anything other than an explicit "hr" is a referrer, so an old form cannot invent a role. */
+function roleFrom(formData: FormData): ContactRole {
+  return formData.get("role") === "hr" ? "hr" : "referrer";
+}
+
 export async function addContact(formData: FormData) {
   const companyId = String(formData.get("companyId") ?? "");
   const name = String(formData.get("name") ?? "").trim();
@@ -157,6 +169,7 @@ export async function addContact(formData: FormData) {
     email: String(formData.get("email") ?? "").trim() || null,
     linkedinUrl: String(formData.get("linkedinUrl") ?? "").trim() || null,
     notes: String(formData.get("notes") ?? "").trim() || null,
+    role: roleFrom(formData),
   });
 
   revalidateCompany(companyId);
@@ -174,7 +187,12 @@ export async function updateContact(formData: FormData) {
       phone: String(formData.get("phone") ?? "").trim() || null,
       email: String(formData.get("email") ?? "").trim() || null,
       linkedinUrl: String(formData.get("linkedinUrl") ?? "").trim() || null,
-      notes: String(formData.get("notes") ?? "").trim() || null,
+      // Only fields the form actually sent. The edit row has no notes input, so writing notes
+      // unconditionally erased them on every save -- "LinkedIn only" vanished that way.
+      ...(formData.has("notes")
+        ? { notes: String(formData.get("notes") ?? "").trim() || null }
+        : {}),
+      ...(formData.has("role") ? { role: roleFrom(formData) } : {}),
       updatedAt: new Date(),
     })
     .where(eq(contacts.id, id));

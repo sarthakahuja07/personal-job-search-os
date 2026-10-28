@@ -15,6 +15,8 @@ import {
   reminderDismissalMap,
 } from "@/server/repository/jobs-repo";
 import { linkedinCounts } from "@/server/repository/linkedin-repo";
+import { buildHrList } from "@/server/domain/hr";
+import { listHrCompanies, listHrOpenings } from "@/server/repository/hr-repo";
 import { navTree } from "@/server/repository/prep-repo";
 import { KINDS } from "@/server/domain/prep";
 import type { NavNode } from "@/components/nav-tree";
@@ -41,19 +43,23 @@ export default async function RootLayout({
     pipeline: 0,
     reminders: 0,
     linkedin: 0,
+    hr: 0,
   };
   try {
     const db = getDb();
     // The reminder badge runs the real rules rather than a SQL restatement of them. Duplicating
     // thresholds in a query is how the badge and the page start disagreeing, and a badge you
     // stop believing is worse than no badge.
-    const [base, rows, settingsRows, dismissed, linkedin] = await Promise.all([
+    const [base, rows, settingsRows, dismissed, linkedin, hrCompanies] = await Promise.all([
       navCounts(db),
       listReminderCandidates(db),
       db.select({ reminderThresholds: settings.reminderThresholds }).from(settings).limit(1),
       reminderDismissalMap(db),
       linkedinCounts(db),
+      listHrCompanies(db),
     ]);
+    // Same rule as the HR page, for the same reason as the reminder badge below.
+    const hrOpenings = await listHrOpenings(db, hrCompanies.map((c) => c.id));
 
     // One flat query, nested here. Each discipline becomes a branch whose children are its
     // top-level pages, so the sidebar mirrors the directory rather than restating it.
@@ -96,6 +102,7 @@ export default async function RootLayout({
       // Unreviewed LinkedIn jobs plus companies waiting on a decision: both are things the
       // page can act on, and splitting them into two badges would say less, not more.
       linkedin: linkedin.unreadJobs + linkedin.leads,
+      hr: buildHrList(hrCompanies, hrOpenings, new Date()).filter((e) => e.state === "call").length,
       reminders: buildReminders(
         rows.map((r) => ({ ...r, hasContact: Boolean(r.hasContact) })) as ReminderCandidate[],
         { ...DEFAULT_THRESHOLDS, ...(settingsRows[0]?.reminderThresholds ?? {}) },

@@ -7,7 +7,7 @@ The organising idea: **the stubborn companies were never individual problems, th
 handful of patterns.** Building for the pattern rather than the company is what turned all but
 one of them into configuration rather than code.
 
-**67 of 73 active companies now crawl automatically.**
+**76 of 88 active companies now crawl automatically.**
 
 The ones that do not:
 
@@ -18,6 +18,17 @@ The ones that do not:
 | **Deel** | Careers is marketing, `jobs.deel.com` redirects back into it, the only job-ish link is a template library, and nothing job-shaped loads after accepting consent. |
 | **Eightfold** | Their board is their own product at `app.eightfold.ai`, whose API returns 403 to every client. Unlike Qualcomm, no robots-permitted alternative endpoint exists. |
 | **Angel One** | Its own board (`angelone.in/careers`) ships its jobs server-side in the RSC payload as `"jobs":[...]`, and that array was **empty** when this was checked on 2026-10-06 — nothing on the page, nothing in the sitemaps. A field map cannot be verified against zero jobs, so it is manual rather than a guessed config. `angelone.darwinbox.in` is a real tenant but renders nothing, and Instahyre's employer pages sit behind a Turnstile challenge. When the board has openings, promote it: each job carries `job_id`, `title`, `slug`, `department`, linked at `/careers/{slug}`. |
+
+| **Arista Networks** | `arista.com/en/careers` answers a plain client with **406**. Its roles are mirrored on Accel's Getro portfolio board, but that board's `robots.txt` asks scrapers to buy Getro's API instead, so neither is used. |
+| **Zepto** | `zepto.com/careers` is behind an AWS WAF challenge (`token.awswaf.com` verify) before any content loads. |
+| **Cult.fit** | The board is a Zwayam careers site (`careers.cult.fit`, company id `15470`) whose search is a multipart POST to `public.zwayam.com/jobs/search`. That host drops the connection for a plain client and gave a real headless browser no response either, so there is nothing to verify a config against. |
+| **Zomato** | `zomato.com/careers` redirects to `eternal.com/careers`, which renders no openings and loads no job feed; Eternal hires largely through referrals. |
+| **PharmEasy** | Its careers page links only to the generic `myhr.darwinbox.in` portal, which renders nothing, and its Instahyre profile is behind the Turnstile challenge. |
+| **Temple** | Deepinder Goyal's wearable startup. `temple.fit` is a parked domain and no public board was found; hiring so far has been through his posts on X. |
+| **Rakuten** | Rakuten's Workday tenant exposes `RakutenAmericas` (US) and `RakutenAsia` (Singapore and the region) — neither carries Rakuten India's Bangalore roles, and no India board was found. Crawling an Asia board that cannot match would only look like coverage. |
+
+These seven have HR contacts, so the HR page lists them as **"not crawled — ask what is open"**:
+for them, the call is the check.
 
 Three former members of this list were promoted once they were investigated properly rather than
 statically scanned — a static regex over the careers HTML found nothing for any of them, and a
@@ -158,6 +169,36 @@ location passes as unknown. So Coupang, Kredivo, Agoda and Okta surface only the
 remote roles, and GCash (Manila) and True (Bangkok) are crawled correctly but cannot match
 unless those cities are added to `settings.match_rules`. A True job whose detail fetch fails
 keeps an empty location and does pass as unknown.
+
+---
+
+## Added 2026-10-28 (HR contacts batch)
+
+Sarthak's HR contact list named 15 companies that were not tracked and one (Abnormal AI) that was
+manual. Every source below was run end to end through its real adapter with the production
+match rules before its row was written. The seven that could not be crawled are in the table at
+the top.
+
+| Company | Source | Identifier | Jobs at check | Title matches |
+|---|---|---|---|---|
+| Abnormal AI | Greenhouse | `abnormalsecurity` (was manual) | 89 | 6 — two "Software Engineer 2" in Bangalore |
+| Tower Research | Greenhouse | `towerresearchcapital` | 100 | 14 — "Software Engineer II", Gurgaon |
+| Observe.AI | Greenhouse | `observeai` (from the careers page's embed) | 7 | 0 |
+| Acceldata | Lever | `acceldata` | 34 | 2 |
+| Stryker | Workday | `stryker.wd1/StrykerCareers` | 1485 | 2 — Gurugram |
+| Mastercard | Workday | `mastercard.wd1/CorporateCareers` | 1149 | 45 worldwide; location rules keep India's |
+| Sprinklr | Workday | `sprinklr.wd1/careers` (linked from `sprinklr.com/careers`) | 76 | 0 today |
+| Gartner | Workday | `gartner.wd5/EXT` | 795 | 1 — Gurgaon |
+| Juspay | `json_api` | `joinus.juspay.in/api/careerJobOpening` | 44 open of 94 | 1 with the level override |
+
+**Juspay** — `juspay.io/careers` shows only its global roles (`isGlobal=true`, two today); the
+India board is `joinus.juspay.in`, which reads the same endpoint without that flag. The endpoint
+returns every opening it has ever listed and marks closed ones `opening_status: false` — the
+apply form there shows "no job" for them — so `json_api` gained a generic `where` filter
+(`{"opening_status": true}`) rather than ingesting 50 dead roles. Jobs open at
+`joinus.juspay.in/?jobId=<job_id>`, the parameter the app itself reads. Juspay titles carry no
+level, so its `match_overrides.levelTitles` names its lateral hire,
+`software development engineer\s*-\s*lateral` (3+ years, Bangalore).
 
 ---
 

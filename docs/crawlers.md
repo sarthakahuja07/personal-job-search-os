@@ -55,6 +55,11 @@ row so it is visible, and lower tiers get monitored harder.
 (`crawler/normalization/fieldmap.py`), so adding a company on any known pattern is a row in
 `companies` rather than a Python file (PRD §97). Prefer the highest tier that works.
 
+A `json_api` endpoint that returns closed postings alongside open ones takes a `where` map —
+`{"opening_status": true}` for Juspay — and keeps only records whose dot path equals the value.
+Pagination still counts every record the server sent, so a page of closed roles is not mistaken
+for the end of the board.
+
 See `docs/source-catalogue.md` for which company uses which, and the evidence for every source
 that is deliberately not crawled.
 

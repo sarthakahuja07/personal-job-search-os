@@ -121,6 +121,19 @@ def _subject(count: int, company_names: list[str]) -> str:
     return f"{prefix}{listed}{tail}"
 
 
+def _hr_line(items: list[dict[str, Any]]) -> str | None:
+    """Who to ring at this company, e.g. "Spoorthi (+91 91106 88440), CRED HR (...)".
+
+    Every job of a company carries the same list, so the first one speaks for all of them.
+    """
+    contacts = next((j.get("hr_contacts") for j in items if j.get("hr_contacts")), None)
+    if not contacts:
+        return None
+    return ", ".join(
+        f"{c['name']} ({c['phone']})" if c.get("phone") else c["name"] for c in contacts
+    )
+
+
 def build_digest(notifications: list[dict[str, Any]]) -> tuple[str, str, str]:
     """Return (subject, plain_text, html) for the pending notifications."""
     jobs = [n["job"] for n in notifications if n.get("job")]
@@ -144,6 +157,9 @@ def build_digest(notifications: list[dict[str, Any]]) -> tuple[str, str, str]:
     lines = [f"{count} new matching role{'s' if count != 1 else ''}.", ""]
     for company, items in companies:
         lines.append(f"{company}")
+        hr = _hr_line(items)
+        if hr:
+            lines.append(f"  Call HR: {hr}")
         for j in items:
             loc = f" — {j['location']}" if j.get("location") else ""
             lines.append(f"  [{j.get('match_score', 0)}] {j['title']}{loc}")
@@ -173,6 +189,12 @@ def build_digest(notifications: list[dict[str, Any]]) -> tuple[str, str, str]:
         parts.append(
             f"<h3 style='margin:20px 0 8px;font-size:15px'>{esc(company)}</h3>"
         )
+        hr = _hr_line(items)
+        if hr:
+            parts.append(
+                "<div style='margin:-4px 0 8px;font-size:13px;color:#9a3412'>"
+                f"&#128222; Call HR: {esc(hr)}</div>"
+            )
         for j in items:
             loc = f" · {esc(j['location'])}" if j.get("location") else ""
             parts.append(

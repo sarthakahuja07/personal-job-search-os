@@ -171,6 +171,9 @@ export const companies = sqliteTable(
 // Referral contacts — intentionally minimal. This is not a CRM (PRD §10).
 // ---------------------------------------------------------------------------
 
+export const CONTACT_ROLES = ["referrer", "hr"] as const;
+export type ContactRole = (typeof CONTACT_ROLES)[number];
+
 export const contacts = sqliteTable(
   "contacts",
   {
@@ -195,6 +198,17 @@ export const contacts = sqliteTable(
     sharedNumberOk: integer("shared_number_ok", { mode: "boolean" })
       .notNull()
       .default(false),
+    /**
+     * A referrer is asked to refer; an HR contact is a recruiter you call when the company
+     * opens a role. Different jobs, different timing: a referrer is chased per opening, an HR
+     * contact is worth a call the moment anything new appears. See domain/hr.ts.
+     */
+    role: text("role").$type<ContactRole>().notNull().default("referrer"),
+    /**
+     * When Sarthak last called this HR contact. The HR page compares it with each opening's
+     * discovery time, so "call" means "something opened since you last spoke", not "ever".
+     */
+    lastCalledAt: integer("last_called_at", { mode: "timestamp_ms" }),
     notes: text("notes"),
     createdAt: createdAt(),
     updatedAt: updatedAt(),

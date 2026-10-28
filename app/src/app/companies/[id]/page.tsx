@@ -240,7 +240,7 @@ export default async function CompanyDetailPage({
         </form>
       </Card>
 
-      <SectionTitle>Referral contacts</SectionTitle>
+      <SectionTitle>Contacts</SectionTitle>
       <Card className="mb-6 px-5 py-5">
         {people.length === 0 ? (
           <p className="mb-4 text-[13px] text-ink-dim">
@@ -250,7 +250,7 @@ export default async function CompanyDetailPage({
           <ul className="mb-5 space-y-3">
             {people.map((c) => (
               <li key={c.id} className="border-b border-line/60 pb-3 last:border-0 last:pb-0">
-                <form action={updateContact} className="grid gap-2 sm:grid-cols-[1fr_1fr_1fr_1fr_auto]">
+                <form action={updateContact} className="grid gap-2 sm:grid-cols-[1fr_1fr_1fr_1fr_auto_auto]">
                   <input type="hidden" name="id" value={c.id} />
                   <input type="hidden" name="companyId" value={company.id} />
                   <input name="name" defaultValue={c.name} className={inputStyles} />
@@ -275,6 +275,11 @@ export default async function CompanyDetailPage({
                     placeholder="LinkedIn"
                     className={inputStyles}
                   />
+                  {/* HR contacts get their own page, prompted by new openings; referrers do not. */}
+                  <select name="role" defaultValue={c.role} className={inputStyles}>
+                    <option value="referrer">Referrer</option>
+                    <option value="hr">HR</option>
+                  </select>
                   {/* A shared number across *different names* is nearly always a typo, and it
                       is otherwise invisible: the message goes where you stored it, and the only
                       clue is the chat opening under someone else's name. */}
@@ -326,12 +331,16 @@ export default async function CompanyDetailPage({
           </ul>
         )}
 
-        <form action={addContact} className="grid gap-2 sm:grid-cols-[1fr_1fr_1fr_1fr_auto]">
+        <form action={addContact} className="grid gap-2 sm:grid-cols-[1fr_1fr_1fr_1fr_auto_auto]">
           <input type="hidden" name="companyId" value={company.id} />
           <input name="name" placeholder="Name" required className={inputStyles} />
           <input name="phone" placeholder="Phone" className={inputStyles} />
           <input name="email" placeholder="Email" className={inputStyles} />
           <input name="linkedinUrl" placeholder="LinkedIn" className={inputStyles} />
+          <select name="role" defaultValue="referrer" className={inputStyles}>
+            <option value="referrer">Referrer</option>
+            <option value="hr">HR</option>
+          </select>
           <Button type="submit" variant="primary">
             Add
           </Button>

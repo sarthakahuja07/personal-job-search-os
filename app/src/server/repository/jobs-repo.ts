@@ -199,6 +199,7 @@ export async function contactsForCompany(db: Db, companyId: string) {
       phone: contacts.phone,
       linkedinUrl: contacts.linkedinUrl,
       notes: contacts.notes,
+      role: contacts.role,
     })
     .from(contacts)
     .where(eq(contacts.companyId, companyId))

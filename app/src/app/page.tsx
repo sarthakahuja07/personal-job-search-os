@@ -4,6 +4,7 @@ import { CompanyGroup } from "@/components/company-group";
 import { JobCard, type JobRow } from "@/components/job-card";
 import { Badge, Card, EmptyState, PageHeader, SectionTitle, Stat } from "@/components/ui";
 import { ReminderList } from "@/components/reminder-list";
+import { HrCallActions } from "@/components/hr-call";
 import { getDb } from "@/db";
 import { settings } from "@/db/schema";
 import {
@@ -20,6 +21,9 @@ import {
   listRecentlyDiscovered,
   listReminderCandidates,
 } from "@/server/repository/jobs-repo";
+import { buildHrList } from "@/server/domain/hr";
+import { toE164 } from "@/server/domain/templates";
+import { listHrCompanies, listHrOpenings } from "@/server/repository/hr-repo";
 
 export const dynamic = "force-dynamic";
 
@@ -46,7 +50,7 @@ const RECENT_DAYS = 3;
 
 export default async function DashboardPage() {
   const db = getDb();
-  const [stats, top, health, recent, reminderRows, settingsRows, contacts, dismissed] =
+  const [stats, top, health, recent, reminderRows, settingsRows, contacts, dismissed, hrCompanies] =
     await Promise.all([
     jobStats(db),
     listJobs(db, { sort: "best", limit: 8, unreadOnly: true }),
@@ -56,7 +60,13 @@ export default async function DashboardPage() {
     db.select({ reminderThresholds: settings.reminderThresholds }).from(settings).limit(1),
     contactsByCompany(db),
     reminderDismissalMap(db),
+    listHrCompanies(db),
   ]);
+  const hrCalls = buildHrList(
+    hrCompanies,
+    await listHrOpenings(db, hrCompanies.map((c) => c.id)),
+    new Date(),
+  ).filter((e) => e.state === "call");
 
   const reminders = buildReminders(
     reminderRows.map((r) => ({ ...r, hasContact: Boolean(r.hasContact) })) as ReminderCandidate[],
@@ -162,6 +172,56 @@ export default async function DashboardPage() {
                 </div>
                 <Badge tone={HEALTH_TONE[c.healthStatus]}>{c.healthStatus}</Badge>
               </Card>
+            ))}
+          </ul>
+        </section>
+      )}
+
+      {/* A recruiter is worth most in the first days after a role opens, so a company with an HR
+          contact and a new opening is raised here, not left for the HR page to be visited. */}
+      {hrCalls.length > 0 && (
+        <section className="mt-8">
+          <SectionTitle
+            action={
+              <Link href="/hr" className="text-[13px] text-ink-dim transition hover:text-ink">
+                All HR contacts →
+              </Link>
+            }
+          >
+            Call HR · {hrCalls.length}
+          </SectionTitle>
+          <ul className="space-y-1.5">
+            {hrCalls.slice(0, 4).map((e) => (
+              <li
+                key={e.company.id}
+                className="flex flex-wrap items-center justify-between gap-2 rounded-card border border-line bg-surface px-3.5 py-2.5"
+              >
+                <div className="min-w-0">
+                  <div className="text-[13px] font-medium text-ink">
+                    {e.headline}{" "}
+                    <span className="font-normal text-ink-dim">at {e.company.name}</span>
+                    {e.hot && (
+                      <Badge tone="warn" className="ml-2">
+                        New this week
+                      </Badge>
+                    )}
+                  </div>
+                  <p className="mt-0.5 truncate text-[12px] text-ink-dim">
+                    {e.fresh.map((o) => o.title).slice(0, 2).join(" · ")}
+                    {e.fresh.length > 2 && ` · +${e.fresh.length - 2} more`}
+                  </p>
+                </div>
+                {e.primary && (
+                  <HrCallActions
+                    contactId={e.primary.id}
+                    name={/\bHR$/.test(e.primary.name) ? "HR" : e.primary.name}
+                    tel={toE164(e.primary.phone)}
+                    whatsapp={null}
+                    lastCalledMs={e.primary.lastCalledAt?.getTime() ?? null}
+                    primary
+                  />
+                )}
+              </li>
             ))}
           </ul>
         </section>

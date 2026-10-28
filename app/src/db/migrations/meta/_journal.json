@@ -169,6 +169,13 @@
       "when": 1790337369680,
       "tag": "0023_dizzy_pretty_boy",
       "breakpoints": true
+    },
+    {
+      "idx": 24,
+      "version": "6",
+      "when": 1793179283195,
+      "tag": "0024_aspiring_black_queen",
+      "breakpoints": true
     }
   ]
 }

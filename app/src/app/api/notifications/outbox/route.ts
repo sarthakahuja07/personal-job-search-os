@@ -1,5 +1,6 @@
 import { getDb } from "@/db";
 import { requireIngestToken } from "@/server/auth";
+import { hrContactsByCompanyName } from "@/server/repository/hr-repo";
 import { listPending, notifyEmail } from "@/server/repository/notifications-repo";
 
 /**
@@ -14,7 +15,11 @@ export async function GET(request: Request): Promise<Response> {
   if (!auth.ok) return auth.response;
 
   const db = getDb();
-  const [pending, to] = await Promise.all([listPending(db, 100), notifyEmail(db)]);
+  const [pending, to, hr] = await Promise.all([
+    listPending(db, 100),
+    notifyEmail(db),
+    hrContactsByCompanyName(db),
+  ]);
 
   return Response.json({
     notify_email: to,
@@ -33,6 +38,9 @@ export async function GET(request: Request): Promise<Response> {
             url: n.jobUrl,
             match_score: n.matchScore,
             match_reason: n.matchReason,
+            // So the email can say who to ring: an HR call is worth most the day a role opens,
+            // and the digest is the first place Sarthak hears that it has.
+            hr_contacts: (n.companyName && hr.get(n.companyName)) || [],
           }
         : null,
     })),

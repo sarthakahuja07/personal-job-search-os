@@ -3,7 +3,7 @@
 The durable state of this project. Updated whenever something meaningful lands, so no context is
 lost between sessions (PRD §73). Picking this up cold: read `CLAUDE.md` first, then this file.
 
-**Last updated:** 2026-10-06
+**Last updated:** 2026-10-28
 
 ---
 
@@ -770,6 +770,40 @@ written. Sources and evidence are in `docs/source-catalogue.md`.
 - `scripts/record_cassettes.py` gained a `__main__` guard: importing it re-recorded every
   cassette.
 
+## HR contacts page, and fifteen more companies (2026-10-28)
+
+A contact now has a **role** — `referrer` (the default) or `hr` — and a `last_called_at`
+(migration 0024). Ten existing contacts were HR only by name ("Meesho HR", "Shikha (HR)"); the
+migration backfills their role with a case-sensitive `GLOB` (a `LIKE '%hr%'` would have caught
+"Shrishti") and strips the "(HR)" suffix, since a template greeting "Hi Shikha (HR)" is not one.
+Sarthak's list added 29 more, so there are 39 HR contacts across 35 companies.
+
+**`/hr` — who to call, and why now.** Listed company-wise. The rule (`domain/hr.ts`, tested) is
+"a company is worth a call when it has a relevant open role discovered after the last call to any
+of its HR contacts" — one recruiter covers the company, so two CRED numbers do not mean two calls.
+Read jobs and finished applications do not count; a job already in the pipeline does, because a
+recruiter can move an application that is sitting idle. Sections: **Call now** (hot first —
+anything found within 3 days — then best fit), **Not crawled — ask what is open** (manual
+companies, where the call *is* the check), **Already called**, **No relevant openings**.
+
+Each contact has Call (`tel:`), WhatsApp with an opener naming the role that prompted it, and
+**Called**, which stamps `last_called_at` and offers Undo. Dialling does not mark the call:
+it may not connect, and only "I spoke to them" should silence the prompt.
+
+The prompt also appears where it is needed without visiting the page: an **HR contacts** nav
+badge (the real rule, like the reminder badge), a **Call HR** section on the dashboard, and the
+**digest email**, which now prints "Call HR: Spoorthi (+91 …)" under each company that has one —
+the outbox sends `hr_contacts` per job.
+
+Contact edit rows on the company page gained a Referrer / HR picker. `updateContact` used to
+write `notes` from a form that has no notes field, erasing them on every save; it now only
+writes the fields the form sent.
+
+**Crawler.** Tower Research, Observe.AI, Abnormal AI (promoted from manual), Acceldata, Stryker,
+Mastercard, Sprinklr, Gartner and Juspay crawl automatically; Arista, Zepto, Cult.fit, Zomato,
+PharmEasy, Temple and Rakuten are manual, with the evidence in `docs/source-catalogue.md`.
+`json_api` gained a `where` filter for Juspay, whose endpoint returns closed roles too.
+
 ## Known gaps
 
 - **Google is not crawled**, by choice: its `robots.txt` disallows the job results path. It shows
@@ -779,5 +813,5 @@ written. Sources and evidence are in `docs/source-catalogue.md`.
   adapters do not yet send `If-None-Match`, so nothing short-circuits on a 304.
 - **Descriptions truncated** to 8000 chars of plain text — deliberate: D1 caps a statement at 100 KB
   and raw Databricks HTML exceeds 20 KB per job.
-- **Contact data is not in git.** It lives only in the local D1 and the scratchpad seed script, so a
-  fresh clone has companies but no contacts until re-seeded.
+- **Contact data is not in git.** It lives only in D1 (remote is the source of truth), so a
+  fresh clone has companies but no contacts until re-seeded. That includes the HR contacts.

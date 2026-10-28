@@ -34,6 +34,8 @@ export type NavCounts = {
   pipeline?: number;
   reminders: number;
   linkedin?: number;
+  /** Companies with an HR contact and something new since the last call. */
+  hr?: number;
 };
 
 function groups(counts: NavCounts): Group[] {
@@ -47,6 +49,7 @@ function groups(counts: NavCounts): Group[] {
         { href: "/companies", label: "Companies", count: counts.unhealthySources },
         { href: "/applications", label: "Applications", count: counts.pipeline },
         { href: "/reminders", label: "Reminders", count: counts.reminders },
+        { href: "/hr", label: "HR contacts", count: counts.hr },
         { href: "/templates", label: "Templates" },
         {
           href: "/notifications",
