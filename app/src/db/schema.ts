@@ -63,6 +63,7 @@ export type SourceType =
   | "smartrecruiters"
   | "mynexthire"
   | "workday"
+  | "successfactors"
   | "custom_json"
   | "jsonld"
   | "html"
@@ -88,6 +89,8 @@ export type SourceConfig = {
   tenant?: string;
   dataCenter?: string;
   site?: string;
+  /** successfactors: the career site root, whose /sitemap.xml lists every job */
+  siteUrl?: string;
   /** html / jsonld fallbacks */
   listSelector?: string;
   titleSelector?: string;

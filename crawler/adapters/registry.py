@@ -18,6 +18,7 @@ from crawler.adapters.json_api import JsonApiAdapter
 from crawler.adapters.lever import LeverAdapter
 from crawler.adapters.mynexthire import MyNextHireAdapter
 from crawler.adapters.smartrecruiters import SmartRecruitersAdapter
+from crawler.adapters.successfactors import SuccessFactorsAdapter
 from crawler.adapters.workday import WorkdayAdapter
 
 ADAPTERS: dict[str, JobSourceAdapter] = {
@@ -29,6 +30,7 @@ ADAPTERS: dict[str, JobSourceAdapter] = {
         SmartRecruitersAdapter(),
         MyNextHireAdapter(),
         WorkdayAdapter(),
+        SuccessFactorsAdapter(),
         JsonApiAdapter(),
         HydrationAdapter(),
         HtmlListAdapter(),

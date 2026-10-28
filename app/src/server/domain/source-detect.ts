@@ -109,6 +109,8 @@ export function describeConfig(sourceType: SourceType, config: SourceConfig): st
       return config.tenant && config.dataCenter && config.site
         ? `${config.tenant}.${config.dataCenter}/${config.site}`
         : "incomplete";
+    case "successfactors":
+      return config.siteUrl ?? "—";
     case "manual":
       return "checked by hand";
     default:
@@ -139,6 +141,8 @@ export function validateConfig(sourceType: SourceType, config: SourceConfig): st
           need("dataCenter", "the shard, e.g. wd5 — it is not guessable"),
           need("site", "the career site slug, e.g. NVIDIAExternalCareerSite"),
         ];
+      case "successfactors":
+        return [need("siteUrl", "the career site root, e.g. https://careers.true.th")];
       default:
         return [];
     }

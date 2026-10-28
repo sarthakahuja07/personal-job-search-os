@@ -751,6 +751,25 @@ at the time, so there was nothing to verify a config against. Sources and eviden
   drop that holds for three of the last five runs re-baselines; zero, failed and rate-limited
   runs are still excluded.
 
+## Nine more companies, and a SuccessFactors adapter (2026-10-28)
+
+Coupang, Agoda, Okta (Greenhouse), ClickHouse, Atlan (Ashby), Palantir (Lever), GCash (Workday
+`globe.wd3/Mynt`), Kredivo (BreezyHR via `json_api`) and True Corporation (new `successfactors`
+adapter) added; Coinbase and DE Shaw from the same list were already crawled and healthy. Each
+was run end to end through its real adapter with the production match rules before its row was
+written. Sources and evidence are in `docs/source-catalogue.md`.
+
+- New tier-2 adapter `successfactors` for SAP SuccessFactors Career Site Builder boards. The
+  search API is under robots-disallowed `/services/`, so it reads `/sitemap.xml` and fetches the
+  job page only for title matches. Cassette, contract fields and a test of the slug-to-location
+  rule. Editable on the company page (`siteUrl`).
+- Kredivo's own domain serves a Cloudflare challenge; its BreezyHR tenant's public `/json` feed is
+  the same board.
+- Workday locations that lack a country now get the detail's country appended. GCash writes
+  `NCR - WCC` for Manila, and `ncr` is a Gurgaon alias, so its roles were scoring as Gurgaon.
+- `scripts/record_cassettes.py` gained a `__main__` guard: importing it re-recorded every
+  cassette.
+
 ## Known gaps
 
 - **Google is not crawled**, by choice: its `robots.txt` disallows the job results path. It shows

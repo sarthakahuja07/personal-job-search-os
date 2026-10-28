@@ -7,7 +7,7 @@ The organising idea: **the stubborn companies were never individual problems, th
 handful of patterns.** Building for the pattern rather than the company is what turned all but
 one of them into configuration rather than code.
 
-**58 of 64 active companies now crawl automatically.**
+**67 of 73 active companies now crawl automatically.**
 
 The ones that do not:
 
@@ -104,6 +104,60 @@ object works — a minimal `{pageType, reqId}` renders "Oops! Something went wro
 exact link was verified in a browser and is pinned in `test_mynexthire_job_url.py`.
 `sharechat.com/api/careersList` serves the same jobs, but `sharechat.com/robots.txt` has
 `Disallow: /*?*`, and MyNextHire's host has no robots.txt at all.
+
+---
+
+## Added 2026-10-28 (9 companies)
+
+Every source below was run end to end through its real adapter against the live board, with the
+production match rules, before its row was written. Coinbase and DE Shaw were on the same list
+and were already crawled (both `healthy`, last success that morning).
+
+| Company | Source | Identifier | Jobs at check | India |
+|---|---|---|---|---|
+| Coupang | Greenhouse | `coupang` | 696 | 41 — all Senior/Staff+ today |
+| Agoda | Greenhouse | `agoda` | 314 | 14 |
+| Okta | Greenhouse | `okta` | 385 | 94 |
+| ClickHouse | Ashby | `clickhouse` | 207 | 10 |
+| Atlan | Ashby | `atlan` | 7 | 5 — `atlan.com/careers` links only this board |
+| Palantir | Lever | `palantir` | 306 | 0 |
+| GCash | Workday | `globe.wd3/Mynt` | 163 | 0 — Manila |
+| Kredivo | `json_api` (Breezy) | `kredivo-group.breezy.hr/json` | 74 | 1 (Bangalore) |
+| True Corporation | `successfactors` (new) | `https://careers.true.th` | 34 | 0 — Thailand |
+
+**GCash** is Mynt's board inside the Globe Group Workday tenant, linked from `gcash.com/careers`.
+Its locations read `NCR - WCC` -- an office code for Manila's National Capital Region -- and
+`ncr` is a **Gurgaon** alias in the location rules, so every GCash engineering role would have
+scored as Gurgaon. The Workday adapter now appends the detail response's country to a location
+that does not already name it (`NCR - WCC, Philippines`), which the reject list then catches.
+`2 Locations` is left alone, since the country is only the primary location's.
+
+**Kredivo** — `careers.kredivocorp.com` serves a Cloudflare "Just a moment..." challenge to a
+plain client, which ADR 008 means we leave alone. Its job links (`/p/<12 hex>-<slug>`) are the
+shape of **BreezyHR**, and the tenant behind that custom domain is `kredivo-group.breezy.hr`,
+whose public `/json` feed returns the whole board in one response with Breezy's own stable ids
+(robots.txt only disallows assets). The ids match the custom domain's links, and the `url`
+field opens the job directly.
+
+**True Corporation** runs SAP SuccessFactors Career Site Builder at `careers.true.th`. The search
+page builds its results in the browser from `/services/recruiting/...`, and the site's robots.txt
+says `Disallow: /services/` -- so that API is off-limits however easy it would be to call. What it
+does permit is `/sitemap.xml`, which lists every open job as `/job/<Location>-<Title>-<code>/<id>/`,
+and the job pages themselves. The new tier-2 `successfactors` adapter reads the sitemap (id from
+the URL, a provisional title from the slug for the title gate) and fetches the job page only for
+jobs that pass, taking the real title from `og:title` and the description from the longest
+labelled field. The page has no location, so the location is whatever the slug has in front of
+the title -- matched on the title's first two words, because slugs carry suffixes the title lacks
+(`...-Migrant-and-Tourist-Perm`) and drop punctuation (` - OPEX` becomes `-OPEX`). All 34 jobs were
+detail-fetched at check time and every one resolved its city. `posted_at` is left empty: the page
+shows `22/10/2026` in a tenant-chosen format, and reading `03/04` would be a guess.
+
+**Location rules decide what these produce, not the source.** The live rules allow Bangalore,
+Gurgaon, Hyderabad and Remote; a location naming anywhere else is rejected, and only an *empty*
+location passes as unknown. So Coupang, Kredivo, Agoda and Okta surface only their India and
+remote roles, and GCash (Manila) and True (Bangkok) are crawled correctly but cannot match
+unless those cities are added to `settings.match_rules`. A True job whose detail fetch fails
+keeps an empty location and does pass as unknown.
 
 ---
 

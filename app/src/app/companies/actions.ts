@@ -95,7 +95,7 @@ export async function updateCompany(formData: FormData) {
   // Config fields are per-source; collect only the ones that apply and drop blanks so an
   // unused key never lingers to confuse the adapter.
   const config: SourceConfig = {};
-  for (const key of ["boardToken", "slug", "companyId", "tenant", "dataCenter", "site"]) {
+  for (const key of ["boardToken", "slug", "companyId", "tenant", "dataCenter", "site", "siteUrl"]) {
     const value = String(formData.get(key) ?? "").trim();
     if (value) config[key] = value;
   }
@@ -124,7 +124,7 @@ export async function updateCompany(formData: FormData) {
 }
 
 function sourceTierFor(sourceType: SourceType): number {
-  if (sourceType === "workday") return 2;
+  if (sourceType === "workday" || sourceType === "successfactors") return 2;
   if (["greenhouse", "lever", "ashby", "smartrecruiters", "mynexthire"].includes(sourceType)) return 1;
   if (sourceType === "custom_json") return 3;
   if (sourceType === "jsonld") return 4;

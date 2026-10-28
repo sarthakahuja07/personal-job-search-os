@@ -37,6 +37,7 @@ REQUIRED_FIELDS: dict[str, list[str]] = {
     "ashby": ["id", "title", "jobUrl"],
     "smartrecruiters": ["id", "name"],
     "workday": ["title", "externalPath", "bulletFields"],
+    "successfactors": ["url", "slug", "jobId"],
 }
 
 # How many jobs a healthy board should return. Not a precise figure -- just enough to catch a

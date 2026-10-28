@@ -25,6 +25,7 @@ const SOURCE_TYPES: SourceType[] = [
   "smartrecruiters",
   "mynexthire",
   "workday",
+  "successfactors",
   "manual",
 ];
 
@@ -42,6 +43,9 @@ const CONFIG_FIELDS: Record<string, { key: string; label: string; hint: string }
     { key: "tenant", label: "Tenant", hint: "e.g. nvidia" },
     { key: "dataCenter", label: "Shard", hint: "e.g. wd5 — not guessable, read it off the URL" },
     { key: "site", label: "Site", hint: "e.g. NVIDIAExternalCareerSite" },
+  ],
+  successfactors: [
+    { key: "siteUrl", label: "Site URL", hint: "e.g. https://careers.true.th — its /sitemap.xml is read" },
   ],
   manual: [],
 };

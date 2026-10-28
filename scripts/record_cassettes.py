@@ -138,6 +138,21 @@ async def record_mynexthire(client: httpx.AsyncClient) -> dict[str, Any]:
     }
 
 
+async def record_successfactors(client: httpx.AsyncClient) -> dict[str, Any]:
+    # The sitemap is the listing (the search API is under robots-disallowed /services/), and it
+    # is small enough to keep whole.
+    config = {"siteUrl": "https://careers.true.th"}
+    r = await client.get(config["siteUrl"] + "/sitemap.xml", timeout=45)
+    r.raise_for_status()
+    return {
+        "config": config,
+        "careers_url": "https://careers.true.th/search/",
+        "html": r.text,
+        "list": [],
+        "details": {},
+    }
+
+
 async def record_workday(client: httpx.AsyncClient) -> dict[str, Any]:
     config = {
         "tenant": "nvidia",
@@ -320,6 +335,7 @@ RECORDERS = {
     "smartrecruiters": record_smartrecruiters,
     "mynexthire": record_mynexthire,
     "workday": record_workday,
+    "successfactors": record_successfactors,
     "json_api": record_json_api,
     "hydration": record_hydration,
     "html_list": record_html_list,
@@ -342,4 +358,5 @@ async def main() -> None:
             print(f"  ok   {name:<16} {pages} page(s), {len(cassette['details'])} detail(s), {size}KB")
 
 
-asyncio.run(main())
+if __name__ == "__main__":
+    asyncio.run(main())

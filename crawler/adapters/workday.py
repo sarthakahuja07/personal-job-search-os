@@ -31,6 +31,7 @@ from crawler.normalization.text import html_to_text
 # Do not raise this. See trap 1 above.
 PAGE_SIZE = 20
 MAX_PAGES = 200
+_MULTI_LOCATION_RE = re.compile(r"^\d+ Locations?$", re.IGNORECASE)
 
 _URL_RE = re.compile(
     r"(?P<tenant>[a-z0-9\-]+)\.(?P<dc>wd\d+)\.myworkdayjobs\.com/"
@@ -172,11 +173,24 @@ class WorkdayAdapter(JobSourceAdapter):
         country = detail.get("country")
         country_label = country.get("descriptor") if isinstance(country, dict) else None
 
+        # Some tenants name an office rather than a place: GCash writes "NCR - WCC" for Manila,
+        # and "ncr" is a Gurgaon alias, so a Manila role scored as Gurgaon. The detail's country
+        # is appended when the location does not already carry it, so location matching sees
+        # the country. "2 Locations" is left alone: the country is only the primary one's.
+        location = d.get("locationsText") or detail.get("location")
+        if (
+            location
+            and country_label
+            and country_label.lower() not in location.lower()
+            and not _MULTI_LOCATION_RE.match(location)
+        ):
+            location = f"{location}, {country_label}"
+
         return NormalizedJob(
             external_job_id=str(req_id),
             title=d["title"],
             job_url=f"{site_base}{external_path}",
-            location=d.get("locationsText") or detail.get("location"),
+            location=location,
             description=html_to_text(detail.get("jobDescription")),
             employment_type=detail.get("timeType"),
             posted_at=posted,
