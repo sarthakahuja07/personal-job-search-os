@@ -605,13 +605,18 @@ export default async function PrepPage({
               <textarea
                 id="notes"
                 name="notes"
-                rows={8}
+                rows={20}
                 defaultValue={item.notes ?? ""}
                 // A document kind declares no answer fields, so it has no hints to join.
                 placeholder={
                   meta.fields.map((f) => f.hint).join(" · ") || "In your own words."
                 }
-                className={cx(inputStyles, "resize-y font-normal leading-relaxed")}
+                // Notes are long-form: start at most of the viewport and grow with the text
+                // instead of scrolling inside a small box.
+                className={cx(
+                  inputStyles,
+                  "min-h-[60vh] resize-y field-sizing-content font-normal leading-relaxed",
+                )}
               />
             </div>
 
