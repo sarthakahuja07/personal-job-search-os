@@ -816,6 +816,10 @@ source lived on a separate "Confluent (IBM)" row. Merged: "Confluent" now uses t
 DirectEmployers config, with the IBM row's jobs, applications and crawl runs moved onto it. One
 company, one source, and the referral contact and prep pages stay attached to it.
 
+**Arista Networks and Gartner switched off (2026-10-29).** `active = 0` rather than deleted, so
+their HR contacts, history and the one Gartner application stay; their other open jobs were
+closed, since nothing would crawl them again. Re-enable with the Active box on the company page.
+
 ## Known gaps
 
 - **Google is not crawled**, by choice: its `robots.txt` disallows the job results path. It shows

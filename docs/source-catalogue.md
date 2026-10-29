@@ -7,7 +7,9 @@ The organising idea: **the stubborn companies were never individual problems, th
 handful of patterns.** Building for the pattern rather than the company is what turned all but
 one of them into configuration rather than code.
 
-**79 of 88 active companies now crawl automatically.** The nine that do not are matched from
+**77 of 86 active companies now crawl automatically.** Arista Networks and Gartner were switched
+off on 2026-10-29 at Sarthak's request (rows kept, `active = 0`, open jobs closed except one in
+his pipeline); the sources below still work if they are switched back on. The nine that do not are matched from
 LinkedIn job-alert emails instead, so an opening there still reaches the board and the HR page.
 
 The ones that do not:
