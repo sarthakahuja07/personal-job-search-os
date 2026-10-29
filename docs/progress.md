@@ -203,10 +203,10 @@ Full detail, and the evidence behind every decision, in
 |---|---|---|
 | 1 | Greenhouse | Databricks, Roku, Uber Freight, DigitalOcean |
 | 1 | SmartRecruiters | ServiceNow, Swiggy |
-| 1 | Ashby | Sarvam AI, Confluent |
+| 1 | Ashby | Sarvam AI |
 | 1 | Lever | Zeta Suite |
 | 2 | Workday | NVIDIA, Adobe, Salesforce, Target, Visa, Postman |
-| 3 | `json_api` | Amazon, Microsoft, Qualcomm, Atlassian, Akamai, Keychain AI, Rippling, Confluent (IBM) |
+| 3 | `json_api` | Amazon, Microsoft, Qualcomm, Atlassian, Akamai, Keychain AI, Rippling, Confluent (via IBM) |
 | 4 | `hydration` | DE Shaw, CHEQ |
 | 5 | `html_list` | Intuit, Moveworks, Apple, Ringg |
 
@@ -807,6 +807,14 @@ PharmEasy, Temple and Rakuten are manual, with the evidence in `docs/source-cata
 **Later the same day:** Arista (SmartRecruiters), Deel (`hydration` with the new `rscMarker`,
 reading Next.js RSC flight data) and Eightfold (`pcsx` API, robots-allowed) promoted from manual
 -- 79 of 88 crawl. The rest get LinkedIn-alert aliases; see the catalogue.
+
+## Confluent fixed (2026-10-29)
+
+Confluent's Ashby board has been empty since 2026-10-12 (IBM acquisition; `careers.confluent.io`
+is behind a Vercel bot checkpoint), so the row was `suspicious` every run while the working IBM
+source lived on a separate "Confluent (IBM)" row. Merged: "Confluent" now uses the IBM
+DirectEmployers config, with the IBM row's jobs, applications and crawl runs moved onto it. One
+company, one source, and the referral contact and prep pages stay attached to it.
 
 ## Known gaps
 

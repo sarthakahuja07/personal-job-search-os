@@ -307,7 +307,7 @@ not a Python file.
 | ServiceNow | SmartRecruiters | `servicenow` |
 | Swiggy | SmartRecruiters | `swiggy` |
 | Sarvam AI | Ashby | `sarvam` |
-| Confluent | Ashby | `confluent` |
+| Confluent | `json_api` (IBM via DirectEmployers) | `ibm.dejobs.org`, `q=confluent&location=India` |
 | Zeta Suite | Lever | `zeta` |
 
 ### Tier 2 — Workday CXS (6)
@@ -377,8 +377,15 @@ that door stays shut. But IBM syndicates to DirectEmployers like Akamai does, an
 serves the same `robots.txt`-permitted `jobsyn.org` API with no challenge at all. One header value
 changes (`x-origin: ibm.dejobs.org`) and the adapter is the one that already existed.
 
-It is a separate company row rather than a second source on Confluent, because a company has one
-source config; naming it plainly is better than hiding a second board inside the first.
+It began as a separate company row, because a company has one source config. **On 2026-10-29
+the two were merged**: Confluent's public Ashby board has returned `jobs: []` since 2026-10-12 --
+after IBM closed the acquisition, `confluent.io/careers` moved to `careers.confluent.io`, which
+serves a Vercel Security Checkpoint, and every Confluent opening now posts on IBM's board titled
+"... - Confluent". So the dead Ashby row was flagged `suspicious` every run while the live source
+sat on a second row. "Confluent" now carries the IBM config directly; the IBM row's jobs,
+applications and crawl history moved onto it and the duplicate row was deleted. Its six stale
+Ashby jobs close through the normal N-successful-runs rule. `Confluent (IBM)` stays as a LinkedIn
+alias.
 
 **Keychain AI** — `jobs.lsvp.com/api-boards/search-jobs`, a Lightspeed portfolio board. Requires a
 per-session CSRF token issued on the page, so the adapter primes: fetch the page, lift the token,
