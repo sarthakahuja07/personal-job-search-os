@@ -7,7 +7,7 @@ The organising idea: **the stubborn companies were never individual problems, th
 handful of patterns.** Building for the pattern rather than the company is what turned all but
 one of them into configuration rather than code.
 
-**77 of 86 active companies now crawl automatically.** Arista Networks and Gartner were switched
+**79 of 88 active companies now crawl automatically.** Arista Networks and Gartner were switched
 off on 2026-10-29 at Sarthak's request (rows kept, `active = 0`, open jobs closed except one in
 his pipeline); the sources below still work if they are switched back on. The nine that do not are matched from
 LinkedIn job-alert emails instead, so an opening there still reaches the board and the HR page.
@@ -199,6 +199,29 @@ apply form there shows "no job" for them — so `json_api` gained a generic `whe
 `joinus.juspay.in/?jobId=<job_id>`, the parameter the app itself reads. Juspay titles carry no
 level, so its `match_overrides.levelTitles` names its lateral hire,
 `software development engineer\s*-\s*lateral` (3+ years, Bangalore).
+
+---
+
+## Added 2026-11-04: Expedia Group, Groww
+
+Both run end to end through their real adapters against the live boards, then a real crawl
+through production ingest, before this was written.
+
+| Company | Source | Identifier | Jobs at check | Title matches |
+|---|---|---|---|---|
+| Expedia Group | Workday | `expedia.wd108/search` | 121 (Workday's own `total`) | 10 worldwide, 0 relevant today -- India's only engineering role is a Director |
+| Groww | Greenhouse | `groww` | 9 | 0 -- no engineering roles on the board |
+
+**Expedia Group** -- `careers.expediagroup.com` is a WordPress front end (`robots.txt` allows
+all, with a 10 s crawl delay) whose job links name the Workday tenant. `expedia.wd5` returns
+422; `wd108` is the right shard. Named "Expedia Group" because that is how LinkedIn alerts
+spell it, so LinkedIn postings land on this row as jobs rather than as leads.
+
+**Groww** -- `groww.in/careers` links only to `job-boards.eu.greenhouse.io/groww`. The EU board
+serves the same jobs as the standard `boards-api.greenhouse.io` endpoint, so the existing
+adapter works unchanged. Its engineering roles are not on that board: they are posted on
+LinkedIn, so for Groww the LinkedIn email source is what actually finds them. The Greenhouse
+source is kept because it is the company's own board and anything posted there is caught first.
 
 ---
 

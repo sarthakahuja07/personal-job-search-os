@@ -24,6 +24,7 @@ import {
 import { buildHrList } from "@/server/domain/hr";
 import { toE164 } from "@/server/domain/templates";
 import { listHrCompanies, listHrOpenings } from "@/server/repository/hr-repo";
+import { emailDeliveryProblem } from "@/server/repository/notifications-repo";
 
 export const dynamic = "force-dynamic";
 
@@ -50,8 +51,18 @@ const RECENT_DAYS = 3;
 
 export default async function DashboardPage() {
   const db = getDb();
-  const [stats, top, health, recent, reminderRows, settingsRows, contacts, dismissed, hrCompanies] =
-    await Promise.all([
+  const [
+    stats,
+    top,
+    health,
+    recent,
+    reminderRows,
+    settingsRows,
+    contacts,
+    dismissed,
+    hrCompanies,
+    emailProblem,
+  ] = await Promise.all([
     jobStats(db),
     listJobs(db, { sort: "best", limit: 8, unreadOnly: true }),
     listCompanyHealth(db),
@@ -61,6 +72,7 @@ export default async function DashboardPage() {
     contactsByCompany(db),
     reminderDismissalMap(db),
     listHrCompanies(db),
+    emailDeliveryProblem(db),
   ]);
   const hrCalls = buildHrList(
     hrCompanies,
@@ -158,10 +170,27 @@ export default async function DashboardPage() {
         />
       </div>
 
-      {needsAttention.length > 0 && (
+      {(needsAttention.length > 0 || emailProblem) && (
         <section className="mt-8">
           <SectionTitle>Needs attention</SectionTitle>
           <ul className="space-y-1.5">
+            {/* Email is the channel that would report every other problem, so its own failure
+                has to be raised here -- it went unnoticed for a week once. */}
+            {emailProblem && (
+              <Card as="li" className="flex items-start justify-between gap-3 px-4 py-3">
+                <div className="min-w-0">
+                  <span className="text-sm font-medium text-ink">
+                    Email alerts are not being delivered
+                  </span>
+                  <p className="mt-0.5 text-xs text-ink-dim">
+                    {emailProblem.stuck} alert{emailProblem.stuck === 1 ? "" : "s"} unsent since{" "}
+                    {ago(emailProblem.since)}
+                    {emailProblem.error ? ` — ${emailProblem.error}` : ""}
+                  </p>
+                </div>
+                <Badge tone="danger">failing</Badge>
+              </Card>
+            )}
             {needsAttention.map((c) => (
               <Card as="li" key={c.id} className="flex items-start justify-between gap-3 px-4 py-3">
                 <div className="min-w-0">

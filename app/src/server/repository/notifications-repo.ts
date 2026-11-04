@@ -110,6 +110,35 @@ export async function markFailed(db: Db, ids: string[], error: string): Promise<
   }
 }
 
+/**
+ * Undelivered alerts whose last send attempt failed, and why.
+ *
+ * The digest is the channel that reports problems, so a digest that cannot be sent cannot
+ * report itself -- this is what lets the dashboard say so instead. A failure that a later
+ * send cleared has been retried into `sent`, so anything still counted here is genuinely stuck.
+ */
+export async function emailDeliveryProblem(db: Db) {
+  const [row] = await db
+    .select({
+      stuck: sql<number>`count(*)`,
+      since: sql<number | null>`min(${notifications.createdAt})`,
+      error: sql<string | null>`max(${notifications.error})`,
+    })
+    .from(notifications)
+    .where(
+      and(
+        inArray(notifications.status, ["pending", "failed"]),
+        sql`${notifications.attempts} > 0`,
+      ),
+    );
+  if (!row || !row.stuck) return null;
+  return {
+    stuck: Number(row.stuck),
+    since: row.since ? new Date(row.since) : null,
+    error: row.error,
+  };
+}
+
 export async function notifyEmail(db: Db): Promise<string | null> {
   const rows = await db
     .select({ notifyEmail: settings.notifyEmail })

@@ -3,7 +3,7 @@
 The durable state of this project. Updated whenever something meaningful lands, so no context is
 lost between sessions (PRD §73). Picking this up cold: read `CLAUDE.md` first, then this file.
 
-**Last updated:** 2026-10-28
+**Last updated:** 2026-11-04
 
 ---
 
@@ -819,6 +819,26 @@ company, one source, and the referral contact and prep pages stay attached to it
 **Arista Networks and Gartner switched off (2026-10-29).** `active = 0` rather than deleted, so
 their HR contacts, history and the one Gartner application stay; their other open jobs were
 closed, since nothing would crawl them again. Re-enable with the Active box on the company page.
+
+## Email alerts down for a week; Expedia and Groww added (2026-11-04)
+
+**No digest was delivered from 2026-10-28 10:29 UTC to 2026-11-04.** Gmail started answering
+`535 5.7.8 Username and Password not accepted`: the app password had been revoked. smtplib then
+fell back from PLAIN to LOGIN, Gmail hung up, and the only error recorded was
+`SMTPServerDisconnected: Connection unexpectedly closed` -- 35 notifications reached
+MAX_ATTEMPTS and went `failed`, 45 more queued. The LinkedIn email reader uses the same account
+and went silent from 2026-10-27, which is why LinkedIn-only roles (ShareChat's SDE-2) never
+reached the board. Nobody noticed because the digest is the channel that reports problems.
+
+- `notify.py` authenticates with PLAIN only, so a revoked password surfaces as a `NotifyError`
+  that says so, instead of a disconnect.
+- The dashboard's **Needs attention** lists "Email alerts are not being delivered" whenever an
+  undelivered notification has a failed attempt, with the count and the error.
+- **Recovery, once a new app password is in GitHub Secrets:** reset the failed rows to
+  `pending` with `attempts = 0`, and run `python -m crawler.linkedin.main --days 14` once --
+  the reader's normal 7-day window is shorter than the outage.
+
+Expedia Group (Workday) and Groww (Greenhouse) now crawl; see `source-catalogue.md`.
 
 ## Known gaps
 

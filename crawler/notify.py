@@ -238,7 +238,19 @@ def send_email(to: str, subject: str, text: str, html: str) -> None:
     context = ssl.create_default_context()
     with smtplib.SMTP(SMTP_HOST, SMTP_PORT, timeout=60) as server:
         server.starttls(context=context)
-        server.login(user, password)
+        server.ehlo()
+        # PLAIN only. Gmail advertises PLAIN and LOGIN; smtplib tries each in turn, and after a
+        # 535 on PLAIN Gmail drops the connection mid-LOGIN -- so the error that reached the
+        # outbox for a week was "Connection unexpectedly closed", not the revoked password.
+        server.esmtp_features["auth"] = "PLAIN"
+        try:
+            server.login(user, password)
+        except smtplib.SMTPAuthenticationError as exc:
+            raise NotifyError(
+                f"Gmail rejected SMTP_USER/SMTP_APP_PASSWORD ({exc.smtp_code}). The app password "
+                "has been revoked -- create a new one and update SMTP_APP_PASSWORD and "
+                "IMAP_APP_PASSWORD in GitHub Secrets."
+            ) from exc
         server.send_message(message)
 
 
