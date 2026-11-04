@@ -97,7 +97,7 @@ async def crawl_company(
         # detail requests to find perhaps three matches.
         candidates = [(raw, job) for raw, job in parsed if match_title(job.title, rules, company.match_overrides).passed]
 
-        if adapter.needs_detail_fetch and candidates:
+        if adapter.wants_detail(company.source_config) and candidates:
             enriched: list[NormalizedJob] = []
             for raw, job in candidates:
                 try:

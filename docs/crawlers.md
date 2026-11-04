@@ -60,6 +60,12 @@ A `json_api` endpoint that returns closed postings alongside open ones takes a `
 Pagination still counts every record the server sent, so a page of closed roles is not mistaken
 for the end of the board.
 
+A `json_api` list endpoint that carries no description can name a per-posting `detail`
+endpoint: `{"url": "<template over the list record>", "path": "data"}`. It is called only for
+postings that pass the title pre-filter, and the response is visible to the field map as
+`_detail` -- Microsoft maps `"description": "_detail.jobDescription"` from
+`/api/pcsx/position_details`, without which every Microsoft job was scored for fit on its title.
+
 See `docs/source-catalogue.md` for which company uses which, and the evidence for every source
 that is deliberately not crawled.
 

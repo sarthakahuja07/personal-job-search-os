@@ -88,6 +88,14 @@ class JobSourceAdapter(ABC):
     def needs_detail_fetch(self) -> bool:
         return type(self).fetch_detail is not JobSourceAdapter.fetch_detail
 
+    def wants_detail(self, config: dict[str, Any]) -> bool:
+        """Whether this company's postings need a detail request.
+
+        Per config rather than per adapter, for adapters like json_api where only some
+        configurations have a detail endpoint worth calling.
+        """
+        return self.needs_detail_fetch
+
     # -- parsing ----------------------------------------------------------
 
     @abstractmethod

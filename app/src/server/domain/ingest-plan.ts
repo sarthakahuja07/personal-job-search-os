@@ -8,7 +8,7 @@
  * See docs/decisions/008-crawler-correctness-strategy.md.
  */
 
-import { scoreFit, type FitBand, type FitSignal } from "./fit";
+import { applyFitFloor, scoreFit, type FitBand, type FitSignal } from "./fit";
 import {
   matchJob,
   type CompanyMatchOverrides,
@@ -201,6 +201,7 @@ export function planIngest(input: PlanInput): IngestPlan {
       locationPriority: match.locationPriority,
       postedAt: job.postedAt,
     });
+    const verdict = applyFitFloor(match, fit, matchOverrides?.minFit);
 
     upserts.push({
       ...job,
@@ -208,9 +209,9 @@ export function planIngest(input: PlanInput): IngestPlan {
       fitBand: fit.band,
       fitSignals: fit.signals,
       fitTitleOnly: fit.titleOnly,
-      isRelevant: match.isRelevant,
+      isRelevant: verdict.isRelevant,
       matchScore: match.score,
-      matchReason: match.reason,
+      matchReason: verdict.reason,
       locationPriority: match.locationPriority,
       existingId: prior?.id ?? null,
     });
@@ -218,13 +219,13 @@ export function planIngest(input: PlanInput): IngestPlan {
     if (!prior) {
       createdExternalIds.push(job.externalJobId);
       // Only genuinely new AND relevant jobs are worth an email.
-      if (match.isRelevant) {
+      if (verdict.isRelevant) {
         notifications.push({
           dedupKey: `new_job:${job.externalJobId}`,
           notificationType: "new_job",
           externalJobId: job.externalJobId,
           title: job.title,
-          matchReason: match.reason,
+          matchReason: verdict.reason,
         });
       }
     }

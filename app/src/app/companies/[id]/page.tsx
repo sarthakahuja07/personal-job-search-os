@@ -198,6 +198,27 @@ export default async function CompanyDetailPage({
             />
           </div>
 
+          {/* For employers that post matching roles by the hundred, where only the best fits are
+              worth a referral ask. */}
+          <div>
+            <label className="block text-[13px] font-medium text-ink">Minimum fit score</label>
+            <p className="mb-1 mt-0.5 text-[11px] leading-relaxed text-ink-faint">
+              0–100. Jobs here that pass the title and location rules must also score at least this
+              on fit (skills, domain, level) to reach the board. Leave blank for no floor. 65 is
+              &ldquo;strong&rdquo;, 80 &ldquo;excellent&rdquo;. Roles with no description are not
+              held to it.
+            </p>
+            <input
+              name="minFit"
+              type="number"
+              min={0}
+              max={100}
+              defaultValue={company.matchOverrides?.minFit ?? ""}
+              placeholder="e.g. 65"
+              className={cx(inputStyles, "mt-1.5 w-32")}
+            />
+          </div>
+
           {fields.length > 0 && (
             <div className="grid gap-4 sm:grid-cols-3">
               {fields.map((f) => (

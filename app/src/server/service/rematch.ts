@@ -14,7 +14,7 @@ import { eq, inArray } from "drizzle-orm";
 
 import type { Db } from "@/db";
 import { companies, jobs, settings } from "@/db/schema";
-import { scoreFit, type FitBand, type FitSignal } from "../domain/fit";
+import { applyFitFloor, scoreFit, type FitBand, type FitSignal } from "../domain/fit";
 import { matchJob, DEFAULT_MATCH_RULES } from "../domain/matching";
 
 export type RematchResult = {
@@ -78,18 +78,19 @@ export async function rematchJobs(db: Db, maxUpdates = 40): Promise<RematchResul
       locationPriority: m.locationPriority,
       postedAt: row.postedAt,
     });
+    const verdict = applyFitFloor(m, fit, row.matchOverrides?.minFit);
     const unchanged =
-      m.isRelevant === row.isRelevant &&
+      verdict.isRelevant === row.isRelevant &&
       m.score === row.matchScore &&
       fit.score === row.fitScore;
     if (unchanged) continue;
-    if (m.isRelevant && !row.isRelevant) nowRelevant++;
-    if (!m.isRelevant && row.isRelevant) noLongerRelevant++;
+    if (verdict.isRelevant && !row.isRelevant) nowRelevant++;
+    if (!verdict.isRelevant && row.isRelevant) noLongerRelevant++;
     changes.push({
       id: row.id,
-      isRelevant: m.isRelevant,
+      isRelevant: verdict.isRelevant,
       matchScore: m.score,
-      matchReason: m.reason,
+      matchReason: verdict.reason,
       locationPriority: m.locationPriority,
       fitScore: fit.score,
       fitBand: fit.band,

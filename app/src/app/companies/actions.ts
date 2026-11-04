@@ -11,7 +11,7 @@ import {
   type SourceConfig,
   type SourceType,
 } from "@/db/schema";
-import type { CompanyMatchOverrides } from "@/server/domain/matching";
+import { mergeOverrides, type CompanyMatchOverrides } from "@/server/domain/matching";
 import { detectSource, validateConfig } from "@/server/domain/source-detect";
 
 function revalidateCompany(id?: string) {
@@ -107,6 +107,19 @@ export async function updateCompany(formData: FormData) {
     if (value) config[key] = value;
   }
 
+  // Only the keys this form edits are replaced. Overwriting the whole object erased aliases,
+  // which no form shows, every time a company was saved.
+  const [current] = await getDb()
+    .select({ matchOverrides: companies.matchOverrides })
+    .from(companies)
+    .where(eq(companies.id, id))
+    .limit(1);
+  const matchOverrides = mergeOverrides(
+    current?.matchOverrides ?? null,
+    parseLevelTitles(String(formData.get("levelTitles") ?? "")),
+    String(formData.get("minFit") ?? ""),
+  );
+
   const errors = validateConfig(sourceType, config);
   // Saving an invalid config would produce a crawler that fails every run. Fall back to manual
   // so the company still appears — as something to check by hand rather than as a broken source.
@@ -123,7 +136,7 @@ export async function updateCompany(formData: FormData) {
       sourceConfig: config,
       active: formData.get("active") === "on",
       allowZeroResults: formData.get("allowZeroResults") === "on",
-      matchOverrides: parseLevelTitles(String(formData.get("levelTitles") ?? "")),
+      matchOverrides,
     })
     .where(eq(companies.id, id));
 

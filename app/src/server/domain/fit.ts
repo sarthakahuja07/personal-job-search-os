@@ -332,6 +332,35 @@ export function scoreFit(
   };
 }
 
+/**
+ * A company's fit floor: the one place fit is allowed to take a job off the board.
+ *
+ * The separation described at the top of this file is the right default, and it is wrong for
+ * employers that post SDE-2 roles by the hundred -- Amazon's 139 open matches are not 139
+ * referral asks. So a company can opt in, via `match_overrides.minFit`, to having its gate-passing
+ * jobs also clear a fit score. It is per company and data, so it never touches anyone else.
+ *
+ * A title-only score is exempt. It rests on the title alone, and dropping a job for evidence we
+ * never had is the failure principle 2 exists to prevent -- such a job stays, and says why.
+ */
+export function applyFitFloor(
+  match: { isRelevant: boolean; reason: string },
+  fit: Pick<FitResult, "score" | "titleOnly">,
+  minFit: number | undefined,
+): { isRelevant: boolean; reason: string } {
+  if (!match.isRelevant || minFit == null) return match;
+  if (fit.titleOnly) {
+    return { isRelevant: true, reason: `${match.reason}, fit not assessed (no description)` };
+  }
+  if (fit.score < minFit) {
+    return {
+      isRelevant: false,
+      reason: `fit ${fit.score} is below this company's minimum of ${minFit}`,
+    };
+  }
+  return { isRelevant: true, reason: `${match.reason}, fit ${fit.score} ≥ ${minFit}` };
+}
+
 export function bandFor(score: number, profile: FitProfile = DEFAULT_FIT_PROFILE): FitBand {
   const b = profile.bands;
   if (score >= b.excellent) return "excellent";

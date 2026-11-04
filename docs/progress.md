@@ -840,6 +840,22 @@ reached the board. Nobody noticed because the digest is the channel that reports
 
 Expedia Group (Workday) and Groww (Greenhouse) now crawl; see `source-catalogue.md`.
 
+## Fit floor for high-volume employers (2026-11-04)
+
+Amazon had 139 open roles passing the title/location gate -- far more than are worth a referral
+ask. `match_overrides.minFit` (editable on the company page as "Minimum fit score") makes a
+company's gate-passing jobs also clear a fit score to count as relevant; below it they are kept
+with `is_relevant = 0` and a reason ("fit 52 is below this company's minimum of 65"), and no
+email is queued. Applied at ingest and by `/api/jobs/rematch` through one function,
+`applyFitFloor`. Title-only scores are exempt -- a job is never dropped for a description we
+never had.
+
+Amazon and Microsoft are set to 65 ("strong"). Microsoft's list API has no descriptions, so
+`json_api` gained a `detail` fetch and Microsoft now reads `/api/pcsx/position_details`.
+
+Saving a company no longer overwrites `match_overrides` wholesale: it replaced the object with
+`{levelTitles}` alone, silently erasing Amazon's LinkedIn aliases on any edit.
+
 ## Known gaps
 
 - **Google is not crawled**, by choice: its `robots.txt` disallows the job results path. It shows

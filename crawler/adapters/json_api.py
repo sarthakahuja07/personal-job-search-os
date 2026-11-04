@@ -18,7 +18,11 @@ Amazon is the first user. Others follow by adding a company row, not a Python fi
         "external_job_id": "id_icims",
         "title": "title",
         "job_url": {"template": "https://www.amazon.jobs{job_path}"}
-      }
+      },
+      // optional: one GET per posting that survives the title pre-filter, for boards whose
+      // list endpoint carries no description. The response (at `path`) is exposed to the
+      // field map as `_detail`, e.g. "description": "_detail.jobDescription".
+      "detail": {"url": "https://x.com/api/job?id={id}", "path": "data"}
     }
 """
 
@@ -194,6 +198,29 @@ class JsonApiAdapter(JobSourceAdapter):
                 )
 
         return out
+
+    def wants_detail(self, config: dict[str, Any]) -> bool:
+        return bool((config.get("detail") or {}).get("url"))
+
+    async def fetch_detail(
+        self, raw: RawJob, config: dict[str, Any], client: HttpClient, budget: CrawlBudget
+    ) -> RawJob:
+        spec = config.get("detail") or {}
+        if not spec.get("url"):
+            return raw
+        url = map_record(raw.data, {"url": {"template": spec["url"]}}).get("url")
+        if not url:
+            return raw
+        data, _ = await client.get_json(
+            str(url), headers=dict(config.get("headers") or {"Accept": "application/json"}),
+            budget=budget,
+        )
+        detail = resolve_path(data, spec["path"]) if spec.get("path") else data
+        if not isinstance(detail, dict):
+            raise SchemaDriftError(
+                f"detail.path '{spec.get('path')}' did not resolve to an object"
+            )
+        return RawJob(data={**raw.data, "_detail": detail}, source_url=raw.source_url)
 
     def parse(self, raw: RawJob) -> NormalizedJob:
         config = raw.data.get("_config") or {}

@@ -96,7 +96,7 @@ export type CompanyMatchOverrides = {
    * company only; discipline exclusions still apply, so "Senior Security Engineer" stays out
    * even at a company whose target level is "Senior Software Engineer".
    */
-  levelTitles: string[];
+  levelTitles?: string[];
   /** Score awarded when a level title matches. Defaults to the strongest include score. */
   score?: number;
   /**
@@ -107,7 +107,27 @@ export type CompanyMatchOverrides = {
    * knowing the company does. So it is data, and adding one is a row edit rather than a deploy.
    */
   aliases?: string[];
+  /**
+   * Minimum fit score (0-100) for this company's jobs to count as relevant. For employers that
+   * post far more matching roles than are worth a referral ask. See `applyFitFloor` in fit.ts.
+   */
+  minFit?: number;
 };
+
+/** The form's two override fields laid over whatever else the row already carries. */
+export function mergeOverrides(
+  current: CompanyMatchOverrides | null,
+  levelTitles: CompanyMatchOverrides | null,
+  minFitRaw: string,
+): CompanyMatchOverrides | null {
+  const next: CompanyMatchOverrides = { ...(current ?? {}) };
+  delete next.levelTitles;
+  delete next.minFit;
+  if (levelTitles?.levelTitles?.length) next.levelTitles = levelTitles.levelTitles;
+  const minFit = Number.parseInt(minFitRaw.trim(), 10);
+  if (Number.isFinite(minFit)) next.minFit = Math.min(100, Math.max(0, minFit));
+  return Object.keys(next).length ? next : null;
+}
 
 /**
  * Sarthak's configuration: SDE-2 level, 3-4 years of experience, and four acceptable locations
